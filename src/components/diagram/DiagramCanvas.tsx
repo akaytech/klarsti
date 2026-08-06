@@ -1,0 +1,186 @@
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  ReactFlow,
+  Background,
+  useReactFlow,
+  Controls,
+  MiniMap,
+  Panel
+} from '@xyflow/react';
+import type { NodeMouseHandler } from '@xyflow/react';
+import '@xyflow/react/dist/style.css';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '../../theme';
+import { getDiagramKind, type DiagramKind } from '../../config/diagramKinds';
+import { edgeStyle } from '../../config/diagramShared';
+import { getActiveChart } from '../../store/slices/diagramOps';
+import DiagramNode from './DiagramNode';
+import DiagramContextMenu from './DiagramContextMenu';
+import DiagramTypePicker from './DiagramTypePicker';
+import DiagramChartsMenu from './DiagramChartsMenu';
+import { useDiagram } from './useDiagram';
+import { islemBasla, islemBitir } from '../../store/gecmis';
+
+// Akış diyagramları ve organizasyon şemaları bu kanvası paylaşıyor; hangi
+// katalogla çalışacağını `kind` belirliyor (bkz. config/diagramKinds.ts).
+export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
+  const themeColors = useTheme();
+  const { t } = useTranslation();
+  const k = getDiagramKind(kind);
+  const { charts, activeId, onNodesChange, onEdgesChange, onConnect, addNode, updateNode, deleteNode } = useDiagram(kind);
+  const { setCenter, getZoom } = useReactFlow();
+  const [menu, setMenu] = useState<{ id: string; top: number; left: number } | null>(null);
+  const [yeniSemaAcik, setYeniSemaAcik] = useState(false);
+  const reactFlowWrapper = useRef<HTMLDivElement>(null);
+  // Geçmişte açık bir sürükleme işlemi var mı? (bkz. onNodeDragStart)
+  const surukleAcik = useRef(false);
+
+  // Sürükleme tek bir işlem: burada açılıyor, bırakılınca kapanıyor. Kutunun
+  // her karede güncellenen konumu geçmişe ayrı ayrı girmiyor; geri alındığında
+  // kutu sürüklemeden ÖNCEKİ yerine dönüyor.
+  const onNodeDragStart = useCallback(() => {
+    islemBasla();
+    surukleAcik.current = true;
+  }, []);
+
+  const onNodeDragStop = useCallback(() => {
+    if (!surukleAcik.current) return;
+    surukleAcik.current = false;
+    islemBitir();
+  }, []);
+
+  // Bırakma olayı hiç gelmeden bileşen sökülürse açık işlem kapatılır; yoksa
+  // sonraki bütün yazmaları kendine yutar.
+  useEffect(() => () => {
+    if (surukleAcik.current) {
+      surukleAcik.current = false;
+      islemBitir();
+    }
+  }, []);
+
+  // React Flow düğüm tipini her renderda yeniden kurmak kutuların sökülüp
+  // yeniden takılmasına yol açıyor; araç değişmedikçe aynı nesne kalıyor.
+  const nodeTypes = useMemo(
+    () => ({ [k.nodeType]: (props: any) => <DiagramNode kind={kind} {...props} /> }),
+    [kind, k.nodeType]
+  );
+
+  const aktif = getActiveChart(charts, activeId);
+
+  const onNodeClick: NodeMouseHandler = useCallback((_event, node) => {
+    document.dispatchEvent(new Event('close-menus'));
+    setCenter(node.position.x + 90, node.position.y + 40, { zoom: getZoom(), duration: 800 });
+  }, [setCenter, getZoom]);
+
+  const onNodeContextMenu = useCallback(
+    (event: React.MouseEvent, node: any) => {
+      event.preventDefault();
+      event.stopPropagation();
+      document.dispatchEvent(new Event('close-menus'));
+      setMenu({
+        id: node.id,
+        top: event.clientY,
+        left: event.clientX,
+      });
+    },
+    []
+  );
+
+  const onPaneClick = useCallback(() => {
+    document.dispatchEvent(new Event('close-menus'));
+    setMenu(null);
+  }, []);
+
+  const onMoveStart = useCallback(() => {
+    document.dispatchEvent(new Event('close-menus'));
+    setMenu(null);
+  }, []);
+
+  // Projede hiç şema yoksa doğrudan tür seçim ekranı çıkar.
+  if (!aktif) {
+    return <DiagramTypePicker kind={kind} />;
+  }
+
+  const tur = k.getType(aktif.type);
+
+  return (
+    <div className="flex-1 h-full w-full relative transition-colors bg-slate-50 dark:bg-slate-900" ref={reactFlowWrapper}>
+      <ReactFlow
+        key={aktif.id}
+        nodes={aktif.nodes}
+        edges={aktif.edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+        nodeTypes={nodeTypes}
+        onNodeClick={onNodeClick}
+        onNodeDragStart={onNodeDragStart}
+        onNodeDragStop={onNodeDragStop}
+        onNodeContextMenu={onNodeContextMenu}
+        onPaneClick={onPaneClick}
+        onMoveStart={onMoveStart}
+        fitView
+        deleteKeyCode={['Delete']}
+        fitViewOptions={{ duration: 1000 }}
+        minZoom={0.1}
+        defaultEdgeOptions={{
+          type: tur.edge.type,
+          animated: tur.edge.animated,
+          style: edgeStyle(tur.edge),
+        }}
+        proOptions={{ hideAttribution: true }}
+      >
+        <Background color={themeColors.canvasDot} gap={24} size={2} />
+        <Controls className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 fill-slate-700 dark:fill-slate-300 shadow-xl" />
+
+        {/* Şema menüsü. React Flow'un kendi stil dosyası panele margin veriyor
+            ve Tailwind sınıfı ona yeniliyor, o yüzden satır içi stil: geri al /
+            ileri al düğmelerinin altına iniyor. */}
+        <Panel position="top-left" style={{ marginTop: 68 }}>
+          <DiagramChartsMenu kind={kind} aktif={aktif} onYeniSema={() => setYeniSemaAcik(true)} />
+
+          {/* Kesik çizgili ikincil hattı olan türlerde bunun nasıl çizileceği
+              kendiliğinden anlaşılmıyor; küçük bir ipucu bırakılıyor. */}
+          {tur.secondaryEdge && k.text.secondaryHint && (
+            <p className="mt-2 max-w-[240px] rounded-xl border border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md px-3 py-2 text-[11px] leading-snug text-slate-500 dark:text-slate-400 shadow-sm">
+              {t(k.text.secondaryHint)}
+            </p>
+          )}
+        </Panel>
+
+        <MiniMap zoomable pannable position="bottom-right"
+          className="!w-48 !h-48 !rounded-full overflow-hidden border-4 border-slate-200 dark:border-slate-700 shadow-2xl dark:bg-slate-800 bg-white"
+          nodeColor={(n) => k.getShape((n.data as any)?.shape).minimapColor}
+        />
+      </ReactFlow>
+
+      {menu && (
+        <DiagramContextMenu
+          kind={kind}
+          x={menu.left}
+          y={menu.top}
+          node={aktif.nodes.find((n) => n.id === menu.id)!}
+          onClose={() => setMenu(null)}
+          onAddNode={(shape, label) => {
+             // Yeni kutu üst kutunun altına konur.
+             const parentNode = aktif.nodes.find(n => n.id === menu.id);
+             const pos = parentNode ? { x: parentNode.position.x, y: parentNode.position.y + 150 } : { x: 0, y: 0 };
+             addNode(menu.id, shape, label, pos);
+             setMenu(null);
+          }}
+          onUpdate={(data) => updateNode(menu.id, data)}
+          onDelete={() => {
+             deleteNode(menu.id);
+             setMenu(null);
+          }}
+        />
+      )}
+
+      {yeniSemaAcik && (
+        <div className="absolute inset-0 z-[200] bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-sm">
+          <DiagramTypePicker kind={kind} onKapat={() => setYeniSemaAcik(false)} />
+        </div>
+      )}
+    </div>
+  );
+}

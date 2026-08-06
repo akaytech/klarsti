@@ -1,0 +1,88 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Burada bilerek "hepsini kapat" bloğu YOK.
+    // Firestore kurallarında yalnızca izin verme (allow) vardır, yasaklama yoktur:
+    // bir istek, eşleşen kurallardan HERHANGİ BİRİ izin verirse geçer. Hiçbiri
+    // eşleşmezse zaten reddedilir. Bu yüzden eskiden burada duran
+    //     match /{document=**} { allow read, write: if false; }
+    // bloğu hiçbir şey yapmıyordu; ne erişim veriyordu ne de aşağıdaki kuralları
+    // sınırlıyordu. "Varsayılan erişimi kapattık" diyen yorumu yüzünden emniyet
+    // kemeri sanılabilirdi, oysa değildi. Tekrar eklemeyin: koruma sağlamaz,
+    // yalnızca yanlış güven verir. Asıl koruma, aşağıdaki kuralların kendisidir.
+
+    // Kişisel veriler (ajanda, ileride gün sonu değerlendirmesi).
+    // Proje paylaşımından tamamen bağımsızdır: bir kullanıcının kişisel verisini
+    // yalnızca kendisi okuyabilir ve yazabilir, paylaşılan proje linki buraya erişemez.
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      // Alt koleksiyonlar da aynı kurala tabidir (kurallar kendiliğinden inmez).
+      match /{document=**} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
+    // Sadece 'projects' koleksiyonuna belirli kurallarla erişime izin ver.
+    match /projects/{projectId} {
+      
+      // CREATE: Sadece giriş yapmış kullanıcılar proje oluşturabilir 
+      // VE oluşturan kişi kendini 'userId' olarak ayarlamak zorundadır.
+      allow create: if request.auth != null 
+                    && request.resource.data.userId == request.auth.uid;
+      
+      // READ: Sadece giriş yapmış kullanıcılar okuyabilir 
+      // VE (Projenin sahibi ise VEYA projenin 'sharedWith' dizisinde var ise).
+      // NOT: joinSharedProject fonksiyonu, kullanıcı sharedWith dizisinde olmasa bile
+      // isPublic=true olan projeyi okumaya çalışır (getDoc). Bu nedenle isPublic kuralı eklendi.
+      allow read: if request.auth != null 
+                  && (
+                    resource.data.get('userId', '') == request.auth.uid || 
+                    request.auth.uid in resource.data.get('sharedWith', []) ||
+                    resource.data.get('isPublic', false) == true
+                  );
+      
+      // UPDATE: Üç ayrı yetki seviyesi var.
+      //
+      // Sahiplik alanı (userId) hiçbir durumda değiştirilemez; bu, sahiplik
+      // çalınmasını (Ownership Stealing) veritabanı seviyesinde yasaklar.
+      allow update: if request.auth != null
+                    && request.resource.data.get('userId', '') == resource.data.get('userId', '')
+                    && (
+                      // 1) Sahip: projenin her alanını değiştirebilir.
+                      resource.data.get('userId', '') == request.auth.uid
+                      ||
+                      // 2) Ortak çalışan: içeriği (toolData, name vb.) düzenler
+                      //    ama PAYLAŞIM AYARLARINA dokunamaz. Eskiden bu dal
+                      //    tamamen serbestti: listedeki herkes projeyi herkese
+                      //    açık yapabiliyor, sharedWith'i baştan yazıp diğer
+                      //    katılımcıları atabiliyordu.
+                      //    Tek istisna: kendini listeden çıkarıp ayrılabilir
+                      //    (bkz. deleteProject -> arrayRemove).
+                      //    Not: isPublic'i AYNI değerle yazmak serbesttir, bu
+                      //    yüzden zaten açık bir projede Paylaş düğmesi çalışır.
+                      (
+                        request.auth.uid in resource.data.get('sharedWith', [])
+                        && request.resource.data.get('isPublic', false) == resource.data.get('isPublic', false)
+                        && (
+                          request.resource.data.get('sharedWith', []) == resource.data.get('sharedWith', [])
+                          || request.resource.data.get('sharedWith', []) == resource.data.get('sharedWith', []).removeAll([request.auth.uid])
+                        )
+                      )
+                      ||
+                      // 3) Herkese açık projeye katılma: SADECE sharedWith
+                      //    alanına ve SADECE isteği yapanın kendi UID'sine.
+                      (
+                        resource.data.get('isPublic', false) == true &&
+                        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['sharedWith']) &&
+                        request.resource.data.sharedWith == resource.data.get('sharedWith', []).concat([request.auth.uid])
+                      )
+                    );
+      
+      // DELETE: Sadece projenin orijinal sahibi projeyi silebilir.
+      allow delete: if request.auth != null 
+                    && resource.data.get('userId', '') == request.auth.uid;
+    }
+  }
+}

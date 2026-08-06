@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Firebase Auth yönlendirme işleyicisi; içerik değil.
+Disallow: /__/
+
+Sitemap: https://klarsti.com/sitemap.xml

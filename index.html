@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- Sekme ikonu küçük dosya olmalı: eskiden 1024x1024'lük logo.png (837 KB)
+         verildiği için her ziyaret sırf favicon uğruna o dosyayı indiriyordu. -->
+    <link rel="icon" type="image/png" sizes="32x32" href="%BASE_URL%favicon-32.png" />
+    <link rel="apple-touch-icon" href="%BASE_URL%logo-192.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- SEO Meta Tags -->
+    <title>Klarsti | The Ultimate Problem Solving & Decision Making Platform</title>
+    <meta name="description" content="Master problem solving and strategic decision making with Klarsti. Access interactive tools like SWOT, Ishikawa (Fishbone), 5 Whys, Pareto, WBS, and more. Collaborate with your team in real-time." />
+    <meta name="keywords" content="problem solving, SWOT analysis, Ishikawa, fishbone diagram, 5 whys, WBS, decision matrix, root cause analysis, productivity tools" />
+    <meta name="author" content="Klarsti" />
+    <meta name="robots" content="index, follow" />
+    <!-- Site ayni anda klarsti.web.app ve klarsti.firebaseapp.com uzerinden de
+         yayinlaniyor. Bunlar Firebase'in sistem adresleri, silinemiyor. Canonical
+         etiketi arama motoruna asil adresin hangisi oldugunu soyluyor; boylece
+         yinelenen icerik sayilmiyoruz ve siralama gucu tek adreste birikiyor.
+         Herkese acik alt sayfalar eklendiginde bu deger sayfa basina degismeli. -->
+    <link rel="canonical" href="https://klarsti.com/" />
+
+    <!-- Open Graph (Facebook, LinkedIn, Slack) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Klarsti - The Ultimate Problem Solving Platform" />
+    <meta property="og:description" content="Collaborative root-cause analysis and strategic planning tools for modern teams. Start solving complex problems today." />
+    <meta property="og:image" content="https://klarsti.com/logo.png" />
+    <meta property="og:url" content="https://klarsti.com/" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Klarsti - The Ultimate Problem Solving Platform" />
+    <meta name="twitter:description" content="Collaborative root-cause analysis and strategic planning tools for modern teams." />
+    <meta name="twitter:image" content="https://klarsti.com/logo.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tema, React yüklenmeden önce uygulanmalı. Aksi halde sayfa önce
+         aydınlık açılıp sonra koyuya dönüyor (beyaz parlama). theme.ts'teki
+         id listesi ve eski 'dark' kaydının eşlemesi burayla aynı kalmalı. -->
+    <script>
+      (function () {
+        try {
+          var known = ['light', 'deep-night', 'dark', 'graphite', 'blossom', 'pistachio'];
+          var darkThemes = ['deep-night', 'dark', 'graphite'];
+          var saved = localStorage.getItem('klarsti-theme');
+          if (known.indexOf(saved) === -1) {
+            // Eski kurgu: 'theme' anahtarında sadece 'dark' / 'light' vardı.
+            saved = localStorage.getItem('theme') === 'dark' ? 'deep-night' : 'light';
+          }
+          var root = document.documentElement;
+          root.classList.add('theme-' + saved);
+          if (darkThemes.indexOf(saved) !== -1) {
+            root.classList.add('dark');
+            root.style.colorScheme = 'dark';
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

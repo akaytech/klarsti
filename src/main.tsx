@@ -5,6 +5,11 @@ import './index.css'
 import './i18n'
 import App from './App.tsx'
 import { initAuthListener } from './firebaseCore'
+import { surumTazelemeyiBaslat } from './utils/surumTazeleme'
+
+// Yeni deploy sonrası eski sürümde kalmış sekmeleri kurtarır. Render'dan
+// önce kurulmalı: ilk gecikmeli parça yüklemesi hemen sonra başlıyor.
+surumTazelemeyiBaslat();
 
 // Firebase oturumunu store ile senkronlayan tek listener'ı başlat.
 // Böylece açılışta gerçek oturum durumu doğrulanır; token yenileme veya

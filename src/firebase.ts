@@ -1,16 +1,26 @@
 import { getFirestore } from 'firebase/firestore';
 import { getAnalytics, isSupported, logEvent, type Analytics } from 'firebase/analytics';
+import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
 import { app } from './firebaseCore';
 
-// App Check, klarsti projesine gecerken kaldirildi: eski projenin reCAPTCHA
-// anahtari burada duruyordu ve yenisi henuz kurulmadi. Zorlama (enforcement)
-// zaten kapali oldugu icin bugun bir koruma kaybi yok; backend'i su an
-// firestore.rules koruyor.
-// GERI KONULACAK: odeme altyapisi devreye girmeden once. Gerekenler:
-//   1. google.com/recaptcha/admin uzerinden reCAPTCHA v3 site anahtari
-//   2. Firebase Console -> App Check -> web uygulamasini kaydet
-//   3. initializeAppCheck cagrisi + localhost icin FIREBASE_APPCHECK_DEBUG_TOKEN
-//   4. Enforcement'i Firestore icin ac
+// Site anahtari gizli degil, tasarim geregi derlenmis dosyayla tarayiciya
+// iniyor. Gizli olan es anahtar sadece Firebase konsolunda duruyor.
+const RECAPTCHA_SITE_KEY = '6LfHxngtAAAAAMX0_4Wf73QyxStX8P3wByu8Ujbj';
+
+if (typeof window !== 'undefined') {
+  // Localhost'ta reCAPTCHA calismaz. Bu bayrak SDK'ya konsola bir hata ayiklama
+  // token'i bastiriyor; o token Firebase Console -> App Check -> Apps -> web
+  // uygulamasi -> Manage debug tokens altina eklenmeli, yoksa zorlama acildigi
+  // an `npm run dev` calismaz olur.
+  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+    (window as any).FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+  }
+
+  initializeAppCheck(app, {
+    provider: new ReCaptchaV3Provider(RECAPTCHA_SITE_KEY),
+    isTokenAutoRefreshEnabled: true
+  });
+}
 
 export const db = getFirestore(app);
 

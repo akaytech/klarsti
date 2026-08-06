@@ -673,5 +673,7 @@
   "fta_analysis_name_n": "树 {{sira}}",
   "fta_delete_analysis": "删除树",
   "fta_delete_analysis_msg": "树“{{ad}}”及其全部内容将被删除。",
-  "ws_development_note": "Klarsti 仍在开发中。工具可以正常使用，数据也会保存，但界面和功能仍会继续变化。"
+  "ws_development_note": "Klarsti 仍在开发中。工具可以正常使用，数据也会保存，但界面和功能仍会继续变化。",
+  "tool_page_open_app": "打开应用",
+  "tool_page_other_tools": "其他工具"
 }

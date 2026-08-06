@@ -673,5 +673,7 @@
   "fta_analysis_name_n": "ツリー {{sira}}",
   "fta_delete_analysis": "ツリーを削除",
   "fta_delete_analysis_msg": "ツリー「{{ad}}」とその中身がすべて削除されます。",
-  "ws_development_note": "Klarsti はまだ開発中です。ツールは動作し、データも保存されますが、画面や機能は今後も変わります。"
+  "ws_development_note": "Klarsti はまだ開発中です。ツールは動作し、データも保存されますが、画面や機能は今後も変わります。",
+  "tool_page_open_app": "アプリを開く",
+  "tool_page_other_tools": "その他のツール"
 }

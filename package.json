@@ -1,12 +1,12 @@
 {
   "name": "klarsti",
   "private": true,
-  "version": "0.8.15-8",
+  "version": "0.8.15-9",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "build:firebase": "tsc -b && cross-env VITE_DEPLOY_TARGET=firebase vite build",
+    "build": "tsc -b && vite build && node scripts/staticPages.mjs",
+    "build:firebase": "tsc -b && cross-env VITE_DEPLOY_TARGET=firebase vite build && node scripts/staticPages.mjs",
     "lint": "oxlint",
     "preview": "vite preview",
     "export-code": "node scripts/export_code.cjs"

@@ -673,5 +673,7 @@
   "fta_analysis_name_n": "شجرة {{sira}}",
   "fta_delete_analysis": "حذف الشجرة",
   "fta_delete_analysis_msg": "سيتم حذف الشجرة \"{{ad}}\" وكل ما فيها.",
-  "ws_development_note": "لا يزال Klarsti قيد التطوير. الأدوات تعمل وبياناتك محفوظة، لكن الواجهة والميزات ستستمر في التغير."
+  "ws_development_note": "لا يزال Klarsti قيد التطوير. الأدوات تعمل وبياناتك محفوظة، لكن الواجهة والميزات ستستمر في التغير.",
+  "tool_page_open_app": "افتح التطبيق",
+  "tool_page_other_tools": "أدوات أخرى"
 }

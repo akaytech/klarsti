@@ -673,5 +673,7 @@
   "fta_analysis_name_n": "Ağaç {{sira}}",
   "fta_delete_analysis": "Ağacı sil",
   "fta_delete_analysis_msg": "\"{{ad}}\" ağacı ve içindeki her şey silinecek.",
-  "ws_development_note": "Klarsti hâlâ geliştiriliyor. Araçlar çalışıyor ve verin kaydediliyor, ama arayüz ve özellikler değişmeye devam edecek."
+  "ws_development_note": "Klarsti hâlâ geliştiriliyor. Araçlar çalışıyor ve verin kaydediliyor, ama arayüz ve özellikler değişmeye devam edecek.",
+  "tool_page_open_app": "Uygulamaya git",
+  "tool_page_other_tools": "Diğer araçlar"
 }

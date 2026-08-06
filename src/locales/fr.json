@@ -673,5 +673,7 @@
   "fta_analysis_name_n": "Arbre {{sira}}",
   "fta_delete_analysis": "Supprimer l'arbre",
   "fta_delete_analysis_msg": "L'arbre « {{ad}} » et tout son contenu seront supprimés.",
-  "ws_development_note": "Klarsti est encore en développement. Les outils fonctionnent et tes données sont enregistrées, mais l'interface et les fonctionnalités continueront d'évoluer."
+  "ws_development_note": "Klarsti est encore en développement. Les outils fonctionnent et tes données sont enregistrées, mais l'interface et les fonctionnalités continueront d'évoluer.",
+  "tool_page_open_app": "Ouvrir l'application",
+  "tool_page_other_tools": "Autres outils"
 }

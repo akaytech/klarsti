@@ -18,7 +18,12 @@
          yayinlaniyor. Bunlar Firebase'in sistem adresleri, silinemiyor. Canonical
          etiketi arama motoruna asil adresin hangisi oldugunu soyluyor; boylece
          yinelenen icerik sayilmiyoruz ve siralama gucu tek adreste birikiyor.
-         Herkese acik alt sayfalar eklendiginde bu deger sayfa basina degismeli. -->
+
+         Bu dosya ayni zamanda arac sayfalarinin sablonu: scripts/staticPages.mjs
+         build sonunda bunun kopyalarini alip title, description, keywords,
+         canonical ve og/twitter etiketlerini sayfa basina degistiriyor. O yuzden
+         bu etiketlerin bicimi (tek satir, content="...") korunmali; script
+         bulamazsa build hata verir. -->
     <link rel="canonical" href="https://klarsti.com/" />
 
     <!-- Open Graph (Facebook, LinkedIn, Slack) -->

@@ -1,11 +1,16 @@
 import { StrictMode, Suspense, Component, type ReactNode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { HashRouter } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 import './i18n'
 import App from './App.tsx'
 import { initAuthListener } from './firebaseCore'
 import { surumTazelemeyiBaslat } from './utils/surumTazeleme'
+import { eskiHashAdresiniCevir } from './utils/eskiHashAdresi'
+
+// HashRouter döneminden kalan `#/...` linklerini gerçek yola çevirir.
+// Router mount olmadan önce çalışmalı, bu yüzden en başta.
+eskiHashAdresiniCevir();
 
 // Yeni deploy sonrası eski sürümde kalmış sekmeleri kurtarır. Render'dan
 // önce kurulmalı: ilk gecikmeli parça yüklemesi hemen sonra başlıyor.
@@ -45,9 +50,13 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary fallback={<div className="flex items-center justify-center min-h-screen p-4 text-center"><h1>Bir şeyler ters gitti. Ekibimiz bilgilendirildi! Lütfen sayfayı yenileyin.</h1></div>}>
       <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-slate-50 dark:bg-slate-900"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div></div>}>
-        <HashRouter>
+        {/* basename şart: canlıda base "/" ama dev ve GitHub Pages derlemesinde
+            "/klarsti/". HashRouter'da bu fark görünmüyordu çünkü hash yolu
+            base'den bağımsızdı; BrowserRouter yolu doğrudan okuduğu için
+            basename verilmezse dev ortamında hiçbir rota eşleşmez. */}
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
           <App />
-        </HashRouter>
+        </BrowserRouter>
       </Suspense>
     </ErrorBoundary>
   </StrictMode>,

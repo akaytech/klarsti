@@ -4,4 +4,12 @@ Allow: /
 # Firebase Auth yönlendirme işleyicisi; içerik değil.
 Disallow: /__/
 
+# Proje adresleri kişiye özel çalışma alanları: giriş arkasında oldukları için
+# tarayıcıya boş kabuk döner, ayrıca paylaşılmış proje linkleri arama
+# sonuçlarına düşmemeli.
+Disallow: /project/
+Disallow: /agenda
+Disallow: /login
+Disallow: /register
+
 Sitemap: https://klarsti.com/sitemap.xml

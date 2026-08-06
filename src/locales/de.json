@@ -673,5 +673,7 @@
   "fta_analysis_name_n": "Baum {{sira}}",
   "fta_delete_analysis": "Baum löschen",
   "fta_delete_analysis_msg": "Der Baum „{{ad}}“ und sein gesamter Inhalt werden gelöscht.",
-  "ws_development_note": "Klarsti wird noch entwickelt. Die Werkzeuge funktionieren und deine Daten werden gespeichert, aber Oberfläche und Funktionen ändern sich weiter."
+  "ws_development_note": "Klarsti wird noch entwickelt. Die Werkzeuge funktionieren und deine Daten werden gespeichert, aber Oberfläche und Funktionen ändern sich weiter.",
+  "tool_page_open_app": "Zur App",
+  "tool_page_other_tools": "Weitere Werkzeuge"
 }

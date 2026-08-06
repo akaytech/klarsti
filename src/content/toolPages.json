@@ -1,0 +1,122 @@
+[
+  {
+    "slug": "5-whys",
+    "toolId": "5whys",
+    "name": "5 Whys Analysis",
+    "title": "5 Whys Analysis Tool — Find the Root Cause | Klarsti",
+    "description": "Trace a problem to its real cause by asking why five times. Build the chain step by step, branch where causes split, and turn findings into action.",
+    "keywords": "5 whys, five whys, root cause analysis, why analysis, problem solving technique"
+  },
+  {
+    "slug": "fishbone",
+    "toolId": "ishikawa",
+    "name": "Fishbone (Ishikawa) Diagram",
+    "title": "Fishbone (Ishikawa) Diagram Maker | Klarsti",
+    "description": "Group the possible causes of a problem into categories on a fishbone diagram, then compare branches to see where the real cause is hiding.",
+    "keywords": "fishbone diagram, ishikawa diagram, cause and effect diagram, 6M analysis, root cause"
+  },
+  {
+    "slug": "pareto",
+    "toolId": "pareto",
+    "name": "Pareto Chart",
+    "title": "Pareto Chart Maker — 80/20 Analysis | Klarsti",
+    "description": "Sort causes by impact and see the cumulative curve. Find the few sources behind most of the problem before you spend effort on the rest.",
+    "keywords": "pareto chart, pareto analysis, 80/20 rule, vital few, quality tools"
+  },
+  {
+    "slug": "histogram",
+    "toolId": "histogram",
+    "name": "Histogram",
+    "title": "Histogram Maker — See How Your Data Spreads | Klarsti",
+    "description": "Turn measurements into a distribution you can read at a glance: where the centre sits, how wide the spread is, and which values fall outside it.",
+    "keywords": "histogram maker, frequency distribution, data distribution, process variation, quality tools"
+  },
+  {
+    "slug": "swot",
+    "toolId": "swot",
+    "name": "SWOT Analysis",
+    "title": "SWOT Analysis Tool — Strengths, Weaknesses, Opportunities, Threats | Klarsti",
+    "description": "Map your internal strengths and weaknesses against outside opportunities and threats, then read the four quadrants together to decide what to do next.",
+    "keywords": "swot analysis, swot matrix, strategic planning, strengths weaknesses opportunities threats"
+  },
+  {
+    "slug": "decision-matrix",
+    "toolId": "decision",
+    "name": "Decision Matrix",
+    "title": "Decision Matrix — Weighted Scoring for Hard Choices | Klarsti",
+    "description": "Score your options against weighted criteria so the comparison is explicit. The matrix shows why an option wins, not just that it won.",
+    "keywords": "decision matrix, weighted scoring model, pugh matrix, multi criteria decision analysis"
+  },
+  {
+    "slug": "fault-tree",
+    "toolId": "fta",
+    "name": "Fault Tree Analysis",
+    "title": "Fault Tree Analysis (FTA) Tool | Klarsti",
+    "description": "Work backwards from a failure through AND/OR gates to the events that can cause it, and see which single points bring the whole thing down.",
+    "keywords": "fault tree analysis, FTA, reliability analysis, failure analysis, risk assessment"
+  },
+  {
+    "slug": "mind-map",
+    "toolId": "mindmap",
+    "name": "Mind Map",
+    "title": "Mind Map Maker — Auto-Arranging Branches | Klarsti",
+    "description": "Capture ideas as branches from one centre. The map lays itself out after every addition, so you think about content instead of dragging boxes.",
+    "keywords": "mind map maker, mind mapping tool, brainstorming, idea map, concept map"
+  },
+  {
+    "slug": "wbs",
+    "toolId": "wbs",
+    "name": "Work Breakdown Structure (WBS)",
+    "title": "Work Breakdown Structure (WBS) Tool | Klarsti",
+    "description": "Split a project into tasks small enough for one person to finish. Each box carries status, dates and hours, so scope and progress live in one tree.",
+    "keywords": "work breakdown structure, WBS, project scope, task breakdown, project planning tool"
+  },
+  {
+    "slug": "pdca",
+    "toolId": "pdca",
+    "name": "PDCA Cycle",
+    "title": "PDCA Cycle Tool — Plan, Do, Check, Act | Klarsti",
+    "description": "Run improvement as repeating cycles instead of one-off fixes. Each turn keeps what worked and carries the rest into the next plan.",
+    "keywords": "PDCA cycle, plan do check act, deming cycle, continuous improvement, kaizen"
+  },
+  {
+    "slug": "waterfall",
+    "toolId": "waterfall",
+    "name": "Waterfall Project Plan",
+    "title": "Waterfall Project Plan — Phases and Gates | Klarsti",
+    "description": "Lay a project out as ordered phases where each one closes before the next opens, and see at a glance which gate the work is waiting on.",
+    "keywords": "waterfall model, waterfall project management, phase gate, sequential project plan"
+  },
+  {
+    "slug": "flowchart",
+    "toolId": "flowchart",
+    "name": "Flowchart Maker",
+    "title": "Flowchart Maker — Map Any Process | Klarsti",
+    "description": "Draw a process with the standard shapes: steps, decisions, inputs and terminators. Follow every branch to find the loops and dead ends.",
+    "keywords": "flowchart maker, process flow diagram, process mapping, workflow diagram"
+  },
+  {
+    "slug": "org-chart",
+    "toolId": "orgchart",
+    "name": "Org Chart",
+    "title": "Org Chart Maker — Build Your Team Structure | Klarsti",
+    "description": "Show who reports to whom in a chart that arranges itself. Useful for planning a structure, not just documenting the one you already have.",
+    "keywords": "org chart maker, organizational chart, organization structure, reporting lines, team chart"
+  },
+  {
+    "slug": "value-stream-map",
+    "toolId": "vsm",
+    "name": "Value Stream Mapping",
+    "title": "Value Stream Mapping (VSM) Tool | Klarsti",
+    "description": "Map material and information flow across a process and separate the time that adds value from the time that only adds waiting.",
+    "keywords": "value stream mapping, VSM, lean manufacturing, waste elimination, lead time analysis"
+  },
+  {
+    "slug": "daily-planner",
+    "toolId": "notepad",
+    "name": "Daily Planner",
+    "title": "Daily Planner and Agenda — Plan Your Day | Klarsti",
+    "description": "A private daily agenda beside your project tools. Schedule tasks straight from your work breakdown and close the day with a short review.",
+    "keywords": "daily planner, daily agenda, day planner, task scheduling, end of day review"
+  }
+]

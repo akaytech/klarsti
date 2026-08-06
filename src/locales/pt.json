@@ -673,5 +673,7 @@
   "fta_analysis_name_n": "Árvore {{sira}}",
   "fta_delete_analysis": "Excluir árvore",
   "fta_delete_analysis_msg": "A árvore \"{{ad}}\" e todo o seu conteúdo serão excluídos.",
-  "ws_development_note": "O Klarsti ainda está em desenvolvimento. As ferramentas funcionam e seus dados são salvos, mas a interface e os recursos continuarão mudando."
+  "ws_development_note": "O Klarsti ainda está em desenvolvimento. As ferramentas funcionam e seus dados são salvos, mas a interface e os recursos continuarão mudando.",
+  "tool_page_open_app": "Abrir o aplicativo",
+  "tool_page_other_tools": "Outras ferramentas"
 }

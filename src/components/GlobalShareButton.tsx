@@ -22,7 +22,11 @@ const GlobalShareButton: React.FC = () => {
     
     try {
       await setProjectPublic(currentProjectId, true);
-      const url = `${window.location.origin}${window.location.pathname}#/project/${currentProjectId}/${activeTool}`;
+      // BrowserRouter'a geçildi: adres artık hash'siz. `pathname` yerine
+      // BASE_URL kullanılıyor; öncekinde paylaşım anındaki sayfa yolu linkin
+      // başına yapışıyordu.
+      const taban = import.meta.env.BASE_URL.replace(/\/$/, '');
+      const url = `${window.location.origin}${taban}/project/${currentProjectId}/${activeTool}`;
       await navigator.clipboard.writeText(url);
       
       setIsCopied(true);

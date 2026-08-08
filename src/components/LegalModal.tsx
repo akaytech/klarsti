@@ -8,7 +8,9 @@ interface LegalModalProps {
   type: 'privacy' | 'terms';
 }
 
-export const CONTACT_EMAIL = 'abdullahkilicaslanyavuz@gmail.com';
+// Sayfa altındaki iletişim bağlantısı ve yasal metinlerin içindeki adres
+// buradan geliyor; tek yerden değişsin diye dışa veriliyor.
+export const CONTACT_EMAIL = 'support@klarsti.com';
 const heading = 'text-lg font-bold text-slate-900 dark:text-white mt-6';
 
 const LegalModal: React.FC<LegalModalProps> = ({ isOpen, onClose, type }) => {

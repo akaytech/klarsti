@@ -9,9 +9,9 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      // favicon.svg burada değil: içeriği Vite şablonundan kalma mor bir
-      // şimşek, Klarsti'nin markasıyla ilgisi yok ve hiçbir yerden
-      // gösterilmiyordu. Sekme ikonu artık favicon-32.png.
+      // Sekme ikonu favicon-32.png. Eskiden yanında bir de favicon.svg
+      // duruyordu; içeriği Vite şablonundan kalma mor bir şimşekti, hiçbir
+      // yerden çağrılmıyordu, silindi.
       includeAssets: ['favicon-32.png'],
       // Manifest ikonları varsayılan olarak precache'e ekleniyordu. İkonu
       // tarayıcı zaten ihtiyaç duyduğunda kendisi indirir; önden indirmek

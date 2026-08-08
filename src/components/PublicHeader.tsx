@@ -60,9 +60,20 @@ export default function PublicHeader() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-200/50 dark:border-slate-800/50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl">
       <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-3 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
-          <img src={`${import.meta.env.BASE_URL}logo-192.png`} alt="Klarsti Logo" className="h-10 w-10 rounded-xl shadow-sm" />
-          <span className="hidden sm:inline text-2xl font-black tracking-tight">Klarsti</span>
+        {/* Logo kendi geniş oranında duruyor, kare kutuya sıkıştırılmıyor:
+            "klarsti" yazısı 40 piksellik bir karede okunmuyordu. Marka adı
+            logonun içinde yazdığı için yanındaki ayrı "Klarsti" yazısı da
+            kaldırıldı, aynı şeyi iki kere söylüyordu. */}
+        <Link to="/" className="flex shrink-0 items-center gap-3 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
+          <img
+            src={`${import.meta.env.BASE_URL}klarsti-yazi-logo.png`}
+            alt="Klarsti"
+            width={282}
+            height={120}
+            /* shrink-0 şart: dar ekranda esnek yerleşim logoyu yatayda
+               eziyor ve yazı bozuluyordu. */
+            className="h-9 w-auto shrink-0"
+          />
           <span className="hidden md:inline-flex items-center gap-2 rounded-full border border-amber-300 bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-800 dark:border-amber-700/60 dark:bg-amber-500/10 dark:text-amber-300 ms-2">
             <span className="relative flex h-1.5 w-1.5 shrink-0" aria-hidden>
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75 motion-reduce:animate-none" />

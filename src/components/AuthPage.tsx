@@ -149,7 +149,15 @@ export default function AuthPage({ mode }: { mode: 'login' | 'register' }) {
         </button>
         
         <div className="mt-12">
-          <img src={`${import.meta.env.BASE_URL}logo-192.png`} alt="Klarsti Logo" className="h-20 w-20 rounded-2xl shadow-md mb-8" />
+          {/* Logo kendi geniş oranında: kare kutuda "klarsti" yazısı
+              okunmuyordu. Sitenin geri kalanıyla aynı kullanım. */}
+          <img
+            src={`${import.meta.env.BASE_URL}klarsti-yazi-logo.png`}
+            alt="Klarsti"
+            width={282}
+            height={120}
+            className="h-11 w-auto shrink-0 mb-8"
+          />
           <h1 className="text-4xl lg:text-5xl font-black text-slate-800 dark:text-slate-100 mb-6">{t('hero_title')}</h1>
           <p className="text-lg text-slate-600 dark:text-slate-300 leading-relaxed max-w-lg">
             {t('hero_subtitle')}
@@ -189,12 +197,18 @@ export default function AuthPage({ mode }: { mode: 'login' | 'register' }) {
         </button>
 
         <div className="mb-8 text-center md:text-start">
-          <img 
-            src={`${import.meta.env.BASE_URL}logo-192.png`} 
-            alt="Klarsti Logo" 
-            className="h-12 w-12 rounded-xl shadow-sm mx-auto mb-4 md:hidden" 
+          {/* Dar ekranda soldaki tanıtım bölümü hiç çizilmiyor, marka yalnızca
+              burada görünüyor: logo o yüzden sadece dar ekranda. Geniş ekranda
+              logo zaten solda duruyor, burada başlık olarak metin kalıyor —
+              böylece iki tarafta da marka bir kez geçiyor. */}
+          <img
+            src={`${import.meta.env.BASE_URL}klarsti-yazi-logo.png`}
+            alt="Klarsti"
+            width={282}
+            height={120}
+            className="h-11 w-auto shrink-0 mx-auto mb-4 md:hidden"
           />
-          <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100">Klarsti</h2>
+          <h2 className="hidden md:block text-3xl font-black text-slate-800 dark:text-slate-100">Klarsti</h2>
           <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{t('welcome_msg')}</p>
         </div>
 

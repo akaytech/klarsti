@@ -28,6 +28,10 @@
 
     <!-- Open Graph (Facebook, LinkedIn, Slack) -->
     <meta property="og:type" content="website" />
+    <!-- Arama sonuclarinda alan adi ("klarsti.com") yerine marka adinin
+         yazilmasi icin: Google site adini og:site_name ve asagidaki WebSite
+         yapilandirilmis verisinden okuyor. -->
+    <meta property="og:site_name" content="Klarsti" />
     <meta property="og:title" content="Klarsti - The Ultimate Problem Solving Platform" />
     <meta property="og:description" content="Collaborative root-cause analysis and strategic planning tools for modern teams. Start solving complex problems today." />
     <meta property="og:image" content="https://klarsti.com/logo.png" />
@@ -38,6 +42,18 @@
     <meta name="twitter:title" content="Klarsti - The Ultimate Problem Solving Platform" />
     <meta name="twitter:description" content="Collaborative root-cause analysis and strategic planning tools for modern teams." />
     <meta name="twitter:image" content="https://klarsti.com/logo.png" />
+
+    <!-- Google'in site adi olarak "klarsti.com" degil "Klarsti" yazmasi icin
+         gereken isaret. Google bunu yalnizca ana sayfadan okuyor; arac
+         sayfalarina da kopyalaniyor olmasi zararsiz, orada yok sayiliyor. -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Klarsti",
+      "url": "https://klarsti.com/"
+    }
+    </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

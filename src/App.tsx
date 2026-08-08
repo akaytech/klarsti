@@ -4,12 +4,14 @@ import { Toaster } from 'sonner';
 import { useAuthStore } from './store/useAuthStore';
 import { useTheme } from './theme';
 import { toolPageBul } from './config/toolPages';
+import { legalPageBul } from './config/legalPages';
 import AuthPage from './components/AuthPage';
 
 const AuthenticatedApp = React.lazy(() => import('./AuthenticatedApp'));
 const LandingPage = React.lazy(() => import('./components/LandingPage'));
 const VerifyEmailPage = React.lazy(() => import('./components/VerifyEmailPage'));
 const ToolLandingPage = React.lazy(() => import('./components/ToolLandingPage'));
+const LegalPage = React.lazy(() => import('./components/LegalPage'));
 
 const LoadingScreen = () => (
   <div className="flex h-screen w-screen items-center justify-center bg-slate-50 dark:bg-slate-900">
@@ -28,6 +30,10 @@ function App() {
   // tanıtım sayfasındaki ya da arama sonucundaki link onun için çalışmazdı.
   // Oturumun çözülmesi de beklenmiyor; sayfanın içeriği oturuma bağlı değil.
   const aracSayfasi = toolPageBul(location.pathname);
+  // Yasal sayfalar da (gizlilik, kullanım koşulları) oturumdan bağımsız:
+  // Google'ın giriş ekranı onayı ve uygulama mağazaları bu adresleri giriş
+  // yapmadan açıp okuyabilmeli.
+  const yasalSayfa = legalPageBul(location.pathname);
 
   const theme = useTheme();
 
@@ -38,6 +44,10 @@ function App() {
       {aracSayfasi ? (
         <Suspense fallback={<LoadingScreen />}>
           <ToolLandingPage sayfa={aracSayfasi} />
+        </Suspense>
+      ) : yasalSayfa ? (
+        <Suspense fallback={<LoadingScreen />}>
+          <LegalPage sayfa={yasalSayfa} />
         </Suspense>
       ) : isAuthLoading ? (
         <LoadingScreen />

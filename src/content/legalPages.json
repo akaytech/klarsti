@@ -1,0 +1,20 @@
+[
+  {
+    "slug": "privacy",
+    "type": "privacy",
+    "titleKey": "privacy_policy_title",
+    "name": "Privacy Policy",
+    "title": "Privacy Policy | Klarsti",
+    "description": "How Klarsti collects, processes and stores your personal data, where it is hosted, and how you can request access or deletion.",
+    "keywords": "privacy policy, data protection, KVKK, GDPR, personal data"
+  },
+  {
+    "slug": "terms",
+    "type": "terms",
+    "titleKey": "terms_of_use_title",
+    "name": "Terms of Use",
+    "title": "Terms of Use | Klarsti",
+    "description": "The terms governing your use of Klarsti: scope of the service, your responsibilities as a user, and the limits of our liability.",
+    "keywords": "terms of use, terms of service, user agreement, liability"
+  }
+]

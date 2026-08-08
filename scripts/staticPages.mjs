@@ -26,9 +26,16 @@ const KOK = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = path.join(KOK, 'dist');
 const SITE = 'https://klarsti.com';
 
-const sayfalar = JSON.parse(
+const araclar = JSON.parse(
   fs.readFileSync(path.join(KOK, 'src/content/toolPages.json'), 'utf8')
 );
+// Yasal sayfalar (gizlilik, kullanım koşulları) da statik üretiliyor: Google'ın
+// giriş ekranı onayı bu adresleri açıp okuyabilmeyi bekliyor, ve doğru
+// başlıkla görünmeleri gerekiyor.
+const yasal = JSON.parse(
+  fs.readFileSync(path.join(KOK, 'src/content/legalPages.json'), 'utf8')
+);
+const sayfalar = [...araclar, ...yasal];
 
 const kabukYolu = path.join(DIST, 'index.html');
 if (!fs.existsSync(kabukYolu)) {
@@ -59,11 +66,19 @@ function icerikDegistir(metin, anahtar, ad, deger) {
   return degistir(metin, kalip, `$1${kacir(deger)}$2`, `${ad} etiketi`);
 }
 
+// Yasal sayfalar araç değil: onları "uygulama" diye tanıtmak yanlış olur.
+const yasalMi = (sayfa) => Boolean(sayfa.type);
+
 function yapilandirilmisVeri(sayfa, adres) {
-  const veri = {
-    '@context': 'https://schema.org',
-    '@graph': [
-      {
+  const anaVarlik = yasalMi(sayfa)
+    ? {
+        '@type': 'WebPage',
+        name: sayfa.name,
+        url: adres,
+        description: sayfa.description,
+        publisher: { '@type': 'Organization', name: 'Klarsti', url: `${SITE}/` }
+      }
+    : {
         '@type': 'SoftwareApplication',
         name: `${sayfa.name} — Klarsti`,
         applicationCategory: 'BusinessApplication',
@@ -71,7 +86,12 @@ function yapilandirilmisVeri(sayfa, adres) {
         url: adres,
         description: sayfa.description,
         publisher: { '@type': 'Organization', name: 'Klarsti', url: `${SITE}/` }
-      },
+      };
+
+  const veri = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      anaVarlik,
       {
         '@type': 'BreadcrumbList',
         itemListElement: [
@@ -118,9 +138,11 @@ for (const sayfa of sayfalar) {
 const bugun = new Date().toISOString().slice(0, 10);
 const girdiler = [
   `  <url>\n    <loc>${SITE}/</loc>\n    <lastmod>${bugun}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>1.0</priority>\n  </url>`,
+  // Yasal sayfalar arama sonucunda öne çıkmak için değil, bulunabilir olmak
+  // için listede; bu yüzden düşük öncelikli.
   ...sayfalar.map(
     (s) =>
-      `  <url>\n    <loc>${SITE}/${s.slug}</loc>\n    <lastmod>${bugun}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>`
+      `  <url>\n    <loc>${SITE}/${s.slug}</loc>\n    <lastmod>${bugun}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>${yasalMi(s) ? '0.3' : '0.8'}</priority>\n  </url>`
   )
 ];
 fs.writeFileSync(
@@ -129,4 +151,4 @@ fs.writeFileSync(
   'utf8'
 );
 
-console.log(`staticPages: ${uretilen} arac sayfasi + sitemap uretildi`);
+console.log(`staticPages: ${uretilen} sayfa (${araclar.length} arac + ${yasal.length} yasal) + sitemap uretildi`);

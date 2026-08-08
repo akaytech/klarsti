@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Mail } from 'lucide-react';
-import LegalModal, { CONTACT_EMAIL } from './LegalModal';
+import { CONTACT_EMAIL } from '../content/legalContent';
 
 // lucide-react marka logoları içermiyor, bu yüzden inline SVG kullanıyoruz.
 const LinkedInIcon = ({ size = 24, className = '' }: { size?: number; className?: string }) => (
@@ -18,51 +18,45 @@ const InstagramIcon = ({ size = 24, className = '' }: { size?: number; className
   </svg>
 );
 
-// Giriş gerektirmeyen sayfaların ortak alt bilgisi. Yasal metin penceresinin
-// durumu burada duruyor; sayfaların bunu bilmesi gerekmiyor.
+// Giriş gerektirmeyen sayfaların ortak alt bilgisi.
+//
+// Yasal metinler burada artık açılır pencere değil, kendi adreslerine giden
+// gerçek link. İki sebeple: Google'ın giriş ekranı onayı bu adresleri
+// istiyor, ve arama motoru düğmeleri takip etmezken linkleri takip eder.
 export default function PublicFooter() {
   const { t } = useTranslation();
-  const [legalType, setLegalType] = useState<'privacy' | 'terms' | null>(null);
 
   return (
-    <>
-      <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 py-12">
-        <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-2">
-            <img src={`${import.meta.env.BASE_URL}logo-192.png`} alt="Klarsti Logo" className="h-8 w-8 rounded-lg grayscale opacity-50" />
-            <span className="text-lg font-bold text-slate-400">Klarsti</span>
-          </div>
-
-          <div className="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
-            <button onClick={() => setLegalType('terms')} className="hover:text-slate-700 dark:hover:text-slate-300 hover:underline transition-colors">
-              {t('terms_of_use_title', { defaultValue: 'Terms of Use' })}
-            </button>
-            <button onClick={() => setLegalType('privacy')} className="hover:text-slate-700 dark:hover:text-slate-300 hover:underline transition-colors">
-              {t('privacy_policy_title', { defaultValue: 'Privacy Policy' })}
-            </button>
-            <span className="h-4 w-px bg-slate-300 dark:bg-slate-700"></span>
-            <a href={`mailto:${CONTACT_EMAIL}`} aria-label="Email" className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
-              <Mail size={18} />
-            </a>
-            <a href="https://www.linkedin.com/in/kilicaslan/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
-              <LinkedInIcon size={18} />
-            </a>
-            <a href="https://www.instagram.com/kilicyavuz0/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
-              <InstagramIcon size={18} />
-            </a>
-          </div>
-
-          <div className="text-sm text-slate-500 dark:text-slate-400">
-            &copy; {new Date().getFullYear()} Klarsti. {t('landing_rights_reserved')}
-          </div>
+    <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 py-12">
+      <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="flex items-center gap-2">
+          <img src={`${import.meta.env.BASE_URL}logo-192.png`} alt="Klarsti Logo" className="h-8 w-8 rounded-lg grayscale opacity-50" />
+          <span className="text-lg font-bold text-slate-400">Klarsti</span>
         </div>
-      </footer>
 
-      <LegalModal
-        isOpen={legalType !== null}
-        onClose={() => setLegalType(null)}
-        type={legalType || 'privacy'}
-      />
-    </>
+        <div className="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
+          <Link to="/terms" className="hover:text-slate-700 dark:hover:text-slate-300 hover:underline transition-colors">
+            {t('terms_of_use_title', { defaultValue: 'Terms of Use' })}
+          </Link>
+          <Link to="/privacy" className="hover:text-slate-700 dark:hover:text-slate-300 hover:underline transition-colors">
+            {t('privacy_policy_title', { defaultValue: 'Privacy Policy' })}
+          </Link>
+          <span className="h-4 w-px bg-slate-300 dark:bg-slate-700"></span>
+          <a href={`mailto:${CONTACT_EMAIL}`} aria-label="Email" className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
+            <Mail size={18} />
+          </a>
+          <a href="https://www.linkedin.com/in/kilicaslan/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
+            <LinkedInIcon size={18} />
+          </a>
+          <a href="https://www.instagram.com/kilicyavuz0/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
+            <InstagramIcon size={18} />
+          </a>
+        </div>
+
+        <div className="text-sm text-slate-500 dark:text-slate-400">
+          &copy; {new Date().getFullYear()} Klarsti. {t('landing_rights_reserved')}
+        </div>
+      </div>
+    </footer>
   );
 }

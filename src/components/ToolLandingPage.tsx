@@ -110,7 +110,12 @@ export default function ToolLandingPage({ sayfa }: { sayfa: ToolPage }) {
         {/* Hero */}
         <section className="relative overflow-hidden pt-14 pb-20">
           <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-100 via-slate-50 to-slate-50 dark:from-indigo-900/20 dark:via-slate-900 dark:to-slate-900"></div>
-          <div className="container mx-auto px-6 max-w-4xl">
+          {/* Okuma genişliği sınırlı ama sola yaslı: `max-w-4xl` doğrudan
+              container'a verilince mx-auto onu ortalıyor ve başlık üst bardaki
+              logodan ~190px içeride başlıyordu, sayfa ortalanmış görünüyordu.
+              Sınır artık iç katmanda; sol kenar üst barla hizalı. */}
+          <div className="container mx-auto px-6">
+            <div className="max-w-4xl">
             <nav aria-label="breadcrumb" className="mb-10 flex items-center gap-1.5 text-sm font-medium text-slate-500 dark:text-slate-400">
               <Link to="/" className="hover:text-slate-800 dark:hover:text-slate-200 transition-colors">
                 Klarsti
@@ -134,12 +139,14 @@ export default function ToolLandingPage({ sayfa }: { sayfa: ToolPage }) {
             </p>
 
             <div className="flex flex-col sm:flex-row items-start gap-4">{kayitCagrisi}</div>
+            </div>
           </div>
         </section>
 
         {/* Kılavuz gövdesi */}
         <section className="pb-24 bg-white dark:bg-slate-950 border-t border-slate-100 dark:border-slate-900 pt-16">
-          <div className="container mx-auto px-6 max-w-4xl text-slate-700 dark:text-slate-300">
+          <div className="container mx-auto px-6 text-slate-700 dark:text-slate-300">
+            <div className="max-w-4xl">
             {kilavuz ? (
               <>
                 <Bolum baslik={t('guide_when')} ikon={<Compass size={18} />}>
@@ -210,6 +217,7 @@ export default function ToolLandingPage({ sayfa }: { sayfa: ToolPage }) {
                 ))}
               </div>
             )}
+            </div>
           </div>
         </section>
 

@@ -126,7 +126,7 @@ export default function TopRightUserMenu() {
 
             <button
               onClick={() => setSubMenu('theme')}
-              className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+              className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-start text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
             >
               <Palette size={18} />
               <span className="flex-1 text-start">{t('theme_selector', { defaultValue: 'Theme' })}</span>
@@ -139,7 +139,7 @@ export default function TopRightUserMenu() {
 
             <button
               onClick={() => setSubMenu('language')}
-              className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+              className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-start text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
             >
               <Languages size={18} />
               {t('change_language_settings', { defaultValue: 'Change Language Settings' })}
@@ -150,14 +150,14 @@ export default function TopRightUserMenu() {
             <div className="mb-2">
               <button
                 onClick={() => setLegalType('terms')}
-                className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-start text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
               >
                 <FileText size={18} />
                 {t('terms_of_use_title', { defaultValue: 'Terms of Use' })}
               </button>
               <button
                 onClick={() => setLegalType('privacy')}
-                className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-start text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
               >
                 <Shield size={18} />
                 {t('privacy_policy_title', { defaultValue: 'Privacy Policy' })}
@@ -167,7 +167,7 @@ export default function TopRightUserMenu() {
             <button
               onClick={logout}
               disabled={cikisYapiliyor}
-              className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors disabled:opacity-60 disabled:cursor-wait"
+              className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-start text-sm font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors disabled:opacity-60 disabled:cursor-wait"
             >
               {cikisYapiliyor ? <Loader2 size={18} className="animate-spin" /> : <LogOut size={18} />}
               {t('logout', { defaultValue: 'Logout' })}

@@ -63,7 +63,7 @@ export default function TopRightMobileMoreMenu() {
         <div className="flex flex-col gap-1">
           <button
             onClick={() => setActiveTopMenu('user')}
-            className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+            className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-start text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
           >
             <User size={18} className="text-slate-500" />
             {t('user', { defaultValue: 'My Account' })}
@@ -71,7 +71,7 @@ export default function TopRightMobileMoreMenu() {
           
           <button
             onClick={() => setActiveTopMenu('projects')}
-            className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+            className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-start text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
           >
             <Folder size={18} className="text-slate-500" />
             {t('my_projects', { defaultValue: 'My Projects' })}
@@ -82,7 +82,7 @@ export default function TopRightMobileMoreMenu() {
           {ajandaDugmesiGorunurMu(activeTool) && (
             <button
               onClick={() => { setActiveTool(activeTool === 'notepad' ? null : 'notepad'); setActiveTopMenu(null); }}
-              className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+              className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-start text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
             >
               <CalendarDays size={18} className="text-fuchsia-500" />
               {t('notepad_title')}
@@ -93,7 +93,7 @@ export default function TopRightMobileMoreMenu() {
           {activeTool && GUIDE_TOOLS.includes(activeTool) && (
             <button
               onClick={() => { setGuideOpen(true); setActiveTopMenu(null); }}
-              className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+              className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-start text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
             >
               <BookOpen size={18} className="text-indigo-500" />
               {t('guide_button')}
@@ -107,7 +107,7 @@ export default function TopRightMobileMoreMenu() {
 
               <button
                 onClick={() => { triggerShare(); setActiveTopMenu(null); }}
-                className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold text-indigo-700 dark:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 transition-colors"
+                className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-start text-sm font-semibold text-indigo-700 dark:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 transition-colors"
               >
                 <Link size={18} className="text-indigo-500" />
                 {t('share', { defaultValue: 'Share' })}
@@ -115,7 +115,7 @@ export default function TopRightMobileMoreMenu() {
 
               <button
                 onClick={() => { triggerExport(); setActiveTopMenu(null); }}
-                className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-start text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
               >
                 <Camera size={18} className="text-slate-500" />
                 {t('export_image', { defaultValue: 'Export' })}

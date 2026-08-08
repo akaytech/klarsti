@@ -130,7 +130,12 @@ export default function Navbar() {
                     key={tool.id}
                     onClick={() => handleToolClick(tool.id)}
                     className={clsx(
-                      "flex w-full items-center gap-3 rounded-xl px-3 py-1.5 text-sm font-semibold transition-colors",
+                      // text-start şart: tarayıcı düğme içindeki yazıyı
+                      // varsayılan olarak ortalar. Türkçede araç adları tek
+                      // satıra sığdığı için görünmüyordu, ama İngilizcede
+                      // "Work Breakdown Structure" iki satıra taşıyor ve
+                      // satırlar ortalanmış duruyordu.
+                      "flex w-full items-center gap-3 rounded-xl px-3 py-1.5 text-start text-sm font-semibold transition-colors",
                       activeTool === tool.id ? theme.activeBtn : "text-slate-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800"
                     )}
                   >

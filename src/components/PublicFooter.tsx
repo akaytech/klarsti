@@ -29,10 +29,16 @@ export default function PublicFooter() {
   return (
     <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 py-12">
       <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="flex items-center gap-2">
-          <img src={`${import.meta.env.BASE_URL}logo-192.png`} alt="Klarsti Logo" className="h-8 w-8 rounded-lg grayscale opacity-50" />
-          <span className="text-lg font-bold text-slate-400">Klarsti</span>
-        </div>
+        {/* Üst çubuktaki gibi: logo kendi geniş oranında ve marka adı zaten
+            içinde yazdığı için yanına ayrıca "Klarsti" yazılmıyor. Gri filtre
+            de kaldırıldı, markanın rengini götürüyordu. */}
+        <img
+          src={`${import.meta.env.BASE_URL}klarsti-yazi-logo.png`}
+          alt="Klarsti"
+          width={282}
+          height={120}
+          className="h-8 w-auto shrink-0 opacity-70"
+        />
 
         <div className="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
           <Link to="/terms" className="hover:text-slate-700 dark:hover:text-slate-300 hover:underline transition-colors">

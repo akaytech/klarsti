@@ -53,7 +53,11 @@ export default defineConfig({
         name: 'Klarsti',
         short_name: 'Klarsti',
         description: 'Problem Çözüm Teknikleri Uygulaması',
-        theme_color: '#ffffff',
+        // Telefonda uygulama olarak açıldığında üst şeridin rengi. Marka
+        // pembesi; beyazken uygulama markasız görünüyordu.
+        theme_color: '#c70f4d',
+        // Açılış ekranının zemini beyaz kalıyor: logo pembe olduğu için
+        // pembe zeminde kaybolurdu.
         background_color: '#ffffff',
         display: 'standalone',
         // Her iki girdi de 1024x1024'lük logo.png'yi gösteriyordu; yani beyan

@@ -99,15 +99,25 @@ export default function Navbar() {
 
       <div className={clsx("flex h-full flex-col w-72 transition-opacity duration-300", isExpanded ? "opacity-100" : "opacity-0 pointer-events-none")}>
       {/* Logo Area */}
+      {/* Logo kare kutuda değil, kendi geniş oranında: "klarsti" yazısı
+          56 piksellik karede okunmuyordu. Logonun kendi zemini ve yuvarlak
+          köşeleri olduğu için etrafına ayrıca çerçeve çizilmiyor. */}
       <div className="flex p-4 items-center justify-center shrink-0">
         <button
           onClick={() => {
             setActiveTool(null);
             setIsExpanded(false);
           }}
-          className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white dark:bg-slate-800 shadow-md border border-slate-100 dark:border-slate-700 transition-transform hover:scale-105 active:scale-95 overflow-hidden p-1"
+          className="shrink-0 rounded-xl transition-transform hover:scale-105 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+          aria-label="Klarsti"
         >
-          <img src={`${import.meta.env.BASE_URL}logo-192.png`} alt="Klarsti Logo" className="h-full w-full object-contain rounded-xl" />
+          <img
+            src={`${import.meta.env.BASE_URL}klarsti-yazi-logo.png`}
+            alt="Klarsti"
+            width={282}
+            height={120}
+            className="h-11 w-auto"
+          />
         </button>
       </div>
 

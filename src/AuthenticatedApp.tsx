@@ -8,7 +8,8 @@ import TopRightUserMenu from './components/TopRightUserMenu';
 import TopRightProjectsMenu from './components/TopRightProjectsMenu';
 import TopRightMobileMoreMenu from './components/TopRightMobileMoreMenu';
 import TopRightAgendaButton from './components/TopRightAgendaButton';
-import { useRoadmapStore } from './store/useRoadmapStore';
+import { useRoadmapStore, type ToolId } from './store/useRoadmapStore';
+import { aracSecimEylemi } from './config/toolWorks';
 import { useAuthStore } from './store/useAuthStore';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -20,6 +21,15 @@ const Workspace = React.lazy(() => import('./components/Workspace'));
 // tek denemeyle pes edilmiyor.
 const PROJE_COZUM_DENEME = 3;
 const PROJE_COZUM_ARALIK_MS = 1200;
+
+// Paylaşılan çalışma linki açıldığında o çalışma seçili gelsin. Bazı araçlar
+// bütün çalışmalarını tek sayfada listeliyor (SWOT, kılçık, PDCA...); orada
+// seçilecek bir şey yok, aracı açmak yetiyor.
+const calismayiAc = (tool: string, workId?: string) => {
+  if (!workId) return;
+  const eylem = aracSecimEylemi(tool as ToolId);
+  if (eylem) useRoadmapStore.getState()[eylem](workId);
+};
 
 export default function AuthenticatedApp() {
   const user = useAuthStore(state => state.user);
@@ -129,6 +139,7 @@ export default function AuthenticatedApp() {
           bekleyenProjeRef.current = null;
           durum.loadProject(pId);
           durum.setActiveTool(tool as any);
+          calismayiAc(tool, workId);
           return;
         }
 
@@ -143,6 +154,7 @@ export default function AuthenticatedApp() {
         bekleyenProjeRef.current = null;
         son.loadProject(pId);
         son.setActiveTool(tool as any);
+        calismayiAc(tool, workId);
         return;
       }
 

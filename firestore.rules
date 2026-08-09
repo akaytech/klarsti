@@ -41,8 +41,17 @@ service cloud.firestore {
 
       // CREATE: Sadece giriş yapmış kullanıcılar proje oluşturabilir
       // VE oluşturan kişi kendini 'userId' olarak ayarlamak zorundadır.
-      allow create: if request.auth != null 
-                    && request.resource.data.userId == request.auth.uid;
+      //
+      // Yeni proje BOŞ bir paylaşım listesiyle doğmak zorunda. Eskiden bu alana
+      // bakılmıyordu: isteyen, içine başkasının UID'sini yazdığı bir proje
+      // oluşturabiliyordu. Proje listesi "sharedWith içinde benim UID'm var mı"
+      // sorgusuyla çekildiği için o proje, hiç haberi olmayan kullanıcının
+      // ekranında beliriyordu. Reklam ya da oltalama için hazır bir kapıydı.
+      // Paylaşım artık yalnızca sonradan, sahibin bilerek açtığı linkle oluyor.
+      allow create: if request.auth != null
+                    && request.resource.data.userId == request.auth.uid
+                    && request.resource.data.get('sharedWith', []).size() == 0
+                    && request.resource.data.get('members', {}).keys().size() == 0;
       
       // READ: Sadece giriş yapmış kullanıcılar okuyabilir 
       // VE (Projenin sahibi ise VEYA projenin 'sharedWith' dizisinde var ise).

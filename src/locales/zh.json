@@ -675,5 +675,22 @@
   "fta_delete_analysis_msg": "树“{{ad}}”及其全部内容将被删除。",
   "ws_development_note": "Klarsti 仍在开发中。工具可以正常使用，数据也会保存，但界面和功能仍会继续变化。",
   "tool_page_open_app": "打开应用",
-  "tool_page_other_tools": "其他工具"
+  "tool_page_other_tools": "其他工具",
+  "share_panel_title": "共享",
+  "share_status_on": "任何拿到链接的人都可以打开并编辑此项目。",
+  "share_status_off": "此项目目前未共享。",
+  "share_start": "共享并复制链接",
+  "share_stop": "停止共享",
+  "share_stopped": "已停止共享",
+  "share_link_label": "共享链接",
+  "copy_link": "复制",
+  "share_copy_failed": "无法复制，请手动选中链接",
+  "share_members_title": "项目成员",
+  "share_members_empty": "还没有人加入。",
+  "share_members_hint": "停止共享不会移出已经加入的人，需要逐个移除。",
+  "share_member_unknown": "未命名用户",
+  "share_remove_member": "移出项目",
+  "share_remove_confirm": "移出",
+  "share_member_removed": "已移出项目",
+  "share_remove_failed": "无法移出该成员"
 }

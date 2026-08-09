@@ -260,12 +260,29 @@ export { getActiveVsmMap } from './slices/createVsmSlice';
 
 export type ToolId = 'mindmap' | 'wbs' | '5whys' | 'swot' | 'ishikawa' | 'pdca' | 'waterfall' | 'fta' | 'decision' | 'flowchart' | 'orgchart' | 'pareto' | 'histogram' | 'notepad' | 'vsm';
 
+/**
+ * Katılanlar listesindeki bir satır. Paylaşım linkiyle projeye katılan kişi
+ * kendi satırını yazar; sahibi "kim katılmış" ekranında bunu görür.
+ *
+ * Neden proje dokümanının içinde: kullanıcıların adı/e-postası users/{uid}
+ * altında ve orası sahibine özel, başkası okuyamıyor. Katılanları isimleriyle
+ * gösterebilmek için bilginin projeyle birlikte okunabilen bir yerde durması
+ * gerekiyor. Kurallar herkesi kendi satırıyla sınırlıyor (bkz. firestore.rules).
+ */
+export interface ProjectMember {
+  name: string;
+  email: string;
+  joinedAt: number;
+}
+
 export interface Project {
   id: string;
   name: string;
   toolData: Record<string, any>;
   isPublic?: boolean;
   sharedWith?: string[];
+  /** UID -> katılan kişinin bilgisi. Sahip bu listede yer almaz. */
+  members?: Record<string, ProjectMember>;
   updatedAt: number;
   userId: string;
 }
@@ -295,8 +312,10 @@ export interface RoadmapState extends NotepadSlice, JournalSlice, FiveWhysSlice,
   updateProjectName: (id: string, name: string) => void;
   deleteProject: (id: string) => void;
   clearToolData: (projectId: string, toolName: ToolId) => void;
-  setProjectPublic: (id: string, isPublic: boolean) => Promise<void>;
+  setProjectPublic: (id: string, isPublic: boolean) => Promise<boolean>;
   joinSharedProject: (id: string) => Promise<boolean>;
+  /** Sahibin, katılan birini projeden çıkarması. */
+  removeProjectMember: (projectId: string, uid: string) => Promise<boolean>;
 }
 
 /**
@@ -611,6 +630,7 @@ export const useRoadmapStore = create<RoadmapState>()(
               const parsed: Project = { id: doc.id, name: data.name, updatedAt: data.updatedAt, userId: data.userId, toolData };
               if (data.isPublic !== undefined) parsed.isPublic = data.isPublic;
               if (data.sharedWith !== undefined) parsed.sharedWith = data.sharedWith;
+              if (data.members !== undefined) parsed.members = data.members;
               return parsed;            } catch (error) {
               console.error("Parse doc error for project ID", doc.id, error);
               toast.error(i18n.t('error_parse_doc', { defaultValue: 'Error parsing document' }), { id: 'error-parse-doc' });
@@ -778,7 +798,12 @@ export const useRoadmapStore = create<RoadmapState>()(
           toast.error(i18n.t('delete_error') + e.message, { id: 'delete-error' });
 
         if (project && project.userId !== user.uid) {
-             updateDoc(doc(db, 'projects', id), { sharedWith: arrayRemove(user.uid) }).catch(bildirHata);
+             // Ayrılan kişi katılanlar listesinden de düşer; yoksa sahibin
+             // ekranında hâlâ içerideymiş gibi görünürdü.
+             updateDoc(doc(db, 'projects', id), {
+               sharedWith: arrayRemove(user.uid),
+               [`members.${user.uid}`]: deleteField()
+             }).catch(bildirHata);
         } else {
              deleteDoc(doc(db, 'projects', id)).catch(bildirHata);
         }
@@ -801,13 +826,44 @@ export const useRoadmapStore = create<RoadmapState>()(
       },
 
       
+      // Paylaşımı açar veya kapatır. Başarıyı döndürüyor: paylaşım açılamadıysa
+      // çağıran taraf linki panoya kopyalamamalı, yoksa kullanıcı çalışmayan bir
+      // linki karşı tarafa gönderir ve hatayı ancak o kişi görür.
+      //
+      // Kapatmak linki geçersiz kılar: artık kimse linkle katılamaz. Halihazırda
+      // katılmış olanlar erişimini korur, onları çıkarmak ayrı bir iş
+      // (bkz. removeProjectMember).
       setProjectPublic: async (id, isPublic) => {
-        if (isPublic === undefined) return;
+        if (isPublic === undefined) return false;
         try {
           await setDoc(doc(db, 'projects', id), { isPublic }, { merge: true });
+          return true;
         } catch (error) {
           console.error("setProjectPublic error:", error);
           toast.error(i18n.t('error_set_public', { defaultValue: 'Error sharing project' }), { id: 'error-set-public' });
+          return false;
+        }
+      },
+
+      // Sahibin, katılan birini çıkarması. Kişi hem erişim listesinden hem de
+      // katılanlar listesinden silinir; anlık dinleyici sayesinde o kişinin
+      // ekranından proje kendiliğinden düşer.
+      removeProjectMember: async (projectId, uid) => {
+        const user = useAuthStore.getState().user;
+        const project = get().projects.find((p) => p.id === projectId);
+        // Kural zaten sahibi olmayanı reddeder; buradaki kontrol kullanıcıya
+        // sunucudan dönen ham hata yerine anlaşılır bir sonuç vermek için.
+        if (!user || !project || project.userId !== user.uid) return false;
+        try {
+          await updateDoc(doc(db, 'projects', projectId), {
+            sharedWith: arrayRemove(uid),
+            [`members.${uid}`]: deleteField()
+          });
+          return true;
+        } catch (error) {
+          console.error("removeProjectMember error:", error);
+          toast.error(i18n.t('share_remove_failed', { defaultValue: 'Could not remove the person' }), { id: 'share-remove-failed' });
+          return false;
         }
       },
 
@@ -826,7 +882,17 @@ export const useRoadmapStore = create<RoadmapState>()(
           if (docSnap.exists()) {
             const data = docSnap.data() as Project;
             if (data.isPublic) {
-              await updateDoc(docRef, { sharedWith: arrayUnion(user.uid) });
+              // Katılırken kendi satırımızı da yazıyoruz: sahibi listede
+              // UID yerine adı görsün. Kurallar bu yazmayı kendi anahtarımızla
+              // sınırlıyor, başkasının satırına dokunamayız.
+              await updateDoc(docRef, {
+                sharedWith: arrayUnion(user.uid),
+                [`members.${user.uid}`]: {
+                  name: user.name || '',
+                  email: user.email || '',
+                  joinedAt: Date.now()
+                }
+              });
               return true;
             }
           }

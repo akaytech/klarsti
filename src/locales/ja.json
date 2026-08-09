@@ -675,5 +675,22 @@
   "fta_delete_analysis_msg": "ツリー「{{ad}}」とその中身がすべて削除されます。",
   "ws_development_note": "Klarsti はまだ開発中です。ツールは動作し、データも保存されますが、画面や機能は今後も変わります。",
   "tool_page_open_app": "アプリを開く",
-  "tool_page_other_tools": "その他のツール"
+  "tool_page_other_tools": "その他のツール",
+  "share_panel_title": "共有",
+  "share_status_on": "リンクを知っている人は誰でも、このプロジェクトを開いて編集できます。",
+  "share_status_off": "このプロジェクトは現在共有されていません。",
+  "share_start": "共有してリンクをコピー",
+  "share_stop": "共有を停止",
+  "share_stopped": "共有を停止しました",
+  "share_link_label": "共有リンク",
+  "copy_link": "コピー",
+  "share_copy_failed": "コピーできませんでした。リンクを手動で選択してください",
+  "share_members_title": "このプロジェクトの参加者",
+  "share_members_empty": "まだ誰も参加していません。",
+  "share_members_hint": "共有を停止しても、すでに参加している人は外れません。一人ずつ削除してください。",
+  "share_member_unknown": "名前のないユーザー",
+  "share_remove_member": "プロジェクトから削除",
+  "share_remove_confirm": "削除",
+  "share_member_removed": "プロジェクトから削除しました",
+  "share_remove_failed": "削除できませんでした"
 }

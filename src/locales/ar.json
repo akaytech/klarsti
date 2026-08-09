@@ -675,5 +675,22 @@
   "fta_delete_analysis_msg": "سيتم حذف الشجرة \"{{ad}}\" وكل ما فيها.",
   "ws_development_note": "لا يزال Klarsti قيد التطوير. الأدوات تعمل وبياناتك محفوظة، لكن الواجهة والميزات ستستمر في التغير.",
   "tool_page_open_app": "افتح التطبيق",
-  "tool_page_other_tools": "أدوات أخرى"
+  "tool_page_other_tools": "أدوات أخرى",
+  "share_panel_title": "المشاركة",
+  "share_status_on": "كل من لديه الرابط يمكنه فتح هذا المشروع وتعديله.",
+  "share_status_off": "هذا المشروع غير مشارَك حاليًا.",
+  "share_start": "شارك وانسخ الرابط",
+  "share_stop": "إيقاف المشاركة",
+  "share_stopped": "تم إيقاف المشاركة",
+  "share_link_label": "رابط المشاركة",
+  "copy_link": "نسخ",
+  "share_copy_failed": "تعذّر النسخ، حدّد الرابط يدويًا",
+  "share_members_title": "الأشخاص في هذا المشروع",
+  "share_members_empty": "لم ينضم أحد بعد.",
+  "share_members_hint": "إيقاف المشاركة لا يُخرج من انضم بالفعل. أزلهم واحدًا تلو الآخر.",
+  "share_member_unknown": "مستخدم بلا اسم",
+  "share_remove_member": "إزالة من المشروع",
+  "share_remove_confirm": "إزالة",
+  "share_member_removed": "تمت الإزالة من المشروع",
+  "share_remove_failed": "تعذّرت إزالة الشخص"
 }

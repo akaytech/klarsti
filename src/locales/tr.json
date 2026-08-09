@@ -675,5 +675,22 @@
   "fta_delete_analysis_msg": "\"{{ad}}\" ağacı ve içindeki her şey silinecek.",
   "ws_development_note": "Klarsti hâlâ geliştiriliyor. Araçlar çalışıyor ve verin kaydediliyor, ama arayüz ve özellikler değişmeye devam edecek.",
   "tool_page_open_app": "Uygulamaya git",
-  "tool_page_other_tools": "Diğer araçlar"
+  "tool_page_other_tools": "Diğer araçlar",
+  "share_panel_title": "Paylaşım",
+  "share_status_on": "Linki olan herkes bu projeyi açabilir ve düzenleyebilir.",
+  "share_status_off": "Bu proje şu an paylaşılmıyor.",
+  "share_start": "Paylaş ve linki kopyala",
+  "share_stop": "Paylaşımı durdur",
+  "share_stopped": "Paylaşım durduruldu",
+  "share_link_label": "Paylaşım linki",
+  "copy_link": "Kopyala",
+  "share_copy_failed": "Kopyalanamadı, linki elle seç",
+  "share_members_title": "Projedeki kişiler",
+  "share_members_empty": "Henüz kimse katılmadı.",
+  "share_members_hint": "Paylaşımı durdurmak, daha önce katılmış kişileri çıkarmaz. Onları tek tek çıkarman gerekir.",
+  "share_member_unknown": "Adsız kullanıcı",
+  "share_remove_member": "Projeden çıkar",
+  "share_remove_confirm": "Çıkar",
+  "share_member_removed": "Kişi projeden çıkarıldı",
+  "share_remove_failed": "Kişi çıkarılamadı"
 }

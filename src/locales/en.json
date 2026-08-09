@@ -675,5 +675,22 @@
   "fta_delete_analysis_msg": "The tree \"{{ad}}\" and everything in it will be deleted.",
   "ws_development_note": "Klarsti is still under development. The tools work and your data is saved, but the interface and features will keep changing.",
   "tool_page_open_app": "Open the app",
-  "tool_page_other_tools": "Other tools"
+  "tool_page_other_tools": "Other tools",
+  "share_panel_title": "Sharing",
+  "share_status_on": "Anyone with the link can open and edit this project.",
+  "share_status_off": "This project is not shared right now.",
+  "share_start": "Share and copy the link",
+  "share_stop": "Stop sharing",
+  "share_stopped": "Sharing stopped",
+  "share_link_label": "Share link",
+  "copy_link": "Copy",
+  "share_copy_failed": "Could not copy, select the link manually",
+  "share_members_title": "People in this project",
+  "share_members_empty": "No one has joined yet.",
+  "share_members_hint": "Stopping the link does not remove people who already joined. Remove them one by one.",
+  "share_member_unknown": "Unnamed user",
+  "share_remove_member": "Remove from project",
+  "share_remove_confirm": "Remove",
+  "share_member_removed": "Removed from the project",
+  "share_remove_failed": "Could not remove the person"
 }

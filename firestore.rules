@@ -26,8 +26,20 @@ service cloud.firestore {
 
     // Sadece 'projects' koleksiyonuna belirli kurallarla erişime izin ver.
     match /projects/{projectId} {
-      
-      // CREATE: Sadece giriş yapmış kullanıcılar proje oluşturabilir 
+
+      // Katılanlar listesi (members): UID -> { name, email, joinedAt }.
+      // Sahip dışındaki herkes bu haritada YALNIZCA kendi anahtarına
+      // dokunabilir. Liste sahibin "kim katılmış" ekranını beslediği için,
+      // başkasının satırını yazabilmek kimliğe bürünmek demek olurdu.
+      // members hiç yoksa iki taraf da boş harita sayılır ve fark çıkmaz.
+      function kendiSatiri() {
+        return request.resource.data.get('members', {})
+                 .diff(resource.data.get('members', {}))
+                 .affectedKeys()
+                 .hasOnly([request.auth.uid]);
+      }
+
+      // CREATE: Sadece giriş yapmış kullanıcılar proje oluşturabilir
       // VE oluşturan kişi kendini 'userId' olarak ayarlamak zorundadır.
       allow create: if request.auth != null 
                     && request.resource.data.userId == request.auth.uid;
@@ -69,14 +81,21 @@ service cloud.firestore {
                           request.resource.data.get('sharedWith', []) == resource.data.get('sharedWith', [])
                           || request.resource.data.get('sharedWith', []) == resource.data.get('sharedWith', []).removeAll([request.auth.uid])
                         )
+                        // Katılanlar listesinde herkes yalnızca kendi satırına
+                        // dokunabilir: adını güncelleyebilir, ayrılırken satırını
+                        // silebilir. Başkasınınkini ne değiştirebilir, ne de
+                        // sahibin çıkardığı birini geri ekleyebilir.
+                        && kendiSatiri()
                       )
                       ||
-                      // 3) Herkese açık projeye katılma: SADECE sharedWith
-                      //    alanına ve SADECE isteği yapanın kendi UID'sine.
+                      // 3) Herkese açık projeye katılma: SADECE sharedWith ve
+                      //    katılanlar listesindeki kendi satırı; ikisinde de
+                      //    yalnızca isteği yapanın kendi UID'si.
                       (
                         resource.data.get('isPublic', false) == true &&
-                        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['sharedWith']) &&
-                        request.resource.data.sharedWith == resource.data.get('sharedWith', []).concat([request.auth.uid])
+                        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['sharedWith', 'members']) &&
+                        request.resource.data.sharedWith == resource.data.get('sharedWith', []).concat([request.auth.uid]) &&
+                        kendiSatiri()
                       )
                     );
       

@@ -675,5 +675,22 @@
   "fta_delete_analysis_msg": "Der Baum „{{ad}}“ und sein gesamter Inhalt werden gelöscht.",
   "ws_development_note": "Klarsti wird noch entwickelt. Die Werkzeuge funktionieren und deine Daten werden gespeichert, aber Oberfläche und Funktionen ändern sich weiter.",
   "tool_page_open_app": "Zur App",
-  "tool_page_other_tools": "Weitere Werkzeuge"
+  "tool_page_other_tools": "Weitere Werkzeuge",
+  "share_panel_title": "Freigabe",
+  "share_status_on": "Wer den Link hat, kann dieses Projekt öffnen und bearbeiten.",
+  "share_status_off": "Dieses Projekt ist derzeit nicht freigegeben.",
+  "share_start": "Freigeben und Link kopieren",
+  "share_stop": "Freigabe beenden",
+  "share_stopped": "Freigabe beendet",
+  "share_link_label": "Freigabelink",
+  "copy_link": "Kopieren",
+  "share_copy_failed": "Kopieren fehlgeschlagen, Link bitte manuell markieren",
+  "share_members_title": "Personen in diesem Projekt",
+  "share_members_empty": "Noch ist niemand beigetreten.",
+  "share_members_hint": "Das Beenden der Freigabe entfernt keine Person, die bereits beigetreten ist. Entferne sie einzeln.",
+  "share_member_unknown": "Unbenannte Person",
+  "share_remove_member": "Aus dem Projekt entfernen",
+  "share_remove_confirm": "Entfernen",
+  "share_member_removed": "Aus dem Projekt entfernt",
+  "share_remove_failed": "Person konnte nicht entfernt werden"
 }

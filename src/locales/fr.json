@@ -675,5 +675,22 @@
   "fta_delete_analysis_msg": "L'arbre « {{ad}} » et tout son contenu seront supprimés.",
   "ws_development_note": "Klarsti est encore en développement. Les outils fonctionnent et tes données sont enregistrées, mais l'interface et les fonctionnalités continueront d'évoluer.",
   "tool_page_open_app": "Ouvrir l'application",
-  "tool_page_other_tools": "Autres outils"
+  "tool_page_other_tools": "Autres outils",
+  "share_panel_title": "Partage",
+  "share_status_on": "Toute personne disposant du lien peut ouvrir et modifier ce projet.",
+  "share_status_off": "Ce projet n'est pas partagé pour le moment.",
+  "share_start": "Partager et copier le lien",
+  "share_stop": "Arrêter le partage",
+  "share_stopped": "Partage arrêté",
+  "share_link_label": "Lien de partage",
+  "copy_link": "Copier",
+  "share_copy_failed": "Copie impossible, sélectionnez le lien manuellement",
+  "share_members_title": "Personnes dans ce projet",
+  "share_members_empty": "Personne n'a encore rejoint.",
+  "share_members_hint": "Arrêter le partage n'exclut pas les personnes déjà présentes. Retirez-les une par une.",
+  "share_member_unknown": "Utilisateur sans nom",
+  "share_remove_member": "Retirer du projet",
+  "share_remove_confirm": "Retirer",
+  "share_member_removed": "Retiré du projet",
+  "share_remove_failed": "Impossible de retirer cette personne"
 }

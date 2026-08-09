@@ -6,6 +6,7 @@ import { db, logAppEvent } from '../firebase';
 import i18n from '../i18n';
 import { useAuthStore } from './useAuthStore';
 import { bekleyenAraclar, kisiselBekliyorMu } from './bekleyenYazmalar';
+import { projeninCalismalariniSil } from './calismaYazma';
 import { gecmisiBagla, yazmayiIsle, gecmisiTemizle } from './gecmis';
 import { toast } from 'sonner';
 
@@ -873,6 +874,12 @@ export const useRoadmapStore = create<RoadmapState>()(
              }).catch(bildirHata);
         } else {
              deleteDoc(doc(db, 'projects', id)).catch(bildirHata);
+             // Projenin çalışma kayıtları da gitmeli. Eskiden kalıyorlardı ve
+             // hiçbir temizlik onlara ulaşamıyordu: temizlik var olan
+             // projeleri geziyor, silinmiş projeninkileri hiç görmüyor.
+             Promise.all(
+               projeninCalismalariniSil(state.works.filter((w) => w.projectId === id))
+             ).catch((err) => console.error('Works delete failed:', err));
         }
 
         set((state) => {

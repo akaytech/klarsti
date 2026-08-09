@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import i18n from '../i18n';
 import { stripUndefined } from '../utils/firestoreSafe';
 import { bekleyenYazmalariBildir } from '../store/bekleyenYazmalar';
-import { projeCalismalariniEsitle, anahtarlardanAraclar } from '../store/calismaYazma';
+import { projeCalismalariniEsitle, projeninCalismalariniSil, anahtarlardanAraclar } from '../store/calismaYazma';
 
 const SAVE_DEBOUNCE_MS = 1000;
 
@@ -144,12 +144,32 @@ export default function SyncManager() {
     // gönderiyor; hiç dokunulmayan çalışmalar yeni yerine kendiliğinden
     // geçmezdi. Bu, proje başına bir kez, yalnızca eksik olanları yazar.
     const doldurulan = new Set<string>();
+    let oksuzlerSuprusuldu = false;
     const eksikleriDoldur = () => {
       const durum = useRoadmapStore.getState();
       const user = useAuthStore.getState().user;
       // İki liste de gelmeden çalışmaz: works listesi eksikken "yok" sanıp
-      // her şeyi baştan kurmaya kalkardı.
+      // her şeyi baştan kurmaya kalkardı. Aynı şey öksüz süpürmesi için daha
+      // da kritik: proje listesi gelmeden bakılsa HER kayıt öksüz görünür.
       if (!user || !durum.projectsLoaded || !durum.worksLoaded) return;
+
+      // Öksüzler: sahibi olduğumuz ama artık var olmayan bir projeye bağlı
+      // kayıtlar. Proje silinirken çalışmaları da silinmiyordu; bu, o dönemden
+      // kalanları topluyor. Paylaşımla gelen kayıtlar bilerek dışarıda:
+      // onların projesi bizim listemizde zaten olmaz.
+      if (!oksuzlerSuprusuldu) {
+        oksuzlerSuprusuldu = true;
+        const projeKimlikleri = new Set(durum.projects.map((p) => p.id));
+        const oksuzler = durum.works.filter(
+          (w) => w.ownerId === user.uid && !projeKimlikleri.has(w.projectId)
+        );
+        if (oksuzler.length > 0) {
+          Promise.all(projeninCalismalariniSil(oksuzler)).catch((err) => {
+            console.error('Orphan works sweep failed:', err);
+            oksuzlerSuprusuldu = false;
+          });
+        }
+      }
 
       durum.projects.forEach((project) => {
         if (project.userId !== user.uid) return;

@@ -104,6 +104,17 @@ export function projeCalismalariniEsitle(
 }
 
 /**
+ * Bir projenin bütün çalışma kayıtlarını siler.
+ *
+ * Proje silinince çağrılmalı. Eskiden çağrılmıyordu: proje kaydı gidiyor ama
+ * çalışmaları öylece kalıyordu. Okuma yeni kayıtlara çevrildiğinde silinmiş
+ * bir proje geri gelmiş gibi görünürdü.
+ */
+export function projeninCalismalariniSil(kayitlar: readonly { id: string }[]): Promise<unknown>[] {
+  return kayitlar.map((k) => deleteDoc(doc(db, 'works', k.id)));
+}
+
+/**
  * SyncManager hangi araçların değiştiğini toolData anahtarıyla biliyor
  * ('wbsTrees'), buradaki işlerse araç kimliğiyle yürüyor ('wbs'). Çeviri.
  */

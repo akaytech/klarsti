@@ -110,19 +110,44 @@ export function calismayiSil(
   else eylem(calismaId);
 }
 
-/** Bir projedeki bir aracın içinde duran çalışmalar. */
+/** Menüde gösterilecek çalışmalar: kullanılmamış olanlar elenir. */
 export function aracCalismalari(
   toolData: Record<string, any> | undefined,
   tool: ToolId
 ): AracCalismasi[] {
   const tanim = TANIMLAR[tool];
   if (!tanim) return [];
+  return hamCalismalar(toolData, tool)
+    .filter((c) => (tanim.enAzKutu ? (c?.nodes?.length ?? 0) >= tanim.enAzKutu : true))
+    .map((c) => ({ id: c.id as string, ad: calismaAdi(c, tool) }));
+}
 
+/**
+ * Diziden geçen HER çalışma, kutu sayısına bakılmadan.
+ *
+ * Menü kullanılmamış çalışmaları gizliyor ama saklama öyle davranamaz:
+ * gizlenen bir çalışma da kullanıcının verisi, kaydedilmezse kaybolur.
+ */
+export function hamCalismalar(
+  toolData: Record<string, any> | undefined,
+  tool: ToolId
+): Record<string, any>[] {
+  const tanim = TANIMLAR[tool];
+  if (!tanim) return [];
   const dizi = toolData?.[tanim.anahtar];
   if (!Array.isArray(dizi)) return [];
-
-  return dizi
-    .filter((c) => (tanim.enAzKutu ? (c?.nodes?.length ?? 0) >= tanim.enAzKutu : true))
-    .filter((c) => typeof c?.id === 'string')
-    .map((c) => ({ id: c.id as string, ad: String(c[tanim.adAlani] ?? '').trim() }));
+  return dizi.filter((c) => c && typeof c.id === 'string');
 }
+
+/** Çalışmanın kullanıcıya görünen adı; alan adı araçtan araca değişiyor. */
+export function calismaAdi(calisma: Record<string, any>, tool: ToolId): string {
+  const tanim = TANIMLAR[tool];
+  if (!tanim) return '';
+  return String(calisma[tanim.adAlani] ?? '').trim();
+}
+
+/** toolData içinde bu aracın dizisini tutan anahtar. */
+export const aracAnahtari = (tool: ToolId): string | undefined => TANIMLAR[tool]?.anahtar;
+
+/** Menüde yer alan sırayla bütün araçlar (ajanda hariç). */
+export const TUM_ARACLAR = (Object.keys(TANIMLAR) as ToolId[]).filter((t) => TANIMLAR[t] !== null);

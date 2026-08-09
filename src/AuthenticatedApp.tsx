@@ -25,9 +25,10 @@ export default function AuthenticatedApp() {
   const user = useAuthStore(state => state.user);
   const { t } = useTranslation();
   
-  const { fetchProjects, fetchPersonalData, currentProjectId, loadProject, activeTool, setActiveTool, projects, joinSharedProject, projectsLoaded } = useRoadmapStore(useShallow((state) => ({
+  const { fetchProjects, fetchPersonalData, fetchWorks, currentProjectId, loadProject, activeTool, setActiveTool, projects, joinSharedProject, projectsLoaded } = useRoadmapStore(useShallow((state) => ({
     fetchProjects: state.fetchProjects,
     fetchPersonalData: state.fetchPersonalData,
+    fetchWorks: state.fetchWorks,
     currentProjectId: state.currentProjectId,
     loadProject: state.loadProject,
     activeTool: state.activeTool,
@@ -53,8 +54,12 @@ export default function AuthenticatedApp() {
       });
       // Kişisel ajanda projelerden ayrı bir dokümanda, ayrı dinleniyor.
       fetchPersonalData(user.uid);
+      // Bölünmüş çalışma kayıtları. Geçiş dönemi: arayüzü henüz beslemiyor,
+      // yazma tarafının hangi çalışmanın sunucuda kurulu olduğunu bilmesi için
+      // dinleniyor (bkz. calismaYazma.ts).
+      fetchWorks(user.uid);
     }
-  }, [user, user?.uid, fetchProjects, fetchPersonalData]);
+  }, [user, user?.uid, fetchProjects, fetchPersonalData, fetchWorks]);
 
   const isFirstSyncRef = useRef(true);
   const lastPathnameRef = useRef(location.pathname);

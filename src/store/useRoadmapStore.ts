@@ -287,6 +287,29 @@ export interface Project {
   userId: string;
 }
 
+/**
+ * 'works' koleksiyonundaki tek bir kayıt. Geçiş dönemi: bu kayıtlar yazılıyor
+ * ama arayüz hâlâ projenin toolData'sından besleniyor. Şu an tek işleri,
+ * yazma tarafının "bu çalışma sunucuda var mı" sorusunu cevaplamak; kurulum
+ * yazması ile içerik yazmasının gövdesi farklı (bkz. calismaYazma.ts).
+ */
+export interface WorkRecord {
+  /** Doküman kimliği: `${projectId}__${workId}` */
+  id: string;
+  workId: string;
+  projectId: string;
+  projectName: string;
+  tool: ToolId;
+  name: string;
+  data: Record<string, any>;
+  ownerId: string;
+  readers?: string[];
+  sharedWith?: string[];
+  isPublic?: boolean;
+  members?: Record<string, ProjectMember>;
+  updatedAt: number;
+}
+
 export interface RoadmapState extends NotepadSlice, JournalSlice, FiveWhysSlice, SwotSlice, IshikawaSlice, PdcaSlice, WaterfallSlice, FtaSlice, FlowchartSlice, OrgchartSlice, MindmapSlice, ParetoSlice, HistogramSlice, DecisionSlice, WbsSlice, VsmSlice {
   projectUnsubscribe: (() => void) | null;
   // Kişisel veri (ajanda) users/{uid} dokümanından gelir, projelerden bağımsız dinlenir.
@@ -307,6 +330,11 @@ export interface RoadmapState extends NotepadSlice, JournalSlice, FiveWhysSlice,
   projects: Project[];
   currentProjectId: string | null;
   fetchProjects: (userId: string) => Promise<void>;
+  /** Bölünmüş çalışma kayıtları. Henüz arayüzü beslemiyor (bkz. WorkRecord). */
+  works: WorkRecord[];
+  worksLoaded: boolean;
+  worksUnsubscribe: (() => void) | null;
+  fetchWorks: (userId: string) => void;
   createProject: (name: string, initialTool?: string) => void;
   loadProject: (id: string) => void;
   updateProjectName: (id: string, name: string) => void;
@@ -373,6 +401,8 @@ export const useRoadmapStore = create<RoadmapState>()(
           if (sub) sub();
           const personalSub = get().personalUnsubscribe;
           if (personalSub) personalSub();
+          const worksSub = get().worksUnsubscribe;
+          if (worksSub) worksSub();
           // Burada bekleyen yazmalar İPTAL EDİLMEZ; öyle yapan bir kod hiç
           // olmadı. Oturum kapanınca AuthenticatedApp sökülüyor ve
           // SyncManager'ın cleanup'ı flushAllSaves() ile bekleyenleri
@@ -387,6 +417,7 @@ export const useRoadmapStore = create<RoadmapState>()(
           set({ projectsLoaded: false, projects: [], currentProjectId: null, activeTool: null, wbsTrees: [], activeWbsTreeId: null, fiveWhysAnalyses: [], activeFiveWhysId: null, swot: [], ishikawa: [], pdca: [], waterfall: [], pareto: [], histogram: [],
             decision: [], flowcharts: [], activeFlowchartId: null, orgcharts: [], activeOrgchartId: null, mindmaps: [], activeMindmapId: null, ftaAnalyses: [], activeFtaId: null, notepad: [], vsmMaps: [], activeVsmMapId: null, projectUnsubscribe: null,
             personalUnsubscribe: null, personalLoaded: false,
+            works: [], worksLoaded: false, worksUnsubscribe: null,
             journal: {}, journalDates: [], journalLoadedDates: [], journalSavingDates: [], journalSavedDates: [], journalLoadError: null });
         },
 
@@ -452,6 +483,42 @@ export const useRoadmapStore = create<RoadmapState>()(
       projectsLoaded: false,
       projects: [],
       currentProjectId: null,
+
+      works: [],
+      worksLoaded: false,
+      worksUnsubscribe: null,
+
+      // Kullanıcının görebildiği bütün çalışmalar: sahibi olduklarıyla
+      // erişim verilenler. Tek sorgu, çünkü Firestore bir sorguda tek
+      // "dizide var mı" koşuluna izin veriyor ve readers zaten ikisini de
+      // (tek tek davet + klasör paylaşımı) tek dizide topluyor.
+      fetchWorks: (userId) => {
+        const oncekiSub = get().worksUnsubscribe;
+        if (oncekiSub) oncekiSub();
+
+        const q = query(
+          collection(db, 'works'),
+          or(where('ownerId', '==', userId), where('readers', 'array-contains', userId))
+        );
+        const unsubscribe = onSnapshot(
+          q,
+          (snapshot) => {
+            const kayitlar = snapshot.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<WorkRecord, 'id'>) }));
+            uzaktanGuncelle(() => set({ works: kayitlar, worksLoaded: true }));
+          },
+          (error) => {
+            // Sessiz geçiliyor: bu kayıtlar henüz arayüzü beslemiyor, bir
+            // hata kullanıcının çalışmasını etkilemiyor. Uyarı göstermek
+            // görmediği bir şey için onu telaşlandırmak olurdu.
+            console.error('Fetch works error:', error);
+            if (error.code === 'permission-denied' && useAuthStore.getState().user?.uid === userId) {
+              setTimeout(() => get().fetchWorks(userId), 1500);
+            }
+          }
+        );
+
+        set({ worksUnsubscribe: unsubscribe });
+      },
 
       fetchProjects: async (userId) => {
         try {

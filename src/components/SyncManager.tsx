@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import i18n from '../i18n';
 import { stripUndefined } from '../utils/firestoreSafe';
 import { bekleyenYazmalariBildir } from '../store/bekleyenYazmalar';
+import { projeninCalismalariniYaz, anahtarlardanAraclar } from '../store/calismaYazma';
 
 const SAVE_DEBOUNCE_MS = 1000;
 
@@ -99,11 +100,77 @@ export default function SyncManager() {
       // Tam doküman gidiyorsa bütün araçların verisi yazılıyor demektir.
       const yoldakiler = metaDegisti ? new Set<string>(TOOL_STATE_KEYS) : new Set(degisenAraclar);
       ucusanEkle(projectId, yoldakiler);
-      return safeWrite(() => setDoc(doc(db, 'projects', projectId), govde, { merge: true }), "Firestore Save Error:")
+      return safeWrite(
+        () => Promise.all([
+          setDoc(doc(db, 'projects', projectId), govde, { merge: true }),
+          calismalariDaYaz(project, yoldakiler)
+        ]),
+        "Firestore Save Error:"
+      )
         .then((ok) => {
           ucusanCikar(projectId, yoldakiler);
           return ok;
         });
+    };
+
+    // GEÇİŞ DÖNEMİ: aynı veri bir de 'works' koleksiyonuna yazılıyor.
+    //
+    // Okuma hâlâ projenin toolData'sından yapılıyor, yani buranın bir hatası
+    // kullanıcıya yansımaz ve eski kopya güncel kalır. Okuma yeni kayıtlara
+    // çevrildiğinde geri dönülebilecek sağlam bir nokta olsun diye böyle.
+    //
+    // Yalnızca klasörün sahibi yazıyor: kurallar yeni bir çalışmayı ancak
+    // klasörün sahibine bağlı olarak kuruyor, ortak çalışanın kurulum yazması
+    // reddedilirdi. Ortakların düzenlemeleri şimdilik yalnızca eski yere
+    // gidiyor; okuma çevrildiğinde bu dal da açılacak.
+    const calismalariDaYaz = (project: Project, degisenAnahtarlar: ReadonlySet<string>) => {
+      const user = useAuthStore.getState().user;
+      if (!user || project.userId !== user.uid) return Promise.resolve();
+
+      const mevcutIdler = new Set(
+        useRoadmapStore.getState().works
+          .filter((w) => w.projectId === project.id)
+          .map((w) => w.id)
+      );
+      const araclar = anahtarlardanAraclar(degisenAnahtarlar);
+      if (araclar.size === 0) return Promise.resolve();
+
+      // Hatalar yutuluyor: bu yazma henüz kimseye görünmüyor, başarısız olması
+      // kullanıcıya "kaydedilemedi" dedirtmemeli. Asıl kayıt yukarıda.
+      return Promise.all(projeninCalismalariniYaz(project, mevcutIdler, araclar))
+        .then(() => undefined)
+        .catch((err) => {
+          console.error('Works mirror write failed:', err);
+        });
+    };
+
+    // İlk doldurma. Yukarıdaki ayna yazması yalnızca DEĞİŞEN araçları
+    // gönderiyor; hiç dokunulmayan çalışmalar yeni yerine kendiliğinden
+    // geçmezdi. Bu, proje başına bir kez, yalnızca eksik olanları yazar.
+    const doldurulan = new Set<string>();
+    const eksikleriDoldur = () => {
+      const durum = useRoadmapStore.getState();
+      const user = useAuthStore.getState().user;
+      // İki liste de gelmeden çalışmaz: works listesi eksikken "yok" sanıp
+      // her şeyi baştan kurmaya kalkardı.
+      if (!user || !durum.projectsLoaded || !durum.worksLoaded) return;
+
+      durum.projects.forEach((project) => {
+        if (project.userId !== user.uid) return;
+        if (doldurulan.has(project.id)) return;
+        doldurulan.add(project.id);
+
+        const mevcutIdler = new Set(
+          durum.works.filter((w) => w.projectId === project.id).map((w) => w.id)
+        );
+        const yazmalar = projeninCalismalariniYaz(project, mevcutIdler, undefined, true);
+        if (yazmalar.length === 0) return;
+        Promise.all(yazmalar).catch((err) => {
+          console.error('Works backfill failed:', err);
+          // Bir dahaki denemeye kapı açık kalsın.
+          doldurulan.delete(project.id);
+        });
+      });
     };
 
     const flushProjectSave = (projectId: string): Promise<boolean> => {
@@ -255,6 +322,9 @@ export default function SyncManager() {
     });
 
     const unsubscribe = useRoadmapStore.subscribe((state, prevState) => {
+      // Sunucudan liste geldikçe denenir; proje başına bir kez iş yapar.
+      eksikleriDoldur();
+
       // Proje değiştiyse, önceki projenin bekleyen kaydını iptal etmeden gönder.
       if (prevState.currentProjectId && prevState.currentProjectId !== state.currentProjectId) {
         flushProjectSave(prevState.currentProjectId);

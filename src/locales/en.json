@@ -695,5 +695,7 @@
   "share_remove_failed": "Could not remove the person",
   "expand_tool": "Show works",
   "collapse_tool": "Hide works",
-  "untitled_work": "Untitled"
+  "untitled_work": "Untitled",
+  "delete_work_title": "Delete work",
+  "delete_work_msg": "\"{{ad}}\" and everything in it will be deleted. This cannot be undone."
 }

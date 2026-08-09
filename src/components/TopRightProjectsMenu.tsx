@@ -6,10 +6,11 @@ import { useShallow } from 'zustand/react/shallow';
 import clsx from 'clsx';
 import ConfirmModal from './ConfirmModal';
 import { ajandaDugmesiGorunurMu } from '../utils/ajandaDugmesi';
-import { Folder, Plus, Trash2, ChevronDown, ChevronRight, Fish, RefreshCcw, Layers, Pencil, AlertOctagon, Scale, GitMerge, BarChart2, BarChart, Activity, Network, Target, Check, Brain, UsersRound } from 'lucide-react';
+import { Folder, Plus, Trash2, ChevronDown, ChevronRight, Fish, RefreshCcw, Layers, Pencil, AlertOctagon, Scale, GitMerge, BarChart2, BarChart, Activity, Network, Target, Check, Brain, UsersRound, Link2 } from 'lucide-react';
 import type { Project } from '../store/useRoadmapStore';
 import { toolTheme } from '../config/toolTheme';
-import { aracCalismalari, aracSecimEylemi } from '../config/toolWorks';
+import { aracCalismalari, aracSecimEylemi, calismayiYenidenAdlandir, calismayiSil } from '../config/toolWorks';
+import SharePanel from './SharePanel';
 
 const TOOL_OPTIONS: { id: ToolId; icon: typeof Network; label: string; color: string; bg: string }[] = [
   { id: 'mindmap', icon: Brain, label: 'tool_mindmap', color: 'text-purple-500', bg: 'bg-purple-100 dark:bg-purple-900/40' },
@@ -29,9 +30,120 @@ const TOOL_OPTIONS: { id: ToolId; icon: typeof Network; label: string; color: st
 ];
 
 /**
- * Menünün üçüncü katı: bir aracın içindeki çalışmalar (kırılım ağaçları, zihin
- * haritaları, SWOT analizleri...). Eskiden burada yalnızca bir sayı vardı;
- * "3" yazıyordu ama o üçünün hangileri olduğu menüden görünmüyordu.
+ * Tek bir çalışma satırı: adı, adını değiştirme ve silme.
+ *
+ * Eylemler açık projenin verisi üzerinde çalışıyor. Bu yüzden başka bir
+ * projenin çalışmasına dokunulacaksa önce o proje yükleniyor; yoksa eylem
+ * yanlış projenin listesinde arar, kimliği bulamaz ve sessizce hiçbir şey
+ * yapmaz.
+ */
+function WorkTreeItem({
+  project, tool, calisma, isCurrentProject, onOpen, requestDelete
+}: {
+  project: Project;
+  tool: ToolId;
+  calisma: { id: string; ad: string };
+  isCurrentProject: boolean;
+  onOpen: (calismaId: string) => void;
+  requestDelete: (t: string, m: string, cb: () => void) => void;
+}) {
+  const { t } = useTranslation();
+  const [isEditing, setIsEditing] = useState(false);
+  const [editName, setEditName] = useState(calisma.ad);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const gorunenAd = calisma.ad || t('untitled_work', { defaultValue: 'Untitled' });
+
+  useEffect(() => {
+    if (isEditing) inputRef.current?.focus();
+  }, [isEditing]);
+
+  // Ad dışarıdan değişmiş olabilir (başka bir cihaz, geri al). Düzenleme
+  // kutusu açık değilken güncel adı yansıtır.
+  useEffect(() => {
+    if (!isEditing) setEditName(calisma.ad);
+  }, [calisma.ad, isEditing]);
+
+  const projeyiHazirla = () => {
+    if (!isCurrentProject) useRoadmapStore.getState().loadProject(project.id);
+    return useRoadmapStore.getState();
+  };
+
+  const adiKaydet = () => {
+    const yeni = editName.trim();
+    if (yeni && yeni !== calisma.ad) {
+      calismayiYenidenAdlandir(projeyiHazirla(), tool, project.id, calisma.id, yeni);
+    } else {
+      setEditName(calisma.ad);
+    }
+    setIsEditing(false);
+  };
+
+  return (
+    <li className="group/work relative flex items-center">
+      {isEditing ? (
+        <input
+          ref={inputRef}
+          type="text"
+          value={editName}
+          onChange={(e) => setEditName(e.target.value)}
+          onBlur={adiKaydet}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') adiKaydet();
+            if (e.key === 'Escape') {
+              setEditName(calisma.ad);
+              setIsEditing(false);
+            }
+          }}
+          aria-label={t('rename_title')}
+          className="my-0.5 w-full min-w-0 rounded border border-indigo-300 bg-white px-1.5 py-0.5 text-xs text-slate-800 outline-none dark:border-indigo-500 dark:bg-slate-800 dark:text-slate-100"
+        />
+      ) : (
+        <>
+          <button
+            onClick={() => onOpen(calisma.id)}
+            onDoubleClick={() => setIsEditing(true)}
+            className="w-full truncate rounded-lg px-2 py-1 pe-14 text-start text-xs text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+            title={gorunenAd}
+          >
+            {gorunenAd}
+          </button>
+
+          <div className="absolute end-0 flex items-center opacity-0 transition-opacity group-hover/work:opacity-100 focus-within:opacity-100">
+            <button
+              onClick={(e) => { e.stopPropagation(); setIsEditing(true); }}
+              className="p-1.5 text-slate-400 transition-colors hover:text-indigo-500"
+              title={t('rename_title')}
+              aria-label={t('rename_title')}
+            >
+              <Pencil size={12} />
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                requestDelete(
+                  t('delete_work_title', { defaultValue: 'Delete work' }),
+                  t('delete_work_msg', { ad: gorunenAd, defaultValue: '"{{ad}}" will be deleted.' }),
+                  () => calismayiSil(projeyiHazirla(), tool, project.id, calisma.id)
+                );
+              }}
+              className="p-1.5 text-slate-400 transition-colors hover:text-red-500"
+              title={t('delete')}
+              aria-label={t('delete')}
+            >
+              <Trash2 size={12} />
+            </button>
+          </div>
+        </>
+      )}
+    </li>
+  );
+}
+
+/**
+ * Menünün ikinci katı: bir araç ve içindeki çalışmalar (kırılım ağaçları,
+ * zihin haritaları, SWOT analizleri...). Eskiden burada yalnızca bir sayı
+ * vardı; "3" yazıyordu ama o üçünün hangileri olduğu menüden görünmüyordu.
  */
 function ToolTreeItem({
   project, tool, isCurrentProject, onOpenTool, onClose, requestDelete
@@ -107,15 +219,15 @@ function ToolTreeItem({
       {isExpanded && (
         <ul className="ms-[18px] flex flex-col border-s border-slate-100 ps-2 dark:border-slate-700/60">
           {calismalar.map((calisma) => (
-            <li key={calisma.id}>
-              <button
-                onClick={() => calismaAc(calisma.id)}
-                className="w-full truncate rounded-lg px-2 py-1 text-start text-xs text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
-                title={calisma.ad || t('untitled_work', { defaultValue: 'Untitled' })}
-              >
-                {calisma.ad || t('untitled_work', { defaultValue: 'Untitled' })}
-              </button>
-            </li>
+            <WorkTreeItem
+              key={calisma.id}
+              project={project}
+              tool={tool.id}
+              calisma={calisma}
+              isCurrentProject={isCurrentProject}
+              onOpen={calismaAc}
+              requestDelete={requestDelete}
+            />
           ))}
         </ul>
       )}
@@ -123,7 +235,7 @@ function ToolTreeItem({
   );
 }
 
-function ProjectTreeItem({ project, isCurrent, onClose, requestDelete }: { project: Project; isCurrent: boolean; onClose: () => void; requestDelete: (t: string, m: string, cb: () => void) => void }) {
+function ProjectTreeItem({ project, isCurrent, onClose, requestDelete, requestShare }: { project: Project; isCurrent: boolean; onClose: () => void; requestDelete: (t: string, m: string, cb: () => void) => void; requestShare: (projectId: string) => void }) {
   // clearToolData artık ToolTreeItem'ın işi; araç satırı oraya taşındı.
   const {  loadProject, setActiveTool, deleteProject, updateProjectName  } = useRoadmapStore(useShallow((state) => ({
       loadProject: state.loadProject,
@@ -205,7 +317,21 @@ function ProjectTreeItem({ project, isCurrent, onClose, requestDelete }: { proje
         
         {!isEditing && (
           <div className="flex items-center gap-1 shrink-0 ms-2 opacity-40 group-hover:opacity-100 transition-opacity">
-            <button 
+            <button
+              onClick={(e) => {
+                 e.stopPropagation();
+                 requestShare(project.id);
+              }}
+              className="relative p-2 text-slate-400 hover:text-indigo-500 transition-colors"
+              title={t('share')} aria-label={t('share')}
+            >
+              <Link2 size={14} />
+              {/* Paylaşımda olan klasör listeden de belli olsun. */}
+              {project.isPublic && (
+                <span aria-hidden="true" className="absolute end-1 top-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              )}
+            </button>
+            <button
               onClick={(e) => {
                  e.stopPropagation();
                  setIsEditing(true);
@@ -260,6 +386,9 @@ export default function TopRightProjectsMenu() {
   const [newProjectName, setNewProjectName] = useState('');
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
   const [confirmState, setConfirmState] = useState<{isOpen: boolean, title: string, message: string, onConfirm: () => void}>({ isOpen: false, title: '', message: '', onConfirm: () => {} });
+  // Paylaşım penceresi menünün dışına (document.body) çiziliyor; menü kapansa
+  // da açık kalsın diye tek örnek burada duruyor, satırların içinde değil.
+  const [paylasilanProje, setPaylasilanProje] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const requestDelete = (title: string, message: string, onConfirm: () => void) => { setConfirmState({ isOpen: true, title, message, onConfirm }); };
@@ -396,9 +525,10 @@ export default function TopRightProjectsMenu() {
             <ProjectTreeItem 
               key={p.id} 
               project={p} 
-              isCurrent={p.id === currentProjectId} 
+              isCurrent={p.id === currentProjectId}
               onClose={() => setActiveTopMenu(null)}
               requestDelete={requestDelete}
+              requestShare={setPaylasilanProje}
             />
           ))}
           {projects.length === 0 && !isCreating && (
@@ -410,6 +540,7 @@ export default function TopRightProjectsMenu() {
         </div>
       </div>
       <ConfirmModal isOpen={confirmState.isOpen} title={confirmState.title} message={confirmState.message} onConfirm={confirmState.onConfirm} onClose={() => setConfirmState(p => ({...p, isOpen: false}))} />
+      {paylasilanProje && <SharePanel projectId={paylasilanProje} onClose={() => setPaylasilanProje(null)} />}
     </div>
   );
 }

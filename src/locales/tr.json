@@ -695,5 +695,7 @@
   "share_remove_failed": "Kişi çıkarılamadı",
   "expand_tool": "Çalışmaları göster",
   "collapse_tool": "Çalışmaları gizle",
-  "untitled_work": "Adsız çalışma"
+  "untitled_work": "Adsız çalışma",
+  "delete_work_title": "Çalışmayı sil",
+  "delete_work_msg": "\"{{ad}}\" ve içindeki her şey silinecek. Bu işlem geri alınamaz."
 }

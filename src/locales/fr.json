@@ -695,5 +695,7 @@
   "share_remove_failed": "Impossible de retirer cette personne",
   "expand_tool": "Afficher les travaux",
   "collapse_tool": "Masquer les travaux",
-  "untitled_work": "Sans titre"
+  "untitled_work": "Sans titre",
+  "delete_work_title": "Supprimer le travail",
+  "delete_work_msg": "\"{{ad}}\" et tout son contenu seront supprimés. Cette action est irréversible."
 }

@@ -695,5 +695,7 @@
   "share_remove_failed": "تعذّرت إزالة الشخص",
   "expand_tool": "إظهار الأعمال",
   "collapse_tool": "إخفاء الأعمال",
-  "untitled_work": "بلا عنوان"
+  "untitled_work": "بلا عنوان",
+  "delete_work_title": "حذف العمل",
+  "delete_work_msg": "سيتم حذف \"{{ad}}\" وكل ما بداخله. لا يمكن التراجع عن هذا."
 }

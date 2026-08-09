@@ -695,5 +695,7 @@
   "share_remove_failed": "削除できませんでした",
   "expand_tool": "作業を表示",
   "collapse_tool": "作業を隠す",
-  "untitled_work": "無題"
+  "untitled_work": "無題",
+  "delete_work_title": "作業を削除",
+  "delete_work_msg": "「{{ad}}」とその中身がすべて削除されます。元に戻せません。"
 }

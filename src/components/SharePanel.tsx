@@ -13,17 +13,24 @@ import { MenuPortal } from '../utils/MenuPortal';
 
 interface Props {
   onClose: () => void;
+  /**
+   * Hangi projenin paylaşımı. Verilmezse açık olan proje. "Çalışmalarım"
+   * menüsündeki paylaş düğmesi, açık olmayan bir projeyi de paylaşabilmek
+   * için burayı dolduruyor.
+   */
+  projectId?: string;
 }
 
-export default function SharePanel({ onClose }: Props) {
+export default function SharePanel({ onClose, projectId: istenenProje }: Props) {
   const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
-  const currentProjectId = useRoadmapStore((s) => s.currentProjectId);
+  const acikProjeId = useRoadmapStore((s) => s.currentProjectId);
   const activeTool = useRoadmapStore((s) => s.activeTool);
   const projects = useRoadmapStore((s) => s.projects);
   const setProjectPublic = useRoadmapStore((s) => s.setProjectPublic);
   const removeProjectMember = useRoadmapStore((s) => s.removeProjectMember);
 
+  const currentProjectId = istenenProje ?? acikProjeId;
   const project = projects.find((p) => p.id === currentProjectId);
   const isOwner = Boolean(project && user && project.userId === user.uid);
   const isPublic = Boolean(project?.isPublic);
@@ -37,10 +44,14 @@ export default function SharePanel({ onClose }: Props) {
   const kapatDugmesi = useRef<HTMLButtonElement>(null);
 
   const url = useMemo(() => {
-    if (!currentProjectId || !activeTool) return '';
+    if (!currentProjectId) return '';
     const taban = import.meta.env.BASE_URL.replace(/\/$/, '');
-    return `${window.location.origin}${taban}/project/${currentProjectId}/${activeTool}`;
-  }, [currentProjectId, activeTool]);
+    // Açık projeyi paylaşırken link açık aracı da taşıyor: karşı taraf senin
+    // baktığın yere düşsün. Menüden başka bir proje paylaşılıyorsa öyle bir
+    // "şu an bakılan araç" yok, link projenin köküne gider.
+    const aracEki = currentProjectId === acikProjeId && activeTool ? `/${activeTool}` : '';
+    return `${window.location.origin}${taban}/project/${currentProjectId}${aracEki}`;
+  }, [currentProjectId, acikProjeId, activeTool]);
 
   // Sahip listede yer almaz; katılanlar erişim listesinden okunuyor.
   // Bu değişiklikten önce katılmış olanların adı kayıtlı değil: onlar da

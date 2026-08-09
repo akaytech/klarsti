@@ -27,6 +27,16 @@ export type CalismaSecimEylemi =
 interface AracTanimi {
   /** toolData içindeki dizi. */
   anahtar: string;
+  /** Çalışmanın adını değiştiren store eylemi. */
+  yenidenAdlandir: string;
+  /** Çalışmayı silen store eylemi. */
+  sil: string;
+  /**
+   * Pareto ve histogramın eylemleri ilk argüman olarak proje kimliğini
+   * bekliyor, diğerleri beklemiyor. İmza farkı burada tutuluyor ki çağıran
+   * taraf on dört ayrı durumu tek tek bilmek zorunda kalmasın.
+   */
+  projeliImza?: boolean;
   /**
    * Çalışmanın adını taşıyan alan. Araçtan araca değişiyor: kırılım ağacının
    * "name"i var, SWOT'un "title"ı, balık kılçığının problem cümlesi, PDCA'nın
@@ -48,26 +58,57 @@ interface AracTanimi {
 }
 
 const TANIMLAR: Record<ToolId, AracTanimi | null> = {
-  wbs: { anahtar: 'wbsTrees', adAlani: 'name', enAzKutu: 2, secim: 'setActiveWbsTree' },
-  '5whys': { anahtar: 'fiveWhysAnalyses', adAlani: 'name', enAzKutu: 2, secim: 'setActiveFiveWhys' },
-  fta: { anahtar: 'ftaAnalyses', adAlani: 'name', enAzKutu: 2, secim: 'setActiveFta' },
-  mindmap: { anahtar: 'mindmaps', adAlani: 'name', enAzKutu: 2, secim: 'setActiveMindmap' },
-  flowchart: { anahtar: 'flowcharts', adAlani: 'name', secim: 'setActiveFlowchart' },
-  orgchart: { anahtar: 'orgcharts', adAlani: 'name', secim: 'setActiveOrgchart' },
-  vsm: { anahtar: 'vsmMaps', adAlani: 'name', secim: 'setActiveVsmMap' },
-  swot: { anahtar: 'swot', adAlani: 'title' },
-  ishikawa: { anahtar: 'ishikawa', adAlani: 'problemStatement' },
-  pdca: { anahtar: 'pdca', adAlani: 'goal' },
-  waterfall: { anahtar: 'waterfall', adAlani: 'name' },
-  pareto: { anahtar: 'pareto', adAlani: 'title' },
-  histogram: { anahtar: 'histogram', adAlani: 'title' },
-  decision: { anahtar: 'decision', adAlani: 'name' },
+  wbs: { anahtar: 'wbsTrees', adAlani: 'name', enAzKutu: 2, secim: 'setActiveWbsTree', yenidenAdlandir: 'renameWbsTree', sil: 'deleteWbsTree' },
+  '5whys': { anahtar: 'fiveWhysAnalyses', adAlani: 'name', enAzKutu: 2, secim: 'setActiveFiveWhys', yenidenAdlandir: 'renameFiveWhysAnalysis', sil: 'deleteFiveWhysAnalysis' },
+  fta: { anahtar: 'ftaAnalyses', adAlani: 'name', enAzKutu: 2, secim: 'setActiveFta', yenidenAdlandir: 'renameFtaAnalysis', sil: 'deleteFtaAnalysis' },
+  mindmap: { anahtar: 'mindmaps', adAlani: 'name', enAzKutu: 2, secim: 'setActiveMindmap', yenidenAdlandir: 'renameMindmap', sil: 'deleteMindmap' },
+  flowchart: { anahtar: 'flowcharts', adAlani: 'name', secim: 'setActiveFlowchart', yenidenAdlandir: 'renameFlowchart', sil: 'deleteFlowchart' },
+  orgchart: { anahtar: 'orgcharts', adAlani: 'name', secim: 'setActiveOrgchart', yenidenAdlandir: 'renameOrgchart', sil: 'deleteOrgchart' },
+  vsm: { anahtar: 'vsmMaps', adAlani: 'name', secim: 'setActiveVsmMap', yenidenAdlandir: 'renameVsmMap', sil: 'deleteVsmMap' },
+  swot: { anahtar: 'swot', adAlani: 'title', yenidenAdlandir: 'updateSwotTitle', sil: 'deleteSwot' },
+  ishikawa: { anahtar: 'ishikawa', adAlani: 'problemStatement', yenidenAdlandir: 'updateIshikawaProblem', sil: 'deleteIshikawa' },
+  pdca: { anahtar: 'pdca', adAlani: 'goal', yenidenAdlandir: 'updatePdcaGoal', sil: 'deletePdcaCycle' },
+  waterfall: { anahtar: 'waterfall', adAlani: 'name', yenidenAdlandir: 'updateWaterfallProjectName', sil: 'deleteWaterfallProject' },
+  pareto: { anahtar: 'pareto', adAlani: 'title', yenidenAdlandir: 'updateParetoTitle', sil: 'deleteParetoProject', projeliImza: true },
+  histogram: { anahtar: 'histogram', adAlani: 'title', yenidenAdlandir: 'updateHistogramTitle', sil: 'deleteHistogramProject', projeliImza: true },
+  decision: { anahtar: 'decision', adAlani: 'name', yenidenAdlandir: 'updateDecisionProjectName', sil: 'deleteDecisionProject' },
   // Ajanda projeye ait değil, kişisel. Menüde hiç yer almıyor.
   notepad: null
 };
 
 export const aracSecimEylemi = (tool: ToolId): CalismaSecimEylemi | undefined =>
   TANIMLAR[tool]?.secim;
+
+/**
+ * Çalışma üzerindeki eylemler. Store nesnesi dışarıdan veriliyor: bu dosya
+ * bir yapılandırma dosyası, store'u içe aktarsa iki modül birbirini çağıran
+ * bir halkaya girerdi.
+ *
+ * Eylem adları ve imzaları araçtan araca değiştiği için `any` kaçınılmaz;
+ * on dört ayrı imzayı tek bir tipte toplamak, kazandırdığından fazlasını
+ * okunaklılıktan götürürdü.
+ */
+export function calismayiYenidenAdlandir(
+  store: Record<string, any>, tool: ToolId, projectId: string, calismaId: string, yeniAd: string
+) {
+  const tanim = TANIMLAR[tool];
+  if (!tanim) return;
+  const eylem = store[tanim.yenidenAdlandir];
+  if (typeof eylem !== 'function') return;
+  if (tanim.projeliImza) eylem(projectId, calismaId, yeniAd);
+  else eylem(calismaId, yeniAd);
+}
+
+export function calismayiSil(
+  store: Record<string, any>, tool: ToolId, projectId: string, calismaId: string
+) {
+  const tanim = TANIMLAR[tool];
+  if (!tanim) return;
+  const eylem = store[tanim.sil];
+  if (typeof eylem !== 'function') return;
+  if (tanim.projeliImza) eylem(projectId, calismaId);
+  else eylem(calismaId);
+}
 
 /** Bir projedeki bir aracın içinde duran çalışmalar. */
 export function aracCalismalari(

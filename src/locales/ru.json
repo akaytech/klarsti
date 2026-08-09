@@ -695,5 +695,7 @@
   "share_remove_failed": "Не удалось убрать участника",
   "expand_tool": "Показать работы",
   "collapse_tool": "Скрыть работы",
-  "untitled_work": "Без названия"
+  "untitled_work": "Без названия",
+  "delete_work_title": "Удалить работу",
+  "delete_work_msg": "\"{{ad}}\" и всё её содержимое будут удалены. Отменить это нельзя."
 }

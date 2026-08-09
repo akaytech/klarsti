@@ -695,5 +695,7 @@
   "share_remove_failed": "Não foi possível remover a pessoa",
   "expand_tool": "Mostrar trabalhos",
   "collapse_tool": "Ocultar trabalhos",
-  "untitled_work": "Sem título"
+  "untitled_work": "Sem título",
+  "delete_work_title": "Excluir trabalho",
+  "delete_work_msg": "\"{{ad}}\" e tudo o que há nele serão excluídos. Não é possível desfazer."
 }

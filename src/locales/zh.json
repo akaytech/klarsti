@@ -695,5 +695,7 @@
   "share_remove_failed": "无法移出该成员",
   "expand_tool": "显示作品",
   "collapse_tool": "隐藏作品",
-  "untitled_work": "未命名"
+  "untitled_work": "未命名",
+  "delete_work_title": "删除作品",
+  "delete_work_msg": "将删除“{{ad}}”及其全部内容，且无法撤销。"
 }

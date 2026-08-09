@@ -298,6 +298,19 @@ export interface Project {
 }
 
 /**
+ * Bir aracın başlangıç değeri — ama klasör bizimse.
+ *
+ * Klasörün kaydı bize kapalıysa (tek bir çalışma paylaşılmışsa) elimizde
+ * kaydı olmayan araçlar BOŞ kalmalı. Yeni proje açar gibi başlangıç çalışması
+ * uydurulursa karşı taraf, hiç paylaşılmamış bir aracın altında boş bir
+ * çalışma görüyor. "Değer Akışı"nda tam bu oldu: ötekiler menüde "en az iki
+ * kutu" ölçütüyle eleniyor, onda öyle bir ölçüt yok ve uydurulan boş harita
+ * gerçek bir çalışma gibi göründü.
+ */
+const aracBaslangici = (project: Project, key: string) =>
+  project.klasorYok ? [] : getInitialValueForKey(key);
+
+/**
  * 'works' koleksiyonundaki tek bir kayıt: bir kırılım ağacı, bir zihin
  * haritası, bir SWOT analizi. Çalışmaların içeriği artık buradan okunuyor
  * (bkz. calismaOkuma.ts); projenin toolData'sı bir süre daha yedek olarak
@@ -488,7 +501,7 @@ function projeleriTazele(yeniProjeler?: Project[]) {
         korunanAraclar[k] = mevcut;
         return;
       }
-      const gelen = acikProje.toolData[k] || getInitialValueForKey(k);
+      const gelen = acikProje.toolData[k] || aracBaslangici(acikProje, k);
       const deger = derinEsit(mevcut, gelen) ? mevcut : gelen;
       updates[k] = deger;
       korunanAraclar[k] = deger;
@@ -924,7 +937,7 @@ export const useRoadmapStore = create<RoadmapState>()(
         if (project) {
           const updates: any = { currentProjectId: id };
           TOOL_STATE_KEYS.forEach(k => {
-            updates[k] = project.toolData[k] || getInitialValueForKey(k);
+            updates[k] = project.toolData[k] || aracBaslangici(project, k);
           });
           set(updates);
         }

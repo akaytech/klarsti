@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import { Check, Copy, Loader2, ShieldOff, UserMinus, Users, X } from 'lucide-react';
 import { useRoadmapStore } from '../store/useRoadmapStore';
 import { useAuthStore } from '../store/useAuthStore';
+import { MenuPortal } from '../utils/MenuPortal';
 
 // Paylaşım penceresi. Eskiden "Paylaş" düğmesi tek tıkla projeyi kalıcı olarak
 // herkese açıyor ve linki panoya kopyalıyordu; geri almanın ya da katılanları
@@ -104,7 +105,11 @@ export default function SharePanel({ onClose }: Props) {
 
   if (!project) return null;
 
+  // Portal şart: düğmeyi taşıyan küme, kılavuz paneli açıkken transform
+  // alıyor. Transform'lu bir ata, içindeki position:fixed öğenin referansını
+  // değiştirir; pencere ekranın ortası yerine 400px sola kayardı.
   return (
+    <MenuPortal>
     <div
       className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm"
       onClick={onClose}
@@ -253,5 +258,6 @@ export default function SharePanel({ onClose }: Props) {
         </div>
       </div>
     </div>
+    </MenuPortal>
   );
 }

@@ -5,6 +5,11 @@
     <!-- Sekme ikonu küçük dosya olmalı: eskiden 1024x1024'lük logo.png (837 KB)
          verildiği için her ziyaret sırf favicon uğruna o dosyayı indiriyordu. -->
     <link rel="icon" type="image/png" sizes="32x32" href="%BASE_URL%favicon-32.png" />
+    <!-- Google arama sonuclarindaki ikon icin. Kucuk olani sekme icin yeterli
+         ama Google ikonun 48'in kati bir boyutta olmasini istiyor; 32x32 onun
+         altinda kaliyor ve secilecegi garanti degil. Tarayici sekme icin yine
+         kucugunu aliyor, bu dosya yalnizca 3 KB. -->
+    <link rel="icon" type="image/png" sizes="192x192" href="%BASE_URL%logo-192.png" />
     <link rel="apple-touch-icon" href="%BASE_URL%logo-192.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Mobil tarayicilarda adres cubugunun rengi. Manifest'teki theme_color
@@ -52,9 +57,19 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Klarsti",
-      "url": "https://klarsti.com/"
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "name": "Klarsti",
+          "url": "https://klarsti.com/"
+        },
+        {
+          "@type": "Organization",
+          "name": "Klarsti",
+          "url": "https://klarsti.com/",
+          "logo": "https://klarsti.com/logo-512.png"
+        }
+      ]
     }
     </script>
 

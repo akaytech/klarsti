@@ -12,6 +12,13 @@
     ],
     "cleanUrls": true,
     "trailingSlash": false,
+    "redirects": [
+      {
+        "source": "/favicon.ico",
+        "destination": "/logo-192.png",
+        "type": 301
+      }
+    ],
     "rewrites": [
       {
         "source": "**",

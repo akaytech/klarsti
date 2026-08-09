@@ -1,12 +1,12 @@
 import { create } from 'zustand';
 import { temporal } from 'zundo';
 import { v4 as uuidv4 } from 'uuid';
-import { doc, setDoc, deleteDoc, collection, query, where, onSnapshot, or, arrayUnion, arrayRemove, getDoc, updateDoc, deleteField } from 'firebase/firestore';
+import { doc, setDoc, deleteDoc, collection, query, where, onSnapshot, or, arrayUnion, arrayRemove, getDoc, getDocs, updateDoc, deleteField } from 'firebase/firestore';
 import { db, logAppEvent } from '../firebase';
 import i18n from '../i18n';
 import { useAuthStore } from './useAuthStore';
 import { bekleyenAraclar, kisiselBekliyorMu } from './bekleyenYazmalar';
-import { projeninCalismalariniSil, calismalarinKlasorAdiniGuncelle, calismalardanAyril } from './calismaYazma';
+import { projeninCalismalariniSil, calismalarinKlasorAdiniGuncelle, calismalardanAyril, calismaDokumanId } from './calismaYazma';
 import { projeyeCalismalariUygula } from './calismaOkuma';
 import { gecmisiBagla, yazmayiIsle, gecmisiTemizle } from './gecmis';
 import { toast } from 'sonner';
@@ -287,6 +287,14 @@ export interface Project {
   members?: Record<string, ProjectMember>;
   updatedAt: number;
   userId: string;
+  /**
+   * Klasörün kendi kaydı bize kapalı; elimizde yalnızca içindeki bir iki
+   * çalışmanın kaydı var. Tek bir çalışma paylaşıldığında böyle oluyor:
+   * karşı taraf çalışmayı kendi klasör yolunda görmeli ama o klasörün
+   * ayarlarını, üyelerini ve öteki çalışmalarını görmemeli. Klasör satırı
+   * yalnızca bir başlık; adı çalışma kaydındaki kopyadan geliyor.
+   */
+  klasorYok?: boolean;
 }
 
 /**
@@ -346,6 +354,18 @@ export interface RoadmapState extends NotepadSlice, JournalSlice, FiveWhysSlice,
   joinSharedProject: (id: string) => Promise<boolean>;
   /** Sahibin, katılan birini projeden çıkarması. */
   removeProjectMember: (projectId: string, uid: string) => Promise<boolean>;
+
+  /** Çalışmaların kendi linklerini açar ya da kapatır. */
+  setWorksPublic: (dokumanIdleri: string[], isPublic: boolean) => Promise<boolean>;
+  /**
+   * Paylaşılan çalışma linkiyle katılma. workId verilirse tek çalışmaya,
+   * verilmezse o araçta paylaşıma açılmış bütün çalışmalara.
+   */
+  joinSharedWorks: (projectId: string, tool: ToolId, workId?: string) => Promise<boolean>;
+  /** Sahibin, katılan birini çalışmalardan çıkarması. */
+  removeWorkMember: (dokumanIdleri: string[], uid: string) => Promise<boolean>;
+  /** Paylaşılan çalışmadan ayrılma (klasörün kendisi bize kapalıyken). */
+  leaveSharedWorks: (projectId: string) => Promise<boolean>;
 }
 
 /**
@@ -376,6 +396,42 @@ const gecmiseGirenler = (state: RoadmapState) => ({
 let gecmisHandleSet: ((oncekiDurum: Record<string, unknown>) => void) | null = null;
 
 /**
+ * Yalnızca çalışma kaydını görebildiğimiz klasörler.
+ *
+ * Tek bir çalışma paylaşıldığında karşı tarafa klasörün kaydı açılmıyor;
+ * açsaydık klasörün paylaşılmamış ayarları, üye listesi ve öteki çalışmaları
+ * da görünürdü. Klasör satırı burada yalnızca bir başlık olarak kuruluyor,
+ * adı çalışma kaydındaki kopyadan geliyor.
+ */
+function klasorsuzProjeler(kendiProjeler: readonly Project[], works: readonly WorkRecord[]): Project[] {
+  const bilinen = new Set(kendiProjeler.map((p) => p.id));
+  const uid = useAuthStore.getState().user?.uid;
+  const gruplar = new Map<string, WorkRecord[]>();
+  works.forEach((w) => {
+    if (!w.projectId || bilinen.has(w.projectId)) return;
+    // Kendi kaydımızsa klasörü de bizimdir; listede yoksa klasör silinmiş ve
+    // kayıt öksüz kalmış demektir. Öyle bir kayda klasör uydurulmaz, süpürülür
+    // (bkz. SyncManager'daki öksüz süpürmesi).
+    if (w.ownerId === uid) return;
+    const liste = gruplar.get(w.projectId);
+    if (liste) liste.push(w);
+    else gruplar.set(w.projectId, [w]);
+  });
+
+  return Array.from(gruplar.entries()).map(([projectId, kayitlar]) => {
+    const iskelet: Project = {
+      id: projectId,
+      name: kayitlar[0].projectName || '',
+      toolData: {},
+      updatedAt: Math.max(...kayitlar.map((k) => k.updatedAt || 0)),
+      userId: kayitlar[0].ownerId,
+      klasorYok: true,
+    };
+    return projeyeCalismalariUygula(iskelet, kayitlar, false);
+  });
+}
+
+/**
  * Projeleri çalışma kayıtlarıyla birleştirip duruma yazar.
  *
  * İki dinleyici de buradan geçiyor: proje listesi yenilendiğinde ve çalışma
@@ -392,9 +448,14 @@ let gecmisHandleSet: ((oncekiDurum: Record<string, unknown>) => void) | null = n
  */
 function projeleriTazele(yeniProjeler?: Project[]) {
   const durum = useRoadmapStore.getState();
-  const kaynak = yeniProjeler ?? durum.projects;
+  // Klasörü bize kapalı olanlar hariç: onlar aşağıda çalışma kayıtlarından
+  // yeniden kuruluyor, elimizdeki hali sonuç değil ara üründü.
+  const kaynak = (yeniProjeler ?? durum.projects).filter((p) => !p.klasorYok);
   const birlesik = durum.worksLoaded
-    ? kaynak.map((p) => projeyeCalismalariUygula(p, durum.works))
+    ? [
+        ...kaynak.map((p) => projeyeCalismalariUygula(p, durum.works)),
+        ...klasorsuzProjeler(kaynak, durum.works),
+      ]
     : kaynak;
 
   const updates: Partial<RoadmapState> & Record<string, any> = { projects: birlesik };
@@ -903,12 +964,17 @@ export const useRoadmapStore = create<RoadmapState>()(
           toast.error(i18n.t('delete_error') + e.message, { id: 'delete-error' });
 
         if (project && project.userId !== user.uid) {
-             // Ayrılan kişi katılanlar listesinden de düşer; yoksa sahibin
-             // ekranında hâlâ içerideymiş gibi görünürdü.
-             updateDoc(doc(db, 'projects', id), {
-               sharedWith: arrayRemove(user.uid),
-               [`members.${user.uid}`]: deleteField()
-             }).catch(bildirHata);
+             // Klasörün kendi kaydı bize kapalıysa (tek bir çalışma
+             // paylaşılmışsa) orada silinecek bir üyelik yok; ayrılmak
+             // yalnızca çalışmaların erişim listesinden çıkmak demek.
+             if (!project.klasorYok) {
+               // Ayrılan kişi katılanlar listesinden de düşer; yoksa sahibin
+               // ekranında hâlâ içerideymiş gibi görünürdü.
+               updateDoc(doc(db, 'projects', id), {
+                 sharedWith: arrayRemove(user.uid),
+                 [`members.${user.uid}`]: deleteField()
+               }).catch(bildirHata);
+             }
              // Çalışmaların erişim listeleri ayrı duruyor; oradan çıkılmazsa
              // klasörden ayrılan kişi çalışmaları görmeye devam ederdi.
              Promise.all(
@@ -957,6 +1023,112 @@ export const useRoadmapStore = create<RoadmapState>()(
         } catch (error) {
           console.error("setProjectPublic error:", error);
           toast.error(i18n.t('error_set_public', { defaultValue: 'Error sharing project' }), { id: 'error-set-public' });
+          return false;
+        }
+      },
+
+      // Bir araç ya da tek bir çalışma paylaşılırken, o an listede duran
+      // çalışmaların linki açılıyor. Sonradan eklenen çalışma kendiliğinden
+      // dahil olmuyor: paylaşım o anki listeye veriliyor, klasöre değil.
+      setWorksPublic: async (dokumanIdleri, isPublic) => {
+        if (dokumanIdleri.length === 0) return false;
+        try {
+          await Promise.all(
+            dokumanIdleri.map((id) => setDoc(doc(db, 'works', id), { isPublic }, { merge: true }))
+          );
+          return true;
+        } catch (error) {
+          console.error("setWorksPublic error:", error);
+          toast.error(i18n.t('error_set_public', { defaultValue: 'Error sharing project' }), { id: 'error-set-public' });
+          return false;
+        }
+      },
+
+      // Paylaşılan çalışma linkiyle katılma.
+      //
+      // Tek çalışmanın kaydı doğrudan okunuyor; araç paylaşımında ise o
+      // araçta linki açık olan çalışmalar sorgulanıyor. Sorgunun 'isPublic'
+      // koşulu şart: kurallar ancak o zaman sonucun tamamına izin verebiliyor.
+      joinSharedWorks: async (projectId, tool, workId) => {
+        const user = useAuthStore.getState().user;
+        if (!user) return false;
+
+        // Kurallar katılmayı "kendini listenin SONUNA ekle" olarak tanımlıyor.
+        // Zaten listedeysek gönderilecek dizi eşleşmez ve yazma reddedilir;
+        // o yüzden bu durumda hiç denenmiyor, katılmış sayılıyoruz.
+        const katil = async (ref: any, veri: any) => {
+          if ((veri.readers ?? []).includes(user.uid)) return true;
+          const govde: Record<string, any> = {
+            readers: arrayUnion(user.uid),
+            sharedWith: arrayUnion(user.uid),
+            [`members.${user.uid}`]: {
+              name: user.name || '',
+              email: user.email || '',
+              joinedAt: Date.now()
+            }
+          };
+          await updateDoc(ref, govde);
+          return true;
+        };
+
+        try {
+          if (workId) {
+            const ref = doc(db, 'works', calismaDokumanId(projectId, workId));
+            const snap = await getDoc(ref);
+            if (!snap.exists()) return false;
+            const veri = snap.data() as WorkRecord;
+            if (!veri.isPublic) return false;
+            return await katil(ref, veri);
+          }
+
+          const q = query(
+            collection(db, 'works'),
+            where('projectId', '==', projectId),
+            where('tool', '==', tool),
+            where('isPublic', '==', true)
+          );
+          const snap = await getDocs(q);
+          if (snap.empty) return false;
+          await Promise.all(snap.docs.map((d) => katil(d.ref, d.data() as WorkRecord)));
+          return true;
+        } catch (error) {
+          console.error("joinSharedWorks error:", error);
+          return false;
+        }
+      },
+
+      // Sahibin, katılan birini çalışmalardan çıkarması. Kişi hem görebilenler
+      // hem de tek tek davet edilenler listesinden silinmeli; yalnızca
+      // birinden çıkarılsa sonraki tazeleme erişimi geri verirdi.
+      removeWorkMember: async (dokumanIdleri, uid) => {
+        if (dokumanIdleri.length === 0) return false;
+        try {
+          await Promise.all(dokumanIdleri.map((id) => updateDoc(doc(db, 'works', id), {
+            readers: arrayRemove(uid),
+            sharedWith: arrayRemove(uid),
+            [`members.${uid}`]: deleteField()
+          })));
+          return true;
+        } catch (error) {
+          console.error("removeWorkMember error:", error);
+          toast.error(i18n.t('share_remove_failed', { defaultValue: 'Could not remove the person' }), { id: 'share-remove-failed' });
+          return false;
+        }
+      },
+
+      // Bize paylaşılmış çalışmalardan ayrılma. Klasörün kendi kaydı bize
+      // kapalı olduğu için ayrılmanın tek anlamı, çalışmaların erişim
+      // listelerinden çıkmak.
+      leaveSharedWorks: async (projectId) => {
+        const user = useAuthStore.getState().user;
+        if (!user) return false;
+        try {
+          await Promise.all(
+            calismalardanAyril(get().works.filter((w) => w.projectId === projectId), user.uid)
+          );
+          return true;
+        } catch (error) {
+          console.error("leaveSharedWorks error:", error);
           return false;
         }
       },

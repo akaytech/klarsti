@@ -102,7 +102,10 @@ export default function SyncManager() {
       ucusanEkle(projectId, yoldakiler);
       return safeWrite(
         () => Promise.all([
-          setDoc(doc(db, 'projects', projectId), govde, { merge: true }),
+          // Klasörün kaydı bize kapalıysa (tek bir çalışma paylaşılmışsa)
+          // oraya yazılmıyor; zaten reddedilirdi. Düzenleme çalışmanın kendi
+          // kaydına gidiyor.
+          project.klasorYok ? Promise.resolve() : setDoc(doc(db, 'projects', projectId), govde, { merge: true }),
           calismalariDaYaz(project, yoldakiler)
         ]),
         "Firestore Save Error:"

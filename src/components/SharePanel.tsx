@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { Check, Copy, Loader2, ShieldOff, UserMinus, Users, X } from 'lucide-react';
-import { useRoadmapStore } from '../store/useRoadmapStore';
+import { useRoadmapStore, type ToolId } from '../store/useRoadmapStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { MenuPortal } from '../utils/MenuPortal';
 
@@ -10,6 +10,11 @@ import { MenuPortal } from '../utils/MenuPortal';
 // herkese açıyor ve linki panoya kopyalıyordu; geri almanın ya da katılanları
 // görmenin hiçbir yolu yoktu. Artık paylaşımın durumu burada görünüyor,
 // kapatılabiliyor ve katılanlar tek tek çıkarılabiliyor.
+//
+// Aynı pencere üç seviyeye birden bakıyor: klasör, bir araçtaki çalışmalar,
+// tek bir çalışma. Üçü de aynı soruları soruyor (açık mı, link ne, kim
+// katılmış, nasıl çıkarılır); ayrı pencereler yazmak aynı işi üç kez
+// yapmak olurdu.
 
 interface Props {
   onClose: () => void;
@@ -19,21 +24,48 @@ interface Props {
    * için burayı dolduruyor.
    */
   projectId?: string;
+  /** Verilirse paylaşım araç bazına iner: o araçtaki çalışmalar. */
+  tool?: ToolId;
+  /** tool ile birlikte verilirse paylaşım tek bir çalışmaya iner. */
+  workId?: string;
 }
 
-export default function SharePanel({ onClose, projectId: istenenProje }: Props) {
+export default function SharePanel({ onClose, projectId: istenenProje, tool, workId }: Props) {
   const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const acikProjeId = useRoadmapStore((s) => s.currentProjectId);
   const activeTool = useRoadmapStore((s) => s.activeTool);
   const projects = useRoadmapStore((s) => s.projects);
+  const works = useRoadmapStore((s) => s.works);
   const setProjectPublic = useRoadmapStore((s) => s.setProjectPublic);
   const removeProjectMember = useRoadmapStore((s) => s.removeProjectMember);
+  const setWorksPublic = useRoadmapStore((s) => s.setWorksPublic);
+  const removeWorkMember = useRoadmapStore((s) => s.removeWorkMember);
 
   const currentProjectId = istenenProje ?? acikProjeId;
   const project = projects.find((p) => p.id === currentProjectId);
-  const isOwner = Boolean(project && user && project.userId === user.uid);
-  const isPublic = Boolean(project?.isPublic);
+  const seviye: 'klasor' | 'arac' | 'calisma' = workId ? 'calisma' : tool ? 'arac' : 'klasor';
+
+  // Paylaşımın dokunacağı kayıtlar. Araç seviyesinde o araçta O AN duran
+  // çalışmalar; sonradan eklenenler kendiliğinden dahil olmuyor, paylaşım
+  // klasöre değil o anki listeye veriliyor.
+  const hedefKayitlar = useMemo(() => {
+    if (seviye === 'klasor' || !currentProjectId) return [];
+    return works.filter(
+      (w) => w.projectId === currentProjectId && w.tool === tool && (!workId || w.workId === workId)
+    );
+  }, [works, currentProjectId, tool, workId, seviye]);
+
+  const isOwner = seviye === 'klasor'
+    ? Boolean(project && user && project.userId === user.uid)
+    : Boolean(user && hedefKayitlar.length > 0 && hedefKayitlar.every((w) => w.ownerId === user.uid));
+
+  // Araç seviyesinde hepsi açık değilse paylaşım "açık" sayılmıyor: yarısı
+  // açık bir listeyi açık göstermek, kullanıcıya paylaşmadığı çalışmaları da
+  // paylaşmış hissi verirdi.
+  const isPublic = seviye === 'klasor'
+    ? Boolean(project?.isPublic)
+    : hedefKayitlar.length > 0 && hedefKayitlar.every((w) => w.isPublic);
 
   const [isBusy, setIsBusy] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
@@ -46,22 +78,42 @@ export default function SharePanel({ onClose, projectId: istenenProje }: Props) 
   const url = useMemo(() => {
     if (!currentProjectId) return '';
     const taban = import.meta.env.BASE_URL.replace(/\/$/, '');
+    if (seviye !== 'klasor') {
+      // Çalışma linki klasörün adresine gitmiyor: karşı taraf klasörün
+      // kaydını okuyamıyor, yalnızca kendisine açılan çalışmaları alıyor.
+      const calismaEki = workId ? `/${workId}` : '';
+      return `${window.location.origin}${taban}/work/${currentProjectId}/${tool}${calismaEki}`;
+    }
     // Açık projeyi paylaşırken link açık aracı da taşıyor: karşı taraf senin
     // baktığın yere düşsün. Menüden başka bir proje paylaşılıyorsa öyle bir
     // "şu an bakılan araç" yok, link projenin köküne gider.
     const aracEki = currentProjectId === acikProjeId && activeTool ? `/${activeTool}` : '';
     return `${window.location.origin}${taban}/project/${currentProjectId}${aracEki}`;
-  }, [currentProjectId, acikProjeId, activeTool]);
+  }, [currentProjectId, acikProjeId, activeTool, seviye, tool, workId]);
 
   // Sahip listede yer almaz; katılanlar erişim listesinden okunuyor.
   // Bu değişiklikten önce katılmış olanların adı kayıtlı değil: onlar da
   // listede görünmeli, yoksa sahibi çıkaramaz.
+  //
+  // Çalışma seviyesinde yalnızca o çalışmaya TEK TEK davet edilenler
+  // sayılıyor; klasör paylaşımından gelenler klasörün kendi listesinde duruyor
+  // ve buradan çıkarılmaları anlamsız olurdu (klasör onları geri verirdi).
   const katilanlar = useMemo(() => {
-    const uidler = project?.sharedWith ?? [];
-    return uidler
-      .filter((uid) => uid !== project?.userId)
-      .map((uid) => ({ uid, bilgi: project?.members?.[uid] }));
-  }, [project?.sharedWith, project?.members, project?.userId]);
+    if (seviye === 'klasor') {
+      const uidler = project?.sharedWith ?? [];
+      return uidler
+        .filter((uid) => uid !== project?.userId)
+        .map((uid) => ({ uid, bilgi: project?.members?.[uid] }));
+    }
+    const gorulen = new Map<string, { uid: string; bilgi?: { name: string; email: string; joinedAt: number } }>();
+    hedefKayitlar.forEach((kayit) => {
+      (kayit.sharedWith ?? []).forEach((uid) => {
+        if (uid === kayit.ownerId || gorulen.has(uid)) return;
+        gorulen.set(uid, { uid, bilgi: kayit.members?.[uid] });
+      });
+    });
+    return Array.from(gorulen.values());
+  }, [seviye, project?.sharedWith, project?.members, project?.userId, hedefKayitlar]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -86,21 +138,25 @@ export default function SharePanel({ onClose, projectId: istenenProje }: Props) 
     }
   }, [url, t]);
 
+  const paylasimiAyarla = async (acik: boolean) => {
+    if (!currentProjectId) return false;
+    if (seviye === 'klasor') return setProjectPublic(currentProjectId, acik);
+    return setWorksPublic(hedefKayitlar.map((w) => w.id), acik);
+  };
+
   const paylasimiBaslat = async () => {
-    if (!currentProjectId) return;
     setIsBusy(true);
     // Kopyalama yalnızca paylaşım gerçekten açıldıysa yapılır: eskiden yazma
     // hata verse bile link kopyalanıyor ve "Kopyalandı" yazıyordu, kullanıcı
     // çalışmayan bir linki karşı tarafa gönderiyordu.
-    const ok = await setProjectPublic(currentProjectId, true);
+    const ok = await paylasimiAyarla(true);
     if (ok) await kopyala();
     setIsBusy(false);
   };
 
   const paylasimiDurdur = async () => {
-    if (!currentProjectId) return;
     setIsBusy(true);
-    const ok = await setProjectPublic(currentProjectId, false);
+    const ok = await paylasimiAyarla(false);
     if (ok) toast.success(t('share_stopped', { defaultValue: 'Sharing stopped' }));
     setIsBusy(false);
   };
@@ -108,13 +164,40 @@ export default function SharePanel({ onClose, projectId: istenenProje }: Props) 
   const cikar = async (uid: string) => {
     if (!currentProjectId) return;
     setIsBusy(true);
-    const ok = await removeProjectMember(currentProjectId, uid);
+    const ok = seviye === 'klasor'
+      ? await removeProjectMember(currentProjectId, uid)
+      : await removeWorkMember(hedefKayitlar.map((w) => w.id), uid);
     if (ok) toast.success(t('share_member_removed', { defaultValue: 'Removed from the project' }));
     setOnayBekleyen(null);
     setIsBusy(false);
   };
 
   if (!project) return null;
+
+  const baslik = seviye === 'calisma'
+    ? t('share_work_title', { defaultValue: 'Share work' })
+    : seviye === 'arac'
+      ? t('share_tool_title', { defaultValue: 'Share works in this tool' })
+      : t('share_panel_title', { defaultValue: 'Share' });
+
+  const durumMetni = () => {
+    if (seviye === 'klasor') {
+      return isPublic
+        ? t('share_status_on', { defaultValue: 'Anyone with the link can open and edit this project.' })
+        : t('share_status_off', { defaultValue: 'This project is not shared right now.' });
+    }
+    if (hedefKayitlar.length === 0) {
+      return t('share_no_works', { defaultValue: 'There is nothing to share here yet.' });
+    }
+    if (seviye === 'calisma') {
+      return isPublic
+        ? t('share_work_status_on', { defaultValue: 'Anyone with the link can open and edit this work.' })
+        : t('share_work_status_off', { defaultValue: 'This work is not shared right now.' });
+    }
+    return isPublic
+      ? t('share_tool_status_on', { sayi: hedefKayitlar.length, defaultValue: 'Anyone with the link can open and edit the {{sayi}} works in this tool.' })
+      : t('share_tool_status_off', { sayi: hedefKayitlar.length, defaultValue: '{{sayi}} works in this tool will be shared. Works you add later are not included.' });
+  };
 
   // Portal şart: düğmeyi taşıyan küme, kılavuz paneli açıkken transform
   // alıyor. Transform'lu bir ata, içindeki position:fixed öğenin referansını
@@ -134,7 +217,7 @@ export default function SharePanel({ onClose, projectId: istenenProje }: Props) 
       >
         <div className="flex items-center justify-between border-b border-slate-200 p-4 dark:border-slate-800">
           <h2 id="share-panel-title" className="text-lg font-semibold text-slate-800 dark:text-slate-100">
-            {t('share_panel_title', { defaultValue: 'Share' })}
+            {baslik}
           </h2>
           <button
             ref={kapatDugmesi}
@@ -148,9 +231,7 @@ export default function SharePanel({ onClose, projectId: istenenProje }: Props) 
 
         <div className="space-y-4 p-5">
           <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-            {isPublic
-              ? t('share_status_on', { defaultValue: 'Anyone with the link can open and edit this project.' })
-              : t('share_status_off', { defaultValue: 'This project is not shared right now.' })}
+            {durumMetni()}
           </p>
 
           {isPublic ? (
@@ -199,7 +280,9 @@ export default function SharePanel({ onClose, projectId: istenenProje }: Props) 
           <div className="border-t border-slate-100 pt-4 dark:border-slate-800">
             <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-200">
               <Users size={16} className="text-slate-400" />
-              {t('share_members_title', { defaultValue: 'People in this project' })}
+              {seviye === 'klasor'
+                ? t('share_members_title', { defaultValue: 'People in this project' })
+                : t('share_work_members_title', { defaultValue: 'People invited here' })}
               <span className="text-slate-400">({katilanlar.length})</span>
             </div>
 
@@ -243,8 +326,12 @@ export default function SharePanel({ onClose, projectId: istenenProje }: Props) 
                       ) : (
                         <button
                           onClick={() => setOnayBekleyen(uid)}
-                          aria-label={t('share_remove_member', { defaultValue: 'Remove from project' })}
-                          title={t('share_remove_member', { defaultValue: 'Remove from project' })}
+                          aria-label={seviye === 'klasor'
+                            ? t('share_remove_member', { defaultValue: 'Remove from project' })
+                            : t('share_work_remove_member', { defaultValue: 'Remove from this work' })}
+                          title={seviye === 'klasor'
+                            ? t('share_remove_member', { defaultValue: 'Remove from project' })
+                            : t('share_work_remove_member', { defaultValue: 'Remove from this work' })}
                           className="shrink-0 rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400"
                         >
                           <UserMinus size={16} />

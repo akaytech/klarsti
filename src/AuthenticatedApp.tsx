@@ -37,7 +37,7 @@ export default function AuthenticatedApp() {
     joinSharedProject: state.joinSharedProject,
     projectsLoaded: state.projectsLoaded
   })));
-  
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -54,9 +54,8 @@ export default function AuthenticatedApp() {
       });
       // Kişisel ajanda projelerden ayrı bir dokümanda, ayrı dinleniyor.
       fetchPersonalData(user.uid);
-      // Bölünmüş çalışma kayıtları. Geçiş dönemi: arayüzü henüz beslemiyor,
-      // yazma tarafının hangi çalışmanın sunucuda kurulu olduğunu bilmesi için
-      // dinleniyor (bkz. calismaYazma.ts).
+      // Çalışma kayıtları. İçeriğin doğrusu burası; tek başına paylaşılan
+      // çalışmalar da yalnızca buradan geliyor (bkz. calismaOkuma.ts).
       fetchWorks(user.uid);
     }
   }, [user, user?.uid, fetchProjects, fetchPersonalData, fetchWorks]);
@@ -105,6 +104,48 @@ export default function AuthenticatedApp() {
       }
 
       // Buraya gelindiyse proje gerçekten açılamıyor: silinmiş ya da erişim yok.
+      bekleyenProjeRef.current = null;
+      son.setActiveTool(null);
+      toast.error(t('project_unavailable'), { id: 'project-unavailable' });
+    } finally {
+      cozumDevamRef.current.delete(pId);
+    }
+  }, [t]);
+
+  // Paylaşılan ÇALIŞMA linkini çözer. Klasör linkinden ayrı bir yol: burada
+  // klasörün kaydı karşı tarafa hiç açılmıyor, yalnızca linki verilen
+  // çalışmalar açılıyor. Katıldıktan sonra klasör satırı "Çalışmalarım"
+  // ağacında kendiliğinden beliriyor; adı çalışma kaydındaki kopyadan geliyor.
+  const cozBekleyenCalismayi = useCallback(async (pId: string, tool: string, workId?: string) => {
+    if (cozumDevamRef.current.has(pId)) return;
+    cozumDevamRef.current.add(pId);
+
+    try {
+      for (let deneme = 0; deneme < PROJE_COZUM_DENEME; deneme++) {
+        const durum = useRoadmapStore.getState();
+        if (bekleyenProjeRef.current !== pId) return;
+
+        if (durum.projects.some((p) => p.id === pId)) {
+          bekleyenProjeRef.current = null;
+          durum.loadProject(pId);
+          durum.setActiveTool(tool as any);
+          return;
+        }
+
+        await durum.joinSharedWorks(pId, tool as any, workId);
+        await new Promise((r) => setTimeout(r, PROJE_COZUM_ARALIK_MS));
+      }
+
+      if (bekleyenProjeRef.current !== pId) return;
+
+      const son = useRoadmapStore.getState();
+      if (son.projects.some((p) => p.id === pId)) {
+        bekleyenProjeRef.current = null;
+        son.loadProject(pId);
+        son.setActiveTool(tool as any);
+        return;
+      }
+
       bekleyenProjeRef.current = null;
       son.setActiveTool(null);
       toast.error(t('project_unavailable'), { id: 'project-unavailable' });
@@ -173,6 +214,25 @@ export default function AuthenticatedApp() {
         if (needsStateUpdate) {
            isUrlSyncRunning = true;
         }
+      } else if (path.startsWith('/work/')) {
+        // /work/{klasorId}/{arac}[/{calismaId}] — paylaşılan çalışma linki.
+        const [, , pId, tId, wId] = path.split('/');
+        if (pId && tId) {
+          if (pId !== currentProjectId) {
+            const exists = projects.find((p) => p.id === pId);
+            if (exists) {
+              loadProject(pId);
+              bekleyenProjeRef.current = null;
+            } else {
+              bekleyenProjeRef.current = pId;
+              cozBekleyenCalismayi(pId, tId, wId);
+            }
+          } else {
+            bekleyenProjeRef.current = null;
+          }
+          if (tId !== activeTool) setActiveTool(tId as any);
+          isUrlSyncRunning = true;
+        }
       }
     }
 
@@ -195,7 +255,7 @@ export default function AuthenticatedApp() {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname, user, currentProjectId, activeTool, projects, loadProject, joinSharedProject, projectsLoaded, navigate, setActiveTool, cozBekleyenProjeyi]);
+  }, [location.pathname, user, currentProjectId, activeTool, projects, loadProject, joinSharedProject, projectsLoaded, navigate, setActiveTool, cozBekleyenProjeyi, cozBekleyenCalismayi]);
 
   return (
     <>

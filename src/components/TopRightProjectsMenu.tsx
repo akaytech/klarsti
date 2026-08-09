@@ -6,7 +6,7 @@ import { useShallow } from 'zustand/react/shallow';
 import clsx from 'clsx';
 import ConfirmModal from './ConfirmModal';
 import { ajandaDugmesiGorunurMu } from '../utils/ajandaDugmesi';
-import { Folder, Plus, Trash2, ChevronDown, ChevronRight, Fish, RefreshCcw, Layers, Pencil, AlertOctagon, Scale, GitMerge, BarChart2, BarChart, Activity, Network, Target, Check, Brain, UsersRound, Link2 } from 'lucide-react';
+import { Folder, Plus, Trash2, ChevronDown, ChevronRight, Fish, RefreshCcw, Layers, Pencil, AlertOctagon, Scale, GitMerge, BarChart2, BarChart, Activity, Network, Target, Check, Brain, UsersRound, Link2, Map } from 'lucide-react';
 import type { Project } from '../store/useRoadmapStore';
 import { toolTheme } from '../config/toolTheme';
 import { aracCalismalari, aracSecimEylemi, calismayiYenidenAdlandir, calismayiSil } from '../config/toolWorks';
@@ -24,13 +24,23 @@ const TOOL_OPTIONS: { id: ToolId; icon: typeof Network; label: string; color: st
   { id: 'decision', icon: Scale, label: 'decision_title', color: 'text-violet-500', bg: 'bg-violet-100 dark:bg-violet-900/40' },
   { id: 'flowchart', icon: GitMerge, label: 'tool_flowchart', color: 'text-amber-500', bg: 'bg-amber-100 dark:bg-amber-900/40' },
   { id: 'orgchart', icon: UsersRound, label: 'org_title', color: 'text-sky-500', bg: 'bg-sky-100 dark:bg-sky-900/40' },
+  // Değer Akışı bu listede yoktu; o araçtaki çalışmalar "Çalışmalarım"
+  // ağacında hiç görünmüyordu.
+  { id: 'vsm', icon: Map, label: 'tool_vsm', color: 'text-indigo-500', bg: 'bg-indigo-100 dark:bg-indigo-900/40' },
   { id: 'pareto', icon: BarChart2, label: 'tool_pareto', color: 'text-blue-500', bg: 'bg-blue-100 dark:bg-blue-900/40' },
   { id: 'histogram', icon: BarChart, label: 'tool_histogram', color: 'text-indigo-500', bg: 'bg-indigo-100 dark:bg-indigo-900/40' }
   // Ajanda burada yok: projeye ait değil, kişisel. Üst bardaki kendi düğmesinden açılır.
 ];
 
+/** Paylaş düğmesine basıldığında paylaşılacak şey: klasör, araç ya da çalışma. */
+export interface PaylasimHedefi {
+  projectId: string;
+  tool?: ToolId;
+  workId?: string;
+}
+
 /**
- * Tek bir çalışma satırı: adı, adını değiştirme ve silme.
+ * Tek bir çalışma satırı: adı, paylaşımı, adını değiştirme ve silme.
  *
  * Eylemler açık projenin verisi üzerinde çalışıyor. Bu yüzden başka bir
  * projenin çalışmasına dokunulacaksa önce o proje yükleniyor; yoksa eylem
@@ -38,7 +48,7 @@ const TOOL_OPTIONS: { id: ToolId; icon: typeof Network; label: string; color: st
  * yapmaz.
  */
 function WorkTreeItem({
-  project, tool, calisma, isCurrentProject, onOpen, requestDelete
+  project, tool, calisma, isCurrentProject, onOpen, requestDelete, requestShare
 }: {
   project: Project;
   tool: ToolId;
@@ -46,7 +56,12 @@ function WorkTreeItem({
   isCurrentProject: boolean;
   onOpen: (calismaId: string) => void;
   requestDelete: (t: string, m: string, cb: () => void) => void;
+  requestShare: (hedef: PaylasimHedefi) => void;
 }) {
+  // Bu çalışmanın kendi linki açık mı? Satırdan görünsün diye.
+  const paylasimda = useRoadmapStore((s) =>
+    s.works.some((w) => w.projectId === project.id && w.workId === calisma.id && w.isPublic)
+  );
   const { t } = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(calisma.ad);
@@ -103,13 +118,30 @@ function WorkTreeItem({
           <button
             onClick={() => onOpen(calisma.id)}
             onDoubleClick={() => setIsEditing(true)}
-            className="w-full truncate rounded-lg px-2 py-1 pe-14 text-start text-xs text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+            className="w-full truncate rounded-lg px-2 py-1 pe-[76px] text-start text-xs text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
             title={gorunenAd}
           >
             {gorunenAd}
           </button>
 
-          <div className="absolute end-0 flex items-center opacity-0 transition-opacity group-hover/work:opacity-100 focus-within:opacity-100">
+          <div className={clsx(
+            'absolute end-0 flex items-center transition-opacity group-hover/work:opacity-100 focus-within:opacity-100',
+            // Paylaşımdaki çalışmanın işareti hep görünür kalmalı; küme
+            // gizlenirse kullanıcı neyin paylaşımda olduğunu ancak satırın
+            // üstüne gelerek anlayabilirdi.
+            paylasimda ? 'opacity-100' : 'opacity-0'
+          )}>
+            <button
+              onClick={(e) => { e.stopPropagation(); requestShare({ projectId: project.id, tool, workId: calisma.id }); }}
+              className="relative p-1.5 text-slate-400 transition-colors hover:text-indigo-500"
+              title={t('share')}
+              aria-label={t('share')}
+            >
+              <Link2 size={12} />
+              {paylasimda && (
+                <span aria-hidden="true" className="absolute end-0.5 top-0.5 h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              )}
+            </button>
             <button
               onClick={(e) => { e.stopPropagation(); setIsEditing(true); }}
               className="p-1.5 text-slate-400 transition-colors hover:text-indigo-500"
@@ -146,7 +178,7 @@ function WorkTreeItem({
  * vardı; "3" yazıyordu ama o üçünün hangileri olduğu menüden görünmüyordu.
  */
 function ToolTreeItem({
-  project, tool, isCurrentProject, onOpenTool, onClose, requestDelete
+  project, tool, isCurrentProject, onOpenTool, onClose, requestDelete, requestShare
 }: {
   project: Project;
   tool: { id: ToolId; icon: typeof Network; label: string; color: string };
@@ -154,10 +186,18 @@ function ToolTreeItem({
   onOpenTool: (tool: ToolId) => void;
   onClose: () => void;
   requestDelete: (t: string, m: string, cb: () => void) => void;
+  requestShare: (hedef: PaylasimHedefi) => void;
 }) {
   const { t } = useTranslation();
   const clearToolData = useRoadmapStore((s) => s.clearToolData);
   const activeTool = useRoadmapStore((s) => s.activeTool);
+  // Araç satırı ancak bu araçtaki çalışmaların HEPSİ paylaşımdaysa paylaşımda
+  // sayılıyor. Yarısı açıkken açık göstermek, kullanıcıya paylaşmadığı
+  // çalışmaları da paylaşmış hissi verirdi.
+  const paylasimda = useRoadmapStore((s) => {
+    const kayitlar = s.works.filter((w) => w.projectId === project.id && w.tool === tool.id);
+    return kayitlar.length > 0 && kayitlar.every((w) => w.isPublic);
+  });
   // Açık aracın çalışmaları kendiliğinden görünür; gerisi kapalı başlar,
   // yoksa on üç araçlık bir projede menü uzayıp gidiyor.
   const [isExpanded, setIsExpanded] = useState(isCurrentProject && activeTool === tool.id);
@@ -192,7 +232,7 @@ function ToolTreeItem({
 
         <button
           onClick={() => onOpenTool(tool.id)}
-          className="flex flex-1 items-center gap-2 overflow-hidden rounded-lg p-1.5 pe-[52px] text-start text-xs font-medium text-slate-600 transition-colors hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-800"
+          className="flex flex-1 items-center gap-2 overflow-hidden rounded-lg p-1.5 pe-[80px] text-start text-xs font-medium text-slate-600 transition-colors hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-800"
         >
           <Icon size={14} className={`shrink-0 ${tool.color}`} />
           <span className="truncate">{t(tool.label)}</span>
@@ -203,6 +243,20 @@ function ToolTreeItem({
         <span className="rounded-full bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500 dark:bg-slate-800">
           {calismalar.length}
         </span>
+        <button
+          onClick={(e) => { e.stopPropagation(); requestShare({ projectId: project.id, tool: tool.id }); }}
+          className={clsx(
+            'relative p-2 text-slate-400 transition-opacity hover:text-indigo-500 group-hover/tool:opacity-100',
+            paylasimda ? 'opacity-100' : 'opacity-40'
+          )}
+          title={t('share')}
+          aria-label={t('share')}
+        >
+          <Link2 size={12} />
+          {paylasimda && (
+            <span aria-hidden="true" className="absolute end-1 top-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          )}
+        </button>
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -227,6 +281,7 @@ function ToolTreeItem({
               isCurrentProject={isCurrentProject}
               onOpen={calismaAc}
               requestDelete={requestDelete}
+              requestShare={requestShare}
             />
           ))}
         </ul>
@@ -235,7 +290,7 @@ function ToolTreeItem({
   );
 }
 
-function ProjectTreeItem({ project, isCurrent, onClose, requestDelete, requestShare }: { project: Project; isCurrent: boolean; onClose: () => void; requestDelete: (t: string, m: string, cb: () => void) => void; requestShare: (projectId: string) => void }) {
+function ProjectTreeItem({ project, isCurrent, onClose, requestDelete, requestShare }: { project: Project; isCurrent: boolean; onClose: () => void; requestDelete: (t: string, m: string, cb: () => void) => void; requestShare: (hedef: PaylasimHedefi) => void }) {
   // clearToolData artık ToolTreeItem'ın işi; araç satırı oraya taşındı.
   const {  loadProject, setActiveTool, deleteProject, updateProjectName  } = useRoadmapStore(useShallow((state) => ({
       loadProject: state.loadProject,
@@ -317,37 +372,50 @@ function ProjectTreeItem({ project, isCurrent, onClose, requestDelete, requestSh
         
         {!isEditing && (
           <div className="flex items-center gap-1 shrink-0 ms-2 opacity-40 group-hover:opacity-100 transition-opacity">
+            {/* Klasörün kendi kaydı bize kapalıysa (tek bir çalışma
+                paylaşılmışsa) burada paylaşılacak ya da adı değiştirilecek bir
+                şey yok; klasör satırı yalnızca bir başlık. Kalan tek eylem
+                paylaşılan çalışmalardan ayrılmak. */}
+            {!project.klasorYok && (
+              <>
+                <button
+                  onClick={(e) => {
+                     e.stopPropagation();
+                     requestShare({ projectId: project.id });
+                  }}
+                  className="relative p-2 text-slate-400 hover:text-indigo-500 transition-colors"
+                  title={t('share')} aria-label={t('share')}
+                >
+                  <Link2 size={14} />
+                  {/* Paylaşımda olan klasör listeden de belli olsun. */}
+                  {project.isPublic && (
+                    <span aria-hidden="true" className="absolute end-1 top-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  )}
+                </button>
+                <button
+                  onClick={(e) => {
+                     e.stopPropagation();
+                     setIsEditing(true);
+                  }}
+                  className="p-2 text-slate-400 hover:text-indigo-500 transition-colors"
+                  title={t('rename_title')} aria-label={t('rename_title')}
+                >
+                  <Pencil size={14} />
+                </button>
+              </>
+            )}
             <button
               onClick={(e) => {
                  e.stopPropagation();
-                 requestShare(project.id);
-              }}
-              className="relative p-2 text-slate-400 hover:text-indigo-500 transition-colors"
-              title={t('share')} aria-label={t('share')}
-            >
-              <Link2 size={14} />
-              {/* Paylaşımda olan klasör listeden de belli olsun. */}
-              {project.isPublic && (
-                <span aria-hidden="true" className="absolute end-1 top-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              )}
-            </button>
-            <button
-              onClick={(e) => {
-                 e.stopPropagation();
-                 setIsEditing(true);
-              }}
-              className="p-2 text-slate-400 hover:text-indigo-500 transition-colors"
-              title={t('rename_title')} aria-label={t('rename_title')}
-            >
-              <Pencil size={14} />
-            </button>
-            <button 
-              onClick={(e) => {
-                 e.stopPropagation();
-                 requestDelete(t('delete_project_title'), t('delete_project_msg'), () => deleteProject(project.id));
+                 requestDelete(
+                   project.klasorYok ? t('leave_shared_title', { defaultValue: 'Leave shared work' }) : t('delete_project_title'),
+                   project.klasorYok ? t('leave_shared_msg', { defaultValue: 'It will be removed from your list. The owner keeps it.' }) : t('delete_project_msg'),
+                   () => deleteProject(project.id)
+                 );
               }}
               className="p-2 text-slate-400 hover:text-red-500 transition-colors"
-              title={t('delete_project_btn')} aria-label={t('delete_project_btn')}
+              title={project.klasorYok ? t('leave_shared_btn', { defaultValue: 'Leave' }) : t('delete_project_btn')}
+              aria-label={project.klasorYok ? t('leave_shared_btn', { defaultValue: 'Leave' }) : t('delete_project_btn')}
             >
               <Trash2 size={14} />
             </button>
@@ -371,6 +439,7 @@ function ProjectTreeItem({ project, isCurrent, onClose, requestDelete, requestSh
               onOpenTool={handleToolClick}
               onClose={onClose}
               requestDelete={requestDelete}
+              requestShare={requestShare}
             />
           ))}
         </div>
@@ -388,7 +457,7 @@ export default function TopRightProjectsMenu() {
   const [confirmState, setConfirmState] = useState<{isOpen: boolean, title: string, message: string, onConfirm: () => void}>({ isOpen: false, title: '', message: '', onConfirm: () => {} });
   // Paylaşım penceresi menünün dışına (document.body) çiziliyor; menü kapansa
   // da açık kalsın diye tek örnek burada duruyor, satırların içinde değil.
-  const [paylasilanProje, setPaylasilanProje] = useState<string | null>(null);
+  const [paylasimHedefi, setPaylasimHedefi] = useState<PaylasimHedefi | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const requestDelete = (title: string, message: string, onConfirm: () => void) => { setConfirmState({ isOpen: true, title, message, onConfirm }); };
@@ -528,7 +597,7 @@ export default function TopRightProjectsMenu() {
               isCurrent={p.id === currentProjectId}
               onClose={() => setActiveTopMenu(null)}
               requestDelete={requestDelete}
-              requestShare={setPaylasilanProje}
+              requestShare={setPaylasimHedefi}
             />
           ))}
           {projects.length === 0 && !isCreating && (
@@ -540,7 +609,14 @@ export default function TopRightProjectsMenu() {
         </div>
       </div>
       <ConfirmModal isOpen={confirmState.isOpen} title={confirmState.title} message={confirmState.message} onConfirm={confirmState.onConfirm} onClose={() => setConfirmState(p => ({...p, isOpen: false}))} />
-      {paylasilanProje && <SharePanel projectId={paylasilanProje} onClose={() => setPaylasilanProje(null)} />}
+      {paylasimHedefi && (
+        <SharePanel
+          projectId={paylasimHedefi.projectId}
+          tool={paylasimHedefi.tool}
+          workId={paylasimHedefi.workId}
+          onClose={() => setPaylasimHedefi(null)}
+        />
+      )}
     </div>
   );
 }

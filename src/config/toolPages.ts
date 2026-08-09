@@ -34,7 +34,7 @@ export const TOOL_PAGES = sayfalar as ToolPage[];
  * tek parça olduğu için bu liste uygulamanın kendi yollarıyla aynı isim
  * havuzunu paylaşıyor; yeni bir slug eklerken buraya bakılmalı.
  */
-export const AYRILMIS_YOLLAR = ['login', 'register', 'agenda', 'project', '__'];
+export const AYRILMIS_YOLLAR = ['login', 'register', 'agenda', 'project', 'work', '__'];
 
 const SLUG_ILE = new Map(TOOL_PAGES.map((s) => [s.slug, s]));
 const ARAC_ILE = new Map(TOOL_PAGES.map((s) => [s.toolId, s]));

@@ -6,7 +6,8 @@ import { db, logAppEvent } from '../firebase';
 import i18n from '../i18n';
 import { useAuthStore } from './useAuthStore';
 import { bekleyenAraclar, kisiselBekliyorMu } from './bekleyenYazmalar';
-import { projeninCalismalariniSil } from './calismaYazma';
+import { projeninCalismalariniSil, calismalarinKlasorAdiniGuncelle, calismalardanAyril } from './calismaYazma';
+import { projeyeCalismalariUygula } from './calismaOkuma';
 import { gecmisiBagla, yazmayiIsle, gecmisiTemizle } from './gecmis';
 import { toast } from 'sonner';
 
@@ -289,10 +290,10 @@ export interface Project {
 }
 
 /**
- * 'works' koleksiyonundaki tek bir kayıt. Geçiş dönemi: bu kayıtlar yazılıyor
- * ama arayüz hâlâ projenin toolData'sından besleniyor. Şu an tek işleri,
- * yazma tarafının "bu çalışma sunucuda var mı" sorusunu cevaplamak; kurulum
- * yazması ile içerik yazmasının gövdesi farklı (bkz. calismaYazma.ts).
+ * 'works' koleksiyonundaki tek bir kayıt: bir kırılım ağacı, bir zihin
+ * haritası, bir SWOT analizi. Çalışmaların içeriği artık buradan okunuyor
+ * (bkz. calismaOkuma.ts); projenin toolData'sı bir süre daha yedek olarak
+ * yazılmaya devam ediyor.
  */
 export interface WorkRecord {
   /** Doküman kimliği: `${projectId}__${workId}` */
@@ -331,7 +332,7 @@ export interface RoadmapState extends NotepadSlice, JournalSlice, FiveWhysSlice,
   projects: Project[];
   currentProjectId: string | null;
   fetchProjects: (userId: string) => Promise<void>;
-  /** Bölünmüş çalışma kayıtları. Henüz arayüzü beslemiyor (bkz. WorkRecord). */
+  /** Kullanıcının görebildiği bütün çalışma kayıtları (bkz. WorkRecord). */
   works: WorkRecord[];
   worksLoaded: boolean;
   worksUnsubscribe: (() => void) | null;
@@ -373,6 +374,74 @@ const gecmiseGirenler = (state: RoadmapState) => ({
 
 // zundo'nun geçmişe yazma fonksiyonu; middleware kurulurken doluyor.
 let gecmisHandleSet: ((oncekiDurum: Record<string, unknown>) => void) | null = null;
+
+/**
+ * Projeleri çalışma kayıtlarıyla birleştirip duruma yazar.
+ *
+ * İki dinleyici de buradan geçiyor: proje listesi yenilendiğinde ve çalışma
+ * kayıtları değiştiğinde. İkisi ayrı ayrı geldiği için birleştirmenin tek bir
+ * yerde durması şart; yoksa hangisi sonra gelirse ötekinin sonucunu ezerdi.
+ *
+ * Çalışma kayıtları henüz gelmediyse (worksLoaded false) proje olduğu gibi
+ * kullanılıyor. Bu bilerek: bir erişim hatası yüzünden kayıtlar hiç gelmezse
+ * uygulama eskisi gibi projenin toolData'sından çalışmaya devam eder.
+ *
+ * @param yeniProjeler Proje dinleyicisinden yeni geldiyse. Verilmezse
+ *   elimizdeki liste yeniden birleştirilir; birleştirme aynı sonucu tekrar
+ *   ürettiği için ikinci kez uygulanması bir şeyi bozmuyor.
+ */
+function projeleriTazele(yeniProjeler?: Project[]) {
+  const durum = useRoadmapStore.getState();
+  const kaynak = yeniProjeler ?? durum.projects;
+  const birlesik = durum.worksLoaded
+    ? kaynak.map((p) => projeyeCalismalariUygula(p, durum.works))
+    : kaynak;
+
+  const updates: Partial<RoadmapState> & Record<string, any> = { projects: birlesik };
+  if (yeniProjeler) updates.projectsLoaded = true;
+
+  const acikProje = durum.currentProjectId
+    ? birlesik.find((p) => p.id === durum.currentProjectId)
+    : undefined;
+
+  if (acikProje) {
+    // Sunucudan gelen hali "senkron" olarak işaretle; aksi halde otomatik
+    // kaydetme her uzak güncellemeden sonra gereksiz bir yazma tetikler.
+    //
+    // parseDoc her snapshot'ta yeni nesneler kuruyor. Yerel yazmalar da anında
+    // bir yankı snapshot'ı doğurduğu için, değişmemiş araçlara körü körüne yeni
+    // referans atamak her kayıttan sonra açık kanvası baştan çizdiriyordu.
+    // İçerik aynıysa eldeki referansı koruyoruz. (Yankıyı tamamen atlamak
+    // yerine karşılaştırma yapılıyor: aynı saniyede gelen uzak bir düzenleme
+    // atlanırsa bir daha bildirilmez.)
+    const bekleyenler = bekleyenAraclar(acikProje.id);
+    const korunanAraclar: Record<string, any> = {};
+    TOOL_STATE_KEYS.forEach((k) => {
+      const mevcut = (durum as unknown as Record<string, any>)[k];
+      // Bu aracın yazması hâlâ bekliyorsa uzak hali uygulanmaz: kullanıcı kendi
+      // düzenlemesini ekranda geri alınmış görür, saniyesinde bizim yazmamız
+      // gidince de tekrar geri gelirdi. Yazma sunucuya ulaşınca gelen snapshot
+      // zaten güncel olacak.
+      if (bekleyenler.has(k)) {
+        updates[k] = mevcut;
+        korunanAraclar[k] = mevcut;
+        return;
+      }
+      const gelen = acikProje.toolData[k] || getInitialValueForKey(k);
+      const deger = derinEsit(mevcut, gelen) ? mevcut : gelen;
+      updates[k] = deger;
+      korunanAraclar[k] = deger;
+    });
+    // Projeler listesindeki nesne de aynı referansları göstermeli; yoksa
+    // senkronizasyon bir sonraki düzenlemede bütün araçları değişmiş sanıp
+    // hepsini birden yükler.
+    updates.projects = birlesik.map((p) =>
+      p.id === acikProje.id ? { ...p, toolData: { ...p.toolData, ...korunanAraclar } } : p
+    );
+  }
+
+  uzaktanGuncelle(() => useRoadmapStore.setState(updates));
+}
 
 export const useRoadmapStore = create<RoadmapState>()(
   temporal(
@@ -506,11 +575,14 @@ export const useRoadmapStore = create<RoadmapState>()(
           (snapshot) => {
             const kayitlar = snapshot.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<WorkRecord, 'id'>) }));
             uzaktanGuncelle(() => set({ works: kayitlar, worksLoaded: true }));
+            // Çalışmaların içeriği artık ekrana buradan gidiyor; liste her
+            // değiştiğinde projelerin araç verisi yeniden kurulmalı.
+            projeleriTazele();
           },
           (error) => {
-            // Sessiz geçiliyor: bu kayıtlar henüz arayüzü beslemiyor, bir
-            // hata kullanıcının çalışmasını etkilemiyor. Uyarı göstermek
-            // görmediği bir şey için onu telaşlandırmak olurdu.
+            // Uyarı gösterilmiyor: kayıtlar gelmezse uygulama projenin eski
+            // toolData'sıyla çalışmaya devam ediyor (bkz. projeleriTazele),
+            // yani kullanıcının önünde duran bir sorun yok.
             console.error('Fetch works error:', error);
             if (error.code === 'permission-denied' && useAuthStore.getState().user?.uid === userId) {
               setTimeout(() => get().fetchWorks(userId), 1500);
@@ -735,48 +807,7 @@ export const useRoadmapStore = create<RoadmapState>()(
               .map(parseDoc)
               .filter((p): p is Project => p !== null);
 
-            // Sunucudan gelen hali "senkron" olarak işaretle; aksi halde otomatik
-            // kaydetme her uzak güncellemeden sonra gereksiz bir yazma tetikler.
-            const currentState = get();
-            const updates: Partial<RoadmapState> & Record<string, any> = { projectsLoaded: true, projects: fetchedProjects };
-
-            if (currentState.currentProjectId) {
-              const activeProj = fetchedProjects.find(p => p.id === currentState.currentProjectId);
-              if (activeProj) {
-                // parseDoc her snapshot'ta yeni nesneler kuruyor. Yerel yazmalar da
-                // anında bir yankı snapshot'ı doğurduğu için, değişmemiş araçlara
-                // körü körüne yeni referans atamak her kayıttan sonra açık kanvası
-                // baştan çizdiriyordu. İçerik aynıysa eldeki referansı koruyoruz.
-                // (Yankıyı tamamen atlamak yerine karşılaştırma yapılıyor: aynı
-                // saniyede gelen uzak bir düzenleme atlanırsa bir daha bildirilmez.)
-                const bekleyenler = bekleyenAraclar(activeProj.id);
-                const korunanAraclar: Record<string, any> = {};
-                TOOL_STATE_KEYS.forEach((k) => {
-                  const mevcut = (currentState as unknown as Record<string, any>)[k];
-                  // Bu aracın yazması hâlâ bekliyorsa uzak hali uygulanmaz:
-                  // kullanıcı kendi düzenlemesini ekranda geri alınmış görür,
-                  // saniyesinde bizim yazmamız gidince de tekrar geri gelirdi.
-                  // Yazma sunucuya ulaşınca gelen snapshot zaten güncel olacak.
-                  if (bekleyenler.has(k)) {
-                    updates[k] = mevcut;
-                    korunanAraclar[k] = mevcut;
-                    return;
-                  }
-                  const gelen = activeProj.toolData[k] || getInitialValueForKey(k);
-                  const deger = derinEsit(mevcut, gelen) ? mevcut : gelen;
-                  updates[k] = deger;
-                  korunanAraclar[k] = deger;
-                });
-                // Projeler listesindeki nesne de aynı referansları göstermeli;
-                // yoksa senkronizasyon bir sonraki düzenlemede bütün araçları
-                // değişmiş sanıp hepsini birden yükler.
-                updates.projects = fetchedProjects.map((p) =>
-                  p.id === activeProj.id ? { ...p, toolData: { ...p.toolData, ...korunanAraclar } } : p
-                );
-              }
-            }
-
-            uzaktanGuncelle(() => set(updates));
+            projeleriTazele(fetchedProjects);
           }, (error) => {
             console.error("Fetch projects error:", error);
             toast.error(i18n.t('error_fetch_projects', { defaultValue: 'Error fetching projects' }), { id: 'error-fetch-projects' });
@@ -845,6 +876,12 @@ export const useRoadmapStore = create<RoadmapState>()(
              console.error(err);
              toast.error(i18n.t('save_failed', { defaultValue: 'Failed to save to cloud' }), { id: 'save-failed' });
            });
+           // Çalışma kayıtları klasörün adını kopya olarak taşıyor; onlar da
+           // tazelenmeli, yoksa paylaşılan çalışma karşı tarafta eski klasör
+           // adının altında görünür.
+           Promise.all(
+             calismalarinKlasorAdiniGuncelle(get().works.filter((w) => w.projectId === id), name)
+           ).catch((err) => console.error('Works rename failed:', err));
         }
         set((state) => ({
           projects: state.projects.map((p) =>
@@ -872,6 +909,11 @@ export const useRoadmapStore = create<RoadmapState>()(
                sharedWith: arrayRemove(user.uid),
                [`members.${user.uid}`]: deleteField()
              }).catch(bildirHata);
+             // Çalışmaların erişim listeleri ayrı duruyor; oradan çıkılmazsa
+             // klasörden ayrılan kişi çalışmaları görmeye devam ederdi.
+             Promise.all(
+               calismalardanAyril(state.works.filter((w) => w.projectId === id), user.uid)
+             ).catch((err) => console.error('Works leave failed:', err));
         } else {
              deleteDoc(doc(db, 'projects', id)).catch(bildirHata);
              // Projenin çalışma kayıtları da gitmeli. Eskiden kalıyorlardı ve

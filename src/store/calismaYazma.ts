@@ -1,4 +1,4 @@
-import { doc, setDoc, deleteDoc } from 'firebase/firestore';
+import { doc, setDoc, deleteDoc, arrayRemove } from 'firebase/firestore';
 import { db } from '../firebase';
 import { stripUndefined } from '../utils/firestoreSafe';
 import { hamCalismalar, calismaAdi, calismaDokunulmamis, aracAnahtari, TUM_ARACLAR } from '../config/toolWorks';
@@ -7,10 +7,9 @@ import type { ToolId, Project } from './useRoadmapStore';
 /**
  * Çalışmaların 'works' koleksiyonuna yazılması.
  *
- * Geçiş dönemindeyiz: veri hem eski yerine (projenin toolData'sı) hem de buraya
- * yazılıyor. Okuma hâlâ eski yerden yapılıyor, yani bu dosyanın bir hatası
- * kullanıcıya yansımaz ve eski kopya güncel kalır. Okuma yeni kayıtlara
- * çevrildiğinde geri dönülecek sağlam bir nokta olsun diye böyle.
+ * İçeriğin doğrusu artık burası (bkz. calismaOkuma.ts). Veri bir süre daha
+ * eski yerine de (projenin toolData'sı) yazılmaya devam ediyor: yeni yolda bir
+ * terslik çıkarsa geri dönülecek bir nokta olsun diye.
  */
 
 /**
@@ -35,9 +34,6 @@ const icerikGovdesi = (project: Project, tool: ToolId, calisma: Record<string, a
  * listesinin klasörünkiyle AYNI olmasını şart koşuyor; bu hem başkasının
  * ağacına çalışma sokulmasını engelliyor hem de klasör paylaşımının sonradan
  * eklenen çalışmaları kapsamasını sağlıyor.
- *
- * Sonraki yazmalarda gönderilmiyor: gönderseydik, o çalışmaya tek tek davet
- * edilmiş kişiler her kayıtta listeden silinirdi.
  */
 const kurulusGovdesi = (project: Project, workId: string) => ({
   ownerId: project.userId,
@@ -47,6 +43,35 @@ const kurulusGovdesi = (project: Project, workId: string) => ({
   sharedWith: [],
   members: {}
 });
+
+/** Sunucuda duran bir çalışma kaydının, yazma tarafını ilgilendiren alanları. */
+export interface MevcutKayit {
+  id: string;
+  tool: ToolId;
+  /** Yalnızca bu çalışmaya tek tek davet edilenler. */
+  sharedWith?: string[];
+  /** Bu çalışmayı görebilenlerin tamamı. */
+  readers?: string[];
+}
+
+/**
+ * Bir çalışmayı görebilecek herkes: klasöre davet edilenler + yalnızca bu
+ * çalışmaya davet edilenler.
+ *
+ * Her yazmada yeniden hesaplanıyor, çünkü klasöre biri katıldığında ya da
+ * çıkarıldığında çalışmaların da onu takip etmesi gerekiyor; kayıt kurulurken
+ * kopyalanan liste tek başına eskirdi. Sabit bir dizi göndermek yerine birleşim
+ * alınması şart: tek tek davet edilenler yoksa her yazmada listeden silinirdi.
+ *
+ * Yalnızca klasörün sahibi gönderiyor. Kurallar ortak çalışanın bu alana
+ * dokunmasını reddediyor; gönderirse bütün yazma reddedilir.
+ */
+const okuyucular = (project: Project, kayit: MevcutKayit) =>
+  Array.from(new Set([...(kayit.sharedWith ?? []), ...(project.sharedWith ?? [])]));
+
+/** İki erişim listesi aynı kişileri mi tutuyor? (Sıra önemsiz.) */
+const ayniKisiler = (a: readonly string[], b: readonly string[]) =>
+  a.length === b.length && a.every((uid) => b.includes(uid));
 
 /**
  * Bir projenin çalışmalarını yeni kayıtlarla eşitler: eksikleri kurar,
@@ -61,16 +86,20 @@ const kurulusGovdesi = (project: Project, workId: string) => ({
  *   kayıtları ancak elimizdeki listeyle karşılaştırarak bulabiliyoruz.
  * @param sadeceAraclar Verilirse yalnızca bu araçlara dokunulur; ötekilerin
  *   kayıtları ne yazılır ne silinir.
- * @param yalnizEksikler Var olanları tekrar yazmaz. İlk doldurmada kullanılıyor.
+ * @param yalnizEksikler İçeriği tekrar yazmaz; eksik kayıtları kurar ve erişim
+ *   listelerini tazeler. İlk doldurmada kullanılıyor.
+ * @param sahipMi Klasörün sahibi miyiz? Erişim listesini ve silmeyi yalnızca
+ *   sahip yapabiliyor (kurallar ortak çalışanın ikisini de reddediyor).
  */
 export function projeCalismalariniEsitle(
   project: Project,
-  mevcutKayitlar: readonly { id: string; tool: ToolId }[],
+  mevcutKayitlar: readonly MevcutKayit[],
   sadeceAraclar?: ReadonlySet<ToolId>,
-  yalnizEksikler = false
+  yalnizEksikler = false,
+  sahipMi = true
 ): Promise<unknown>[] {
   const islemler: Promise<unknown>[] = [];
-  const mevcutIdler = new Set(mevcutKayitlar.map((k) => k.id));
+  const kayitId = new Map(mevcutKayitlar.map((k) => [k.id, k]));
   const olmasiGerekenler = new Set<string>();
 
   TUM_ARACLAR.forEach((tool) => {
@@ -83,24 +112,78 @@ export function projeCalismalariniEsitle(
       const dokumanId = calismaDokumanId(project.id, calisma.id);
       olmasiGerekenler.add(dokumanId);
 
-      const yeni = !mevcutIdler.has(dokumanId);
-      if (yalnizEksikler && !yeni) return;
-      const govde = yeni
-        ? { ...kurulusGovdesi(project, calisma.id), ...icerikGovdesi(project, tool, calisma) }
-        : icerikGovdesi(project, tool, calisma);
+      const kayit = kayitId.get(dokumanId);
+      if (!kayit) {
+        islemler.push(setDoc(
+          doc(db, 'works', dokumanId),
+          stripUndefined({ ...kurulusGovdesi(project, calisma.id), ...icerikGovdesi(project, tool, calisma) }),
+          { merge: true }
+        ));
+        return;
+      }
 
+      // Klasöre biri katıldıysa ya da çıkarıldıysa erişim listesi de tazelenir.
+      const guncelOkuyucular = sahipMi ? okuyucular(project, kayit) : null;
+      const erisimDegisti = guncelOkuyucular !== null && !ayniKisiler(kayit.readers ?? [], guncelOkuyucular);
+
+      if (yalnizEksikler) {
+        // İlk doldurmada içerik tekrar yazılmaz; tazelenecek erişim listesi
+        // yoksa bu kayda hiç dokunulmaz.
+        if (!erisimDegisti) return;
+        islemler.push(setDoc(doc(db, 'works', dokumanId), { readers: guncelOkuyucular }, { merge: true }));
+        return;
+      }
+
+      const govde: Record<string, any> = icerikGovdesi(project, tool, calisma);
+      if (erisimDegisti) govde.readers = guncelOkuyucular;
       islemler.push(setDoc(doc(db, 'works', dokumanId), stripUndefined(govde), { merge: true }));
     });
   });
 
   // Fazlalıklar: silinmiş çalışmalar ve artık boş sayılan başlangıç kayıtları.
-  mevcutKayitlar.forEach((kayit) => {
-    if (sadeceAraclar && !sadeceAraclar.has(kayit.tool)) return;
-    if (olmasiGerekenler.has(kayit.id)) return;
-    islemler.push(deleteDoc(doc(db, 'works', kayit.id)));
-  });
+  // Silme yalnızca sahibin yapabildiği bir iş; ortak çalışan denerse reddedilir.
+  if (sahipMi) {
+    mevcutKayitlar.forEach((kayit) => {
+      if (sadeceAraclar && !sadeceAraclar.has(kayit.tool)) return;
+      if (olmasiGerekenler.has(kayit.id)) return;
+      islemler.push(deleteDoc(doc(db, 'works', kayit.id)));
+    });
+  }
 
   return islemler;
+}
+
+/**
+ * Klasörün adı değişince çalışma kayıtlarındaki kopyayı da tazeler.
+ *
+ * Ad kayıtların içinde kopya duruyor, çünkü paylaşılan bir çalışma karşı
+ * tarafta kendi klasör yolunda görünmeli ve o kişiye klasör kaydını
+ * okutamıyoruz; okutsak klasörün paylaşılmamış ayarları ve üye listesi de
+ * görünürdü. Kopya olduğu için de tek başına eskiyor.
+ */
+export function calismalarinKlasorAdiniGuncelle(
+  kayitlar: readonly { id: string }[],
+  ad: string
+): Promise<unknown>[] {
+  return kayitlar.map((k) => setDoc(doc(db, 'works', k.id), { projectName: ad }, { merge: true }));
+}
+
+/**
+ * Ortak çalışan klasörden ayrılırken çalışmalardaki erişimini de bırakır.
+ *
+ * İki listeden birden çıkılıyor: yalnızca görebilenler listesinden çıkılsa,
+ * sahibin bir sonraki tazelemesi kişiyi tek tek davet edilenler listesinden
+ * okuyup erişimi geri verirdi.
+ */
+export function calismalardanAyril(
+  kayitlar: readonly { id: string }[],
+  uid: string
+): Promise<unknown>[] {
+  return kayitlar.map((k) => setDoc(
+    doc(db, 'works', k.id),
+    { readers: arrayRemove(uid), sharedWith: arrayRemove(uid) },
+    { merge: true }
+  ));
 }
 
 /**

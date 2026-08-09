@@ -113,37 +113,43 @@ export default function SyncManager() {
         });
     };
 
-    // GEÇİŞ DÖNEMİ: aynı veri bir de 'works' koleksiyonuna yazılıyor.
+    // Çalışmaların kendi kayıtları. İçeriğin doğrusu burası (bkz.
+    // calismaOkuma.ts); projenin toolData'sı bir süre daha yedek olarak
+    // yazılmaya devam ediyor.
     //
-    // Okuma hâlâ projenin toolData'sından yapılıyor, yani buranın bir hatası
-    // kullanıcıya yansımaz ve eski kopya güncel kalır. Okuma yeni kayıtlara
-    // çevrildiğinde geri dönülebilecek sağlam bir nokta olsun diye böyle.
-    //
-    // Yalnızca klasörün sahibi yazıyor: kurallar yeni bir çalışmayı ancak
-    // klasörün sahibine bağlı olarak kuruyor, ortak çalışanın kurulum yazması
-    // reddedilirdi. Ortakların düzenlemeleri şimdilik yalnızca eski yere
-    // gidiyor; okuma çevrildiğinde bu dal da açılacak.
+    // Ortak çalışan da yazıyor. Yazabilmesi için o çalışmanın erişim
+    // listesinde olması gerekiyor; listeyi klasörün sahibi tazeliyor
+    // (bkz. eksikleriDoldur). Sahip çevrimdışıyken klasöre yeni katılan
+    // birinin yazması reddedilir, düzenlemesi yalnızca eski yere gider.
     const calismalariDaYaz = (project: Project, degisenAnahtarlar: ReadonlySet<string>) => {
       const user = useAuthStore.getState().user;
-      if (!user || project.userId !== user.uid) return Promise.resolve();
+      if (!user) return Promise.resolve();
 
       const mevcutKayitlar = useRoadmapStore.getState().works.filter((w) => w.projectId === project.id);
       const araclar = anahtarlardanAraclar(degisenAnahtarlar);
       if (araclar.size === 0) return Promise.resolve();
 
-      // Hatalar yutuluyor: bu yazma henüz kimseye görünmüyor, başarısız olması
-      // kullanıcıya "kaydedilemedi" dedirtmemeli. Asıl kayıt yukarıda.
-      return Promise.all(projeCalismalariniEsitle(project, mevcutKayitlar, araclar))
+      // Hatalar yutuluyor: eski yere yazma yukarıda ayrıca yapılıyor, veri
+      // kaybolmuyor. Reddedilen bir erişim yüzünden kullanıcıya "kaydedilemedi"
+      // dedirtmek onu boşuna telaşlandırırdı.
+      return Promise.all(
+        projeCalismalariniEsitle(project, mevcutKayitlar, araclar, false, project.userId === user.uid)
+      )
         .then(() => undefined)
         .catch((err) => {
-          console.error('Works mirror write failed:', err);
+          console.error('Works write failed:', err);
         });
     };
 
-    // İlk doldurma. Yukarıdaki ayna yazması yalnızca DEĞİŞEN araçları
-    // gönderiyor; hiç dokunulmayan çalışmalar yeni yerine kendiliğinden
-    // geçmezdi. Bu, proje başına bir kez, yalnızca eksik olanları yazar.
-    const doldurulan = new Set<string>();
+    // İlk doldurma. Yukarıdaki yazma yalnızca DEĞİŞEN araçları gönderiyor;
+    // hiç dokunulmayan çalışmalar kendi kayıtlarına geçmezdi. Bu, eksik
+    // kayıtları kurar ve erişim listelerini klasörünkiyle eşitler.
+    //
+    // Proje başına bir kez çalışır; klasörün paylaşım listesi değişirse
+    // (biri katıldı ya da çıkarıldı) o proje için yeniden. Yoksa klasöre yeni
+    // katılan kişi çalışmaları hiç göremezdi: erişim listesi kayıt kurulurken
+    // kopyalanıyor ve tek başına eskiyor.
+    const doldurulan = new Map<string, string>();
     let oksuzlerSuprusuldu = false;
     const eksikleriDoldur = () => {
       const durum = useRoadmapStore.getState();
@@ -173,8 +179,9 @@ export default function SyncManager() {
 
       durum.projects.forEach((project) => {
         if (project.userId !== user.uid) return;
-        if (doldurulan.has(project.id)) return;
-        doldurulan.add(project.id);
+        const paylasimImzasi = (project.sharedWith ?? []).join(',');
+        if (doldurulan.get(project.id) === paylasimImzasi) return;
+        doldurulan.set(project.id, paylasimImzasi);
 
         const mevcutKayitlar = durum.works.filter((w) => w.projectId === project.id);
         // Fazlalık kayıtlar da burada temizleniyor: hiç dokunulmamış

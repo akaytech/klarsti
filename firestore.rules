@@ -109,8 +109,128 @@ service cloud.firestore {
                     );
       
       // DELETE: Sadece projenin orijinal sahibi projeyi silebilir.
-      allow delete: if request.auth != null 
+      allow delete: if request.auth != null
                     && resource.data.get('userId', '') == request.auth.uid;
+    }
+
+    // ------------------------------------------------------------------
+    // ÇALIŞMALAR
+    //
+    // Bir projenin 14 aracındaki bütün veri tek bir 'projects' kaydında
+    // duruyordu. Veritabanı bir kaydı ya tamamen verir ya hiç vermez; bu
+    // yüzden "sadece şu zihin haritasını paylaş" imkânsızdı, tek bir kanvası
+    // gösterirken bütün proje karşı tarafa açılıyordu. Ayrıca kayıt 1 MB
+    // sınırına doğru şişiyordu.
+    //
+    // Artık her çalışma (bir kırılım ağacı, bir zihin haritası, bir SWOT
+    // analizi) kendi kaydında duruyor:
+    //   ownerId     klasörün sahibi. Çalışmanın sahibi ayrı olmuyor: bir
+    //               klasörün içindekiler klasörün sahibinindir.
+    //   projectId   hangi klasörde
+    //   projectName klasörün adı, kopya olarak. Karşı tarafa paylaşılan
+    //               çalışmayı KENDİ klasör yolunda göstermek gerekiyor
+    //               (Klasör > Araç > Çalışma). Adı burada tutmasak, o kişiye
+    //               klasör kaydını okutmak zorunda kalırdık; o zaman da
+    //               klasörün paylaşılmamış ayarları ve üyeleri görünürdü.
+    //               Klasör adı değişince sahibi kendi çalışmalarını da
+    //               günceller.
+    //   tool        hangi araç (menünün orta katı)
+    //   readers     bu çalışmayı görebilenlerin TAMAMI: hem tek tek bu
+    //               çalışmaya davet edilenler hem de bütün klasörü
+    //               paylaştığın kişiler. Tek dizi olması şart: Firestore bir
+    //               sorguda yalnızca bir "dizide var mı" koşuluna izin
+    //               veriyor, iki ayrı liste olsa kullanıcının görebildiği
+    //               çalışmalar tek sorguda çekilemezdi.
+    //   sharedWith  bunlardan yalnızca bu çalışmaya özel davet edilenler.
+    //               Kimin nereden geldiğini ayırt etmek için: klasör
+    //               paylaşımı kapatıldığında readers'tan kimin düşeceği
+    //               buradan biliniyor.
+    // ------------------------------------------------------------------
+    match /works/{workId} {
+
+      function klasor() {
+        return get(/databases/$(database)/documents/projects/$(request.resource.data.projectId)).data;
+      }
+
+      function kendiSatiriCalisma() {
+        return request.resource.data.get('members', {})
+                 .diff(resource.data.get('members', {}))
+                 .affectedKeys()
+                 .hasOnly([request.auth.uid]);
+      }
+
+      // CREATE: çalışmayı ancak klasörün sahibi ya da klasöre davet edilmiş
+      // biri açabilir; her iki durumda da çalışma klasörün sahibine yazılır.
+      //
+      // readers, klasörün paylaşım listesinin aynısı olmak zorunda. Serbest
+      // bıraksaydık herkes, içine başkasının kimliğini yazdığı bir çalışma
+      // oluşturup o kişinin ağacında görünebilirdi (projelerde kapattığımız
+      // kapının aynısı). Bu koşul aynı zamanda klasör paylaşımının sonradan
+      // eklenen çalışmaları da kapsamasını sağlıyor.
+      // hasAll önce geliyor: kurallar && işlemini soldan kısa devre yapıyor.
+      // Eksik alanlı bir yazmada klasor() geçersiz bir yola bakar ve
+      // değerlendirme hatası verir. Sonuç yine ret olurdu ama hata,
+      // günlükleri gerçek bir sorun varmış gibi kirletiyor.
+      allow create: if request.auth != null
+                    && request.resource.data.keys().hasAll(['ownerId', 'projectId', 'tool'])
+                    && request.resource.data.ownerId == klasor().get('userId', '')
+                    && (
+                      klasor().get('userId', '') == request.auth.uid
+                      || request.auth.uid in klasor().get('sharedWith', [])
+                    )
+                    && request.resource.data.get('sharedWith', []).size() == 0
+                    && request.resource.data.get('members', {}).keys().size() == 0
+                    && request.resource.data.get('readers', []) == klasor().get('sharedWith', []);
+
+      // READ: sahibi, erişimi olanlar, ya da çalışmanın kendi linki açıksa
+      // linki bilen herkes. Klasörün diğer çalışmaları bu kişiye kapalı
+      // kalır; erişim çalışma başına veriliyor.
+      allow read: if request.auth != null
+                  && (
+                    resource.data.get('ownerId', '') == request.auth.uid
+                    || request.auth.uid in resource.data.get('readers', [])
+                    || resource.data.get('isPublic', false) == true
+                  );
+
+      allow update: if request.auth != null
+                    && request.resource.data.get('ownerId', '') == resource.data.get('ownerId', '')
+                    && request.resource.data.get('projectId', '') == resource.data.get('projectId', '')
+                    && (
+                      // 1) Sahip: her şeyi değiştirebilir.
+                      resource.data.get('ownerId', '') == request.auth.uid
+                      ||
+                      // 2) Erişimi olan: içeriği düzenler, paylaşım
+                      //    ayarlarına dokunamaz. Kendini listeden çıkarıp
+                      //    ayrılabilir.
+                      (
+                        request.auth.uid in resource.data.get('readers', [])
+                        && request.resource.data.get('isPublic', false) == resource.data.get('isPublic', false)
+                        && (
+                          request.resource.data.get('readers', []) == resource.data.get('readers', [])
+                          || request.resource.data.get('readers', []) == resource.data.get('readers', []).removeAll([request.auth.uid])
+                        )
+                        && (
+                          request.resource.data.get('sharedWith', []) == resource.data.get('sharedWith', [])
+                          || request.resource.data.get('sharedWith', []) == resource.data.get('sharedWith', []).removeAll([request.auth.uid])
+                        )
+                        && kendiSatiriCalisma()
+                      )
+                      ||
+                      // 3) Açık linkle katılma: yalnızca erişim listelerine ve
+                      //    yalnızca isteği yapanın kendi kimliğiyle.
+                      (
+                        resource.data.get('isPublic', false) == true &&
+                        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['readers', 'sharedWith', 'members']) &&
+                        request.resource.data.readers == resource.data.get('readers', []).concat([request.auth.uid]) &&
+                        request.resource.data.sharedWith == resource.data.get('sharedWith', []).concat([request.auth.uid]) &&
+                        kendiSatiriCalisma()
+                      )
+                    );
+
+      // DELETE: yalnızca sahibi. Erişimi olan biri ayrılmak isterse kendini
+      // listeden çıkarır (bkz. 2. dal), çalışmayı silemez.
+      allow delete: if request.auth != null
+                    && resource.data.get('ownerId', '') == request.auth.uid;
     }
   }
 }

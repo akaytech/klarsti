@@ -1,6 +1,6 @@
 # Çalışma Bazlı Paylaşım — Nasıl Çalışıyor, Ne Kaldı
 
-**Son güncelleme:** 2026-08-10 · **Sürüm:** `0.8.17-8` · **Durum:** Üç adım da bitti.
+**Son güncelleme:** 2026-08-10 · **Sürüm:** `0.8.17-9` · **Durum:** Üç adım da bitti.
 
 Bu belge bitmiş bir işin özeti ve kalan tuzakların listesi. Devir teslim değil.
 
@@ -78,10 +78,14 @@ projedeki iki ağaç aynı dokümanı paylaşırdı.
    veriyor), kayda bakılsaydı sildiği çalışma ekranına geri gelirdi.
    Klasör bize kapalıysa (`Project.klasorYok`) böyle bir toolData yok, ağaç
    tamamen kayıtlardan doğuyor.
-2. **Erişim listesi her yazmada yeniden hesaplanıyor:** `readers = sharedWith ∪
-   klasörün sharedWith'i`. Yalnızca sahip gönderiyor. Kayıt kurulurken
-   kopyalanan liste tek başına eskiyor, klasöre yeni katılan kişi hiçbir
-   çalışmayı göremezdi.
+2. **Erişim listesi iki yerden tazeleniyor.** Sahip her yazmada yeniden
+   hesaplıyor: `readers = sharedWith ∪ klasörün sharedWith'i`. Klasöre davet
+   edilen kişi de açılışta kendini ekliyor (kuralın 4. dalı, klasörün paylaşım
+   listesine bakıyor). İkincisi olmadan, sahip çevrimdışıyken katılan biri o
+   gelene kadar hiçbir çalışmayı okuyamıyor ve düzenlemesi kayboluyordu.
+   Kişinin kendini eklemesi yalnızca `readers`'a; `sharedWith` "bu çalışmaya
+   tek tek davet edilenler" demek, oraya yazılsaydı klasörden çıkarılan kişi
+   çalışmada kalırdı.
 3. **Araç paylaşımı o anki listeye veriliyor**, klasöre değil. Sonradan eklenen
    çalışma kendiliğinden dahil olmuyor (kullanıcının kararı).
 4. **`worksLoaded` false ise** uygulama eskisi gibi `toolData`'dan çalışıyor.
@@ -91,29 +95,22 @@ projedeki iki ağaç aynı dokümanı paylaşırdı.
 
 ## 4. Bilinen açıklar
 
-1. **Sahip çevrimdışıyken klasöre yeni katılan biri.** Erişim listesini sahip
-   tazeliyor. O aralıkta ortağın düzenlemesi çalışma kaydına yazılamaz, yalnızca
-   eski yere gider; sahip döndüğünde kayıttaki (eski) içerik kazanır. Dar bir
-   pencere ama sessiz bir kayıp. Kapatmak için ya kurala "klasör ortağı kendini
-   `readers`'a ekleyebilir" dalı eklenmeli (o kişinin çalışmaları bulabilmesi
-   ayrı bir sorun) ya da içerik karşılaştırıp yenisini seçen bir kural
-   yazılmalı.
-2. **Proje açılınca boş başlangıç çalışması kurulup KAYDEDİLİYOR.**
+1. **Proje açılınca boş başlangıç çalışması kurulup KAYDEDİLİYOR.**
    `getInitialValue` beş araç için (wbs, 5whys, mindmap, fta, vsm) varsayılan bir
    çalışma üretiyor; kullanıcı o araca hiç dokunmasa bile eski yere yazılıyor.
    `calismaDokunulmamis` bunların ayrı kayıt almasını engelliyor ama asıl
    davranışın düzeltilmesi ayrı bir iş.
-3. **Eski format dönüşümü tek yönlü ve tek şanslı.** `parseDoc` içindeki
+2. **Eski format dönüşümü tek yönlü ve tek şanslı.** `parseDoc` içindeki
    dönüşümler `if (!Array.isArray(toolData.X))` ile korunuyor. Dizi bir kez
    **boş** olarak yazıldığında dönüşüm bir daha çalışmaz ve eski alanlar
    erişilemez kalır. Yeni bir dönüşüm yazarken bu tuzağı tekrarlama.
-4. **Menü ile saklama farklı ölçüt kullanıyor.** Menü `toolWorks.enAzKutu` ile
+3. **Menü ile saklama farklı ölçüt kullanıyor.** Menü `toolWorks.enAzKutu` ile
    (kutu sayısı) gizliyor, saklama `calismaDokunulmamis` ile (varsayılana
    dokunulmuş mu) eliyor. İkisi aynı soruyu iki farklı şekilde cevaplıyor.
-5. **Bütün `works` kayıtları tek seferde çekiliyor.** Hacim büyüdüğünde proje
+4. **Bütün `works` kayıtları tek seferde çekiliyor.** Hacim büyüdüğünde proje
    kaydında hafif bir dizin (`{ workId: {tool, name} }`) tutup ağır `data`
    alanını yalnızca açık proje için çekmek gerekebilir.
-6. **Alıcı tarafı ikinci bir hesapla uçtan uca denenmedi.** Kural senaryoları
+5. **Alıcı tarafı ikinci bir hesapla uçtan uca denenmedi.** Kural senaryoları
    emülatörde geçiyor, gönderen taraf canlıda çalışıyor; alıcının ağacında
    klasör başlığının nasıl göründüğü yalnızca kodla doğrulandı.
 
@@ -129,9 +126,9 @@ npx firebase emulators:exec --only firestore --project klarsti-rules-test "node 
 ```
 
 Java 21 kurulu, emülatör çalışıyor. `scratch/` **gitignore'da**, yani test
-dosyası depoda yok — yeniden yazman gerekir. 2026-08-10'da 23 senaryo geçiyordu:
+dosyası depoda yok — yeniden yazman gerekir. 2026-08-10'da 33 senaryo geçiyordu:
 kuruluş, tek çalışma paylaşımı, katılma, ayrılma, çıkarma, araç sorgusu,
-klasör ortağının yetkileri.
+klasör ortağının yetkileri, ve ortağın erişimini kendisi alması.
 
 **Tuzak:** `arrayRemove`, dizide olmayan bir kimlik için hiçbir şey yapmaz. Bu
 yüzden "ortak başkasını listeden atamaz" testi, kurbanı önce diziye koymadan

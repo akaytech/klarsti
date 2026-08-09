@@ -6,8 +6,10 @@ Disallow: /__/
 
 # Proje adresleri kişiye özel çalışma alanları: giriş arkasında oldukları için
 # tarayıcıya boş kabuk döner, ayrıca paylaşılmış proje linkleri arama
-# sonuçlarına düşmemeli.
+# sonuçlarına düşmemeli. /work/ aynı şeyin çalışma bazlı karşılığı: tek bir
+# çalışmanın paylaşım linki (bkz. SharePanel).
 Disallow: /project/
+Disallow: /work/
 Disallow: /agenda
 Disallow: /login
 Disallow: /register

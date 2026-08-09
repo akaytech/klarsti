@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import i18n from '../i18n';
 import { stripUndefined } from '../utils/firestoreSafe';
 import { bekleyenYazmalariBildir } from '../store/bekleyenYazmalar';
-import { projeninCalismalariniYaz, anahtarlardanAraclar } from '../store/calismaYazma';
+import { projeCalismalariniEsitle, anahtarlardanAraclar } from '../store/calismaYazma';
 
 const SAVE_DEBOUNCE_MS = 1000;
 
@@ -127,17 +127,13 @@ export default function SyncManager() {
       const user = useAuthStore.getState().user;
       if (!user || project.userId !== user.uid) return Promise.resolve();
 
-      const mevcutIdler = new Set(
-        useRoadmapStore.getState().works
-          .filter((w) => w.projectId === project.id)
-          .map((w) => w.id)
-      );
+      const mevcutKayitlar = useRoadmapStore.getState().works.filter((w) => w.projectId === project.id);
       const araclar = anahtarlardanAraclar(degisenAnahtarlar);
       if (araclar.size === 0) return Promise.resolve();
 
       // Hatalar yutuluyor: bu yazma henüz kimseye görünmüyor, başarısız olması
       // kullanıcıya "kaydedilemedi" dedirtmemeli. Asıl kayıt yukarıda.
-      return Promise.all(projeninCalismalariniYaz(project, mevcutIdler, araclar))
+      return Promise.all(projeCalismalariniEsitle(project, mevcutKayitlar, araclar))
         .then(() => undefined)
         .catch((err) => {
           console.error('Works mirror write failed:', err);
@@ -160,10 +156,10 @@ export default function SyncManager() {
         if (doldurulan.has(project.id)) return;
         doldurulan.add(project.id);
 
-        const mevcutIdler = new Set(
-          durum.works.filter((w) => w.projectId === project.id).map((w) => w.id)
-        );
-        const yazmalar = projeninCalismalariniYaz(project, mevcutIdler, undefined, true);
+        const mevcutKayitlar = durum.works.filter((w) => w.projectId === project.id);
+        // Fazlalık kayıtlar da burada temizleniyor: hiç dokunulmamış
+        // başlangıç çalışmalarının kaydı ve silinmiş çalışmalardan kalanlar.
+        const yazmalar = projeCalismalariniEsitle(project, mevcutKayitlar, undefined, true);
         if (yazmalar.length === 0) return;
         Promise.all(yazmalar).catch((err) => {
           console.error('Works backfill failed:', err);

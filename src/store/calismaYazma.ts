@@ -1,7 +1,7 @@
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { stripUndefined } from '../utils/firestoreSafe';
-import { hamCalismalar, calismaAdi, aracAnahtari, TUM_ARACLAR } from '../config/toolWorks';
+import { hamCalismalar, calismaAdi, calismaDokunulmamis, aracAnahtari, TUM_ARACLAR } from '../config/toolWorks';
 import type { ToolId, Project } from './useRoadmapStore';
 
 /**
@@ -49,40 +49,58 @@ const kurulusGovdesi = (project: Project, workId: string) => ({
 });
 
 /**
- * Bir projenin çalışmalarını yazar.
+ * Bir projenin çalışmalarını yeni kayıtlarla eşitler: eksikleri kurar,
+ * değişenleri günceller, karşılığı kalmayanları siler.
  *
- * @param mevcutIdler Sunucuda halihazırda duran çalışma dokümanlarının
- *   kimlikleri. Bilmek şart: ilk yazma ile sonraki yazmanın gövdesi farklı.
- * @param sadeceAraclar Verilirse yalnızca bu araçların çalışmaları yazılır.
- * @param yalnizEksikler Yalnızca sunucuda henüz olmayanları yazar. İlk
- *   doldurmada kullanılıyor: var olanları tekrar yazmak boşuna yazma olurdu.
+ * Silme de bu işin parçası: kullanıcı bir çalışmayı sildiğinde eski yerden
+ * düşüyor ama yeni kaydı öylece kalırdı. Okuma yeni kayıtlara çevrildiğinde
+ * silinen çalışma geri gelmiş gibi görünürdü.
+ *
+ * @param mevcutKayitlar Bu projenin sunucuda duran çalışma kayıtları. İki
+ *   şey için gerekli: ilk yazmanın gövdesi sonrakilerden farklı, ve fazlalık
+ *   kayıtları ancak elimizdeki listeyle karşılaştırarak bulabiliyoruz.
+ * @param sadeceAraclar Verilirse yalnızca bu araçlara dokunulur; ötekilerin
+ *   kayıtları ne yazılır ne silinir.
+ * @param yalnizEksikler Var olanları tekrar yazmaz. İlk doldurmada kullanılıyor.
  */
-export function projeninCalismalariniYaz(
+export function projeCalismalariniEsitle(
   project: Project,
-  mevcutIdler: ReadonlySet<string>,
+  mevcutKayitlar: readonly { id: string; tool: ToolId }[],
   sadeceAraclar?: ReadonlySet<ToolId>,
   yalnizEksikler = false
 ): Promise<unknown>[] {
-  // Sahibi olmadığımız bir projenin çalışmalarını kurmaya çalışmak kurallara
-  // takılır; ortak çalışan yalnızca var olan çalışmaların içeriğini yazabilir.
-  const yazmalar: Promise<unknown>[] = [];
+  const islemler: Promise<unknown>[] = [];
+  const mevcutIdler = new Set(mevcutKayitlar.map((k) => k.id));
+  const olmasiGerekenler = new Set<string>();
 
   TUM_ARACLAR.forEach((tool) => {
     if (sadeceAraclar && !sadeceAraclar.has(tool)) return;
 
     hamCalismalar(project.toolData, tool).forEach((calisma) => {
+      // Hiç başlanmamış çalışma kendi kaydını hak etmiyor (bkz. calismaDokunulmamis).
+      if (calismaDokunulmamis(calisma, tool)) return;
+
       const dokumanId = calismaDokumanId(project.id, calisma.id);
+      olmasiGerekenler.add(dokumanId);
+
       const yeni = !mevcutIdler.has(dokumanId);
       if (yalnizEksikler && !yeni) return;
       const govde = yeni
         ? { ...kurulusGovdesi(project, calisma.id), ...icerikGovdesi(project, tool, calisma) }
         : icerikGovdesi(project, tool, calisma);
 
-      yazmalar.push(setDoc(doc(db, 'works', dokumanId), stripUndefined(govde), { merge: true }));
+      islemler.push(setDoc(doc(db, 'works', dokumanId), stripUndefined(govde), { merge: true }));
     });
   });
 
-  return yazmalar;
+  // Fazlalıklar: silinmiş çalışmalar ve artık boş sayılan başlangıç kayıtları.
+  mevcutKayitlar.forEach((kayit) => {
+    if (sadeceAraclar && !sadeceAraclar.has(kayit.tool)) return;
+    if (olmasiGerekenler.has(kayit.id)) return;
+    islemler.push(deleteDoc(doc(db, 'works', kayit.id)));
+  });
+
+  return islemler;
 }
 
 /**

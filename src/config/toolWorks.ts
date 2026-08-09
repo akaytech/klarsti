@@ -1,3 +1,6 @@
+import i18n from '../i18n';
+import { isPristineWbs } from '../store/slices/createWbsSlice';
+import { isPristineFta } from '../store/slices/createFtaSlice';
 import type { ToolId } from '../store/useRoadmapStore';
 
 /**
@@ -144,6 +147,50 @@ export function calismaAdi(calisma: Record<string, any>, tool: ToolId): string {
   const tanim = TANIMLAR[tool];
   if (!tanim) return '';
   return String(calisma[tanim.adAlani] ?? '').trim();
+}
+
+/**
+ * Bu çalışma hiç başlanmamış mı?
+ *
+ * Uygulama bir proje açıldığında beş araç için (kırılım ağacı, 5 neden, zihin
+ * haritası, hata ağacı, değer akışı) kendiliğinden boş bir başlangıç çalışması
+ * kuruyor ve kaydediyor. Kullanıcı o araca hiç dokunmasa bile. Menü bunları
+ * zaten gizliyor; ayrı kayıt olarak da saklanmamalılar, yoksa her proje
+ * kimsenin açmadığı beş kayıt üretir.
+ *
+ * Ölçüt bilerek dar: "az kutusu var" değil, "varsayılanına hiç dokunulmamış".
+ * Tek kutulu ama kullanıcının adını yazdığı bir zihin haritası gerçek bir
+ * çalışmadır, elenmemeli.
+ */
+export function calismaDokunulmamis(calisma: Record<string, any>, tool: ToolId): boolean {
+  const nodes = Array.isArray(calisma?.nodes) ? calisma.nodes : [];
+  const edges = Array.isArray(calisma?.edges) ? calisma.edges : [];
+
+  if (tool === 'wbs') return isPristineWbs(nodes as any, edges as any);
+  if (tool === 'fta') return isPristineFta(nodes as any, edges as any);
+
+  if (tool === '5whys') {
+    if (nodes.length === 0) return true;
+    if (nodes.length > 1 || edges.length > 0) return false;
+    const d = nodes[0]?.data ?? {};
+    return d.label === i18n.t('whys_problem') && !d.description;
+  }
+
+  if (tool === 'mindmap') {
+    if (nodes.length === 0) return true;
+    if (nodes.length > 1 || edges.length > 0) return false;
+    const d = nodes[0]?.data ?? {};
+    return d.label === i18n.t('mindmap_root') && !d.description;
+  }
+
+  // Değer akışının varsayılanı gerçekten boş açılıyor; kutuları kanvastaki
+  // başlangıç ekranı kuruyor. Eski sürümden dönüşen haritalarda tek bir
+  // tedarikçi kutusu kalmış olabiliyor, o da başlanmış sayılmaz.
+  if (tool === 'vsm') return edges.length === 0 && nodes.length <= 1;
+
+  // Kalan araçlarda başlangıç çalışması kurulmuyor; ne varsa kullanıcı
+  // bilerek oluşturmuştur, boş olsa bile korunur.
+  return false;
 }
 
 /** toolData içinde bu aracın dizisini tutan anahtar. */

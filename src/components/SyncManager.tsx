@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import i18n from '../i18n';
 import { stripUndefined } from '../utils/firestoreSafe';
 import { bekleyenYazmalariBildir } from '../store/bekleyenYazmalar';
-import { projeCalismalariniEsitle, projeninCalismalariniSil, anahtarlardanAraclar } from '../store/calismaYazma';
+import { projeCalismalariniEsitle, projeninCalismalariniSil, anahtarlardanAraclar, calismalaraKendiniEkle } from '../store/calismaYazma';
 
 const SAVE_DEBOUNCE_MS = 1000;
 
@@ -153,6 +153,8 @@ export default function SyncManager() {
     // katılan kişi çalışmaları hiç göremezdi: erişim listesi kayıt kurulurken
     // kopyalanıyor ve tek başına eskiyor.
     const doldurulan = new Map<string, string>();
+    // Erişim istenmiş çalışma kayıtları; aynısını tur tur denememek için.
+    const erisimDenenen = new Set<string>();
     let oksuzlerSuprusuldu = false;
     const eksikleriDoldur = () => {
       const durum = useRoadmapStore.getState();
@@ -179,6 +181,24 @@ export default function SyncManager() {
           });
         }
       }
+
+      // Klasöre davet edildiğimiz projelerde erişimimizi kendimiz alıyoruz.
+      // Sahip çevrimdışıyken katılan biri, o gelene kadar hiçbir çalışmayı
+      // ne okuyabilir ne de yazabilirdi; düzenlemesi yalnızca eski yere gider
+      // ve sahip döndüğünde kayıttaki eski içerik kazanırdı.
+      //
+      // Kaydı olmayan çalışmalar için (hiç başlanmamış olanlar, ya da sahibin
+      // henüz doldurmadıkları) yazma reddedilir. Bu beklenen bir sonuç, hata
+      // değil: o yüzden sessiz geçiliyor ve aynı kayıt bu oturumda bir daha
+      // denenmiyor.
+      durum.projects.forEach((project) => {
+        if (project.userId === user.uid || project.klasorYok) return;
+        const elimizdekiler = new Set(
+          durum.works.filter((w) => w.projectId === project.id).map((w) => w.id)
+        );
+        const istekler = calismalaraKendiniEkle(project, elimizdekiler, user.uid, erisimDenenen);
+        if (istekler.length > 0) Promise.allSettled(istekler);
+      });
 
       durum.projects.forEach((project) => {
         if (project.userId !== user.uid) return;

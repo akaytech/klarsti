@@ -1,4 +1,4 @@
-import { doc, setDoc, deleteDoc, arrayRemove } from 'firebase/firestore';
+import { doc, setDoc, deleteDoc, arrayRemove, arrayUnion } from 'firebase/firestore';
 import { db } from '../firebase';
 import { stripUndefined } from '../utils/firestoreSafe';
 import { hamCalismalar, calismaAdi, calismaDokunulmamis, aracAnahtari, TUM_ARACLAR } from '../config/toolWorks';
@@ -149,6 +149,49 @@ export function projeCalismalariniEsitle(
       islemler.push(deleteDoc(doc(db, 'works', kayit.id)));
     });
   }
+
+  return islemler;
+}
+
+/**
+ * Klasöre davet edildiğimiz halde erişim listesinde bizi taşımayan
+ * çalışmalara kendimizi ekler.
+ *
+ * Erişim listesi kayıt kurulurken klasörden kopyalanıyor ve tek başına
+ * eskiyor; tazelemeyi klasörün sahibi yapıyor. Sahip çevrimdışıyken klasöre
+ * katılan biri, o gelene kadar hiçbir çalışmayı ne okuyabiliyor ne de
+ * yazabiliyordu: düzenlemesi yalnızca eski yere gidiyor, sahip döndüğünde
+ * kayıttaki eski içerik kazanıyor ve düzenleme sessizce kayboluyordu.
+ *
+ * Hangi çalışmaların olduğunu klasörün kaydından biliyoruz (bu kişi onu
+ * okuyabiliyor), o yüzden sorgu gerekmiyor: doküman kimlikleri hesaplanıp
+ * doğrudan yazılıyor.
+ *
+ * @param elimizdekiler Erişimimizin zaten olduğu kayıtların doküman kimlikleri.
+ * @param denenenler Bu oturumda denenmiş kimlikler; aynı kayda tur tur
+ *   yazmaya çalışmamak için. Çağıran taraf tutuyor.
+ */
+export function calismalaraKendiniEkle(
+  project: Project,
+  elimizdekiler: ReadonlySet<string>,
+  uid: string,
+  denenenler: Set<string>
+): Promise<unknown>[] {
+  const islemler: Promise<unknown>[] = [];
+
+  TUM_ARACLAR.forEach((tool) => {
+    hamCalismalar(project.toolData, tool).forEach((calisma) => {
+      // Hiç başlanmamış çalışmanın kaydı yok, olmayacak da.
+      if (calismaDokunulmamis(calisma, tool)) return;
+
+      const dokumanId = calismaDokumanId(project.id, calisma.id);
+      if (elimizdekiler.has(dokumanId)) return;
+      if (denenenler.has(dokumanId)) return;
+      denenenler.add(dokumanId);
+
+      islemler.push(setDoc(doc(db, 'works', dokumanId), { readers: arrayUnion(uid) }, { merge: true }));
+    });
+  });
 
   return islemler;
 }

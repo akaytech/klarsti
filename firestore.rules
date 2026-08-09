@@ -225,6 +225,31 @@ service cloud.firestore {
                         request.resource.data.sharedWith == resource.data.get('sharedWith', []).concat([request.auth.uid]) &&
                         kendiSatiriCalisma()
                       )
+                      ||
+                      // 4) Klasöre davet edilen kişi kendini çalışmanın
+                      //    görebilenler listesine ekler.
+                      //
+                      //    Bu liste kayıt kurulurken klasörden kopyalanıyor ve
+                      //    tek başına eskiyor. Tazelemeyi klasörün sahibi
+                      //    yapıyor; o çevrimdışıyken klasöre katılan biri,
+                      //    sahibi gelene kadar hiçbir çalışmayı ne okuyabilir
+                      //    ne de yazabilirdi. Düzenlemesi eski yere gidip
+                      //    kaybolurdu. Artık erişimini kendisi alıyor.
+                      //
+                      //    Klasörün paylaşım listesine bakılıyor, yani izin
+                      //    sahibin kararından geliyor; kişi kendi kendine
+                      //    yetki üretemiyor. sharedWith'e dokunulmuyor: orası
+                      //    "bu çalışmaya tek tek davet edilenler" demek ve
+                      //    klasörden gelen erişim oraya yazılmamalı, yoksa
+                      //    klasörden çıkarılan kişi çalışmada kalırdı.
+                      //    En sonda duruyor: kurallar || işlemini soldan kısa
+                      //    devre yapıyor, sıradan yazmalar bu get()'in
+                      //    bedelini ödemesin.
+                      (
+                        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['readers']) &&
+                        request.resource.data.readers == resource.data.get('readers', []).concat([request.auth.uid]) &&
+                        request.auth.uid in get(/databases/$(database)/documents/projects/$(resource.data.projectId)).data.get('sharedWith', [])
+                      )
                     );
 
       // DELETE: yalnızca sahibi. Erişimi olan biri ayrılmak isterse kendini

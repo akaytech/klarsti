@@ -692,5 +692,8 @@
   "share_remove_member": "Quitar del proyecto",
   "share_remove_confirm": "Quitar",
   "share_member_removed": "Se quitó del proyecto",
-  "share_remove_failed": "No se pudo quitar a la persona"
+  "share_remove_failed": "No se pudo quitar a la persona",
+  "expand_tool": "Mostrar trabajos",
+  "collapse_tool": "Ocultar trabajos",
+  "untitled_work": "Sin título"
 }

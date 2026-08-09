@@ -692,5 +692,8 @@
   "share_remove_member": "移出项目",
   "share_remove_confirm": "移出",
   "share_member_removed": "已移出项目",
-  "share_remove_failed": "无法移出该成员"
+  "share_remove_failed": "无法移出该成员",
+  "expand_tool": "显示作品",
+  "collapse_tool": "隐藏作品",
+  "untitled_work": "未命名"
 }

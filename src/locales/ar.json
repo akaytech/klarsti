@@ -692,5 +692,8 @@
   "share_remove_member": "إزالة من المشروع",
   "share_remove_confirm": "إزالة",
   "share_member_removed": "تمت الإزالة من المشروع",
-  "share_remove_failed": "تعذّرت إزالة الشخص"
+  "share_remove_failed": "تعذّرت إزالة الشخص",
+  "expand_tool": "إظهار الأعمال",
+  "collapse_tool": "إخفاء الأعمال",
+  "untitled_work": "بلا عنوان"
 }

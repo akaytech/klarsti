@@ -692,5 +692,8 @@
   "share_remove_member": "プロジェクトから削除",
   "share_remove_confirm": "削除",
   "share_member_removed": "プロジェクトから削除しました",
-  "share_remove_failed": "削除できませんでした"
+  "share_remove_failed": "削除できませんでした",
+  "expand_tool": "作業を表示",
+  "collapse_tool": "作業を隠す",
+  "untitled_work": "無題"
 }

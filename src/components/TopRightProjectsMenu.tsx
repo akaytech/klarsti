@@ -9,6 +9,7 @@ import { ajandaDugmesiGorunurMu } from '../utils/ajandaDugmesi';
 import { Folder, Plus, Trash2, ChevronDown, ChevronRight, Fish, RefreshCcw, Layers, Pencil, AlertOctagon, Scale, GitMerge, BarChart2, BarChart, Activity, Network, Target, Check, Brain, UsersRound } from 'lucide-react';
 import type { Project } from '../store/useRoadmapStore';
 import { toolTheme } from '../config/toolTheme';
+import { aracCalismalari, aracSecimEylemi } from '../config/toolWorks';
 
 const TOOL_OPTIONS: { id: ToolId; icon: typeof Network; label: string; color: string; bg: string }[] = [
   { id: 'mindmap', icon: Brain, label: 'tool_mindmap', color: 'text-purple-500', bg: 'bg-purple-100 dark:bg-purple-900/40' },
@@ -27,13 +28,108 @@ const TOOL_OPTIONS: { id: ToolId; icon: typeof Network; label: string; color: st
   // Ajanda burada yok: projeye ait değil, kişisel. Üst bardaki kendi düğmesinden açılır.
 ];
 
+/**
+ * Menünün üçüncü katı: bir aracın içindeki çalışmalar (kırılım ağaçları, zihin
+ * haritaları, SWOT analizleri...). Eskiden burada yalnızca bir sayı vardı;
+ * "3" yazıyordu ama o üçünün hangileri olduğu menüden görünmüyordu.
+ */
+function ToolTreeItem({
+  project, tool, isCurrentProject, onOpenTool, onClose, requestDelete
+}: {
+  project: Project;
+  tool: { id: ToolId; icon: typeof Network; label: string; color: string };
+  isCurrentProject: boolean;
+  onOpenTool: (tool: ToolId) => void;
+  onClose: () => void;
+  requestDelete: (t: string, m: string, cb: () => void) => void;
+}) {
+  const { t } = useTranslation();
+  const clearToolData = useRoadmapStore((s) => s.clearToolData);
+  const activeTool = useRoadmapStore((s) => s.activeTool);
+  // Açık aracın çalışmaları kendiliğinden görünür; gerisi kapalı başlar,
+  // yoksa on üç araçlık bir projede menü uzayıp gidiyor.
+  const [isExpanded, setIsExpanded] = useState(isCurrentProject && activeTool === tool.id);
+
+  const calismalar = aracCalismalari(project.toolData, tool.id);
+  if (calismalar.length === 0) return null;
+
+  const Icon = tool.icon;
+
+  const calismaAc = (calismaId: string) => {
+    const durum = useRoadmapStore.getState();
+    if (!isCurrentProject) durum.loadProject(project.id);
+    durum.setActiveTool(tool.id);
+    // Bazı araçlar bütün çalışmalarını tek sayfada listeliyor; orada seçilecek
+    // bir şey yok, aracı açmak yeterli.
+    const eylem = aracSecimEylemi(tool.id);
+    if (eylem) useRoadmapStore.getState()[eylem](calismaId);
+    onClose();
+  };
+
+  return (
+    <div className="group/tool relative">
+      <div className="flex items-center gap-1">
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          aria-label={isExpanded ? t('collapse_tool', { defaultValue: 'Collapse' }) : t('expand_tool', { defaultValue: 'Expand' })}
+          aria-expanded={isExpanded}
+          className="shrink-0 p-0.5"
+        >
+          {isExpanded ? <ChevronDown size={12} className="text-slate-400" /> : <ChevronRight size={12} className="text-slate-400" />}
+        </button>
+
+        <button
+          onClick={() => onOpenTool(tool.id)}
+          className="flex flex-1 items-center gap-2 overflow-hidden rounded-lg p-1.5 pe-[52px] text-start text-xs font-medium text-slate-600 transition-colors hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-800"
+        >
+          <Icon size={14} className={`shrink-0 ${tool.color}`} />
+          <span className="truncate">{t(tool.label)}</span>
+        </button>
+      </div>
+
+      <div className="absolute end-1 top-[3px] flex items-center gap-1">
+        <span className="rounded-full bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500 dark:bg-slate-800">
+          {calismalar.length}
+        </span>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            requestDelete(t('clear_tool_title'), t('clear_tool_msg'), () => clearToolData(project.id, tool.id));
+          }}
+          className="p-2 text-slate-400 opacity-40 transition-opacity hover:text-red-500 group-hover/tool:opacity-100"
+          title={t('delete')}
+          aria-label={t('delete')}
+        >
+          <Trash2 size={12} />
+        </button>
+      </div>
+
+      {isExpanded && (
+        <ul className="ms-[18px] flex flex-col border-s border-slate-100 ps-2 dark:border-slate-700/60">
+          {calismalar.map((calisma) => (
+            <li key={calisma.id}>
+              <button
+                onClick={() => calismaAc(calisma.id)}
+                className="w-full truncate rounded-lg px-2 py-1 text-start text-xs text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+                title={calisma.ad || t('untitled_work', { defaultValue: 'Untitled' })}
+              >
+                {calisma.ad || t('untitled_work', { defaultValue: 'Untitled' })}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 function ProjectTreeItem({ project, isCurrent, onClose, requestDelete }: { project: Project; isCurrent: boolean; onClose: () => void; requestDelete: (t: string, m: string, cb: () => void) => void }) {
-  const {  loadProject, setActiveTool, deleteProject, updateProjectName, clearToolData  } = useRoadmapStore(useShallow((state) => ({
+  // clearToolData artık ToolTreeItem'ın işi; araç satırı oraya taşındı.
+  const {  loadProject, setActiveTool, deleteProject, updateProjectName  } = useRoadmapStore(useShallow((state) => ({
       loadProject: state.loadProject,
       setActiveTool: state.setActiveTool,
       deleteProject: state.deleteProject,
-      updateProjectName: state.updateProjectName,
-      clearToolData: state.clearToolData
+      updateProjectName: state.updateProjectName
     })));
   const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(isCurrent);
@@ -134,64 +230,23 @@ function ProjectTreeItem({ project, isCurrent, onClose, requestDelete }: { proje
       </div>
 
       {isExpanded && (
-        <div className="flex flex-col ps-6 pe-2 space-y-0.5 mt-1">
-          {TOOL_OPTIONS.map((tool) => {
-            // Find the array corresponding to this tool in toolData
-            let dataArr: any[] = [];
-            // Kırılım ağacında da dizi artık kutuları değil ağaçları tutuyor;
-            // kökten ibaret ağaç "boş" sayılır (zihin haritasıyla aynı ölçüt).
-            if (tool.id === 'wbs') dataArr = (project.toolData?.wbsTrees || []).filter((a: any) => (a?.nodes?.length ?? 0) > 1);
-            // 5 Neden ve Hata Ağacı da artık analiz listesi tutuyor; tek kutuluk
-            // analiz (problem ya da tepe olay) "boş" sayılır.
-            else if (tool.id === '5whys') dataArr = (project.toolData?.fiveWhysAnalyses || []).filter((a: any) => (a?.nodes?.length ?? 0) > 1);
-            else if (tool.id === 'flowchart') dataArr = project.toolData?.flowcharts || [];
-            else if (tool.id === 'orgchart') dataArr = project.toolData?.orgcharts || [];
-            else if (tool.id === 'fta') dataArr = (project.toolData?.ftaAnalyses || []).filter((a: any) => (a?.nodes?.length ?? 0) > 1);
-            // Zihin haritasında dizi artık dalları değil haritaları tutuyor.
-            // Kökten ibaret harita "boş" sayılıyor, yoksa araç hiç
-            // kullanılmasa bile dolu görünürdü.
-            else if (tool.id === 'mindmap') dataArr = (project.toolData?.mindmaps || []).filter((h: any) => (h?.nodes?.length ?? 0) > 1);
-            else dataArr = project.toolData?.[tool.id] || [];
-
-            // Skip rendering if no data (for 5whys/fta, empty means length <= 1, for others length === 0)
-            // Akış şemasında dizi artık kutuları değil şemaları tutuyor: bir
-            // şema varsa o araçta veri var demektir.
-            const minLength = ['5whys', 'fta'].includes(tool.id) ? 1 : 0;
-            if (!dataArr || dataArr.length <= minLength) return null;
-
-            const Icon = tool.icon;
-            return (
-              <div key={tool.id} className="group/tool relative">
-                <button 
-                  onClick={() => handleToolClick(tool.id)} 
-                  className={`flex w-full items-center justify-between text-xs font-medium text-slate-600 dark:text-slate-400 hover:${tool.color.replace('text-', 'text-')} hover:bg-slate-50 dark:hover:bg-slate-800 p-1.5 rounded-lg transition-colors pe-[52px]`}
-                >
-                  <div className="flex items-center gap-2">
-                    <Icon size={14} className={tool.color} />
-                    {t(tool.label)}
-                  </div>
-                </button>
-                <div className="absolute end-1 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                  {tool.id !== 'wbs' && tool.id !== '5whys' && tool.id !== 'flowchart' && tool.id !== 'fta' && (
-                    <span className="bg-slate-100 dark:bg-slate-800 text-[10px] px-1.5 py-0.5 rounded-full text-slate-500">
-                      {dataArr.length}
-                    </span>
-                  )}
-                  <button 
-                    onClick={(e) => { 
-                      e.stopPropagation(); 
-                      requestDelete(t('clear_tool_title'), t('clear_tool_msg'), () => clearToolData(project.id, tool.id as any)); 
-                    }}
-                    className="p-2 text-slate-400 hover:text-red-500 transition-opacity opacity-40 group-hover/tool:opacity-100"
-                    title={t('delete')} 
-                    aria-label={t('delete')}
-                  >
-                    <Trash2 size={12} />
-                  </button>
-                </div>
-              </div>
-            );
-          })}
+        <div className="flex flex-col ps-4 pe-2 space-y-0.5 mt-1">
+          {/* Hangi çalışmaların sayılacağına artık toolWorks karar veriyor.
+              Burada duran eski kural 5 Neden ve Hata Ağacı için yanlıştı:
+              dizi kutuları tutarken kalma "ikiden az ise boş" ölçütü, dizi
+              analizleri tutmaya başlayınca da öylece kalmıştı. Sonuç olarak
+              tek analizi olan bir proje o araçta boş görünüyordu. */}
+          {TOOL_OPTIONS.map((tool) => (
+            <ToolTreeItem
+              key={tool.id}
+              project={project}
+              tool={tool}
+              isCurrentProject={isCurrent}
+              onOpenTool={handleToolClick}
+              onClose={onClose}
+              requestDelete={requestDelete}
+            />
+          ))}
         </div>
       )}
     </div>

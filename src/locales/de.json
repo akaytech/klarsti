@@ -692,5 +692,8 @@
   "share_remove_member": "Aus dem Projekt entfernen",
   "share_remove_confirm": "Entfernen",
   "share_member_removed": "Aus dem Projekt entfernt",
-  "share_remove_failed": "Person konnte nicht entfernt werden"
+  "share_remove_failed": "Person konnte nicht entfernt werden",
+  "expand_tool": "Arbeiten anzeigen",
+  "collapse_tool": "Arbeiten ausblenden",
+  "untitled_work": "Ohne Titel"
 }

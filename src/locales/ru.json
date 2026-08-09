@@ -692,5 +692,8 @@
   "share_remove_member": "Убрать из проекта",
   "share_remove_confirm": "Убрать",
   "share_member_removed": "Участник убран из проекта",
-  "share_remove_failed": "Не удалось убрать участника"
+  "share_remove_failed": "Не удалось убрать участника",
+  "expand_tool": "Показать работы",
+  "collapse_tool": "Скрыть работы",
+  "untitled_work": "Без названия"
 }

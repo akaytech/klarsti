@@ -692,5 +692,8 @@
   "share_remove_member": "Projeden çıkar",
   "share_remove_confirm": "Çıkar",
   "share_member_removed": "Kişi projeden çıkarıldı",
-  "share_remove_failed": "Kişi çıkarılamadı"
+  "share_remove_failed": "Kişi çıkarılamadı",
+  "expand_tool": "Çalışmaları göster",
+  "collapse_tool": "Çalışmaları gizle",
+  "untitled_work": "Adsız çalışma"
 }

@@ -53,7 +53,12 @@
 
     <!-- Google'in site adi olarak "klarsti.com" degil "Klarsti" yazmasi icin
          gereken isaret. Google bunu yalnizca ana sayfadan okuyor; arac
-         sayfalarina da kopyalaniyor olmasi zararsiz, orada yok sayiliyor. -->
+         sayfalarina da kopyalaniyor olmasi zararsiz, orada yok sayiliyor.
+
+         sameAs: markanin resmi hesaplari. Arama motoru bu hesaplarin bize ait
+         oldugunu buradan anliyor; aksi halde ayni ada sahip baska hesaplarla
+         ayirt edemiyor. Alt bilgideki listeyle ayni kalmali
+         (bkz. src/components/SocialIcons.tsx). -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -67,7 +72,17 @@
           "@type": "Organization",
           "name": "Klarsti",
           "url": "https://klarsti.com/",
-          "logo": "https://klarsti.com/logo-512.png"
+          "logo": "https://klarsti.com/logo-512.png",
+          "email": "support@klarsti.com",
+          "sameAs": [
+            "https://www.instagram.com/klarsti.app/",
+            "https://www.facebook.com/klarstiapp",
+            "https://www.linkedin.com/company/klarsti/",
+            "https://x.com/Klarsti",
+            "https://www.tiktok.com/@klarsti",
+            "https://www.threads.com/@klarsti.app",
+            "https://bsky.app/profile/klarsti.bsky.social"
+          ]
         }
       ]
     }

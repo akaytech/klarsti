@@ -2,21 +2,24 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Mail } from 'lucide-react';
 import { CONTACT_EMAIL } from '../content/legalContent';
+import {
+  InstagramIcon, FacebookIcon, LinkedInIcon, XIcon, TikTokIcon, ThreadsIcon, BlueskyIcon,
+} from './SocialIcons';
 
-// lucide-react marka logoları içermiyor, bu yüzden inline SVG kullanıyoruz.
-const LinkedInIcon = ({ size = 24, className = '' }: { size?: number; className?: string }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
-    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1 0-4.124 2.062 2.062 0 0 1 0 4.124zM7.114 20.452H3.558V9h3.556v11.452z"/>
-  </svg>
-);
-
-const InstagramIcon = ({ size = 24, className = '' }: { size?: number; className?: string }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className={className}>
-    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-  </svg>
-);
+// Markanın resmi hesapları. Sıra: en çok kullanılandan en aza.
+//
+// DİKKAT: index.html'deki Organization yapılandırılmış verisinin `sameAs`
+// listesiyle aynı kalmalı. Arama motoru hesapların bize ait olduğunu oradan
+// anlıyor; biri eklenip diğeri unutulursa bağ kopar.
+const SOSYAL_HESAPLAR = [
+  { ad: 'Instagram', adres: 'https://www.instagram.com/klarsti.app/', Ikon: InstagramIcon },
+  { ad: 'Facebook', adres: 'https://www.facebook.com/klarstiapp', Ikon: FacebookIcon },
+  { ad: 'LinkedIn', adres: 'https://www.linkedin.com/company/klarsti/', Ikon: LinkedInIcon },
+  { ad: 'X', adres: 'https://x.com/Klarsti', Ikon: XIcon },
+  { ad: 'TikTok', adres: 'https://www.tiktok.com/@klarsti', Ikon: TikTokIcon },
+  { ad: 'Threads', adres: 'https://www.threads.com/@klarsti.app', Ikon: ThreadsIcon },
+  { ad: 'Bluesky', adres: 'https://bsky.app/profile/klarsti.bsky.social', Ikon: BlueskyIcon },
+];
 
 // Giriş gerektirmeyen sayfaların ortak alt bilgisi.
 //
@@ -40,7 +43,7 @@ export default function PublicFooter() {
           className="h-8 w-auto shrink-0 opacity-70"
         />
 
-        <div className="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
+        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-3 text-sm text-slate-500 dark:text-slate-400">
           <Link to="/terms" className="hover:text-slate-700 dark:hover:text-slate-300 hover:underline transition-colors">
             {t('terms_of_use_title', { defaultValue: 'Terms of Use' })}
           </Link>
@@ -48,15 +51,24 @@ export default function PublicFooter() {
             {t('privacy_policy_title', { defaultValue: 'Privacy Policy' })}
           </Link>
           <span className="h-4 w-px bg-slate-300 dark:bg-slate-700"></span>
-          <a href={`mailto:${CONTACT_EMAIL}`} aria-label="Email" className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
+          <a href={`mailto:${CONTACT_EMAIL}`} aria-label={`E-posta: ${CONTACT_EMAIL}`} className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
             <Mail size={18} />
           </a>
-          <a href="https://www.linkedin.com/in/kilicaslan/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
-            <LinkedInIcon size={18} />
-          </a>
-          <a href="https://www.instagram.com/kilicyavuz0/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
-            <InstagramIcon size={18} />
-          </a>
+          {/* Hesaplar tek listeden geliyor (bkz. SocialIcons.tsx); yenisi
+              eklendiğinde burası kendiliğinden büyüyor. Dar ekranda sekiz
+              simge tek satıra sığmıyor, o yüzden sarmalı açık. */}
+          {SOSYAL_HESAPLAR.map(({ ad, adres, Ikon }) => (
+            <a
+              key={ad}
+              href={adres}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Klarsti ${ad}`}
+              className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors"
+            >
+              <Ikon size={18} />
+            </a>
+          ))}
         </div>
 
         <div className="text-sm text-slate-500 dark:text-slate-400">

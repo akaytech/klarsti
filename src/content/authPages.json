@@ -1,0 +1,16 @@
+[
+  {
+    "slug": "login",
+    "name": "Sign In",
+    "title": "Sign In | Klarsti",
+    "description": "Sign in to your Klarsti account to open your problem solving tools, boards and shared work.",
+    "keywords": "klarsti login, sign in, account access"
+  },
+  {
+    "slug": "register",
+    "name": "Sign Up",
+    "title": "Sign Up — Create a Free Klarsti Account",
+    "description": "Create a free Klarsti account and start using SWOT, Fishbone, 5 Whys, Mind Map and more in minutes.",
+    "keywords": "klarsti sign up, create account, free registration"
+  }
+]

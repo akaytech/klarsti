@@ -11,7 +11,11 @@ Disallow: /__/
 Disallow: /project/
 Disallow: /work/
 Disallow: /agenda
-Disallow: /login
-Disallow: /register
+
+# Giris ve kayit sayfalari bilerek acik: Google'in arama sonucunun altinda
+# gosterdigi kisayollar ("site linkleri") yalnizca taranip dizine girmis
+# sayfalardan seciliyor. Kapali kaldiklari surece o listede cikma ihtimalleri
+# sifirdi. Sayfalarin kendi baslik ve aciklamalari icin bkz.
+# src/content/authPages.json.
 
 Sitemap: https://klarsti.com/sitemap.xml

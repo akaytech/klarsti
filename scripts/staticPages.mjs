@@ -26,16 +26,30 @@ const KOK = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = path.join(KOK, 'dist');
 const SITE = 'https://klarsti.com';
 
-const araclar = JSON.parse(
-  fs.readFileSync(path.join(KOK, 'src/content/toolPages.json'), 'utf8')
-);
+const oku = (dosya) =>
+  JSON.parse(fs.readFileSync(path.join(KOK, 'src/content', dosya), 'utf8'));
+
+const araclar = oku('toolPages.json');
 // Yasal sayfalar (gizlilik, kullanım koşulları) da statik üretiliyor: Google'ın
 // giriş ekranı onayı bu adresleri açıp okuyabilmeyi bekliyor, ve doğru
 // başlıkla görünmeleri gerekiyor.
-const yasal = JSON.parse(
-  fs.readFileSync(path.join(KOK, 'src/content/legalPages.json'), 'utf8')
-);
-const sayfalar = [...araclar, ...yasal];
+const yasal = oku('legalPages.json');
+// Giriş ve kayıt sayfaları: ikisi de aynı kabuktan servis edildiği için arama
+// sonucunda ana sayfayla aynı başlığı taşıyorlardı. Kendi başlıkları olmadan
+// Google'ın arama sonucunun altında gösterdiği kısayollar arasına ("site
+// linkleri") girme ihtimalleri yok. Bu kısayolları kod yazarak zorlayamıyoruz,
+// seçimi Google yapıyor; yapabileceğimiz tek şey sayfaları aday olabilecek
+// hale getirmek: taranabilir olsunlar (bkz. public/robots.txt), kendi
+// başlıkları ve açıklamaları olsun, site haritasında dursunlar.
+const girisler = oku('authPages.json');
+
+const TUR = { ARAC: 'arac', YASAL: 'yasal', GIRIS: 'giris' };
+const ONCELIK = { [TUR.ARAC]: '0.8', [TUR.GIRIS]: '0.5', [TUR.YASAL]: '0.3' };
+const sayfalar = [
+  ...araclar.map((s) => ({ ...s, tur: TUR.ARAC })),
+  ...yasal.map((s) => ({ ...s, tur: TUR.YASAL })),
+  ...girisler.map((s) => ({ ...s, tur: TUR.GIRIS }))
+];
 
 const kabukYolu = path.join(DIST, 'index.html');
 if (!fs.existsSync(kabukYolu)) {
@@ -66,11 +80,12 @@ function icerikDegistir(metin, anahtar, ad, deger) {
   return degistir(metin, kalip, `$1${kacir(deger)}$2`, `${ad} etiketi`);
 }
 
-// Yasal sayfalar araç değil: onları "uygulama" diye tanıtmak yanlış olur.
-const yasalMi = (sayfa) => Boolean(sayfa.type);
+// Yasal ve giriş sayfaları araç değil: onları "uygulama" diye tanıtmak yanlış
+// olur, düz sayfa olarak işaretleniyorlar.
+const aracMi = (sayfa) => sayfa.tur === TUR.ARAC;
 
 function yapilandirilmisVeri(sayfa, adres) {
-  const anaVarlik = yasalMi(sayfa)
+  const anaVarlik = !aracMi(sayfa)
     ? {
         '@type': 'WebPage',
         name: sayfa.name,
@@ -139,10 +154,11 @@ const bugun = new Date().toISOString().slice(0, 10);
 const girdiler = [
   `  <url>\n    <loc>${SITE}/</loc>\n    <lastmod>${bugun}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>1.0</priority>\n  </url>`,
   // Yasal sayfalar arama sonucunda öne çıkmak için değil, bulunabilir olmak
-  // için listede; bu yüzden düşük öncelikli.
+  // için listede; bu yüzden düşük öncelikli. Giriş/kayıt ikisinin arasında:
+  // araç sayfaları kadar değerli değiller ama sitenin ana yollarından biri.
   ...sayfalar.map(
     (s) =>
-      `  <url>\n    <loc>${SITE}/${s.slug}</loc>\n    <lastmod>${bugun}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>${yasalMi(s) ? '0.3' : '0.8'}</priority>\n  </url>`
+      `  <url>\n    <loc>${SITE}/${s.slug}</loc>\n    <lastmod>${bugun}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>${ONCELIK[s.tur]}</priority>\n  </url>`
   )
 ];
 fs.writeFileSync(
@@ -151,4 +167,6 @@ fs.writeFileSync(
   'utf8'
 );
 
-console.log(`staticPages: ${uretilen} sayfa (${araclar.length} arac + ${yasal.length} yasal) + sitemap uretildi`);
+console.log(
+  `staticPages: ${uretilen} sayfa (${araclar.length} arac + ${yasal.length} yasal + ${girisler.length} giris) + sitemap uretildi`
+);

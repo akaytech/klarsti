@@ -20,6 +20,7 @@ export const DESTEKLENEN_DILLER: Dil[] = [
   { code: 'de', nativeName: 'Deutsch' },
   { code: 'es', nativeName: 'Español' },
   { code: 'fr', nativeName: 'Français' },
+  { code: 'it', nativeName: 'Italiano' },
   { code: 'ja', nativeName: '日本語' },
   { code: 'pt', nativeName: 'Português' },
   { code: 'ru', nativeName: 'Русский' },

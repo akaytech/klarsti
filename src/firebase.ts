@@ -8,11 +8,21 @@ import { app } from './firebaseCore';
 const RECAPTCHA_SITE_KEY = '6LfHxngtAAAAAMX0_4Wf73QyxStX8P3wByu8Ujbj';
 
 if (typeof window !== 'undefined') {
-  // Localhost'ta reCAPTCHA calismaz. Bu bayrak SDK'ya konsola bir hata ayiklama
-  // token'i bastiriyor; o token Firebase Console -> App Check -> Apps -> web
-  // uygulamasi -> Manage debug tokens altina eklenmeli, yoksa zorlama acildigi
-  // an `npm run dev` calismaz olur.
-  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+  // Gelistirme sunucusunda reCAPTCHA calismaz. Bu bayrak SDK'ya konsola bir
+  // hata ayiklama token'i bastiriyor; o token Firebase Console -> App Check ->
+  // Apps -> web uygulamasi -> Manage debug tokens altina eklenmeli, yoksa
+  // zorlama acildigi an `npm run dev` calismaz olur.
+  //
+  // DIKKAT: Kosul adrese BAKMAMALI. Eskiden `hostname === 'localhost'` diye
+  // sorulyordu; Capacitor'la paketlenen Android uygulamasi kendini telefonun
+  // icinde https://localhost adresinden yayinladigi icin YAYINDAKI mobil
+  // uygulama da bu dala giriyordu. Iki sonucu vardi: (1) App Check hata
+  // ayiklama token'i uretmek icin crypto.randomUUID cagiriyor, eski Android
+  // WebView'lerinde bu fonksiyon yok ve giris ekrani coküyordu (Sentry,
+  // 1 Agustos 2026); (2) daha onemlisi, yayindaki mobil uygulama bot
+  // korumasini devre disi halde calistiriyordu. import.meta.env.DEV derleme
+  // aninda sabitlenir: uretim paketinde bu blok hic yer almaz.
+  if (import.meta.env.DEV) {
     (window as any).FIREBASE_APPCHECK_DEBUG_TOKEN = true;
   }
 

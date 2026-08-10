@@ -1,25 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Mail } from 'lucide-react';
-import { CONTACT_EMAIL } from '../content/legalContent';
-import {
-  InstagramIcon, FacebookIcon, LinkedInIcon, XIcon, TikTokIcon, ThreadsIcon, BlueskyIcon,
-} from './SocialIcons';
-
-// Markanın resmi hesapları. Sıra: en çok kullanılandan en aza.
-//
-// DİKKAT: index.html'deki Organization yapılandırılmış verisinin `sameAs`
-// listesiyle aynı kalmalı. Arama motoru hesapların bize ait olduğunu oradan
-// anlıyor; biri eklenip diğeri unutulursa bağ kopar.
-const SOSYAL_HESAPLAR = [
-  { ad: 'Instagram', adres: 'https://www.instagram.com/klarsti.app/', Ikon: InstagramIcon },
-  { ad: 'Facebook', adres: 'https://www.facebook.com/klarstiapp', Ikon: FacebookIcon },
-  { ad: 'LinkedIn', adres: 'https://www.linkedin.com/company/klarsti/', Ikon: LinkedInIcon },
-  { ad: 'X', adres: 'https://x.com/Klarsti', Ikon: XIcon },
-  { ad: 'TikTok', adres: 'https://www.tiktok.com/@klarsti', Ikon: TikTokIcon },
-  { ad: 'Threads', adres: 'https://www.threads.com/@klarsti.app', Ikon: ThreadsIcon },
-  { ad: 'Bluesky', adres: 'https://bsky.app/profile/klarsti.bsky.social', Ikon: BlueskyIcon },
-];
+import { SOSYAL_HESAPLAR } from './sosyalHesaplar';
 
 // Giriş gerektirmeyen sayfaların ortak alt bilgisi.
 //
@@ -43,20 +24,28 @@ export default function PublicFooter() {
           className="h-8 w-auto shrink-0 opacity-70"
         />
 
-        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-3 text-sm text-slate-500 dark:text-slate-400">
+        {/* Yatay boşluk gap-x-4 değil gap-x-3: "İletişim" yazısı eklenince
+            grup 1024 pikselde tek satıra 5 piksel sığmıyor ve ikiye
+            bölünüyordu. Dokuz boşluğun her birinden 4 piksel almak sığdırmaya
+            yetiyor. Buraya yeni bir öğe eklenecekse o genişlikte ölç. */}
+        <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-3 text-sm text-slate-500 dark:text-slate-400">
           <Link to="/terms" className="hover:text-slate-700 dark:hover:text-slate-300 hover:underline transition-colors">
             {t('terms_of_use_title', { defaultValue: 'Terms of Use' })}
           </Link>
           <Link to="/privacy" className="hover:text-slate-700 dark:hover:text-slate-300 hover:underline transition-colors">
             {t('privacy_policy_title', { defaultValue: 'Privacy Policy' })}
           </Link>
+          {/* Burada eskiden yalnızca bir zarf simgesi vardı ve doğrudan
+              mailto: adresine gidiyordu. İki sorunu vardı: simgenin ne
+              olduğu belli değildi, ve mailto bir sayfa olmadığı için arama
+              motoru "iletişim bilgisi var" diye görmüyordu. Adresi yazıyla
+              yazmak da denenmişti, 1024 pikselde alt bilgiyi üç satıra
+              düşürüyordu. Kısa bir kelime ve gerçek bir adres ikisini de
+              çözüyor; e-posta adresi artık iletişim sayfasının içinde. */}
+          <Link to="/contact" className="hover:text-slate-700 dark:hover:text-slate-300 hover:underline transition-colors">
+            {t('contact_title', { defaultValue: 'Contact' })}
+          </Link>
           <span className="h-4 w-px bg-slate-300 dark:bg-slate-700"></span>
-          {/* Yalnızca simge. Adresi yanına yazıyla koymak denendi: 1024 piksel
-              genişlikte bu grup tek satırdan üç satıra düşüyor, alt bilgi
-              dağılıyor. Adres yasal sayfalarda zaten yazılı duruyor. */}
-          <a href={`mailto:${CONTACT_EMAIL}`} aria-label={`E-posta: ${CONTACT_EMAIL}`} className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
-            <Mail size={18} />
-          </a>
           {/* Hesaplar tek listeden geliyor (bkz. SocialIcons.tsx); yenisi
               eklendiğinde burası kendiliğinden büyüyor. Dar ekranda sekiz
               simge tek satıra sığmıyor, o yüzden sarmalı açık. */}

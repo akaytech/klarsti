@@ -42,13 +42,18 @@ const yasal = oku('legalPages.json');
 // hale getirmek: taranabilir olsunlar (bkz. public/robots.txt), kendi
 // başlıkları ve açıklamaları olsun, site haritasında dursunlar.
 const girisler = oku('authPages.json');
+// İletişim sayfası: arama motorunda "klarsti destek" gibi bir aramanın
+// karşılığı olması gerekiyor, ve mailto: bağlantısı bir sayfa sayılmadığı
+// için site "iletişim bilgisi olmayan site" görünümündeydi.
+const iletisim = oku('contactPage.json');
 
-const TUR = { ARAC: 'arac', YASAL: 'yasal', GIRIS: 'giris' };
-const ONCELIK = { [TUR.ARAC]: '0.8', [TUR.GIRIS]: '0.5', [TUR.YASAL]: '0.3' };
+const TUR = { ARAC: 'arac', YASAL: 'yasal', GIRIS: 'giris', ILETISIM: 'iletisim' };
+const ONCELIK = { [TUR.ARAC]: '0.8', [TUR.ILETISIM]: '0.6', [TUR.GIRIS]: '0.5', [TUR.YASAL]: '0.3' };
 const sayfalar = [
   ...araclar.map((s) => ({ ...s, tur: TUR.ARAC })),
   ...yasal.map((s) => ({ ...s, tur: TUR.YASAL })),
-  ...girisler.map((s) => ({ ...s, tur: TUR.GIRIS }))
+  ...girisler.map((s) => ({ ...s, tur: TUR.GIRIS })),
+  ...iletisim.map((s) => ({ ...s, tur: TUR.ILETISIM }))
 ];
 
 const kabukYolu = path.join(DIST, 'index.html');
@@ -168,5 +173,5 @@ fs.writeFileSync(
 );
 
 console.log(
-  `staticPages: ${uretilen} sayfa (${araclar.length} arac + ${yasal.length} yasal + ${girisler.length} giris) + sitemap uretildi`
+  `staticPages: ${uretilen} sayfa (${araclar.length} arac + ${yasal.length} yasal + ${girisler.length} giris + ${iletisim.length} iletisim) + sitemap uretildi`
 );

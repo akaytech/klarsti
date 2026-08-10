@@ -5,12 +5,14 @@ import { useAuthStore } from './store/useAuthStore';
 import { useTheme } from './theme';
 import { toolPageBul } from './config/toolPages';
 import { legalPageBul } from './config/legalPages';
+import { contactPageBul } from './config/contactPage';
 
 const AuthenticatedApp = React.lazy(() => import('./AuthenticatedApp'));
 const LandingPage = React.lazy(() => import('./components/LandingPage'));
 const VerifyEmailPage = React.lazy(() => import('./components/VerifyEmailPage'));
 const ToolLandingPage = React.lazy(() => import('./components/ToolLandingPage'));
 const LegalPage = React.lazy(() => import('./components/LegalPage'));
+const ContactPage = React.lazy(() => import('./components/ContactPage'));
 // Giriş ekranı da gecikmeli: tek statik import olarak duruyordu ve Firebase
 // Auth'u (60 KB) siteyi ilk kez açan herkesin ilk yüklemesine sokuyordu.
 // Zaten Suspense içinde çiziliyordu, gecikmeli olması bir şey değiştirmiyor.
@@ -37,6 +39,9 @@ function App() {
   // Google'ın giriş ekranı onayı ve uygulama mağazaları bu adresleri giriş
   // yapmadan açıp okuyabilmeli.
   const yasalSayfa = legalPageBul(location.pathname);
+  // İletişim sayfası da aynı sebeple oturumdan bağımsız: yardım arayan
+  // kullanıcının çoğu zaman sorunu zaten giriş yapamamak oluyor.
+  const iletisimSayfasi = contactPageBul(location.pathname);
 
   const theme = useTheme();
 
@@ -51,6 +56,10 @@ function App() {
       ) : yasalSayfa ? (
         <Suspense fallback={<LoadingScreen />}>
           <LegalPage sayfa={yasalSayfa} />
+        </Suspense>
+      ) : iletisimSayfasi ? (
+        <Suspense fallback={<LoadingScreen />}>
+          <ContactPage sayfa={iletisimSayfasi} />
         </Suspense>
       ) : isAuthLoading ? (
         <LoadingScreen />

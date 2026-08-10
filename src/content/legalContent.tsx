@@ -5,9 +5,10 @@
 // /privacy, /terms sayfaları. Metnin tek kopyası olsun diye buraya alındı;
 // iki yerde durursa biri güncellenip diğeri unutulur.
 
-// Sayfa altındaki iletişim bağlantısı ve yasal metinlerin içindeki adres
-// buradan geliyor; tek yerden değişsin diye burada.
-export const CONTACT_EMAIL = 'support@klarsti.com';
+// Metinlerin içinde geçen destek adresi. Tanımı config/iletisim.ts'de:
+// oradan okuyan başka dosyalar da var ve hepsi bu dosyayı, yani bütün yasal
+// metinleri, paketine almak zorunda kalmasın diye ayrıldı.
+import { CONTACT_EMAIL } from '../config/iletisim';
 
 const heading = 'text-lg font-bold text-slate-900 dark:text-white mt-6';
 

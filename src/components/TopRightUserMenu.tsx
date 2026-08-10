@@ -7,8 +7,9 @@ import { useShallow } from 'zustand/react/shallow';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebaseCore';
 import { toast } from 'sonner';
-import { LogOut, Palette, User, Shield, FileText, Languages, ChevronLeft, Check, Loader2 } from 'lucide-react';
+import { LogOut, Palette, User, Shield, FileText, Languages, ChevronLeft, Check, Loader2, LifeBuoy } from 'lucide-react';
 import { flushPendingSaves } from './SyncManager';
+import { destekPostasiBaglantisi } from '../utils/destekPostasi';
 import LegalModal from './LegalModal';
 import ThemeOptionList from './ThemeOptionList';
 import { useTheme } from '../theme';
@@ -60,6 +61,21 @@ export default function TopRightUserMenu() {
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
     setSubMenu(null);
+  };
+
+  // Konusu ve teknik bilgileri hazır bir e-posta açar (bkz. destekPostasi.ts).
+  // Adres tıklama anında üretiliyor, menü çizildiğinde değil: hangi sayfada
+  // olduğu bilgisi ancak o an doğru.
+  const sorunBildir = () => {
+    window.location.href = destekPostasiBaglantisi(
+      {
+        konu: t('report_problem_subject', { defaultValue: 'Klarsti — problem report' }),
+        giris: t('report_problem_intro', { defaultValue: 'Please describe the problem here:' }),
+        teknikBaslik: t('report_problem_tech', { defaultValue: '--- Technical details (please keep) ---' }),
+      },
+      { dil: i18n.language, kullaniciId: user?.uid, eposta: user?.email }
+    );
+    setActiveTopMenu(null);
   };
 
   if (!user) return null;
@@ -118,7 +134,15 @@ export default function TopRightUserMenu() {
             </button>
 
             <div className="my-2 h-px w-full bg-slate-100 dark:bg-slate-700" />
-            
+
+            <button
+              onClick={sorunBildir}
+              className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-start text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+            >
+              <LifeBuoy size={18} />
+              {t('report_problem', { defaultValue: 'Report a problem' })}
+            </button>
+
             <div className="mb-2">
               <button
                 onClick={() => setLegalType('terms')}

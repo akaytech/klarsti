@@ -102,6 +102,15 @@ export default function AuthPage({ mode }: { mode: 'login' | 'register' }) {
     setIsSubmitting(true);
     try {
       const provider = new GoogleAuthProvider();
+      // Hesap seçme ekranı her seferinde açılsın.
+      //
+      // Varsayılan davranış, tarayıcıda tek bir Google oturumu varsa hiç
+      // sormadan onunla devam etmek. Birden fazla hesabı olan kullanıcı
+      // (kişisel + kurumsal, ki bu iş hesabı olanların çoğu) istediği hesapla
+      // giremiyordu: düğmeye basıyor, yanlış hesapla içeri düşüyor ve
+      // seçebileceği bir ekran hiç görmüyordu. Çıkış yapmak da çözmüyor,
+      // çünkü seçim Google tarafında ve orada oturum açık kalıyor.
+      provider.setCustomParameters({ prompt: 'select_account' });
       await signInWithRedirect(auth, provider);
       // Sayfa Google'a yönlenecek; dönüşte firebaseCore.ts'teki
       // getRedirectResult + onAuthStateChanged süreci tamamlayacak.

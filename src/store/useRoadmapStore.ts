@@ -9,6 +9,7 @@ import { bekleyenAraclar, kisiselBekliyorMu } from './bekleyenYazmalar';
 import { projeninCalismalariniSil, calismalarinKlasorAdiniGuncelle, calismalardanAyril, calismaDokumanId } from './calismaYazma';
 import { projeyeCalismalariUygula } from './calismaOkuma';
 import { gecmisiBagla, yazmayiIsle, gecmisiTemizle } from './gecmis';
+import { stripUndefined } from '../utils/firestoreSafe';
 import { toast } from 'sonner';
 
 export let isRemoteUpdate = false;
@@ -919,8 +920,10 @@ export const useRoadmapStore = create<RoadmapState>()(
           userId: user.uid,
         };
 
-        // Save immediately
-        setDoc(doc(db, 'projects', newProject.id), newProject).catch((err) => {
+        // Save immediately. stripUndefined şart: aşağıdaki .catch() bu hatayı
+        // yakalayamaz, çünkü Firestore değeri olmayan bir alan görünce sözü
+        // dönmeden senkron olarak fırlatıyor (bkz. firestoreSafe.ts).
+        setDoc(doc(db, 'projects', newProject.id), stripUndefined(newProject)).catch((err) => {
           console.error(err);
           toast.error(i18n.t('save_failed', { defaultValue: 'Failed to save to cloud' }), { id: 'save-failed' });
         });
@@ -1215,7 +1218,7 @@ export const useRoadmapStore = create<RoadmapState>()(
             const keys = TOOL_KEYS_MAP[toolName] || [];
             keys.forEach(k => nextP.toolData[k] = getInitialValue(toolName, k));
             if (useAuthStore.getState().user) {
-              setDoc(doc(db, 'projects', p.id), nextP, { merge: true }).catch((err) => {
+              setDoc(doc(db, 'projects', p.id), stripUndefined(nextP), { merge: true }).catch((err) => {
                 console.error(err);
                 toast.error(i18n.t('save_failed', { defaultValue: 'Failed to save to cloud' }), { id: 'save-failed' });
               });

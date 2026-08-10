@@ -543,8 +543,11 @@ export const createWbsSlice: StateCreator<
         let nextNodes = agac.nodes.map((node) => {
           if (node.id !== id) return node;
           const yeniVeri = { ...node.data, ...data };
-          // Başlık değiştirildiyse düğüm artık "varsayılan" sayılmaz.
-          if (data.label !== undefined) yeniVeri.isUntouchedDefault = undefined;
+          // Başlık değiştirildiyse düğüm artık "varsayılan" sayılmaz. Alan
+          // `undefined` yapılmıyor, siliniyor: Firestore değeri olmayan bir
+          // alan görürse yazmanın tamamını reddediyor. Senkron katmanı bunu
+          // zaten ayıklıyor ama işareti buraya bırakmanın bir faydası yok.
+          if (data.label !== undefined) delete yeniVeri.isUntouchedDefault;
           return { ...node, data: yeniVeri };
         });
 

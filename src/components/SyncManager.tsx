@@ -105,6 +105,12 @@ export default function SyncManager() {
           // Klasörün kaydı bize kapalıysa (tek bir çalışma paylaşılmışsa)
           // oraya yazılmıyor; zaten reddedilirdi. Düzenleme çalışmanın kendi
           // kaydına gidiyor.
+          // `govde` burada zaten temiz: değeri olmayan alanlar projeye
+          // girmeden, senkron anlık görüntüsü alınırken ayıklanıyor (aşağıda
+          // stripUndefined(rawProject)). Buraya bir daha uygulamak, her
+          // kaydetmede tüm araç verisinin gereksiz bir kopyasını çıkarmak
+          // olurdu. Firestore değeri olmayan bir alan görürse yazmanın
+          // tamamını reddeder, o yüzden o ayıklama şart (bkz. firestoreSafe.ts).
           project.klasorYok ? Promise.resolve() : setDoc(doc(db, 'projects', projectId), govde, { merge: true }),
           calismalariDaYaz(project, yoldakiler)
         ]),

@@ -77,6 +77,24 @@ export function getActiveFta(state: { ftaAnalyses: FtaAnalysis[]; activeFtaId: s
   return state.ftaAnalyses.find((a) => a.id === state.activeFtaId) || state.ftaAnalyses[0];
 }
 
+/**
+ * Kutu verisini günceller; değeri olmayan alanı üstüne yazmak yerine siler.
+ *
+ * Olasılık kutusu boşaltıldığında menü `probability: undefined` gönderiyor.
+ * Düz yayma (`{ ...eski, ...yeni }`) bunu "anahtar var, değeri yok" haline
+ * getiriyordu; Firestore böyle bir alan görünce projenin yazmasını komple
+ * reddediyor ve düzenleme hiçbir yere kaydedilmiyordu. Alanı büsbütün
+ * kaldırmak hem kullanıcının istediği şey ("bu kutunun olasılığı yok") hem de
+ * buluta yazılabilir tek hali.
+ */
+function alanlariBirlestir<T extends object>(eski: T, yeni: Partial<T>): T {
+  const sonuc = { ...eski, ...yeni } as Record<string, unknown>;
+  for (const anahtar of Object.keys(sonuc)) {
+    if (sonuc[anahtar] === undefined) delete sonuc[anahtar];
+  }
+  return sonuc as T;
+}
+
 /** Tepe olay 'root' kimliğini korur; silinemez düğüm kuralı buna dayanıyor. */
 export function yeniFtaAnalizi(name: string, topLabel: string): FtaAnalysis {
   return {
@@ -224,7 +242,7 @@ export const createFtaSlice: StateCreator<RoadmapState, [], [], FtaSlice> = (set
     updateFtaNode: (id, data) => islem(() => {
       set((state) => aktifiGuncelle(state, (a) => ({
         ...a,
-        nodes: a.nodes.map((n) => (n.id === id ? { ...n, data: { ...n.data, ...data } } : n)),
+        nodes: a.nodes.map((n) => (n.id === id ? { ...n, data: alanlariBirlestir(n.data, data) } : n)),
       })));
     }),
 

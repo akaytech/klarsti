@@ -14,7 +14,7 @@ const heading = 'text-lg font-bold text-slate-900 dark:text-white mt-6';
 
 const privacyTR = (
   <>
-    <p className="font-semibold text-xs text-slate-500 mb-4">Son Güncelleme: 22 Temmuz 2026</p>
+    <p className="font-semibold text-xs text-slate-500 mb-4">Son Güncelleme: 11 Ağustos 2026</p>
 
     <h3 className={heading}>1. Veri Sorumlusu</h3>
     <p>
@@ -48,6 +48,24 @@ const privacyTR = (
     <h3 className={heading}>5. KVKK Madde 11 Kapsamındaki Haklarınız</h3>
     <p>Kanun’un 11. maddesi uyarınca veri sahibi olarak verilerinizin işlenip işlenmediğini öğrenme, silinmesini talep etme ve diğer haklarınızı kullanmak için aşağıdaki adres üzerinden iletişime geçebilirsiniz.</p>
 
+    <h3 className={heading}>6. Hesabınızı ve Verilerinizi Silme</h3>
+    <p>
+      Hesabınızı istediğiniz zaman kendiniz silebilirsiniz: uygulamada sağ üstteki hesap menüsünde yer alan <strong>“Hesabı sil”</strong> seçeneğini kullanmanız yeterlidir. Talep etmenize veya bizden onay beklemenize gerek yoktur.
+    </p>
+    <p>Silme işlemi şunları kapsar:</p>
+    <ul className="list-disc pl-5 space-y-2">
+      <li>Oluşturduğunuz bütün klasörler ve içlerindeki tüm çalışmalar,</li>
+      <li>Ajandanız ve gün sonu değerlendirme notlarınız,</li>
+      <li>Başka kullanıcıların paylaşımlarında yer alan ad ve e-posta kaydınız,</li>
+      <li>Giriş hesabınız.</li>
+    </ul>
+    <p>
+      Silme anında ve kalıcı olarak gerçekleşir; bekleme süresi yoktur ve verilerin geri getirilebileceği bir yedek tutulmaz. Silmeden önce çalışmalarınızın bir kopyasını almak isterseniz uygulama içindeki dışa aktarma seçeneğini kullanabilirsiniz.
+    </p>
+    <p>
+      Uygulamaya erişemiyorsanız ya da silme işleminde bir sorun yaşarsanız aynı sonucu aşağıdaki adrese yazarak da elde edebilirsiniz.
+    </p>
+
     <div className="mt-8 p-4 bg-slate-100 dark:bg-slate-700/50 rounded-lg">
       <p><strong>İletişim:</strong> {CONTACT_EMAIL}</p>
     </div>
@@ -56,7 +74,7 @@ const privacyTR = (
 
 const privacyEN = (
   <>
-    <p className="font-semibold text-xs text-slate-500 mb-4">Last Updated: July 22, 2026</p>
+    <p className="font-semibold text-xs text-slate-500 mb-4">Last Updated: August 11, 2026</p>
 
     <h3 className={heading}>1. Data Controller</h3>
     <p>
@@ -89,6 +107,24 @@ const privacyEN = (
 
     <h3 className={heading}>5. Your Rights</h3>
     <p>You have the right to learn whether your personal data is being processed, to request its deletion, and to exercise your other data protection rights. To do so, please contact us at the address below.</p>
+
+    <h3 className={heading}>6. Deleting Your Account and Data</h3>
+    <p>
+      You can delete your account yourself at any time: use the <strong>“Delete account”</strong> option in the account menu at the top right of the application. You do not need to submit a request or wait for our approval.
+    </p>
+    <p>Deletion covers:</p>
+    <ul className="list-disc pl-5 space-y-2">
+      <li>Every folder you created and all the work inside it,</li>
+      <li>Your agenda and end-of-day notes,</li>
+      <li>Your name and email address as recorded in other users’ shared items,</li>
+      <li>Your sign-in account.</li>
+    </ul>
+    <p>
+      Deletion is immediate and permanent. There is no waiting period, and no backup is kept from which the data could be restored. If you would like a copy of your work first, use the export option inside the application before deleting.
+    </p>
+    <p>
+      If you cannot access the application, or if something goes wrong during deletion, you can achieve the same result by writing to the address below.
+    </p>
 
     <div className="mt-8 p-4 bg-slate-100 dark:bg-slate-700/50 rounded-lg">
       <p><strong>Contact:</strong> {CONTACT_EMAIL}</p>

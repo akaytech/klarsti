@@ -6,7 +6,6 @@ import { useTheme } from './theme';
 import { toolPageBul } from './config/toolPages';
 import { legalPageBul } from './config/legalPages';
 import { contactPageBul } from './config/contactPage';
-import { SILME_YOLU } from './config/adresler';
 
 const AuthenticatedApp = React.lazy(() => import('./AuthenticatedApp'));
 const LandingPage = React.lazy(() => import('./components/LandingPage'));
@@ -19,11 +18,6 @@ const ContactPage = React.lazy(() => import('./components/ContactPage'));
 // ana ekrana atılırdı. Ayrıca o ekran projelerin ağır deposunu kuruyor;
 // yönetim ekranının hiçbirine ihtiyacı yok.
 const AdminPage = React.lazy(() => import('./components/AdminPage'));
-// Hesap silme onayı: maildeki bağlantının döndüğü sayfa. Oturum kapısının
-// ÖNÜNDE çözülüyor, çünkü bağlantı başka bir cihazda ya da çıkış yapıldıktan
-// sonra açılmış olabilir. Uygulamaya giremeyen birinin de verisini
-// silebilmesi gerekiyor.
-const DeleteAccountFinishPage = React.lazy(() => import('./components/DeleteAccountFinishPage'));
 // Giriş ekranı da gecikmeli: tek statik import olarak duruyordu ve Firebase
 // Auth'u (60 KB) siteyi ilk kez açan herkesin ilk yüklemesine sokuyordu.
 // Zaten Suspense içinde çiziliyordu, gecikmeli olması bir şey değiştirmiyor.
@@ -71,10 +65,6 @@ function App() {
       ) : iletisimSayfasi ? (
         <Suspense fallback={<LoadingScreen />}>
           <ContactPage sayfa={iletisimSayfasi} />
-        </Suspense>
-      ) : location.pathname === SILME_YOLU ? (
-        <Suspense fallback={<LoadingScreen />}>
-          <DeleteAccountFinishPage />
         </Suspense>
       ) : isAuthLoading ? (
         <LoadingScreen />

@@ -1,19 +1,21 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { X, AlertTriangle, Loader2 } from 'lucide-react';
+import { X, AlertTriangle, Loader2, MailCheck } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
-import { hesabiSil, kimligiTazele, girisYolu, type SilmeAdimi } from '../store/hesapSilme';
+import { silmeBaglantisiGonder } from '../store/hesapSilme';
 import { CONTACT_EMAIL } from '../config/iletisim';
 
-// Hesap silme penceresi.
+// Hesap silmenin ilk adımı: ne silineceğini anlatır ve onay bağlantısını
+// kullanıcının adresine yollar. Silmenin kendisi burada olmuyor; mailden
+// dönülen /hesap-sil sayfasında tamamlanıyor (bkz. DeleteAccountFinishPage).
 //
-// Neden ortak ConfirmModal kullanılmadı: orası tek satır mesaj ve iki düğme
-// için. Burada silinecek şeylerin dökümü, yazarak onaylama, giriş yöntemine
-// göre değişen kimlik tazeleme ve adım adım ilerleme var.
+// Neden iki adım: silme geri alınamıyor ve yedek de yok. Tek ekranda
+// bitseydi, cihazını kısa süreliğine birine emanet eden kullanıcının hesabı
+// o kişi tarafından silinebilirdi. Artık posta kutusuna da erişmek gerekiyor.
 //
-// Yazarak onaylama (e-posta adresini yazdırmak) bilerek: bu pencerede
-// "Sil" düğmesine yanlışlıkla basmanın bedeli, geri alınamayan bir kayıp.
-// Yedek de yok, yani hiçbir kurtarma yolu bulunmuyor.
+// Yazarak onaylama da duruyor: mail göndermek de bedava bir işlem değil,
+// yanlışlıkla basılan düğme kullanıcıya boşuna "hesabın siliniyor" maili
+// yollamamalı.
 export default function DeleteAccountModal({ isOpen, onClose }: {
   isOpen: boolean;
   onClose: () => void;
@@ -22,89 +24,51 @@ export default function DeleteAccountModal({ isOpen, onClose }: {
   const user = useAuthStore((state) => state.user);
 
   const [onay, setOnay] = useState('');
-  const [sifre, setSifre] = useState('');
-  const [siliniyor, setSiliniyor] = useState(false);
-  const [adim, setAdim] = useState<SilmeAdimi | null>(null);
+  const [gonderiliyor, setGonderiliyor] = useState(false);
+  const [gonderildi, setGonderildi] = useState(false);
   const [hata, setHata] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isOpen) {
       setOnay('');
-      setSifre('');
       setHata(null);
-      setAdim(null);
-      setSiliniyor(false);
+      setGonderildi(false);
+      setGonderiliyor(false);
     }
   }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen) return;
     const kacis = (e: KeyboardEvent) => {
-      // Silme sürerken kapanmıyor: yarıda kesmek veriyi tutarsız bırakır.
-      if (e.key === 'Escape' && !siliniyor) onClose();
+      if (e.key === 'Escape' && !gonderiliyor) onClose();
     };
     document.addEventListener('keydown', kacis);
     return () => document.removeEventListener('keydown', kacis);
-  }, [isOpen, onClose, siliniyor]);
+  }, [isOpen, onClose, gonderiliyor]);
 
   if (!isOpen || !user) return null;
 
-  const yol = girisYolu();
   const eslesti = onay.trim().toLowerCase() === (user.email || '').toLowerCase();
-  const sifreGerekli = yol === 'password';
-  const hazir = eslesti && (!sifreGerekli || sifre.length > 0);
 
-  const adimYazisi = (a: SilmeAdimi | null) => {
-    switch (a) {
-      case 'dogrulama': return t('delete_account_step_auth', { defaultValue: 'Verifying identity…' });
-      case 'calismalar': return t('delete_account_step_works', { defaultValue: 'Deleting your work…' });
-      case 'klasorler': return t('delete_account_step_folders', { defaultValue: 'Deleting your folders…' });
-      case 'kisisel': return t('delete_account_step_personal', { defaultValue: 'Deleting your notes…' });
-      case 'paylasimlar': return t('delete_account_step_shares', { defaultValue: 'Removing you from shared items…' });
-      case 'hesap': return t('delete_account_step_account', { defaultValue: 'Deleting your account…' });
-      default: return '';
-    }
-  };
-
-  const sil = async () => {
-    if (!hazir || siliniyor) return;
-    setSiliniyor(true);
+  const gonder = async () => {
+    if (!eslesti || gonderiliyor) return;
+    setGonderiliyor(true);
     setHata(null);
     try {
-      setAdim('dogrulama');
-      await kimligiTazele(sifreGerekli ? sifre : undefined);
-      await hesabiSil(user.uid, setAdim);
-      // Hesap gitti; oturum dinleyicisi kullanıcıyı dışarı alacak. Sayfayı
-      // baştan yüklemek en temizi: bellekte kalan proje/çalışma verisi
-      // silinmiş bir hesaba ait ve ekranda durmasının anlamı yok.
-      window.location.replace('/');
+      await silmeBaglantisiGonder(user.email);
+      setGonderildi(true);
     } catch (err: any) {
-      console.error('Hesap silinemedi:', err);
-      const kod = err?.code ?? '';
-      if (kod === 'auth/wrong-password' || kod === 'auth/invalid-credential') {
-        setHata(t('delete_account_error_password', { defaultValue: 'The password is incorrect.' }));
-      } else if (kod === 'auth/popup-closed-by-user' || kod === 'auth/cancelled-popup-request') {
-        setHata(t('delete_account_error_cancelled', { defaultValue: 'Identity check was cancelled. Nothing was deleted.' }));
-      } else if (kod === 'auth/user-mismatch') {
-        // Google penceresinde başka bir hesap seçildi. Eskiden buraya genel
-        // hata metni düşüyordu ve kullanıcı neyi yanlış yaptığını anlamıyordu.
-        setHata(t('delete_account_error_mismatch', { defaultValue: 'That is a different account. Choose the account you are deleting. Nothing was deleted.' }));
-      } else if (kod === 'auth/popup-blocked') {
-        setHata(t('delete_account_error_popup', { defaultValue: 'Your browser blocked the sign-in window. Allow pop-ups and try again.' }));
-      } else {
-        setHata(t('delete_account_error_generic', { defaultValue: 'The account could not be deleted. Nothing was lost — please try again, or write to us.' }));
-      }
-      setSiliniyor(false);
-      setAdim(null);
+      console.error('Silme baglantisi gonderilemedi:', err);
+      setHata(t('delete_account_error_send', { defaultValue: 'The link could not be sent. Nothing was deleted — please try again, or write to us.' }));
+    } finally {
+      setGonderiliyor(false);
     }
   };
-
-  const kutu = 'w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-red-500/50 disabled:opacity-60';
 
   return (
     <div
       className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[110] flex items-center justify-center p-4"
-      onClick={() => { if (!siliniyor) onClose(); }}
+      onClick={() => { if (!gonderiliyor) onClose(); }}
     >
       <div
         role="dialog"
@@ -114,15 +78,17 @@ export default function DeleteAccountModal({ isOpen, onClose }: {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800">
-          <div className="flex items-center gap-2 text-red-600 dark:text-red-500">
-            <AlertTriangle size={20} />
+          <div className={`flex items-center gap-2 ${gonderildi ? 'text-indigo-600 dark:text-indigo-400' : 'text-red-600 dark:text-red-500'}`}>
+            {gonderildi ? <MailCheck size={20} /> : <AlertTriangle size={20} />}
             <h2 id="hesap-silme-basligi" className="font-semibold text-lg">
-              {t('delete_account_title', { defaultValue: 'Delete account' })}
+              {gonderildi
+                ? t('delete_account_sent_title', { defaultValue: 'Check your email' })
+                : t('delete_account_title', { defaultValue: 'Delete account' })}
             </h2>
           </div>
           <button
             onClick={onClose}
-            disabled={siliniyor}
+            disabled={gonderiliyor}
             aria-label={t('close_modal', { defaultValue: 'Close' })}
             className="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors disabled:opacity-40"
           >
@@ -130,97 +96,97 @@ export default function DeleteAccountModal({ isOpen, onClose }: {
           </button>
         </div>
 
-        <div className="p-5 space-y-4">
-          <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-            {t('delete_account_intro', { defaultValue: 'This deletes your account and everything in it. It cannot be undone, and there is no backup to restore from.' })}
-          </p>
-
-          <ul className="list-disc ps-5 space-y-1.5 text-sm text-slate-600 dark:text-slate-400">
-            <li>{t('delete_account_item_works', { defaultValue: 'All your folders and every piece of work inside them' })}</li>
-            <li>{t('delete_account_item_personal', { defaultValue: 'Your agenda and end-of-day notes' })}</li>
-            <li>{t('delete_account_item_shares', { defaultValue: 'Anything you shared — the people you shared it with will lose access' })}</li>
-            <li>{t('delete_account_item_login', { defaultValue: 'Your sign-in account' })}</li>
-          </ul>
-
-          <p className="rounded-xl bg-slate-100 dark:bg-slate-800 p-3 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
-            {t('delete_account_export_hint', { defaultValue: 'Want a copy of your work first? Export what you need before deleting, or write to us.' })}{' '}
-            <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">
-              {CONTACT_EMAIL}
-            </a>
-          </p>
-
-          <div>
-            <label htmlFor="hesap-silme-onay" className="block text-sm font-semibold text-slate-700 dark:text-slate-200">
-              {t('delete_account_confirm_label', { defaultValue: 'To confirm, type your email address:' })}
-            </label>
-            <p className="mt-1 mb-2 text-xs text-slate-500 dark:text-slate-400 break-all">{user.email}</p>
-            <input
-              id="hesap-silme-onay"
-              type="text"
-              autoComplete="off"
-              value={onay}
-              disabled={siliniyor}
-              onChange={(e) => setOnay(e.target.value)}
-              className={kutu}
-            />
+        {gonderildi ? (
+          <div className="p-5 space-y-3">
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+              {t('delete_account_sent_body', { defaultValue: 'We sent a confirmation link to {{eposta}}. Your account will be deleted only after you open that link.', eposta: user.email })}
+            </p>
+            {/* Spam uyarısı: mail Firebase'in kendi adresinden gidiyor, marka
+                alan adımızdan değil. Gereksiz klasörüne düşmesi olağan ve
+                kullanıcı bunu bilmezse "mail gelmedi" diye takılıp kalıyor. */}
+            <p className="rounded-xl bg-slate-100 dark:bg-slate-800 p-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+              {t('delete_account_sent_spam', { defaultValue: 'If it has not arrived within a few minutes, check your spam or junk folder.' })}
+            </p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              {t('delete_account_sent_cancel', { defaultValue: 'Changed your mind? Just ignore the email — nothing happens on its own.' })}
+            </p>
           </div>
+        ) : (
+          <div className="p-5 space-y-4">
+            <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              {t('delete_account_intro', { defaultValue: 'This deletes the account and everything in it. It cannot be undone, and there is no backup to restore from.' })}
+            </p>
 
-          {sifreGerekli && (
+            <ul className="list-disc ps-5 space-y-1.5 text-sm text-slate-600 dark:text-slate-400">
+              <li>{t('delete_account_item_works', { defaultValue: 'All folders and every piece of work inside them' })}</li>
+              <li>{t('delete_account_item_personal', { defaultValue: 'The agenda and end-of-day notes' })}</li>
+              <li>{t('delete_account_item_shares', { defaultValue: 'Everything shared — the people it was shared with lose access' })}</li>
+              <li>{t('delete_account_item_login', { defaultValue: 'The sign-in account' })}</li>
+            </ul>
+
+            <p className="rounded-xl bg-slate-100 dark:bg-slate-800 p-3 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+              {t('delete_account_export_hint', { defaultValue: 'Want a copy first? Export what you need before deleting, or write to us.' })}{' '}
+              <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">
+                {CONTACT_EMAIL}
+              </a>
+            </p>
+
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+              {t('delete_account_link_hint', { defaultValue: 'We will email you a confirmation link. The account is deleted only after you open it.' })}
+            </p>
+
             <div>
-              <label htmlFor="hesap-silme-sifre" className="block text-sm font-semibold text-slate-700 dark:text-slate-200">
-                {t('delete_account_password_label', { defaultValue: 'Your password' })}
+              <label htmlFor="hesap-silme-onay" className="block text-sm font-semibold text-slate-700 dark:text-slate-200">
+                {t('delete_account_confirm_label', { defaultValue: 'To confirm, type your email address:' })}
               </label>
-              <p className="mt-1 mb-2 text-xs text-slate-500 dark:text-slate-400">
-                {t('delete_account_password_hint', { defaultValue: 'Asked once more so nobody can delete your account from an open session.' })}
-              </p>
+              <p className="mt-1 mb-2 text-xs text-slate-500 dark:text-slate-400 break-all">{user.email}</p>
               <input
-                id="hesap-silme-sifre"
-                type="password"
-                autoComplete="current-password"
-                value={sifre}
-                disabled={siliniyor}
-                onChange={(e) => setSifre(e.target.value)}
-                className={kutu}
+                id="hesap-silme-onay"
+                type="text"
+                autoComplete="off"
+                value={onay}
+                disabled={gonderiliyor}
+                onChange={(e) => setOnay(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') gonder(); }}
+                className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-red-500/50 disabled:opacity-60"
               />
             </div>
-          )}
 
-          {yol === 'google' && (
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              {t('delete_account_google_hint', { defaultValue: 'A Google window will open and ask for your password — so that someone with brief access to your device cannot delete your account.' })}
-            </p>
-          )}
-
-          {hata && (
-            <p className="rounded-xl border border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950/40 p-3 text-sm text-red-700 dark:text-red-300">
-              {hata}
-            </p>
-          )}
-
-          {siliniyor && adim && (
-            <p className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
-              <Loader2 size={16} className="animate-spin" />
-              {adimYazisi(adim)}
-            </p>
-          )}
-        </div>
+            {hata && (
+              <p className="rounded-xl border border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950/40 p-3 text-sm text-red-700 dark:text-red-300">
+                {hata}
+              </p>
+            )}
+          </div>
+        )}
 
         <div className="flex items-center justify-end gap-2 p-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-800">
-          <button
-            onClick={onClose}
-            disabled={siliniyor}
-            className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors disabled:opacity-40"
-          >
-            {t('cancel_btn')}
-          </button>
-          <button
-            onClick={sil}
-            disabled={!hazir || siliniyor}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 shadow-sm shadow-red-600/20 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            {siliniyor && <Loader2 size={16} className="animate-spin" />}
-            {t('delete_account_confirm_btn', { defaultValue: 'Delete permanently' })}
-          </button>
+          {gonderildi ? (
+            <button
+              onClick={onClose}
+              className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors"
+            >
+              {t('close_modal', { defaultValue: 'Close' })}
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={onClose}
+                disabled={gonderiliyor}
+                className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors disabled:opacity-40"
+              >
+                {t('cancel_btn')}
+              </button>
+              <button
+                onClick={gonder}
+                disabled={!eslesti || gonderiliyor}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 shadow-sm shadow-red-600/20 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {gonderiliyor && <Loader2 size={16} className="animate-spin" />}
+                {t('delete_account_send_btn', { defaultValue: 'Email me the deletion link' })}
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

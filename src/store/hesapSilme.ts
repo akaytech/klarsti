@@ -22,8 +22,8 @@ import {
   arrayRemove, deleteField,
 } from 'firebase/firestore';
 import {
-  deleteUser, reauthenticateWithPopup, reauthenticateWithCredential,
-  GoogleAuthProvider, EmailAuthProvider,
+  deleteUser, reauthenticateWithCredential, signInWithEmailLink,
+  sendSignInLinkToEmail, isSignInWithEmailLink, EmailAuthProvider,
 } from 'firebase/auth';
 import { auth } from '../firebaseCore';
 import { db } from '../firebase';
@@ -37,58 +37,93 @@ export type SilmeAdimi =
   | 'paylasimlar'
   | 'hesap';
 
-/** Kullanıcının hangi yolla giriş yaptığı; kimlik tazeleme buna göre değişir. */
-export function girisYolu(): 'google' | 'password' | 'bilinmiyor' {
-  const saglayicilar = auth.currentUser?.providerData.map((p) => p.providerId) ?? [];
-  if (saglayicilar.includes('google.com')) return 'google';
-  if (saglayicilar.includes('password')) return 'password';
-  return 'bilinmiyor';
+// Adres App.tsx ile ortak; tanımı bilerek bağımlılıksız bir dosyada
+// (bkz. config/adresler.ts).
+import { SILME_YOLU } from '../config/adresler';
+
+// Bekleyen silme isteği. Mail gönderildikten sonra kullanıcı sayfadan
+// çıkıyor, maili açıyor ve geri geliyor; arada tarayıcı belleği sıfırlanıyor.
+// Hangi adres için istendiği bu yüzden diske yazılıyor.
+//
+// Firebase, bağlantıyı doğrularken e-posta adresini de istiyor: bağlantı tek
+// başına yeterli olsaydı, linki ele geçiren biri istediği hesaba girebilirdi.
+const BEKLEYEN_ANAHTAR = 'klarsti-hesap-silme';
+
+export function bekleyenSilmeyiYaz(eposta: string) {
+  localStorage.setItem(BEKLEYEN_ANAHTAR, JSON.stringify({ eposta, zaman: Date.now() }));
+}
+
+export function bekleyenSilmeyiOku(): string | null {
+  try {
+    const ham = localStorage.getItem(BEKLEYEN_ANAHTAR);
+    if (!ham) return null;
+    return JSON.parse(ham).eposta ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export function bekleyenSilmeyiSil() {
+  localStorage.removeItem(BEKLEYEN_ANAHTAR);
+}
+
+/** Adres çubuğundaki bağlantı bir silme onayı bağlantısı mı. */
+export function silmeBaglantisiMi(adres: string): boolean {
+  return isSignInWithEmailLink(auth, adres);
 }
 
 /**
- * Kimliği tazeler. Firebase, hesap silme gibi ağır işlemler için oturumun
- * yakın zamanda açılmış olmasını istiyor; aylardır açık duran bir sekmeden
- * silme yapılamıyor (`auth/requires-recent-login`).
+ * Silme onayı bağlantısını kullanıcının adresine yollar.
  *
- * Silmeden ÖNCE çağrılıyor: veriler gittikten sonra bu adımda takılırsak
- * kullanıcı verisiz ama hesabı duran bir yerde kalırdı.
+ * Neden Google penceresi değil: Google, tarayıcıda açık oturum varsa şifre
+ * sormadan yalnızca hesap listesi gösteriyordu ve silme tek tıkla
+ * tamamlanıyordu. Cihazını kısa süreliğine birine emanet eden kullanıcının
+ * hesabı o kişi tarafından silinebiliyordu. "Şifreyi tekrar sor" ayarı
+ * (max_age=0) denendi, Google yok saydı — o tarafı biz zorlayamıyoruz.
+ *
+ * E-posta bağlantısı kontrolü bize veriyor: silmek için posta kutusuna da
+ * erişmek gerekiyor. Sunucuya ihtiyaç yok, maili Firebase'in kendisi
+ * gönderiyor (Authentication → Sign-in method → Email link).
  */
-export async function kimligiTazele(sifre?: string): Promise<void> {
-  const kullanici = auth.currentUser;
-  if (!kullanici) throw new Error('Oturum bulunamadı.');
+export async function silmeBaglantisiGonder(eposta: string): Promise<void> {
+  await sendSignInLinkToEmail(auth, eposta, {
+    url: `${window.location.origin}${SILME_YOLU}`,
+    // Bağlantı uygulamada karşılanacak; Firebase'in kendi ekranına
+    // düşmemesi için zorunlu.
+    handleCodeInApp: true,
+  });
+  bekleyenSilmeyiYaz(eposta);
+}
 
-  const yol = girisYolu();
-  if (yol === 'google') {
-    const saglayici = new GoogleAuthProvider();
-    // max_age=0: "en fazla 0 saniye önce doğrulanmış olsun", yani Google her
-    // seferinde şifreyi yeniden sorsun.
-    //
-    // Bu olmadan Google, tarayıcıda açık oturum varsa yalnızca hesap listesi
-    // gösteriyordu ve silme tek tıkla tamamlanıyordu. Sonucu şu: cihazını
-    // beş dakikalığına birine emanet eden kullanıcının hesabı, o kişi
-    // tarafından tamamen silinebilirdi. Silme geri alınamadığı ve yedek de
-    // olmadığı için burada şifre sormak şart.
-    //
-    // login_hint: listeden yanlış hesap seçilmesin diye doğru hesap
-    // baştan işaretli geliyor.
-    saglayici.setCustomParameters({
-      max_age: '0',
-      login_hint: kullanici.email ?? '',
-    });
-    // Yönlendirme değil açılır pencere: yönlendirme sayfayı baştan yükler ve
-    // kullanıcının içinde olduğu silme akışı kaybolur.
-    await reauthenticateWithPopup(kullanici, saglayici);
-    return;
-  }
-  if (yol === 'password') {
-    if (!sifre) throw new Error('Şifre gerekli.');
+/**
+ * Maildeki bağlantıyla kimliği doğrular. Silmeden ÖNCE çağrılıyor: veriler
+ * gittikten sonra bu adımda takılsaydık kullanıcı verisiz ama hesabı duran
+ * bir yerde kalırdı.
+ *
+ * İki durum var. Kullanıcı hâlâ girişliyse oturumu tazeliyoruz. Bağlantıyı
+ * başka bir cihazda veya çıkış yaptıktan sonra açtıysa oturum yok; o zaman
+ * bağlantıyla giriş yapılıyor. İkisi de aynı yere çıkıyor: elimizde silme
+ * yetkisi olan, kimliği az önce doğrulanmış bir kullanıcı.
+ */
+export async function baglantiylaDogrula(eposta: string, adres: string): Promise<void> {
+  const mevcut = auth.currentUser;
+
+  if (mevcut) {
+    if ((mevcut.email ?? '').toLowerCase() !== eposta.toLowerCase()) {
+      // Girişli hesap, bağlantının ait olduğu hesap değil. Devam etmek
+      // yanlış hesabı silmek olurdu.
+      const hata: any = new Error('Hesap eşleşmiyor.');
+      hata.code = 'auth/user-mismatch';
+      throw hata;
+    }
     await reauthenticateWithCredential(
-      kullanici,
-      EmailAuthProvider.credential(kullanici.email ?? '', sifre)
+      mevcut,
+      EmailAuthProvider.credentialWithLink(eposta, adres)
     );
     return;
   }
-  throw new Error('Giriş yöntemi tanınmadı.');
+
+  await signInWithEmailLink(auth, eposta, adres);
 }
 
 // Firestore tek seferde sınırsız paralel istek sevmiyor; küçük gruplar

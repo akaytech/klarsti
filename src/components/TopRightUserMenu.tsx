@@ -7,10 +7,11 @@ import { useShallow } from 'zustand/react/shallow';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebaseCore';
 import { toast } from 'sonner';
-import { LogOut, Palette, User, Shield, FileText, Languages, ChevronLeft, Check, Loader2, LifeBuoy } from 'lucide-react';
+import { LogOut, Palette, User, Shield, FileText, Languages, ChevronLeft, Check, Loader2, LifeBuoy, Trash2 } from 'lucide-react';
 import { flushPendingSaves } from './SyncManager';
 import { destekPostasiBaglantisi } from '../utils/destekPostasi';
 import LegalModal from './LegalModal';
+import DeleteAccountModal from './DeleteAccountModal';
 import ThemeOptionList from './ThemeOptionList';
 import { useTheme } from '../theme';
 import { useDisariTiklama } from '../utils/menuKapatma';
@@ -48,6 +49,7 @@ export default function TopRightUserMenu() {
   const isOpen = activeTopMenu === 'user';
   const activeTheme = useTheme();
   const [legalType, setLegalType] = useState<'privacy' | 'terms' | null>(null);
+  const [hesapSilmeAcik, setHesapSilmeAcik] = useState(false);
   const [subMenu, setSubMenu] = useState<'language' | 'theme' | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -168,6 +170,23 @@ export default function TopRightUserMenu() {
               {cikisYapiliyor ? <Loader2 size={18} className="animate-spin" /> : <LogOut size={18} />}
               {t('logout', { defaultValue: 'Logout' })}
             </button>
+
+            {/* Hesap silme en altta ve ayrı: çıkışın hemen yanında dursa,
+                menüde aşağı doğru giden birinin yanlış satıra basma
+                ihtimali var ve bu satırın bedeli geri alınamıyor. Kalın
+                değil, çünkü sık kullanılacak bir şey değil; ama gizli de
+                değil, çünkü kanunen ulaşılabilir olması gerekiyor. */}
+            <div className="my-1 h-px w-full bg-slate-100 dark:bg-slate-700" />
+            <button
+              onClick={() => {
+                setActiveTopMenu(null);
+                setHesapSilmeAcik(true);
+              }}
+              className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-start text-sm font-medium text-slate-500 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+            >
+              <Trash2 size={18} />
+              {t('delete_account_title', { defaultValue: 'Delete account' })}
+            </button>
           </>
         ) : (
           <div className="flex flex-col">
@@ -213,10 +232,15 @@ export default function TopRightUserMenu() {
         )}
       </div>
 
-      <LegalModal 
-        isOpen={legalType !== null} 
-        onClose={() => setLegalType(null)} 
-        type={legalType || 'privacy'} 
+      <LegalModal
+        isOpen={legalType !== null}
+        onClose={() => setLegalType(null)}
+        type={legalType || 'privacy'}
+      />
+
+      <DeleteAccountModal
+        isOpen={hesapSilmeAcik}
+        onClose={() => setHesapSilmeAcik(false)}
       />
     </div>
   );

@@ -12,6 +12,24 @@
 // Vite bu durumda `vite:preloadError` firlatiyor. Sayfayi bir kez
 // tazelemek dogru dosya adlarini getiriyor.
 
+/**
+ * Tazeleme kararı verildi mi?
+ *
+ * `location.reload()` anında olmuyor; sayfa bir an daha yaşıyor. O aralıkta
+ * React beklediği ekranı boş buluyor ("Cannot read properties of undefined
+ * (reading 'default')") ve kullanıcıya hata ekranı çıkıyor — hemen ardından
+ * sayfa zaten yenilenecekken. Aşağıdaki olay iptali de buna katkıda bulunuyor:
+ * Vite hatayı fırlatmayınca `import()` reddedilmek yerine undefined ile
+ * çözülüyor, React.lazy de onun `.default`ını okumaya çalışıyor.
+ *
+ * Bu bayrak açıkken hem hata ekranı çizilmiyor hem de Sentry'ye kayıt
+ * gitmiyor: ortada gerçek bir arıza yok, sayfa kendini toparlıyor.
+ */
+let tazelemeYolda = false;
+
+/** Sayfa yenilenmek üzere mi? (bkz. main.tsx: hata sınırı ve Sentry) */
+export const tazelemeBekleniyorMu = () => tazelemeYolda;
+
 const SON_TAZELEME_ANAHTARI = 'klarsti-surum-tazeleme';
 // Tazeleme sorunu cozmediyse (parca gercekten kayipsa) sonsuz donguye
 // girmeyelim: yakin zamanda denediysek bir daha denemiyoruz.
@@ -27,6 +45,7 @@ export function surumTazelemeyiBaslat() {
     if (Date.now() - son < DONGU_ESIGI_MS) return;
 
     sessionStorage.setItem(SON_TAZELEME_ANAHTARI, String(Date.now()));
+    tazelemeYolda = true;
     // Olay iptal edilebilir; engellemezsek Vite hatayi ayrica firlatiyor.
     olay.preventDefault();
     window.location.reload();

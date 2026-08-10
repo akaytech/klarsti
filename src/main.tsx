@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 import './i18n'
 import App from './App.tsx'
-import { surumTazelemeyiBaslat } from './utils/surumTazeleme'
+import { surumTazelemeyiBaslat, tazelemeBekleniyorMu } from './utils/surumTazeleme'
 import { eskiHashAdresiniCevir } from './utils/eskiHashAdresi'
 import { useAuthStore } from './store/useAuthStore'
 import packageJson from '../package.json'
@@ -87,23 +87,41 @@ setTimeout(() => {
         Sentry.browserTracingIntegration(),
       ],
       tracesSampleRate: 1.0,
+      // Yeni sürüm yayınlandığında, açık kalmış sekmenin aradığı parça
+      // sunucuda olmuyor ve sayfa kendini tazeliyor (bkz. surumTazeleme.ts).
+      // O aralıkta çıkan hatalar gerçek arıza değil, tazelemenin gölgesi;
+      // gönderilirlerse asıl hataların arasında gürültü yapıyorlar.
+      beforeSend: (olay) => (tazelemeBekleniyorMu() ? null : olay),
     });
   }).catch(console.error);
 }, 2000);
+
+const YuklemeEkrani = (
+  <div className="flex min-h-screen items-center justify-center bg-slate-50 dark:bg-slate-900">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+  </div>
+);
 
 class ErrorBoundary extends Component<{children: ReactNode, fallback: ReactNode}, {hasError: boolean}> {
   state = { hasError: false };
   static getDerivedStateFromError() { return { hasError: true }; }
   componentDidCatch(error: any, info: any) {
+    // Sayfa tazelenmek üzereyse hata gerçek değil, tazelemenin gölgesi.
+    if (tazelemeBekleniyorMu()) return;
     import('@sentry/react').then(Sentry => Sentry.captureException(error, { contexts: { react: { componentStack: info?.componentStack } } })).catch(console.error);
   }
-  render() { return this.state.hasError ? this.props.fallback : this.props.children; }
+  render() {
+    if (!this.state.hasError) return this.props.children;
+    // Aynı sebeple: kullanıcıya "bir şeyler ters gitti" demek yerine, sayfa
+    // yenilenene kadar normal yükleme göstergesi kalsın.
+    return tazelemeBekleniyorMu() ? YuklemeEkrani : this.props.fallback;
+  }
 }
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary fallback={<div className="flex items-center justify-center min-h-screen p-4 text-center"><h1>Bir şeyler ters gitti. Ekibimiz bilgilendirildi! Lütfen sayfayı yenileyin.</h1></div>}>
-      <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-slate-50 dark:bg-slate-900"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div></div>}>
+      <Suspense fallback={YuklemeEkrani}>
         {/* basename şart: canlıda base "/" ama dev ve GitHub Pages derlemesinde
             "/klarsti/". HashRouter'da bu fark görünmüyordu çünkü hash yolu
             base'den bağımsızdı; BrowserRouter yolu doğrudan okuduğu için

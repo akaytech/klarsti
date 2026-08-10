@@ -7,6 +7,7 @@ import App from './App.tsx'
 import { initAuthListener } from './firebaseCore'
 import { surumTazelemeyiBaslat } from './utils/surumTazeleme'
 import { eskiHashAdresiniCevir } from './utils/eskiHashAdresi'
+import packageJson from '../package.json'
 
 // HashRouter döneminden kalan `#/...` linklerini gerçek yola çevirir.
 // Router mount olmadan önce çalışmalı, bu yüzden en başta.
@@ -21,11 +22,33 @@ surumTazelemeyiBaslat();
 // sunucu tarafı oturum iptali otomatik olarak arayüze yansır.
 initAuthListener();
 
+/**
+ * Hatanın hangi adresten geldiği. Aynı kod üç yerde birden yayında:
+ * klarsti.com asıl site, klarsti.web.app ve klarsti.firebaseapp.com ise
+ * Firebase'in silinemeyen sistem adresleri (bkz. index.html'deki canonical).
+ * Hepsi tek Sentry projesine yazıyor ve ayırt edilemiyorlardı; artık gerçek
+ * kullanıcının yaşadığı hata ile kendi denememiz karışmıyor.
+ */
+const sentryOrtami = () => {
+  const adres = location.hostname;
+  if (adres === 'klarsti.com' || adres === 'www.klarsti.com') return 'production';
+  if (adres === 'localhost' || adres === '127.0.0.1') return 'development';
+  // klarsti.web.app, klarsti.firebaseapp.com ve PR önizleme adresleri.
+  return 'preview';
+};
+
 // Asenkron Sentry başlatma (Ana render'ı bloke etmemesi için gecikmeli)
 setTimeout(() => {
   import('@sentry/react').then((Sentry) => {
     Sentry.init({
       dsn: "https://0942b4d0d1d1208b089ff3528ea7f024@o4511775904366592.ingest.de.sentry.io/4511775925862480",
+      // Hatanın hangi sürümde çıktığı. Bir düzeltmenin işe yarayıp
+      // yaramadığını ancak bununla takip edebiliyoruz: sürüm etiketi yokken
+      // Sentry'de "bu hata hâlâ oluyor mu" sorusunun cevabı yoktu.
+      // package.json'daki numarayla aynı kalmalı; ileride hata satırlarını
+      // okunur kılmak için harita dosyası yüklersek eşleşme buradan kurulur.
+      release: packageJson.version,
+      environment: sentryOrtami(),
       integrations: [
         Sentry.browserTracingIntegration(),
         Sentry.replayIntegration(),
@@ -35,7 +58,7 @@ setTimeout(() => {
       replaysOnErrorSampleRate: 1.0,
     });
   }).catch(console.error);
-}, 2000); 
+}, 2000);
 
 class ErrorBoundary extends Component<{children: ReactNode, fallback: ReactNode}, {hasError: boolean}> {
   state = { hasError: false };

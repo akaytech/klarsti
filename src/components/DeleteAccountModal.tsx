@@ -85,6 +85,10 @@ export default function DeleteAccountModal({ isOpen, onClose }: {
         setHata(t('delete_account_error_password', { defaultValue: 'The password is incorrect.' }));
       } else if (kod === 'auth/popup-closed-by-user' || kod === 'auth/cancelled-popup-request') {
         setHata(t('delete_account_error_cancelled', { defaultValue: 'Identity check was cancelled. Nothing was deleted.' }));
+      } else if (kod === 'auth/user-mismatch') {
+        // Google penceresinde başka bir hesap seçildi. Eskiden buraya genel
+        // hata metni düşüyordu ve kullanıcı neyi yanlış yaptığını anlamıyordu.
+        setHata(t('delete_account_error_mismatch', { defaultValue: 'That is a different account. Choose the account you are deleting. Nothing was deleted.' }));
       } else if (kod === 'auth/popup-blocked') {
         setHata(t('delete_account_error_popup', { defaultValue: 'Your browser blocked the sign-in window. Allow pop-ups and try again.' }));
       } else {
@@ -183,7 +187,7 @@ export default function DeleteAccountModal({ isOpen, onClose }: {
 
           {yol === 'google' && (
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              {t('delete_account_google_hint', { defaultValue: 'A Google window will open so you can confirm it is you.' })}
+              {t('delete_account_google_hint', { defaultValue: 'A Google window will open and ask for your password — so that someone with brief access to your device cannot delete your account.' })}
             </p>
           )}
 

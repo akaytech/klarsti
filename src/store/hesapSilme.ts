@@ -27,6 +27,7 @@ import {
 } from 'firebase/auth';
 import { auth } from '../firebaseCore';
 import { db } from '../firebase';
+import { useAuthStore } from './useAuthStore';
 
 export type SilmeAdimi =
   | 'dogrulama'
@@ -58,9 +59,25 @@ export async function kimligiTazele(sifre?: string): Promise<void> {
 
   const yol = girisYolu();
   if (yol === 'google') {
+    const saglayici = new GoogleAuthProvider();
+    // max_age=0: "en fazla 0 saniye önce doğrulanmış olsun", yani Google her
+    // seferinde şifreyi yeniden sorsun.
+    //
+    // Bu olmadan Google, tarayıcıda açık oturum varsa yalnızca hesap listesi
+    // gösteriyordu ve silme tek tıkla tamamlanıyordu. Sonucu şu: cihazını
+    // beş dakikalığına birine emanet eden kullanıcının hesabı, o kişi
+    // tarafından tamamen silinebilirdi. Silme geri alınamadığı ve yedek de
+    // olmadığı için burada şifre sormak şart.
+    //
+    // login_hint: listeden yanlış hesap seçilmesin diye doğru hesap
+    // baştan işaretli geliyor.
+    saglayici.setCustomParameters({
+      max_age: '0',
+      login_hint: kullanici.email ?? '',
+    });
     // Yönlendirme değil açılır pencere: yönlendirme sayfayı baştan yükler ve
     // kullanıcının içinde olduğu silme akışı kaybolur.
-    await reauthenticateWithPopup(kullanici, new GoogleAuthProvider());
+    await reauthenticateWithPopup(kullanici, saglayici);
     return;
   }
   if (yol === 'password') {
@@ -142,4 +159,16 @@ export async function hesabiSil(
   ilerleme?.('hesap');
   const kullanici = auth.currentUser;
   if (kullanici) await deleteUser(kullanici);
+
+  // 6) Tarayıcıdaki kimlik kopyası.
+  //
+  // Uygulama, sayfa ilk açılırken kimin girdiğini bu kopyadan okuyup ekranı
+  // ona göre çiziyor (bkz. useAuthStore, persist). Silme sonrası burayı
+  // temizlemeyi atlarsak, silinmiş bir kimlik tarayıcıda yazılı kalıyor:
+  // kullanıcı bir sonraki açılışta kendini bir an girmiş gibi görüyor,
+  // içerisi boş olduğu için de "hesap silinmemiş ama verilerim gitmiş"
+  // sanıyor. Firebase'in oturum dinleyicisi bunu zaten temizliyor ama biz
+  // hemen ardından sayfayı yeniden yüklüyoruz ve o temizliğe sıra gelmiyor.
+  useAuthStore.getState().logout();
+  useAuthStore.persist.clearStorage();
 }

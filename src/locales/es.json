@@ -710,7 +710,7 @@
   "delete_account_confirm_label": "Para confirmar, escribe tu dirección de correo:",
   "delete_account_password_label": "Tu contraseña",
   "delete_account_password_hint": "Se pide una vez más para que nadie pueda eliminar la cuenta desde una sesión abierta.",
-  "delete_account_google_hint": "Se abrirá una ventana de Google para confirmar tu identidad.",
+  "delete_account_google_hint": "Se abrirá una ventana de Google y te pedirá la contraseña, para que nadie con acceso breve a tu dispositivo pueda eliminar la cuenta.",
   "delete_account_confirm_btn": "Eliminar definitivamente",
   "delete_account_step_auth": "Verificando identidad…",
   "delete_account_step_works": "Eliminando trabajos…",
@@ -721,5 +721,6 @@
   "delete_account_error_password": "La contraseña es incorrecta.",
   "delete_account_error_cancelled": "Se canceló la verificación de identidad. No se eliminó nada.",
   "delete_account_error_popup": "El navegador bloqueó la ventana de acceso. Permite las ventanas emergentes e inténtalo de nuevo.",
-  "delete_account_error_generic": "No se pudo eliminar la cuenta. No se perdió nada: inténtalo de nuevo o escríbenos."
+  "delete_account_error_generic": "No se pudo eliminar la cuenta. No se perdió nada: inténtalo de nuevo o escríbenos.",
+  "delete_account_error_mismatch": "Esa es otra cuenta. Elige la cuenta que vas a eliminar. No se eliminó nada."
 }

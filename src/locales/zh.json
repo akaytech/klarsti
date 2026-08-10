@@ -710,7 +710,7 @@
   "delete_account_confirm_label": "请输入你的邮箱地址以确认：",
   "delete_account_password_label": "你的密码",
   "delete_account_password_hint": "再问一次，以免有人从未关闭的会话中删除账户。",
-  "delete_account_google_hint": "将打开一个 Google 窗口以确认身份。",
+  "delete_account_google_hint": "将打开一个 Google 窗口并要求输入密码，以免短暂接触你设备的人删除账户。",
   "delete_account_confirm_btn": "永久删除",
   "delete_account_step_auth": "正在验证身份…",
   "delete_account_step_works": "正在删除作品…",
@@ -721,5 +721,6 @@
   "delete_account_error_password": "密码不正确。",
   "delete_account_error_cancelled": "身份验证已取消，未删除任何内容。",
   "delete_account_error_popup": "浏览器拦截了登录窗口。请允许弹出窗口后重试。",
-  "delete_account_error_generic": "账户删除失败。没有丢失任何内容——请重试，或者联系我们。"
+  "delete_account_error_generic": "账户删除失败。没有丢失任何内容——请重试，或者联系我们。",
+  "delete_account_error_mismatch": "这是另一个账户。请选择要删除的账户。未删除任何内容。"
 }

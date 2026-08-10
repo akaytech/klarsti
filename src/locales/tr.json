@@ -710,7 +710,7 @@
   "delete_account_confirm_label": "Onaylamak için e-posta adresini yaz:",
   "delete_account_password_label": "Şifren",
   "delete_account_password_hint": "Bir kez daha soruluyor ki açık kalmış bir oturumdan hesabın silinemesin.",
-  "delete_account_google_hint": "Senin olduğunu onaylaman için bir Google penceresi açılacak.",
+  "delete_account_google_hint": "Bir Google penceresi açılacak ve şifren sorulacak. Cihazına kısa süreliğine ulaşan birinin hesabını silememesi için.",
   "delete_account_confirm_btn": "Kalıcı olarak sil",
   "delete_account_step_auth": "Kimlik doğrulanıyor…",
   "delete_account_step_works": "Çalışmalar siliniyor…",
@@ -721,5 +721,6 @@
   "delete_account_error_password": "Şifre yanlış.",
   "delete_account_error_cancelled": "Kimlik doğrulama iptal edildi. Hiçbir şey silinmedi.",
   "delete_account_error_popup": "Tarayıcı giriş penceresini engelledi. Açılır pencerelere izin verip tekrar dene.",
-  "delete_account_error_generic": "Hesap silinemedi. Hiçbir şey kaybolmadı — tekrar dene ya da bize yaz."
+  "delete_account_error_generic": "Hesap silinemedi. Hiçbir şey kaybolmadı — tekrar dene ya da bize yaz.",
+  "delete_account_error_mismatch": "Bu farklı bir hesap. Sildiğin hesabı seç. Hiçbir şey silinmedi."
 }

@@ -710,7 +710,7 @@
   "delete_account_confirm_label": "To confirm, type your email address:",
   "delete_account_password_label": "Your password",
   "delete_account_password_hint": "Asked once more so nobody can delete the account from a session left open.",
-  "delete_account_google_hint": "A Google window will open so you can confirm it is you.",
+  "delete_account_google_hint": "A Google window will open and ask for your password — so that someone with brief access to your device cannot delete your account.",
   "delete_account_confirm_btn": "Delete permanently",
   "delete_account_step_auth": "Verifying identity…",
   "delete_account_step_works": "Deleting work…",
@@ -721,5 +721,6 @@
   "delete_account_error_password": "The password is incorrect.",
   "delete_account_error_cancelled": "The identity check was cancelled. Nothing was deleted.",
   "delete_account_error_popup": "Your browser blocked the sign-in window. Allow pop-ups and try again.",
-  "delete_account_error_generic": "The account could not be deleted. Nothing was lost — please try again, or write to us."
+  "delete_account_error_generic": "The account could not be deleted. Nothing was lost — please try again, or write to us.",
+  "delete_account_error_mismatch": "That is a different account. Choose the account you are deleting. Nothing was deleted."
 }

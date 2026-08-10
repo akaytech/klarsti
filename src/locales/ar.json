@@ -710,7 +710,7 @@
   "delete_account_confirm_label": "للتأكيد، اكتب عنوان بريدك الإلكتروني:",
   "delete_account_password_label": "كلمة المرور",
   "delete_account_password_hint": "نسأل مرة أخرى حتى لا يتمكن أحد من حذف الحساب من جلسة تُركت مفتوحة.",
-  "delete_account_google_hint": "ستُفتح نافذة من Google لتأكيد هويتك.",
+  "delete_account_google_hint": "ستُفتح نافذة من Google وتطلب كلمة المرور، حتى لا يتمكن من وصل إلى جهازك لفترة قصيرة من حذف الحساب.",
   "delete_account_confirm_btn": "حذف نهائي",
   "delete_account_step_auth": "جارٍ التحقق من الهوية…",
   "delete_account_step_works": "جارٍ حذف الأعمال…",
@@ -721,5 +721,6 @@
   "delete_account_error_password": "كلمة المرور غير صحيحة.",
   "delete_account_error_cancelled": "أُلغي التحقق من الهوية. لم يُحذف أي شيء.",
   "delete_account_error_popup": "حجب المتصفح نافذة تسجيل الدخول. اسمح بالنوافذ المنبثقة وحاول مرة أخرى.",
-  "delete_account_error_generic": "تعذّر حذف الحساب. لم يُفقد شيء — حاول مرة أخرى أو راسلنا."
+  "delete_account_error_generic": "تعذّر حذف الحساب. لم يُفقد شيء — حاول مرة أخرى أو راسلنا.",
+  "delete_account_error_mismatch": "هذا حساب آخر. اختر الحساب الذي تحذفه. لم يُحذف أي شيء."
 }

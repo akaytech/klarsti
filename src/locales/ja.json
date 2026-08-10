@@ -710,7 +710,7 @@
   "delete_account_confirm_label": "確認のため、メールアドレスを入力してください:",
   "delete_account_password_label": "パスワード",
   "delete_account_password_hint": "開いたままのセッションから削除されないよう、もう一度お尋ねしています。",
-  "delete_account_google_hint": "ご本人確認のため、Google のウィンドウが開きます。",
+  "delete_account_google_hint": "Google のウィンドウが開き、パスワードの入力を求められます。端末を短時間預けた相手にアカウントを削除されないためです。",
   "delete_account_confirm_btn": "完全に削除",
   "delete_account_step_auth": "本人確認をしています…",
   "delete_account_step_works": "作業を削除しています…",
@@ -721,5 +721,6 @@
   "delete_account_error_password": "パスワードが違います。",
   "delete_account_error_cancelled": "本人確認が中止されました。何も削除されていません。",
   "delete_account_error_popup": "ブラウザーがログイン用ウィンドウをブロックしました。ポップアップを許可してもう一度お試しください。",
-  "delete_account_error_generic": "アカウントを削除できませんでした。失われたものはありません。もう一度お試しいただくか、ご連絡ください。"
+  "delete_account_error_generic": "アカウントを削除できませんでした。失われたものはありません。もう一度お試しいただくか、ご連絡ください。",
+  "delete_account_error_mismatch": "別のアカウントです。削除するアカウントを選んでください。何も削除されていません。"
 }

@@ -710,7 +710,7 @@
   "delete_account_confirm_label": "Для подтверждения введите свой адрес электронной почты:",
   "delete_account_password_label": "Ваш пароль",
   "delete_account_password_hint": "Спрашиваем ещё раз, чтобы никто не удалил аккаунт из оставленной открытой сессии.",
-  "delete_account_google_hint": "Откроется окно Google для подтверждения личности.",
+  "delete_account_google_hint": "Откроется окно Google и запросит пароль — чтобы аккаунт не мог удалить тот, кому вы ненадолго дали устройство.",
   "delete_account_confirm_btn": "Удалить навсегда",
   "delete_account_step_auth": "Проверка личности…",
   "delete_account_step_works": "Удаление работ…",
@@ -721,5 +721,6 @@
   "delete_account_error_password": "Неверный пароль.",
   "delete_account_error_cancelled": "Проверка личности отменена. Ничего не удалено.",
   "delete_account_error_popup": "Браузер заблокировал окно входа. Разрешите всплывающие окна и попробуйте снова.",
-  "delete_account_error_generic": "Не удалось удалить аккаунт. Ничего не потеряно — попробуйте ещё раз или напишите нам."
+  "delete_account_error_generic": "Не удалось удалить аккаунт. Ничего не потеряно — попробуйте ещё раз или напишите нам.",
+  "delete_account_error_mismatch": "Это другой аккаунт. Выберите тот, который удаляете. Ничего не удалено."
 }

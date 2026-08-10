@@ -9,6 +9,7 @@ import i18n from '../i18n';
 import { stripUndefined } from '../utils/firestoreSafe';
 import { bekleyenYazmalariBildir } from '../store/bekleyenYazmalar';
 import { projeCalismalariniEsitle, projeninCalismalariniSil, anahtarlardanAraclar, calismalaraKendiniEkle } from '../store/calismaYazma';
+import { profiliTazele } from '../store/kullaniciProfili';
 
 const SAVE_DEBOUNCE_MS = 1000;
 
@@ -63,6 +64,22 @@ export default function SyncManager() {
   // tamamlandığında ikincisi hâlâ yolda olabilir.
   const ucusanAraclar = useRef(new Map<string, Map<string, number>>());
   const ucusanKisisel = useRef(0);
+  // Bileşenin geri kalanı auth durumunu getState() ile okuyor (abonelik
+  // içinde anlık değer gerektiği için). Kimlik satırının ise kullanıcı
+  // değiştiğinde yeniden çalışması gerekiyor, o yüzden burası abone.
+  const userId = useAuthStore((state) => state.user?.uid);
+
+  // Kimlik satırı (ad, e-posta, ilk/son görülme). Oturum başına bir kez.
+  // Aşağıdaki büyük efektin içine değil, kendi efektine konuldu: oradaki her
+  // şey abonelik kurup söküyor, bu ise tek seferlik bir yazma.
+  const profilYazildi = useRef<string | null>(null);
+  useEffect(() => {
+    const user = useAuthStore.getState().user;
+    if (!user) return;
+    if (profilYazildi.current === user.uid) return;
+    profilYazildi.current = user.uid;
+    profiliTazele(user.uid, user.name || '', user.email || '');
+  }, [userId]);
 
   useEffect(() => {
     const ucusanEkle = (projectId: string, anahtarlar: Set<string>) => {

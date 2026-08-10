@@ -12,9 +12,48 @@ service cloud.firestore {
     // kemeri sanılabilirdi, oysa değildi. Tekrar eklemeyin: koruma sağlamaz,
     // yalnızca yanlış güven verir. Asıl koruma, aşağıdaki kuralların kendisidir.
 
+    // Yönetim ekranını (klarsti.com/admin) besleyen tek istisna.
+    //
+    // Neden gerekiyor: aşağıdaki kuralların hepsi "yalnızca sahibi" diyor,
+    // bu doğru. Ama o zaman kaç kullanıcı var, hangi araç kullanılıyor,
+    // birinin kaç çalışması var gibi soruların uygulama içinde cevabı yok.
+    // Firebase konsolu yalnızca kayıt listesini gösteriyor, kullanımı değil.
+    //
+    // YALNIZCA OKUMA. Yazma, güncelleme, silme dallarına bilerek eklenmedi:
+    // ekranın yazacak hiçbir şeyi yok ve bir gün kod hata yapsa bile bu
+    // hesap kimsenin verisini bozamaz.
+    //
+    // Riski açık olsun: bu hesabın ele geçirilmesi bütün kullanıcı verisinin
+    // okunması demek. Karşılığı kabul edildi; azaltmak için hesapta iki
+    // adımlı doğrulama açık olmalı.
+    //
+    // DİKKAT: Numara src/config/yonetici.ts içinde de yazılı, ikisi aynı
+    // kalmalı. Kurallarda değişken tanımlanamıyor, bu yüzden kopya.
+    function yonetici() {
+      return request.auth != null
+             && request.auth.uid == 'gjmZ4g59yAeR9uz6di4Q9C57iO43';
+    }
+
+    // Kimlik satırı: ad, e-posta, ilk ve son görülme. Başka hiçbir şey.
+    //
+    // Neden users/{uid} içinde değil: orası ajandanın kendisini taşıyor.
+    // Yöneticiye o kaydı açsaydık insanların notlarını okuyabilir hale
+    // gelirdi. Ayrı koleksiyon sayesinde ajanda ve gün sonu değerlendirmesi
+    // yönetim ekranının erişemeyeceği yerde kalıyor.
+    //
+    // Yazmayı yalnızca kişinin kendisi yapabiliyor: başkasının satırını
+    // yazabilmek, o kişi adına kayıt uydurmak olurdu.
+    match /profiles/{userId} {
+      allow read: if request.auth != null
+                  && (request.auth.uid == userId || yonetici());
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
     // Kişisel veriler (ajanda, ileride gün sonu değerlendirmesi).
     // Proje paylaşımından tamamen bağımsızdır: bir kullanıcının kişisel verisini
     // yalnızca kendisi okuyabilir ve yazabilir, paylaşılan proje linki buraya erişemez.
+    //
+    // Yönetici burada BİLEREK yok: bu kayıtlar insanların yazdığı metin.
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
 
@@ -57,11 +96,14 @@ service cloud.firestore {
       // VE (Projenin sahibi ise VEYA projenin 'sharedWith' dizisinde var ise).
       // NOT: joinSharedProject fonksiyonu, kullanıcı sharedWith dizisinde olmasa bile
       // isPublic=true olan projeyi okumaya çalışır (getDoc). Bu nedenle isPublic kuralı eklendi.
-      allow read: if request.auth != null 
+      // yonetici(): klasör sayısı ve "kimin kaç klasörü var" için gerekiyor.
+      // Yalnızca okuma; yönetim ekranı hiçbir klasöre yazamaz.
+      allow read: if request.auth != null
                   && (
-                    resource.data.get('userId', '') == request.auth.uid || 
+                    resource.data.get('userId', '') == request.auth.uid ||
                     request.auth.uid in resource.data.get('sharedWith', []) ||
-                    resource.data.get('isPublic', false) == true
+                    resource.data.get('isPublic', false) == true ||
+                    yonetici()
                   );
       
       // UPDATE: Üç ayrı yetki seviyesi var.
@@ -185,11 +227,15 @@ service cloud.firestore {
       // READ: sahibi, erişimi olanlar, ya da çalışmanın kendi linki açıksa
       // linki bilen herkes. Klasörün diğer çalışmaları bu kişiye kapalı
       // kalır; erişim çalışma başına veriliyor.
+      // yonetici(): araç dağılımı ve son hareket listesi için gerekiyor.
+      // Yalnızca okuma. Ekran bu kayıtlardan yalnızca tool, projectName ve
+      // updatedAt alanlarını gösteriyor; çalışmanın içeriğine bakmıyor.
       allow read: if request.auth != null
                   && (
                     resource.data.get('ownerId', '') == request.auth.uid
                     || request.auth.uid in resource.data.get('readers', [])
                     || resource.data.get('isPublic', false) == true
+                    || yonetici()
                   );
 
       allow update: if request.auth != null

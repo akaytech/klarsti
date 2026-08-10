@@ -13,6 +13,11 @@ const VerifyEmailPage = React.lazy(() => import('./components/VerifyEmailPage'))
 const ToolLandingPage = React.lazy(() => import('./components/ToolLandingPage'));
 const LegalPage = React.lazy(() => import('./components/LegalPage'));
 const ContactPage = React.lazy(() => import('./components/ContactPage'));
+// Yönetim ekranı gecikmeli ve AuthenticatedApp'in DIŞINDA: oradaki adres
+// eşitleme mantığı tanımadığı her yolu '/' ile eziyor, /admin açılır açılmaz
+// ana ekrana atılırdı. Ayrıca o ekran projelerin ağır deposunu kuruyor;
+// yönetim ekranının hiçbirine ihtiyacı yok.
+const AdminPage = React.lazy(() => import('./components/AdminPage'));
 // Giriş ekranı da gecikmeli: tek statik import olarak duruyordu ve Firebase
 // Auth'u (60 KB) siteyi ilk kez açan herkesin ilk yüklemesine sokuyordu.
 // Zaten Suspense içinde çiziliyordu, gecikmeli olması bir şey değiştirmiyor.
@@ -76,6 +81,10 @@ function App() {
       ) : !user.emailVerified ? (
         <Suspense fallback={<LoadingScreen />}>
           <VerifyEmailPage />
+        </Suspense>
+      ) : location.pathname === '/admin' ? (
+        <Suspense fallback={<LoadingScreen />}>
+          <AdminPage />
         </Suspense>
       ) : (
         <Suspense fallback={<LoadingScreen />}>

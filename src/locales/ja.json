@@ -722,5 +722,18 @@
   "delete_account_error_cancelled": "本人確認が中止されました。何も削除されていません。",
   "delete_account_error_popup": "ブラウザーがログイン用ウィンドウをブロックしました。ポップアップを許可してもう一度お試しください。",
   "delete_account_error_generic": "アカウントを削除できませんでした。失われたものはありません。もう一度お試しいただくか、ご連絡ください。",
-  "delete_account_error_mismatch": "別のアカウントです。削除するアカウントを選んでください。何も削除されていません。"
+  "delete_account_error_mismatch": "別のアカウントです。削除するアカウントを選んでください。何も削除されていません。",
+  "cookie_policy_title": "Cookie ポリシー",
+  "cookie_banner_label": "Cookie に関するお知らせ",
+  "cookie_banner_text": "アプリの動作に必要なものだけを保存しています。加えて訪問数の計測も行いたく、そのためには同意が必要です。",
+  "cookie_banner_accept": "同意する",
+  "cookie_banner_reject": "必要なものだけ",
+  "cookie_banner_more": "詳細",
+  "cookie_pref_heading": "あなたの選択",
+  "cookie_pref_state_allowed": "現在: 計測は許可されています。",
+  "cookie_pref_state_denied": "現在: 計測はオフです。アプリに必要なものだけを保存しています。",
+  "cookie_pref_state_unset": "まだ選択されていません。それまで計測はオフのままです。",
+  "cookie_pref_allow_btn": "計測を許可する",
+  "cookie_pref_deny_btn": "計測をオフにする",
+  "cookie_pref_reload_note": "変更は次にページを読み込んだときに完全に反映されます。"
 }

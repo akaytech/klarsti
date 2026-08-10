@@ -9,6 +9,15 @@
     "keywords": "privacy policy, data protection, KVKK, GDPR, personal data"
   },
   {
+    "slug": "cookies",
+    "type": "cookies",
+    "titleKey": "cookie_policy_title",
+    "name": "Cookie Policy",
+    "title": "Cookie Policy | Klarsti",
+    "description": "Exactly what Klarsti stores in your browser, what each item is for, how long it lasts, and how to turn off the parts that need your consent.",
+    "keywords": "cookie policy, cookies, browser storage, tracking, consent"
+  },
+  {
     "slug": "terms",
     "type": "terms",
     "titleKey": "terms_of_use_title",

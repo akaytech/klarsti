@@ -6,6 +6,9 @@ import { useTheme } from './theme';
 import { toolPageBul } from './config/toolPages';
 import { legalPageBul } from './config/legalPages';
 import { contactPageBul } from './config/contactPage';
+// Çerez şeridi gecikmeli DEĞİL: her sayfada, giriş yapılmamışken de
+// görünmesi gerekiyor ve içinde ağır hiçbir şey yok (bkz. CookieConsent).
+import CookieConsent from './components/CookieConsent';
 
 const AuthenticatedApp = React.lazy(() => import('./AuthenticatedApp'));
 const LandingPage = React.lazy(() => import('./components/LandingPage'));
@@ -53,6 +56,7 @@ function App() {
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-slate-50 dark:bg-slate-900 font-sans text-slate-800 dark:text-slate-100 transition-colors">
       <Toaster position="bottom-center" theme={theme.isDark ? 'dark' : 'light'} richColors />
+      <CookieConsent />
 
       {aracSayfasi ? (
         <Suspense fallback={<LoadingScreen />}>

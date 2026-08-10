@@ -722,5 +722,18 @@
   "delete_account_error_cancelled": "Die Identitätsprüfung wurde abgebrochen. Es wurde nichts gelöscht.",
   "delete_account_error_popup": "Der Browser hat das Anmeldefenster blockiert. Pop-ups erlauben und erneut versuchen.",
   "delete_account_error_generic": "Das Konto konnte nicht gelöscht werden. Es ging nichts verloren — bitte erneut versuchen oder uns schreiben.",
-  "delete_account_error_mismatch": "Das ist ein anderes Konto. Wählen Sie das Konto, das gelöscht werden soll. Es wurde nichts gelöscht."
+  "delete_account_error_mismatch": "Das ist ein anderes Konto. Wählen Sie das Konto, das gelöscht werden soll. Es wurde nichts gelöscht.",
+  "cookie_policy_title": "Cookie-Richtlinie",
+  "cookie_banner_label": "Cookie-Hinweis",
+  "cookie_banner_text": "Wir speichern nur, was die App zum Funktionieren braucht. Zusätzlich möchten wir Besuche messen — dafür brauchen wir Ihre Einwilligung.",
+  "cookie_banner_accept": "Akzeptieren",
+  "cookie_banner_reject": "Nur notwendige",
+  "cookie_banner_more": "Details",
+  "cookie_pref_heading": "Ihre Auswahl",
+  "cookie_pref_state_allowed": "Aktuell: Messung ist erlaubt.",
+  "cookie_pref_state_denied": "Aktuell: Messung ist aus. Gespeichert wird nur, was die App braucht.",
+  "cookie_pref_state_unset": "Sie haben noch nicht gewählt. Bis dahin bleibt die Messung aus.",
+  "cookie_pref_allow_btn": "Messung erlauben",
+  "cookie_pref_deny_btn": "Messung ausschalten",
+  "cookie_pref_reload_note": "Die Änderung wird beim nächsten Laden der Seite vollständig wirksam."
 }

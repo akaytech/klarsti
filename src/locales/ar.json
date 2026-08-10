@@ -722,5 +722,18 @@
   "delete_account_error_cancelled": "أُلغي التحقق من الهوية. لم يُحذف أي شيء.",
   "delete_account_error_popup": "حجب المتصفح نافذة تسجيل الدخول. اسمح بالنوافذ المنبثقة وحاول مرة أخرى.",
   "delete_account_error_generic": "تعذّر حذف الحساب. لم يُفقد شيء — حاول مرة أخرى أو راسلنا.",
-  "delete_account_error_mismatch": "هذا حساب آخر. اختر الحساب الذي تحذفه. لم يُحذف أي شيء."
+  "delete_account_error_mismatch": "هذا حساب آخر. اختر الحساب الذي تحذفه. لم يُحذف أي شيء.",
+  "cookie_policy_title": "سياسة ملفات تعريف الارتباط",
+  "cookie_banner_label": "إشعار ملفات تعريف الارتباط",
+  "cookie_banner_text": "لا نحفظ سوى ما يحتاجه التطبيق للعمل. ونودّ أيضًا قياس الزيارات، وهذا يتطلب موافقتك.",
+  "cookie_banner_accept": "أوافق",
+  "cookie_banner_reject": "الضروري فقط",
+  "cookie_banner_more": "التفاصيل",
+  "cookie_pref_heading": "اختيارك",
+  "cookie_pref_state_allowed": "الآن: القياس مسموح.",
+  "cookie_pref_state_denied": "الآن: القياس متوقف. لا يُحفظ سوى ما يحتاجه التطبيق.",
+  "cookie_pref_state_unset": "لم تختر بعد. وحتى ذلك الحين يبقى القياس متوقفًا.",
+  "cookie_pref_allow_btn": "السماح بالقياس",
+  "cookie_pref_deny_btn": "إيقاف القياس",
+  "cookie_pref_reload_note": "يسري التغيير بالكامل عند تحميل الصفحة في المرة القادمة."
 }

@@ -722,5 +722,18 @@
   "delete_account_error_cancelled": "身份验证已取消，未删除任何内容。",
   "delete_account_error_popup": "浏览器拦截了登录窗口。请允许弹出窗口后重试。",
   "delete_account_error_generic": "账户删除失败。没有丢失任何内容——请重试，或者联系我们。",
-  "delete_account_error_mismatch": "这是另一个账户。请选择要删除的账户。未删除任何内容。"
+  "delete_account_error_mismatch": "这是另一个账户。请选择要删除的账户。未删除任何内容。",
+  "cookie_policy_title": "Cookie 政策",
+  "cookie_banner_label": "Cookie 提示",
+  "cookie_banner_text": "我们只保存应用运行所必需的内容。我们还想统计访问量，这需要你的同意。",
+  "cookie_banner_accept": "同意",
+  "cookie_banner_reject": "仅必要项",
+  "cookie_banner_more": "详情",
+  "cookie_pref_heading": "你的选择",
+  "cookie_pref_state_allowed": "当前：已允许统计。",
+  "cookie_pref_state_denied": "当前：统计已关闭。只保存应用所需的内容。",
+  "cookie_pref_state_unset": "你还没有做出选择。在此之前统计保持关闭。",
+  "cookie_pref_allow_btn": "允许统计",
+  "cookie_pref_deny_btn": "关闭统计",
+  "cookie_pref_reload_note": "更改将在下次加载页面时完全生效。"
 }

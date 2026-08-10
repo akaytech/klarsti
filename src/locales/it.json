@@ -722,5 +722,18 @@
   "delete_account_error_cancelled": "La verifica dell’identità è stata annullata. Non è stato eliminato nulla.",
   "delete_account_error_popup": "Il browser ha bloccato la finestra di accesso. Consenti i pop-up e riprova.",
   "delete_account_error_generic": "Non è stato possibile eliminare l’account. Non si è perso nulla: riprova oppure scrivici.",
-  "delete_account_error_mismatch": "Questo è un altro account. Scegli l’account che stai eliminando. Non è stato eliminato nulla."
+  "delete_account_error_mismatch": "Questo è un altro account. Scegli l’account che stai eliminando. Non è stato eliminato nulla.",
+  "cookie_policy_title": "Informativa sui cookie",
+  "cookie_banner_label": "Avviso sui cookie",
+  "cookie_banner_text": "Conserviamo solo ciò che serve all’applicazione per funzionare. Vorremmo anche misurare le visite, e per questo serve il tuo consenso.",
+  "cookie_banner_accept": "Accetta",
+  "cookie_banner_reject": "Solo essenziali",
+  "cookie_banner_more": "Dettagli",
+  "cookie_pref_heading": "La tua scelta",
+  "cookie_pref_state_allowed": "In questo momento: la misurazione è consentita.",
+  "cookie_pref_state_denied": "In questo momento: la misurazione è disattivata. Viene conservato solo ciò che serve all’applicazione.",
+  "cookie_pref_state_unset": "Non hai ancora scelto. Fino ad allora la misurazione resta disattivata.",
+  "cookie_pref_allow_btn": "Consenti la misurazione",
+  "cookie_pref_deny_btn": "Disattiva la misurazione",
+  "cookie_pref_reload_note": "La modifica ha pieno effetto al successivo caricamento della pagina."
 }

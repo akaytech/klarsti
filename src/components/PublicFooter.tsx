@@ -35,6 +35,9 @@ export default function PublicFooter() {
           <Link to="/privacy" className="hover:text-slate-700 dark:hover:text-slate-300 hover:underline transition-colors">
             {t('privacy_policy_title', { defaultValue: 'Privacy Policy' })}
           </Link>
+          <Link to="/cookies" className="hover:text-slate-700 dark:hover:text-slate-300 hover:underline transition-colors">
+            {t('cookie_policy_title', { defaultValue: 'Cookie Policy' })}
+          </Link>
           {/* Burada eskiden yalnızca bir zarf simgesi vardı ve doğrudan
               mailto: adresine gidiyordu. İki sorunu vardı: simgenin ne
               olduğu belli değildi, ve mailto bir sayfa olmadığı için arama
@@ -45,10 +48,18 @@ export default function PublicFooter() {
           <Link to="/contact" className="hover:text-slate-700 dark:hover:text-slate-300 hover:underline transition-colors">
             {t('contact_title', { defaultValue: 'Contact' })}
           </Link>
-          <span className="h-4 w-px bg-slate-300 dark:bg-slate-700"></span>
-          {/* Hesaplar tek listeden geliyor (bkz. SocialIcons.tsx); yenisi
-              eklendiğinde burası kendiliğinden büyüyor. Dar ekranda sekiz
-              simge tek satıra sığmıyor, o yüzden sarmalı açık. */}
+          {/* Ayraç çizgisi kaldırıldı: yazılarla simgeleri ayırmak için
+              duruyordu, ama grup iki satıra kırıldığında birinci satırın
+              sonunda tek başına asılı kalıyor ve kazara konmuş gibi
+              görünüyordu. Ayrımı zaten satır kırılması yapıyor. */}
+          {/* Hesaplar tek listeden geliyor (bkz. sosyalHesaplar.ts); yenisi
+              eklendiğinde burası kendiliğinden büyüyor.
+              Simgeler kendi kutusunda: sayfa listesi büyüdükçe (koşullar,
+              gizlilik, çerez, iletişim) grup 1024 pikselde tek satıra
+              sığmıyor. Simgeler tek tek sarmalanınca dördü üstte kalıp üçü
+              alta düşüyordu ve bozuk duruyordu. Tek kutu olunca kırılma
+              hep aynı yerden oluyor: yazılar bir satır, simgeler bir satır. */}
+          <div className="flex flex-wrap items-center justify-center gap-3">
           {SOSYAL_HESAPLAR.map(({ ad, adres, Ikon }) => (
             <a
               key={ad}
@@ -61,6 +72,7 @@ export default function PublicFooter() {
               <Ikon size={18} />
             </a>
           ))}
+          </div>
         </div>
 
         <div className="text-sm text-slate-500 dark:text-slate-400">

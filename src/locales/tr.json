@@ -722,5 +722,18 @@
   "delete_account_error_cancelled": "Kimlik doğrulama iptal edildi. Hiçbir şey silinmedi.",
   "delete_account_error_popup": "Tarayıcı giriş penceresini engelledi. Açılır pencerelere izin verip tekrar dene.",
   "delete_account_error_generic": "Hesap silinemedi. Hiçbir şey kaybolmadı — tekrar dene ya da bize yaz.",
-  "delete_account_error_mismatch": "Bu farklı bir hesap. Sildiğin hesabı seç. Hiçbir şey silinmedi."
+  "delete_account_error_mismatch": "Bu farklı bir hesap. Sildiğin hesabı seç. Hiçbir şey silinmedi.",
+  "cookie_policy_title": "Çerez Politikası",
+  "cookie_banner_label": "Çerez bildirimi",
+  "cookie_banner_text": "Uygulamanın çalışması için gerekenler dışında bir şey saklamıyoruz. Ziyaretleri ölçmek de isteriz, onun için iznin gerekiyor.",
+  "cookie_banner_accept": "Kabul et",
+  "cookie_banner_reject": "Sadece zorunlu olanlar",
+  "cookie_banner_more": "Ayrıntılar",
+  "cookie_pref_heading": "Senin tercihin",
+  "cookie_pref_state_allowed": "Şu an: ölçümlemeye izin verdin.",
+  "cookie_pref_state_denied": "Şu an: ölçümleme kapalı. Yalnızca uygulamanın ihtiyacı olanlar saklanıyor.",
+  "cookie_pref_state_unset": "Henüz seçim yapmadın. Yapana kadar ölçümleme kapalı kalır.",
+  "cookie_pref_allow_btn": "Ölçümlemeye izin ver",
+  "cookie_pref_deny_btn": "Ölçümlemeyi kapat",
+  "cookie_pref_reload_note": "Değişiklik tam olarak bir sonraki sayfa açılışında geçerli olur."
 }

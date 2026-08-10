@@ -722,5 +722,18 @@
   "delete_account_error_cancelled": "Se canceló la verificación de identidad. No se eliminó nada.",
   "delete_account_error_popup": "El navegador bloqueó la ventana de acceso. Permite las ventanas emergentes e inténtalo de nuevo.",
   "delete_account_error_generic": "No se pudo eliminar la cuenta. No se perdió nada: inténtalo de nuevo o escríbenos.",
-  "delete_account_error_mismatch": "Esa es otra cuenta. Elige la cuenta que vas a eliminar. No se eliminó nada."
+  "delete_account_error_mismatch": "Esa es otra cuenta. Elige la cuenta que vas a eliminar. No se eliminó nada.",
+  "cookie_policy_title": "Política de Cookies",
+  "cookie_banner_label": "Aviso de cookies",
+  "cookie_banner_text": "Solo guardamos lo que la aplicación necesita para funcionar. También nos gustaría medir las visitas, y para eso hace falta tu consentimiento.",
+  "cookie_banner_accept": "Aceptar",
+  "cookie_banner_reject": "Solo lo necesario",
+  "cookie_banner_more": "Detalles",
+  "cookie_pref_heading": "Tu elección",
+  "cookie_pref_state_allowed": "Ahora mismo: la medición está permitida.",
+  "cookie_pref_state_denied": "Ahora mismo: la medición está desactivada. Solo se guarda lo que la aplicación necesita.",
+  "cookie_pref_state_unset": "Todavía no has elegido. Hasta que lo hagas, la medición permanece desactivada.",
+  "cookie_pref_allow_btn": "Permitir la medición",
+  "cookie_pref_deny_btn": "Desactivar la medición",
+  "cookie_pref_reload_note": "El cambio se aplica por completo la próxima vez que se cargue la página."
 }

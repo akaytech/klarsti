@@ -722,5 +722,18 @@
   "delete_account_error_cancelled": "La vérification d’identité a été annulée. Rien n’a été supprimé.",
   "delete_account_error_popup": "Le navigateur a bloqué la fenêtre de connexion. Autorisez les fenêtres pop-up et réessayez.",
   "delete_account_error_generic": "Le compte n’a pas pu être supprimé. Rien n’a été perdu — réessayez ou écrivez-nous.",
-  "delete_account_error_mismatch": "Il s’agit d’un autre compte. Choisissez le compte à supprimer. Rien n’a été supprimé."
+  "delete_account_error_mismatch": "Il s’agit d’un autre compte. Choisissez le compte à supprimer. Rien n’a été supprimé.",
+  "cookie_policy_title": "Politique relative aux cookies",
+  "cookie_banner_label": "Avis relatif aux cookies",
+  "cookie_banner_text": "Nous ne conservons que ce dont l’application a besoin pour fonctionner. Nous aimerions aussi mesurer les visites, ce qui nécessite votre consentement.",
+  "cookie_banner_accept": "Accepter",
+  "cookie_banner_reject": "Strictement nécessaires",
+  "cookie_banner_more": "Détails",
+  "cookie_pref_heading": "Votre choix",
+  "cookie_pref_state_allowed": "Actuellement : la mesure est autorisée.",
+  "cookie_pref_state_denied": "Actuellement : la mesure est désactivée. Seul le nécessaire est conservé.",
+  "cookie_pref_state_unset": "Vous n’avez pas encore choisi. D’ici là, la mesure reste désactivée.",
+  "cookie_pref_allow_btn": "Autoriser la mesure",
+  "cookie_pref_deny_btn": "Désactiver la mesure",
+  "cookie_pref_reload_note": "La modification prend pleinement effet au prochain chargement de la page."
 }

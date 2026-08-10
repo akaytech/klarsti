@@ -2,6 +2,7 @@ import { getFirestore } from 'firebase/firestore';
 import { getAnalytics, isSupported, logEvent, type Analytics } from 'firebase/analytics';
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
 import { app } from './firebaseCore';
+import { olcumlemeyeIzinVar } from './config/cerezIzni';
 
 // Site anahtari gizli degil, tasarim geregi derlenmis dosyayla tarayiciya
 // iniyor. Gizli olan es anahtar sadece Firebase konsolunda duruyor.
@@ -36,11 +37,26 @@ export const db = getFirestore(app);
 
 export let analytics: Analytics | null = null;
 
-isSupported().then((supported) => {
-  if (supported) {
-    analytics = getAnalytics(app);
-  }
-}).catch(console.error);
+// Ölçümleme yalnızca kullanıcı izin verdiyse başlar.
+//
+// Eskiden koşulsuz başlıyordu: getAnalytics çağrısı Google'ın ölçüm betiğini
+// sayfaya sokuyor ve ziyaretçiyi izin sorulmadan ölçmeye başlıyordu. Arayüzü
+// Almanca, Fransızca ve İtalyanca da olan bir uygulama için bu, kullanıcının
+// haklarını görmezden gelmek demekti.
+//
+// Karar bağımsız bir dosyada tutuluyor (bkz. config/cerezIzni.ts); şerit
+// buradan hiçbir şey import etmiyor, yoksa tanıtım sayfasının paketine
+// Firestore girerdi.
+export function olcumlemeyiBaslat() {
+  if (analytics || !olcumlemeyeIzinVar()) return;
+  isSupported().then((supported) => {
+    if (supported && olcumlemeyeIzinVar()) {
+      analytics = getAnalytics(app);
+    }
+  }).catch(console.error);
+}
+
+olcumlemeyiBaslat();
 
 export const logAppEvent = (eventName: string, eventParams?: Record<string, any>) => {
   if (analytics) {

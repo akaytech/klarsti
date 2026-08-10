@@ -12,6 +12,7 @@ const YUKLEYICILER: Record<string, () => Promise<{ default: ToolGuideBundle }>> 
   de: () => import('./de'),
   es: () => import('./es'),
   fr: () => import('./fr'),
+  it: () => import('./it'),
   pt: () => import('./pt'),
   ru: () => import('./ru'),
   ja: () => import('./ja'),

@@ -4,9 +4,9 @@ import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 import './i18n'
 import App from './App.tsx'
-import { initAuthListener } from './firebaseCore'
 import { surumTazelemeyiBaslat } from './utils/surumTazeleme'
 import { eskiHashAdresiniCevir } from './utils/eskiHashAdresi'
+import { useAuthStore } from './store/useAuthStore'
 import packageJson from '../package.json'
 
 // HashRouter döneminden kalan `#/...` linklerini gerçek yola çevirir.
@@ -17,10 +17,39 @@ eskiHashAdresiniCevir();
 // önce kurulmalı: ilk gecikmeli parça yüklemesi hemen sonra başlıyor.
 surumTazelemeyiBaslat();
 
-// Firebase oturumunu store ile senkronlayan tek listener'ı başlat.
-// Böylece açılışta gerçek oturum durumu doğrulanır; token yenileme veya
-// sunucu tarafı oturum iptali otomatik olarak arayüze yansır.
-initAuthListener();
+/**
+ * Firebase oturumunu store ile senkronlayan tek listener. Gerçek oturum
+ * durumu buradan doğrulanır; token yenileme veya sunucu tarafı oturum iptali
+ * otomatik olarak arayüze yansır.
+ *
+ * Neden koşullu: Firebase Auth ilk yüklemenin en ağır ikinci parçası (60 KB
+ * sıkıştırılmış, indirilenin yaklaşık üçte biri). Siteyi ilk kez açan, hiç
+ * üye olmamış birinin bunu indirmesi için tek sebep "acaba giriş yapmış mı?"
+ * sorusuydu. Cevabı zaten elimizde: useAuthStore oturumu localStorage'a
+ * yazıyor (bkz. persist), iz yoksa bu tarayıcıda hiç giriş yapılmamış demek.
+ *
+ * Giriş/kayıt sayfaları koşulun dışında: Google ile girişte sayfa
+ * yönlendirmeden geri döner ve sonucu getRedirectResult okur. Onu geciktirmek
+ * girişi bozardı.
+ */
+const oturumIziVar = useAuthStore.getState().user !== null;
+const authRotasi = /\/(login|register)\/?$/.test(location.pathname);
+const authBaslat = () => import('./firebaseCore').then((m) => m.initAuthListener());
+
+if (oturumIziVar || authRotasi) {
+  authBaslat();
+} else {
+  // Tanıtım sayfası Firebase'i hiç beklemeden çiziliyor.
+  useAuthStore.getState().setAuthLoading(false);
+  // Yine de arkadan yükleniyor: localStorage'ı temizlemiş ama oturumu duran
+  // bir kullanıcı bir an "girmemiş" görünür, sonra kendiliğinden düzelir.
+  const bosaDusunce = () => authBaslat();
+  if ('requestIdleCallback' in window) {
+    (window as Window & typeof globalThis).requestIdleCallback(bosaDusunce, { timeout: 4000 });
+  } else {
+    setTimeout(bosaDusunce, 2000);
+  }
+}
 
 /**
  * Hatanın hangi adresten geldiği. Aynı kod üç yerde birden yayında:
@@ -49,13 +78,15 @@ setTimeout(() => {
       // okunur kılmak için harita dosyası yüklersek eşleşme buradan kurulur.
       release: packageJson.version,
       environment: sentryOrtami(),
+      // Oturum kaydı (replayIntegration) bilerek yok: hatadan önceki saniyeleri
+      // geri oynatabilmek için ekranda olan biten her değişikliği kesintisiz
+      // bellekte tutuyordu. Tarayıcıda sürekli çalışan en büyük yüktü ve
+      // karşılığında aldığımız şey, kodu okuyarak da bulabildiğimiz bir bilgi.
+      // Hata bildirimi ve iz sürme aynen duruyor.
       integrations: [
         Sentry.browserTracingIntegration(),
-        Sentry.replayIntegration(),
       ],
       tracesSampleRate: 1.0,
-      replaysSessionSampleRate: 0.1,
-      replaysOnErrorSampleRate: 1.0,
     });
   }).catch(console.error);
 }, 2000);

@@ -1251,7 +1251,10 @@ export const useRoadmapStore = create<RoadmapState>()(
       }
       return true;
     },
-    limit: 50,
+    // Her adım, o an düzenlenen çalışmanın bir kopyasını bellekte tutuyor.
+    // 50 adım kimsenin geri gitmediği bir derinlikti; 25 aynı işi yarı
+    // bellekle görüyor.
+    limit: 25,
     // Kaydın ne zaman düşeceğine artık zamanlayıcı değil, işlem sınırları
     // karar veriyor (bkz. gecmis.ts). Buradaki tek iş, zundo'nun yazma
     // bildirimini oraya bağlamak.

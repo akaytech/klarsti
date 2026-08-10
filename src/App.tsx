@@ -5,13 +5,16 @@ import { useAuthStore } from './store/useAuthStore';
 import { useTheme } from './theme';
 import { toolPageBul } from './config/toolPages';
 import { legalPageBul } from './config/legalPages';
-import AuthPage from './components/AuthPage';
 
 const AuthenticatedApp = React.lazy(() => import('./AuthenticatedApp'));
 const LandingPage = React.lazy(() => import('./components/LandingPage'));
 const VerifyEmailPage = React.lazy(() => import('./components/VerifyEmailPage'));
 const ToolLandingPage = React.lazy(() => import('./components/ToolLandingPage'));
 const LegalPage = React.lazy(() => import('./components/LegalPage'));
+// Giriş ekranı da gecikmeli: tek statik import olarak duruyordu ve Firebase
+// Auth'u (60 KB) siteyi ilk kez açan herkesin ilk yüklemesine sokuyordu.
+// Zaten Suspense içinde çiziliyordu, gecikmeli olması bir şey değiştirmiyor.
+const AuthPage = React.lazy(() => import('./components/AuthPage'));
 
 const LoadingScreen = () => (
   <div className="flex h-screen w-screen items-center justify-center bg-slate-50 dark:bg-slate-900">

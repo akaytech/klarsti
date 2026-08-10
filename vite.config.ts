@@ -2,6 +2,19 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 import { VitePWA } from 'vite-plugin-pwa'
+import { sentryVitePlugin } from '@sentry/vite-plugin'
+import { readFileSync } from 'node:fs'
+
+// Sürüm fs ile okunuyor, import ile değil: bu dosya NodeNext modülü olarak
+// derleniyor ve orada JSON import'u ek bir söz dizimi istiyor.
+const surum: string = JSON.parse(
+  readFileSync(new URL('./package.json', import.meta.url), 'utf8')
+).version
+
+// Anahtar yalnızca GitHub Actions'ta var (SENTRY_AUTH_TOKEN secret'ı). Yerelde
+// yoksa eklenti hiç devreye girmiyor: `npm run build` anahtar istemeden,
+// harita üretmeden eskisi gibi çalışsın.
+const sentryAnahtari = process.env.SENTRY_AUTH_TOKEN
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -19,6 +32,11 @@ export default defineConfig({
       includeManifestIcons: false,
       workbox: {
         navigateFallbackDenylist: [/^\/__\//],
+        // Servis çalışanının harita dosyası hiç üretilmesin. Bu dosyalar
+        // Sentry eklentisinin temizliğinden sonra yazıldığı için silinemiyor
+        // ve yayına çıkıyorlardı. İçerikleri workbox'ın kendi kodu, bizim
+        // kaynağımız değil; Sentry'nin de onlara ihtiyacı yok.
+        sourcemap: false,
         // Önden SADECE uygulama kabuğu indirilir (html, css, manifest, favicon).
         // JS varsayılan globPatterns'te olduğu için eskiden her ziyaretçi
         // açmadığı 13 aracın, konuşmadığı 9 dilin ve Sentry'nin kodunu da
@@ -86,7 +104,44 @@ export default defineConfig({
           }
         ]
       }
-    })
+    }),
+    // Hata izlerini okunur kılan harita dosyaları. Sentry'ye yüklenip
+    // ardından siliniyorlar; yayına çıkmıyorlar. Yayınlanan bir harita, sıkışık
+    // koddan kaynağın tamamını geri üretilebilir hale getirirdi.
+    //
+    // release, main.tsx'teki Sentry.init'e verilen sürümle AYNI olmalı:
+    // eşleşme buradan kuruluyor, farklı olursa haritalar yüklenir ama hiçbir
+    // hataya bağlanmaz.
+    ...(sentryAnahtari
+      ? [
+          sentryVitePlugin({
+            org: 'klarsti',
+            project: 'klarsti-web',
+            authToken: sentryAnahtari,
+            // Derleme istatistiklerimizi Sentry'ye göndermenin bize faydası yok.
+            telemetry: false,
+            release: { name: surum },
+            // dist'in tamamı taranıyor: uygulama parçalarının yanında PWA
+            // eklentisi de sw.js.map ve workbox-*.js.map üretiyor, onlar
+            // yalnızca assets/ altını silen bir kalıptan kaçıp yayına giderdi.
+            sourcemaps: { filesToDeleteAfterUpload: ['dist/**/*.js.map'] },
+            // Yükleme başarısız olursa (anahtar süresi dolmuş, isim değişmiş)
+            // derleme çökmesin: yayın, hata takibinin yan işine takılmamalı.
+            // Bunun bedeli sessiz kalma riski, o yüzden uyarı bağırıyor.
+            errorHandler: (hata) => {
+              console.warn('\n[sentry] Kaynak haritalari YUKLENEMEDI. Yayin devam ediyor,');
+              console.warn('[sentry] ama bu surumun hata izleri okunaksiz kalacak. Sebep:');
+              console.warn(hata.message, '\n');
+            }
+          })
+        ]
+      : [])
   ],
+  build: {
+    // 'hidden': harita üretilir ama JS dosyalarının sonuna "haritam şurada"
+    // notu düşülmez. Tarayıcı onları aramaz, yalnızca Sentry kullanır.
+    // Anahtar yoksa hiç üretilmiyor, boşuna derleme süresi harcanmasın.
+    sourcemap: sentryAnahtari ? 'hidden' : false
+  },
   base: process.env.VITE_DEPLOY_TARGET === 'firebase' ? '/' : '/klarsti/'
 })

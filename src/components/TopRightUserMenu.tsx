@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRoadmapStore } from '../store/useRoadmapStore';
 import { useUIStore } from '../store/useUIStore';
@@ -12,19 +12,8 @@ import { flushPendingSaves } from './SyncManager';
 import LegalModal from './LegalModal';
 import ThemeOptionList from './ThemeOptionList';
 import { useTheme } from '../theme';
-
-const SUPPORTED_LANGUAGES = [
-  { code: 'tr', nativeName: 'Türkçe' },
-  { code: 'en', nativeName: 'English' },
-  { code: 'de', nativeName: 'Deutsch' },
-  { code: 'es', nativeName: 'Español' },
-  { code: 'fr', nativeName: 'Français' },
-  { code: 'ja', nativeName: '日本語' },
-  { code: 'pt', nativeName: 'Português' },
-  { code: 'ru', nativeName: 'Русский' },
-  { code: 'ar', nativeName: 'العربية' },
-  { code: 'zh', nativeName: '中文' },
-];
+import { useDisariTiklama } from '../utils/menuKapatma';
+import { DESTEKLENEN_DILLER } from '../config/languages';
 
 export default function TopRightUserMenu() {
   const { t, i18n } = useTranslation();
@@ -61,29 +50,12 @@ export default function TopRightUserMenu() {
   const [subMenu, setSubMenu] = useState<'language' | 'theme' | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        if (useUIStore.getState().activeTopMenu === 'user') {
-          useUIStore.getState().setActiveTopMenu(null);
-        }
-        setSubMenu(null);
-      }
+  useDisariTiklama(menuRef, () => {
+    if (useUIStore.getState().activeTopMenu === 'user') {
+      useUIStore.getState().setActiveTopMenu(null);
     }
-    const forceClose = () => {
-      if (useUIStore.getState().activeTopMenu === 'user') {
-        useUIStore.getState().setActiveTopMenu(null);
-      }
-      setSubMenu(null);
-    };
-
-    document.addEventListener("mousedown", handleClickOutside, { capture: true });
-    document.addEventListener("close-menus", forceClose);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside, { capture: true });
-      document.removeEventListener("close-menus", forceClose);
-    };
-  }, []);
+    setSubMenu(null);
+  });
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
@@ -194,7 +166,7 @@ export default function TopRightUserMenu() {
               <ThemeOptionList />
             ) : (
             <div className="flex flex-col gap-1 max-h-[300px] overflow-y-auto px-1">
-              {SUPPORTED_LANGUAGES.map(({ code, nativeName }) => {
+              {DESTEKLENEN_DILLER.map(({ code, nativeName }) => {
                 const isActive = i18n.language === code;
                 return (
                   <button

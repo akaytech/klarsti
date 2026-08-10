@@ -29,12 +29,9 @@ export interface ToolPage {
 
 export const TOOL_PAGES = sayfalar as ToolPage[];
 
-/**
- * Araç sayfası adresleriyle çakışmaması gereken yollar. Adresler dilsiz ve
- * tek parça olduğu için bu liste uygulamanın kendi yollarıyla aynı isim
- * havuzunu paylaşıyor; yeni bir slug eklerken buraya bakılmalı.
- */
-export const AYRILMIS_YOLLAR = ['login', 'register', 'agenda', 'project', 'work', '__'];
+// DİKKAT: Adresler dilsiz ve tek parça, yani araç sayfaları uygulamanın kendi
+// yollarıyla aynı isim havuzunu paylaşıyor. Yeni bir slug eklerken şunlarla
+// çakışmamalı: login, register, agenda, project, work, __ (Firebase Auth).
 
 const SLUG_ILE = new Map(TOOL_PAGES.map((s) => [s.slug, s]));
 const ARAC_ILE = new Map(TOOL_PAGES.map((s) => [s.toolId, s]));

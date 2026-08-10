@@ -698,7 +698,7 @@ export const useRoadmapStore = create<RoadmapState>()(
                     // tutuluyor; eski işaret okunmuyor, taşınırken düşürülüyor.
                     nodes: eskiKutular.map((n: any) => {
                       if (n?.data?.isManuallyPositioned === undefined) return n;
-                      const { isManuallyPositioned, ...kalanVeri } = n.data;
+                      const { isManuallyPositioned: _atilan, ...kalanVeri } = n.data;
                       return { ...n, data: kalanVeri };
                     }),
                     edges: toolData.edges || [],

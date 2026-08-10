@@ -5,6 +5,7 @@ import type { DiagramChart } from '../../store/slices/diagramOps';
 import { getDiagramKind, type DiagramKind } from '../../config/diagramKinds';
 import { useDiagram } from './useDiagram';
 import ConfirmModal from '../ConfirmModal';
+import { useKapatmaYayini } from '../../utils/menuKapatma';
 
 // Kanvasın sol üstündeki şema menüsü: projedeki şemalar arasında geçiş,
 // yeni şema, ad değiştirme, tür değiştirme ve silme.
@@ -22,11 +23,7 @@ export default function DiagramChartsMenu({ kind, aktif, onYeniSema }: { kind: D
   const tur = k.getType(aktif.type);
   const Ikon = tur.icon;
 
-  useEffect(() => {
-    const kapat = () => { setAcik(false); setAdDuzenleniyor(false); };
-    document.addEventListener('close-menus', kapat);
-    return () => document.removeEventListener('close-menus', kapat);
-  }, []);
+  useKapatmaYayini(() => { setAcik(false); setAdDuzenleniyor(false); });
 
   useEffect(() => {
     setAd(aktif.name);

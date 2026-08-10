@@ -246,8 +246,6 @@ export const FLOWCHART_TYPES: FlowchartTypeDef[] = [
   }
 ];
 
-export const DEFAULT_FLOWCHART_TYPE: FlowchartTypeId = 'workflow';
-
 export function getFlowchartType(id: FlowchartTypeId | string | null | undefined): FlowchartTypeDef {
   return FLOWCHART_TYPES.find((tur) => tur.id === id) || FLOWCHART_TYPES[0];
 }

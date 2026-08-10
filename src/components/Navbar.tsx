@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 
 import { useRoadmapStore, type ToolId } from '../store/useRoadmapStore';
 import { useShallow } from 'zustand/react/shallow';
@@ -7,6 +7,7 @@ import clsx from 'clsx';
 import packageJson from '../../package.json';
 import { useTranslation } from 'react-i18next';
 import { CATEGORY_ORDER, PROJECT_TOOLS } from '../config/tools';
+import { useDisariTiklama } from '../utils/menuKapatma';
 
 const NAVBAR_THEME: Record<ToolId, { activeBtn: string; iconBg: string }> = {
   wbs: { activeBtn: "bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400", iconBg: "bg-indigo-100 text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-400" },
@@ -46,21 +47,7 @@ export default function Navbar() {
     setIsExpanded(false);
   };
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsExpanded(false);
-      }
-    }
-    const forceClose = () => setIsExpanded(false);
-    
-    document.addEventListener("mousedown", handleClickOutside, { capture: true });
-    document.addEventListener("close-menus", forceClose);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside, { capture: true });
-      document.removeEventListener("close-menus", forceClose);
-    };
-  }, []);
+  useDisariTiklama(menuRef, () => setIsExpanded(false));
 
 
 

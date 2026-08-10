@@ -5,6 +5,7 @@ import { Palette, Languages, Check } from 'lucide-react';
 import packageJson from '../../package.json';
 import { useAuthStore } from '../store/useAuthStore';
 import ThemeOptionList from './ThemeOptionList';
+import { DESTEKLENEN_DILLER } from '../config/languages';
 
 // Giriş gerektirmeyen sayfaların (tanıtım sayfası, araç sayfaları) ortak üst
 // çubuğu. Eskiden LandingPage'in içine gömülüydü; araç sayfaları eklenince
@@ -13,19 +14,6 @@ import ThemeOptionList from './ThemeOptionList';
 // DİKKAT: Buraya `useRoadmapStore` girmemeli. useAuthStore ayrı ve hafif
 // olduğu için sorun değil; giriş yapmış kullanıcıya "uygulamaya git" demek
 // için oturum durumu gerekiyor.
-
-const SUPPORTED_LANGUAGES = [
-  { code: 'tr', nativeName: 'Türkçe' },
-  { code: 'en', nativeName: 'English' },
-  { code: 'de', nativeName: 'Deutsch' },
-  { code: 'es', nativeName: 'Español' },
-  { code: 'fr', nativeName: 'Français' },
-  { code: 'ja', nativeName: '日本語' },
-  { code: 'pt', nativeName: 'Português' },
-  { code: 'ru', nativeName: 'Русский' },
-  { code: 'ar', nativeName: 'العربية' },
-  { code: 'zh', nativeName: '中文' },
-];
 
 export default function PublicHeader() {
   const { t, i18n } = useTranslation();
@@ -118,7 +106,7 @@ export default function PublicHeader() {
                 className={`absolute end-0 top-12 w-48 origin-top-right rtl:origin-top-left rounded-2xl bg-white dark:bg-slate-800 p-2 shadow-xl border border-slate-200 dark:border-slate-700 transition-all duration-200 ease-out ${showLanguagePicker ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}
               >
                 <div className="flex flex-col gap-1 max-h-[300px] overflow-y-auto px-1 custom-scrollbar">
-                  {SUPPORTED_LANGUAGES.map(({ code, nativeName }) => {
+                  {DESTEKLENEN_DILLER.map(({ code, nativeName }) => {
                     const isActive = i18n.language === code;
                     return (
                       <button

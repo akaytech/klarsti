@@ -3,6 +3,7 @@ import { PlusCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useClampedPosition } from '../utils/useClampedPosition';
 import { MenuPortal } from '../utils/MenuPortal';
+import { useBaglamMenusuKapat } from '../utils/menuKapatma';
 
 export default function PaneContextMenu({
   x,
@@ -21,30 +22,14 @@ export default function PaneContextMenu({
   const { ref: menuRef, style: menuStyle } = useClampedPosition(x, y);
   const addBtnRef = useRef<HTMLButtonElement>(null);
 
+  useBaglamMenusuKapat(onClose);
+
+  // Menü açılır açılmaz odak "ekle" düğmesine geçsin; küçük gecikme menünün
+  // yerleşmesini bekliyor.
   useEffect(() => {
-    const handleGlobalClick = (e: MouseEvent) => {
-      if ((e.target as HTMLElement).closest('.context-menu')) return;
-      onClose();
-    };
-    const handleGlobalKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-
-    document.addEventListener('mousedown', handleGlobalClick);
-    document.addEventListener('keydown', handleGlobalKey);
-    document.addEventListener('close-menus', onClose);
-
-    const timer = setTimeout(() => {
-      addBtnRef.current?.focus();
-    }, 10);
-
-    return () => {
-      document.removeEventListener('mousedown', handleGlobalClick);
-      document.removeEventListener('keydown', handleGlobalKey);
-      document.removeEventListener('close-menus', onClose);
-      clearTimeout(timer);
-    };
-  }, [onClose]);
+    const timer = setTimeout(() => addBtnRef.current?.focus(), 10);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <MenuPortal>

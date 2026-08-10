@@ -13,5 +13,4 @@ export const toolTheme: Record<string, { text: string; bg: string; bgSelected: s
   histogram: { text: 'text-indigo-500', bg: 'bg-indigo-100 dark:bg-indigo-900/40', bgSelected: 'bg-indigo-100 dark:bg-indigo-900/20', border: 'border-indigo-500', hoverBorder: 'hover:border-indigo-500/50 dark:hover:border-indigo-500/50' },
   mindmap: { text: 'text-purple-500', bg: 'bg-purple-100 dark:bg-purple-900/40', bgSelected: 'bg-purple-100 dark:bg-purple-900/20', border: 'border-purple-500', hoverBorder: 'hover:border-purple-500/50 dark:hover:border-purple-500/50' },
   notepad: { text: 'text-fuchsia-500', bg: 'bg-fuchsia-100 dark:bg-fuchsia-900/40', bgSelected: 'bg-fuchsia-100 dark:bg-fuchsia-900/20', border: 'border-fuchsia-500', hoverBorder: 'hover:border-fuchsia-500/50 dark:hover:border-fuchsia-500/50' },
-  eod: { text: 'text-orange-500', bg: 'bg-orange-100 dark:bg-orange-900/40', bgSelected: 'bg-orange-100 dark:bg-orange-900/20', border: 'border-orange-500', hoverBorder: 'hover:border-orange-500/50 dark:hover:border-orange-500/50' },
 };

@@ -11,6 +11,7 @@ import type { Project } from '../store/useRoadmapStore';
 import { toolTheme } from '../config/toolTheme';
 import { aracCalismalari, aracSecimEylemi, calismayiYenidenAdlandir, calismayiSil } from '../config/toolWorks';
 import SharePanel from './SharePanel';
+import { useDisariTiklama } from '../utils/menuKapatma';
 
 const TOOL_OPTIONS: { id: ToolId; icon: typeof Network; label: string; color: string; bg: string }[] = [
   { id: 'mindmap', icon: Brain, label: 'tool_mindmap', color: 'text-purple-500', bg: 'bg-purple-100 dark:bg-purple-900/40' },
@@ -469,27 +470,11 @@ export default function TopRightProjectsMenu() {
       activeTool: state.activeTool
     })));
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        if (useUIStore.getState().activeTopMenu === 'projects') {
-          useUIStore.getState().setActiveTopMenu(null);
-        }
-      }
+  useDisariTiklama(menuRef, () => {
+    if (useUIStore.getState().activeTopMenu === 'projects') {
+      useUIStore.getState().setActiveTopMenu(null);
     }
-    const forceClose = () => {
-      if (useUIStore.getState().activeTopMenu === 'projects') {
-        useUIStore.getState().setActiveTopMenu(null);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside, { capture: true });
-    document.addEventListener("close-menus", forceClose);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside, { capture: true });
-      document.removeEventListener("close-menus", forceClose);
-    };
-  }, []);
+  });
 
 
   // Ajanda düğmesi göründüğünde hesap düğmesiyle bunun arasına giriyor, o zaman

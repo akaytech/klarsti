@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import CustomTimeSelect from './CustomTimeSelect';
 import { addOneHour } from '../utils/timeRange';
 import { useKenardanIceriAl } from '../utils/useKenardanIceriAl';
+import { useBaglamMenusuKapat } from '../utils/menuKapatma';
 
 type ContextMenuProps = {
   node: GoalNode;
@@ -118,30 +119,16 @@ export default function ContextMenu({
   const menuRef = useRef<HTMLDivElement>(null);
   const { sarmalayiciStil, enFazlaBoy } = useKenardanIceriAl(menuRef);
 
+  useBaglamMenusuKapat(onClose);
+
+  // Menü açılır açılmaz odak ilk metin kutusuna geçsin; küçük gecikme menünün
+  // yerleşmesini bekliyor.
   useEffect(() => {
-    const handleGlobalClick = (e: MouseEvent) => {
-      if ((e.target as HTMLElement).closest('.context-menu')) return;
-      onClose();
-    };
-    const handleGlobalKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-
-    document.addEventListener('mousedown', handleGlobalClick);
-    document.addEventListener('keydown', handleGlobalKey);
-    document.addEventListener('close-menus', onClose);
-
     const timer = setTimeout(() => {
       menuRef.current?.querySelector('input')?.focus();
     }, 10);
-
-    return () => {
-      document.removeEventListener('mousedown', handleGlobalClick);
-      document.removeEventListener('keydown', handleGlobalKey);
-      document.removeEventListener('close-menus', onClose);
-      clearTimeout(timer);
-    };
-  }, [onClose]);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div

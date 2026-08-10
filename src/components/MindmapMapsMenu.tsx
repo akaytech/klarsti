@@ -5,6 +5,7 @@ import { useRoadmapStore } from '../store/useRoadmapStore';
 import { useShallow } from 'zustand/react/shallow';
 import type { Mindmap } from '../store/useRoadmapStore';
 import ConfirmModal from './ConfirmModal';
+import { useKapatmaYayini } from '../utils/menuKapatma';
 
 // Kanvasın sol üstündeki harita menüsü: projedeki zihin haritaları arasında
 // geçiş, yeni harita, ad değiştirme ve silme. Akış şemasındaki menünün
@@ -25,11 +26,7 @@ export default function MindmapMapsMenu({ aktif }: { aktif: Mindmap }) {
   const [silmeOnayi, setSilmeOnayi] = useState(false);
   const adRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    const kapat = () => { setAcik(false); setAdDuzenleniyor(false); };
-    document.addEventListener('close-menus', kapat);
-    return () => document.removeEventListener('close-menus', kapat);
-  }, []);
+  useKapatmaYayini(() => { setAcik(false); setAdDuzenleniyor(false); });
 
   useEffect(() => {
     setAd(aktif.name);

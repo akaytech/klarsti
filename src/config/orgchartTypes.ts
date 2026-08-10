@@ -328,8 +328,6 @@ export const ORGCHART_TYPES: OrgchartTypeDef[] = [
   }
 ];
 
-export const DEFAULT_ORGCHART_TYPE: OrgchartTypeId = 'hierarchical';
-
 export function getOrgchartType(id: OrgchartTypeId | string | null | undefined): OrgchartTypeDef {
   return ORGCHART_TYPES.find((tur) => tur.id === id) || ORGCHART_TYPES[0];
 }

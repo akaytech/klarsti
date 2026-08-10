@@ -4,6 +4,7 @@ import { Plus, Check, Trash2, Edit3 } from 'lucide-react';
 import type { FiveWhysNode } from '../store/useRoadmapStore';
 import { useClampedPosition } from '../utils/useClampedPosition';
 import { MenuPortal } from '../utils/MenuPortal';
+import { useBaglamMenusuKapat } from '../utils/menuKapatma';
 
 interface ContextMenuProps {
   x: number;
@@ -27,25 +28,7 @@ export default function FiveWhysContextMenu({ x, y, node, onClose, onAddNode, on
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const { ref: menuRef, style: menuStyle } = useClampedPosition(x, y);
 
-  useEffect(() => {
-    const handleGlobalClick = (e: MouseEvent) => {
-      if ((e.target as HTMLElement).closest('.context-menu')) return;
-      onClose();
-    };
-    const handleGlobalKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    
-    document.addEventListener('mousedown', handleGlobalClick);
-    document.addEventListener('keydown', handleGlobalKey);
-    document.addEventListener('close-menus', onClose);
-    
-    return () => {
-      document.removeEventListener('mousedown', handleGlobalClick);
-      document.removeEventListener('keydown', handleGlobalKey);
-      document.removeEventListener('close-menus', onClose);
-    };
-  }, [onClose]);
+  useBaglamMenusuKapat(onClose);
 
   useEffect(() => {
     if ((isEditing || isAddingNode) && inputRef.current) {

@@ -5,6 +5,7 @@ import { useRoadmapStore } from '../store/useRoadmapStore';
 import { useShallow } from 'zustand/react/shallow';
 import type { WbsTree } from '../store/useRoadmapStore';
 import ConfirmModal from './ConfirmModal';
+import { useKapatmaYayini } from '../utils/menuKapatma';
 
 // Kanvasın sol üstündeki ağaç menüsü: projedeki kırılım ağaçları arasında
 // geçiş, yeni ağaç, ad değiştirme ve silme. Zihin haritasındaki menünün eşi.
@@ -24,11 +25,7 @@ export default function WbsTreesMenu({ aktif }: { aktif: WbsTree }) {
   const [silmeOnayi, setSilmeOnayi] = useState(false);
   const adRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    const kapat = () => { setAcik(false); setAdDuzenleniyor(false); };
-    document.addEventListener('close-menus', kapat);
-    return () => document.removeEventListener('close-menus', kapat);
-  }, []);
+  useKapatmaYayini(() => { setAcik(false); setAdDuzenleniyor(false); });
 
   useEffect(() => {
     setAd(aktif.name);

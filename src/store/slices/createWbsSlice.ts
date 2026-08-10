@@ -721,7 +721,7 @@ export const createWbsSlice: StateCreator<
       if (aktif.nodes.some((n) => n.data.isManuallyPositioned !== undefined)) {
         nextNodes = aktif.nodes.map((node) => {
           if (node.data.isManuallyPositioned === undefined) return node;
-          const { isManuallyPositioned, ...kalan } = node.data;
+          const { isManuallyPositioned: _atilan, ...kalan } = node.data;
           return { ...node, data: kalan as GoalNodeData };
         });
       }

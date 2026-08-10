@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUIStore } from '../store/useUIStore';
 import { useRoadmapStore } from '../store/useRoadmapStore';
@@ -6,6 +6,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { MoreVertical, User, Folder, Link, Camera, CalendarDays, BookOpen } from 'lucide-react';
 import { ajandaDugmesiGorunurMu } from '../utils/ajandaDugmesi';
 import { GUIDE_TOOLS } from '../content/toolGuides/available';
+import { useDisariTiklama } from '../utils/menuKapatma';
 
 export default function TopRightMobileMoreMenu() {
   const { t } = useTranslation();
@@ -22,27 +23,11 @@ export default function TopRightMobileMoreMenu() {
   const isOpen = activeTopMenu === 'more';
   const menuRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        if (useUIStore.getState().activeTopMenu === 'more') {
-          useUIStore.getState().setActiveTopMenu(null);
-        }
-      }
+  useDisariTiklama(menuRef, () => {
+    if (useUIStore.getState().activeTopMenu === 'more') {
+      useUIStore.getState().setActiveTopMenu(null);
     }
-    const forceClose = () => {
-      if (useUIStore.getState().activeTopMenu === 'more') {
-        useUIStore.getState().setActiveTopMenu(null);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside, { capture: true });
-    document.addEventListener("close-menus", forceClose);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside, { capture: true });
-      document.removeEventListener("close-menus", forceClose);
-    };
-  }, []);
+  });
 
   return (
     <div ref={menuRef} className="absolute top-4 end-4 z-[100] sm:hidden flex flex-col items-end">

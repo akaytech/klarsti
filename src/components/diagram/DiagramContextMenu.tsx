@@ -6,6 +6,7 @@ import { getDiagramKind, type DiagramKind } from '../../config/diagramKinds';
 import { useActiveChart } from './useDiagram';
 import { useClampedPosition } from '../../utils/useClampedPosition';
 import { MenuPortal } from '../../utils/MenuPortal';
+import { useBaglamMenusuKapat } from '../../utils/menuKapatma';
 
 interface DiagramContextMenuProps {
   kind: DiagramKind;
@@ -30,25 +31,7 @@ export default function DiagramContextMenu({ kind, x, y, node, onClose, onAddNod
   const tur = k.getType(useActiveChart(kind)?.type);
   const altBaslikVar = !!k.getShape(node.data.shape).withSubtitle;
 
-  useEffect(() => {
-    const handleGlobalClick = (e: MouseEvent) => {
-      if ((e.target as HTMLElement).closest('.context-menu')) return;
-      onClose();
-    };
-    const handleGlobalKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-
-    document.addEventListener('mousedown', handleGlobalClick);
-    document.addEventListener('keydown', handleGlobalKey);
-    document.addEventListener('close-menus', onClose);
-
-    return () => {
-      document.removeEventListener('mousedown', handleGlobalClick);
-      document.removeEventListener('keydown', handleGlobalKey);
-      document.removeEventListener('close-menus', onClose);
-    };
-  }, [onClose]);
+  useBaglamMenusuKapat(onClose);
 
   useEffect(() => {
     if (isEditing && inputRef.current) {

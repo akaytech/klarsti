@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CornerDownRight, Plus, Pencil, Trash2, Minus, AlignLeft, CheckSquare, Square } from 'lucide-react';
 import { useClampedPosition } from '../utils/useClampedPosition';
 import { MenuPortal } from '../utils/MenuPortal';
+import { useBaglamMenusuKapat } from '../utils/menuKapatma';
 
 interface Props {
   x: number;
@@ -26,21 +26,7 @@ export default function MindmapContextMenu({ x, y, kok, cocukVar, daraltilmis, b
   const { t } = useTranslation();
   const { ref: menuRef, style: menuStyle } = useClampedPosition(x, y);
 
-  useEffect(() => {
-    const disaTiklama = (e: MouseEvent) => {
-      if ((e.target as HTMLElement).closest('.context-menu')) return;
-      onClose();
-    };
-    const tus = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
-    document.addEventListener('mousedown', disaTiklama);
-    document.addEventListener('keydown', tus);
-    document.addEventListener('close-menus', onClose);
-    return () => {
-      document.removeEventListener('mousedown', disaTiklama);
-      document.removeEventListener('keydown', tus);
-      document.removeEventListener('close-menus', onClose);
-    };
-  }, [onClose]);
+  useBaglamMenusuKapat(onClose);
 
   const satir = "w-full px-4 py-2 text-start text-sm flex items-center gap-3 transition-colors";
 

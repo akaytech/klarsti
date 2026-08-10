@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ChevronDown, Plus, Pencil, Trash2, Check } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import ConfirmModal from './ConfirmModal';
+import { useKapatmaYayini } from '../utils/menuKapatma';
 
 export interface AnalizOgesi {
   id: string;
@@ -47,11 +48,7 @@ export default function AnalysisMenu({ Simge, aktifId, ogeler, onSec, onEkle, on
   const [silmeOnayi, setSilmeOnayi] = useState(false);
   const adRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    const kapat = () => { setAcik(false); setAdDuzenleniyor(false); };
-    document.addEventListener('close-menus', kapat);
-    return () => document.removeEventListener('close-menus', kapat);
-  }, []);
+  useKapatmaYayini(() => { setAcik(false); setAdDuzenleniyor(false); });
 
   useEffect(() => { setAd(aktif?.name ?? ''); }, [aktif?.id, aktif?.name]);
   useEffect(() => { if (adDuzenleniyor) adRef.current?.select(); }, [adDuzenleniyor]);

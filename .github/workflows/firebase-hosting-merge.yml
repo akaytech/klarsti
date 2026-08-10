@@ -15,11 +15,13 @@ jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: '20'
+          # Geliştirmede kullanılan sürümle aynı kalmalı: derlemenin yerelde
+          # geçip yayında patlaması hep bu farktan çıkıyor.
+          node-version: '24'
           cache: 'npm'
       # SENTRY_AUTH_TOKEN varsa derleme, hata izlerini okunur kılan harita
       # dosyalarını üretip Sentry'ye yükler ve sonra siler (bkz. vite.config.ts).

@@ -51,6 +51,9 @@ export default function PublicFooter() {
             {t('privacy_policy_title', { defaultValue: 'Privacy Policy' })}
           </Link>
           <span className="h-4 w-px bg-slate-300 dark:bg-slate-700"></span>
+          {/* Yalnızca simge. Adresi yanına yazıyla koymak denendi: 1024 piksel
+              genişlikte bu grup tek satırdan üç satıra düşüyor, alt bilgi
+              dağılıyor. Adres yasal sayfalarda zaten yazılı duruyor. */}
           <a href={`mailto:${CONTACT_EMAIL}`} aria-label={`E-posta: ${CONTACT_EMAIL}`} className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
             <Mail size={18} />
           </a>

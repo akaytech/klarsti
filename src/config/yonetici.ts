@@ -12,8 +12,17 @@
  *
  * Bu numaranın gizli olması gerekmiyor: kimlik değil, adres gibi bir şey.
  * Asıl kapı, Firebase'in oturum doğrulaması ve firestore.rules.
+ *
+ * Numara admin@klarsti.com hesabına ait; sahibinin günlük kullandığı kişisel
+ * hesap değil. Ayrı tutulmasının sebebi: yönetim erişimi, her gün her yerde
+ * kullanılan ve oltalama maili alan hesaba bağlı kalmasın. O hesap bir gün
+ * düşerse bütün kullanıcı verisi onunla düşerdi.
+ *
+ * E-posta değil UID yazılı olmasının sebebi: e-posta değişebilir, ayrıca
+ * kurallarda e-postaya güvenmek için ayrıca doğrulanmış olmasına bakmak
+ * gerekir. UID hesapla birlikte doğuyor ve hiç değişmiyor.
  */
-export const YONETICI_UID = 'gjmZ4g59yAeR9uz6di4Q9C57iO43';
+export const YONETICI_UID = 'nAyfA6WDEUfG0i5duXsVBgBeJbA3';
 
 export const yoneticiMi = (uid?: string | null): boolean =>
   !!uid && uid === YONETICI_UID;

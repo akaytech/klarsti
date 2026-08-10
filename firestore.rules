@@ -23,6 +23,10 @@ service cloud.firestore {
     // ekranın yazacak hiçbir şeyi yok ve bir gün kod hata yapsa bile bu
     // hesap kimsenin verisini bozamaz.
     //
+    // Numara admin@klarsti.com hesabına ait; sahibinin günlük kullandığı
+    // kişisel hesap değil. Ayrı tutuluyor ki yönetim erişimi, her gün her
+    // yerde kullanılan ve oltalama maili alan hesaba bağlı kalmasın.
+    //
     // Riski açık olsun: bu hesabın ele geçirilmesi bütün kullanıcı verisinin
     // okunması demek. Karşılığı kabul edildi; azaltmak için hesapta iki
     // adımlı doğrulama açık olmalı.
@@ -31,7 +35,7 @@ service cloud.firestore {
     // kalmalı. Kurallarda değişken tanımlanamıyor, bu yüzden kopya.
     function yonetici() {
       return request.auth != null
-             && request.auth.uid == 'gjmZ4g59yAeR9uz6di4Q9C57iO43';
+             && request.auth.uid == 'nAyfA6WDEUfG0i5duXsVBgBeJbA3';
     }
 
     // Kimlik satırı: ad, e-posta, ilk ve son görülme. Başka hiçbir şey.

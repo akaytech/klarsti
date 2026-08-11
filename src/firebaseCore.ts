@@ -20,6 +20,24 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 
+// Firebase'in gönderdiği e-postaların dili (doğrulama, şifre sıfırlama,
+// e-posta değişikliği).
+//
+// Ayarlanmazsa hepsi İngilizce gidiyordu. Arayüzü 11 dilde olan bir
+// uygulamada, Türkçe kullanan birinin kayıt olduktan sonra aldığı tek mesajın
+// İngilizce olması hem kötü duruyor hem de mailin ne olduğunu anlamayan
+// kullanıcı doğrulamayı hiç yapmıyor.
+//
+// Metinleri biz yazmıyoruz; Firebase'in kendi çevirileri kullanılıyor. Bu
+// yüzden desteklenmeyen bir dil gelirse Firebase kendiliğinden İngilizce'ye
+// düşüyor, ayrıca bir kontrol gerekmiyor.
+const postaDiliniAyarla = () => {
+  auth.languageCode = i18n.language || 'en';
+};
+postaDiliniAyarla();
+// Kullanıcı dili sonradan değiştirirse bir sonraki mail yeni dilde gitmeli.
+i18n.on('languageChanged', postaDiliniAyarla);
+
 // Firebase Auth'u tek gerçek kaynak (source of truth) yapar.
 // localStorage'daki 'user' yalnızca ilk paint için optimistik önbellektir;
 // otorite her zaman Firebase oturumudur. Token yenileme veya sunucu tarafı

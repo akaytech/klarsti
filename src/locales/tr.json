@@ -737,5 +737,8 @@
   "cookie_pref_deny_btn": "Ölçümlemeyi kapat",
   "cookie_pref_reload_note": "Değişiklik tam olarak bir sonraki sayfa açılışında geçerli olur.",
   "settings_title": "Ayarlar",
-  "about_title": "Hakkında"
+  "about_title": "Hakkında",
+  "notepad_prev_day": "Önceki gün",
+  "notepad_next_day": "Sonraki gün",
+  "notepad_today": "Bugün"
 }

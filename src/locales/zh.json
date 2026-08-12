@@ -737,5 +737,8 @@
   "cookie_pref_deny_btn": "关闭统计",
   "cookie_pref_reload_note": "更改将在下次加载页面时完全生效。",
   "settings_title": "设置",
-  "about_title": "关于"
+  "about_title": "关于",
+  "notepad_prev_day": "前一天",
+  "notepad_next_day": "后一天",
+  "notepad_today": "今天"
 }

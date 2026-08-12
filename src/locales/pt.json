@@ -737,5 +737,8 @@
   "cookie_pref_deny_btn": "Desligar a medição",
   "cookie_pref_reload_note": "A mudança tem efeito completo no próximo carregamento da página.",
   "settings_title": "Configurações",
-  "about_title": "Sobre"
+  "about_title": "Sobre",
+  "notepad_prev_day": "Dia anterior",
+  "notepad_next_day": "Próximo dia",
+  "notepad_today": "Hoje"
 }

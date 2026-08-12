@@ -737,5 +737,8 @@
   "cookie_pref_deny_btn": "Выключить измерение",
   "cookie_pref_reload_note": "Изменение полностью вступит в силу при следующей загрузке страницы.",
   "settings_title": "Настройки",
-  "about_title": "О приложении"
+  "about_title": "О приложении",
+  "notepad_prev_day": "Предыдущий день",
+  "notepad_next_day": "Следующий день",
+  "notepad_today": "Сегодня"
 }

@@ -737,5 +737,8 @@
   "cookie_pref_deny_btn": "إيقاف القياس",
   "cookie_pref_reload_note": "يسري التغيير بالكامل عند تحميل الصفحة في المرة القادمة.",
   "settings_title": "الإعدادات",
-  "about_title": "حول"
+  "about_title": "حول",
+  "notepad_prev_day": "اليوم السابق",
+  "notepad_next_day": "اليوم التالي",
+  "notepad_today": "اليوم"
 }

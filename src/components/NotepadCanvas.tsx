@@ -149,6 +149,24 @@ const NotepadCanvas: React.FC = () => {
     resetComposer();
   };
 
+  // Gün ekranında komşu güne geçiş. Eskiden tek yol takvime dönüp başka bir
+  // güne tıklamaktı; ardışık günlere bakmak (dün ne yapmıştım, yarın ne var)
+  // her seferinde iki ekran değiştirmek demekti.
+  //
+  // Ay/yıl taşması new Date'in kendi işi: 31 Ağustos + 1 gün 1 Eylül'e,
+  // 1 Ocak - 1 gün önceki yılın 31 Aralık'ına düşüyor.
+  const gunKaydir = (fark: number) => {
+    if (!selectedDate) return;
+    const [yil, ay, gun] = selectedDate.split('-').map(Number);
+    const yeniGun = formatDateKey(new Date(yil, ay - 1, gun + fark));
+    // Günlük paneli açıksa açık kalsın: kullanıcı büyük ihtimalle günleri
+    // tam da değerlendirmeleri okumak için çeviriyor. Ama gelecek bir güne
+    // geçilirse kapanmalı; yaşanmamış günün değerlendirmesi yazılamıyor.
+    const gunlukAcikKalsin = journalOpen && yeniGun <= todayKey;
+    openDay(yeniGun);
+    if (gunlukAcikKalsin) setJournalOpen(true);
+  };
+
   const startEditingEntry = (note: NotepadNote) => {
     setEditingNoteId(note.id);
     setDraftTitle(note.title || '');
@@ -405,9 +423,41 @@ const NotepadCanvas: React.FC = () => {
               >
                 <ArrowLeft className="w-5 h-5 rtl:rotate-180" />
               </button>
+
+              {/* Gün okları takvimdeki ay oklarıyla birebir aynı biçimde:
+                  kullanıcı o düzeni bir ekran önce zaten gördü. Geri oku
+                  gövdeli, bunlar ince şevron — yan yana dursalar da farklı
+                  okunuyorlar. */}
+              <button
+                onClick={() => gunKaydir(-1)}
+                aria-label={t('notepad_prev_day', { defaultValue: 'Previous day' })}
+                className="p-2 rounded-lg hover:bg-white dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-colors"
+              >
+                <ChevronLeft className="w-5 h-5 rtl:rotate-180" />
+              </button>
               <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100 capitalize">
                 {selectedDateLabel}
               </h2>
+              <button
+                onClick={() => gunKaydir(1)}
+                aria-label={t('notepad_next_day', { defaultValue: 'Next day' })}
+                className="p-2 rounded-lg hover:bg-white dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-colors"
+              >
+                <ChevronRight className="w-5 h-5 rtl:rotate-180" />
+              </button>
+
+              {/* Yalnızca başka bir gündeyken görünüyor. Oklarla on gün
+                  uzaklaşan biri geri dönmek için on tık ya da takvime çıkıp
+                  tekrar girmek zorundaydı. */}
+              {selectedDate !== todayKey && (
+                <button
+                  onClick={() => openDay(todayKey)}
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                >
+                  <CalendarDays className="w-4 h-4" />
+                  <span className="hidden sm:inline">{t('notepad_today', { defaultValue: 'Today' })}</span>
+                </button>
+              )}
               {canWriteJournal && (
                 <button
                   onClick={() => setJournalOpen(o => !o)}

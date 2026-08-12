@@ -735,5 +735,6 @@
   "cookie_pref_state_unset": "لم تختر بعد. وحتى ذلك الحين يبقى القياس متوقفًا.",
   "cookie_pref_allow_btn": "السماح بالقياس",
   "cookie_pref_deny_btn": "إيقاف القياس",
-  "cookie_pref_reload_note": "يسري التغيير بالكامل عند تحميل الصفحة في المرة القادمة."
+  "cookie_pref_reload_note": "يسري التغيير بالكامل عند تحميل الصفحة في المرة القادمة.",
+  "settings_title": "الإعدادات"
 }

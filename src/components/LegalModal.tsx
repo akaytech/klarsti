@@ -58,7 +58,11 @@ const LegalModal: React.FC<LegalModalProps> = ({ isOpen, onClose, type }) => {
       >
         <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-700 shrink-0">
           <h2 id="legal-modal-title" className="text-xl font-bold text-slate-900 dark:text-white">
-            {type === 'privacy' ? t('privacy_policy_title') : t('terms_of_use_title')}
+            {type === 'privacy'
+              ? t('privacy_policy_title')
+              : type === 'cookies'
+                ? t('cookie_policy_title', { defaultValue: 'Cookie Policy' })
+                : t('terms_of_use_title')}
           </h2>
           <button
             ref={closeBtnRef}

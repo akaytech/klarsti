@@ -735,5 +735,6 @@
   "cookie_pref_state_unset": "まだ選択されていません。それまで計測はオフのままです。",
   "cookie_pref_allow_btn": "計測を許可する",
   "cookie_pref_deny_btn": "計測をオフにする",
-  "cookie_pref_reload_note": "変更は次にページを読み込んだときに完全に反映されます。"
+  "cookie_pref_reload_note": "変更は次にページを読み込んだときに完全に反映されます。",
+  "settings_title": "設定"
 }

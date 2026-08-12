@@ -735,5 +735,6 @@
   "cookie_pref_state_unset": "你还没有做出选择。在此之前统计保持关闭。",
   "cookie_pref_allow_btn": "允许统计",
   "cookie_pref_deny_btn": "关闭统计",
-  "cookie_pref_reload_note": "更改将在下次加载页面时完全生效。"
+  "cookie_pref_reload_note": "更改将在下次加载页面时完全生效。",
+  "settings_title": "设置"
 }

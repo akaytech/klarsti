@@ -735,5 +735,6 @@
   "cookie_pref_state_unset": "Non hai ancora scelto. Fino ad allora la misurazione resta disattivata.",
   "cookie_pref_allow_btn": "Consenti la misurazione",
   "cookie_pref_deny_btn": "Disattiva la misurazione",
-  "cookie_pref_reload_note": "La modifica ha pieno effetto al successivo caricamento della pagina."
+  "cookie_pref_reload_note": "La modifica ha pieno effetto al successivo caricamento della pagina.",
+  "settings_title": "Impostazioni"
 }

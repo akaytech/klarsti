@@ -735,5 +735,6 @@
   "cookie_pref_state_unset": "You have not chosen yet. Until you do, measurement stays off.",
   "cookie_pref_allow_btn": "Allow measurement",
   "cookie_pref_deny_btn": "Turn measurement off",
-  "cookie_pref_reload_note": "The change takes full effect the next time the page loads."
+  "cookie_pref_reload_note": "The change takes full effect the next time the page loads.",
+  "settings_title": "Settings"
 }

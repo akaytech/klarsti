@@ -735,5 +735,6 @@
   "cookie_pref_state_unset": "Henüz seçim yapmadın. Yapana kadar ölçümleme kapalı kalır.",
   "cookie_pref_allow_btn": "Ölçümlemeye izin ver",
   "cookie_pref_deny_btn": "Ölçümlemeyi kapat",
-  "cookie_pref_reload_note": "Değişiklik tam olarak bir sonraki sayfa açılışında geçerli olur."
+  "cookie_pref_reload_note": "Değişiklik tam olarak bir sonraki sayfa açılışında geçerli olur.",
+  "settings_title": "Ayarlar"
 }

@@ -70,7 +70,7 @@ const privacyTR = (
 
     <h3 className={heading}>8. Hesabınızı ve Verilerinizi Silme</h3>
     <p>
-      Hesabınızı istediğiniz zaman kendiniz silebilirsiniz: uygulamada sağ üstteki hesap menüsünde yer alan <strong>“Hesabı sil”</strong> seçeneğini kullanmanız yeterlidir. Talep etmenize veya bizden onay beklemenize gerek yoktur.
+      Hesabınızı istediğiniz zaman kendiniz silebilirsiniz: uygulamada sağ üstteki hesap düğmesine tıklayın, <strong>Ayarlar</strong> bölümünü açın ve en alttaki <strong>“Hesabı sil”</strong> seçeneğini kullanın. Talep etmenize veya bizden onay beklemenize gerek yoktur.
     </p>
     <p>Silme işlemi şunları kapsar:</p>
     <ul className="list-disc pl-5 space-y-2">
@@ -149,7 +149,7 @@ const privacyEN = (
 
     <h3 className={heading}>8. Deleting Your Account and Data</h3>
     <p>
-      You can delete your account yourself at any time: use the <strong>“Delete account”</strong> option in the account menu at the top right of the application. You do not need to submit a request or wait for our approval.
+      You can delete your account yourself at any time: click the account button at the top right of the application, open <strong>Settings</strong>, and use the <strong>“Delete account”</strong> option at the bottom. You do not need to submit a request or wait for our approval.
     </p>
     <p>Deletion covers:</p>
     <ul className="list-disc pl-5 space-y-2">

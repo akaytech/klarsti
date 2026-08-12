@@ -735,5 +735,6 @@
   "cookie_pref_state_unset": "Vous n’avez pas encore choisi. D’ici là, la mesure reste désactivée.",
   "cookie_pref_allow_btn": "Autoriser la mesure",
   "cookie_pref_deny_btn": "Désactiver la mesure",
-  "cookie_pref_reload_note": "La modification prend pleinement effet au prochain chargement de la page."
+  "cookie_pref_reload_note": "La modification prend pleinement effet au prochain chargement de la page.",
+  "settings_title": "Paramètres"
 }

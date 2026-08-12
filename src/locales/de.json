@@ -736,5 +736,6 @@
   "cookie_pref_allow_btn": "Messung erlauben",
   "cookie_pref_deny_btn": "Messung ausschalten",
   "cookie_pref_reload_note": "Die Änderung wird beim nächsten Laden der Seite vollständig wirksam.",
-  "settings_title": "Einstellungen"
+  "settings_title": "Einstellungen",
+  "about_title": "Über"
 }

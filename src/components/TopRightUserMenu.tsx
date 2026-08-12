@@ -7,8 +7,9 @@ import { useShallow } from 'zustand/react/shallow';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebaseCore';
 import { toast } from 'sonner';
-import { LogOut, Palette, User, Shield, FileText, Languages, ChevronLeft, ChevronRight, Check, Loader2, LifeBuoy, Trash2, Settings, Cookie } from 'lucide-react';
+import { LogOut, Palette, User, Shield, FileText, Languages, ChevronLeft, ChevronRight, Check, Loader2, LifeBuoy, Trash2, Settings, Cookie, Info } from 'lucide-react';
 import type { LegalType } from '../content/legalContent';
+import packageJson from '../../package.json';
 import { flushPendingSaves } from './SyncManager';
 import { destekPostasiBaglantisi } from '../utils/destekPostasi';
 import LegalModal from './LegalModal';
@@ -57,7 +58,10 @@ export default function TopRightUserMenu() {
   // vardı: menü büyüdükçe uzayacaktı, ve geri alınamayan bir işlem çıkışın
   // hemen altında duruyordu. Ayarlar ayrı bir kata inince kök üç satıra
   // düştü ve ileride eklenecek tercihler için de yer açıldı.
-  const [subMenu, setSubMenu] = useState<'ayarlar' | 'language' | 'theme' | null>(null);
+  // Ayarlar ve Hakkında bilerek ayrı: Ayarlar değiştirilen şeyler, Hakkında
+  // okunan belgeler. Yasal metinler önce Ayarlar'ın içindeydi ve oraya ait
+  // değillerdi — kullanıcı bir tercih menüsünde belge bulmayı beklemiyor.
+  const [subMenu, setSubMenu] = useState<'ayarlar' | 'hakkinda' | 'language' | 'theme' | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useDisariTiklama(menuRef, () => {
@@ -131,6 +135,12 @@ export default function TopRightUserMenu() {
               <ChevronRight size={16} className="shrink-0 text-slate-400 rtl:rotate-180" aria-hidden />
             </button>
 
+            <button onClick={() => setSubMenu('hakkinda')} className={menuSatiri}>
+              <Info size={18} />
+              <span className="flex-1 text-start">{t('about_title', { defaultValue: 'About' })}</span>
+              <ChevronRight size={16} className="shrink-0 text-slate-400 rtl:rotate-180" aria-hidden />
+            </button>
+
             {/* "Sorun bildir" bilerek kökte kaldı, ayarların içine girmedi.
                 Ayarlar bir tercih menüsü, bu ise imdat düğmesi: sıkışan
                 kullanıcının onu iki tık derinde araması, destek kanalını
@@ -181,25 +191,6 @@ export default function TopRightUserMenu() {
               {t('change_language_settings', { defaultValue: 'Change Language Settings' })}
             </button>
 
-            <div className="my-2 h-px w-full bg-slate-100 dark:bg-slate-700" />
-
-            <button onClick={() => setLegalType('terms')} className={menuSatiri}>
-              <FileText size={18} />
-              {t('terms_of_use_title', { defaultValue: 'Terms of Use' })}
-            </button>
-            <button onClick={() => setLegalType('privacy')} className={menuSatiri}>
-              <Shield size={18} />
-              {t('privacy_policy_title', { defaultValue: 'Privacy Policy' })}
-            </button>
-            {/* Çerez politikası uygulama içinden de açılabiliyor. Metnin
-                içindeki tercih düğmeleri sayesinde kullanıcı ölçümleme
-                kararını buradan da değiştirebiliyor; şerit yalnızca bir kez
-                çıktığı için başka bir yolu yoktu. */}
-            <button onClick={() => setLegalType('cookies')} className={menuSatiri}>
-              <Cookie size={18} />
-              {t('cookie_policy_title', { defaultValue: 'Cookie Policy' })}
-            </button>
-
             {/* Hesap silme ayarların en altında ve ayrılmış. Kökten indi:
                 orada çıkışın hemen altındaydı ve geri alınamayan bir işlemin
                 ana menüde durması menüyü tedirgin edici yapıyordu. Gizlemek
@@ -215,6 +206,45 @@ export default function TopRightUserMenu() {
             >
               <Trash2 size={18} />
               {t('delete_account_title', { defaultValue: 'Delete account' })}
+            </button>
+          </div>
+        ) : subMenu === 'hakkinda' ? (
+          <div className="flex flex-col">
+            <div className="flex items-center gap-2 mb-2 px-3 py-2 border-b border-slate-100 dark:border-slate-700">
+              <button
+                onClick={() => setSubMenu(null)}
+                aria-label={t('back', { defaultValue: 'Back' })}
+                className="p-2 -ms-1 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 transition-colors"
+              >
+                <ChevronLeft size={18} className="rtl:rotate-180" />
+              </button>
+              <span className="text-sm font-bold text-slate-800 dark:text-slate-100">
+                {t('about_title', { defaultValue: 'About' })}
+              </span>
+            </div>
+
+            {/* Sürüm numarası arayüzde başka hiçbir yerde yazmıyordu.
+                "Sorun bildir" maile zaten kendisi ekliyor ama kullanıcının
+                bakabileceği bir yer de olmalı. */}
+            <p className="px-3 pb-2 text-xs text-slate-500 dark:text-slate-400">
+              Klarsti {packageJson.version}
+            </p>
+
+            <button onClick={() => setLegalType('terms')} className={menuSatiri}>
+              <FileText size={18} />
+              {t('terms_of_use_title', { defaultValue: 'Terms of Use' })}
+            </button>
+            <button onClick={() => setLegalType('privacy')} className={menuSatiri}>
+              <Shield size={18} />
+              {t('privacy_policy_title', { defaultValue: 'Privacy Policy' })}
+            </button>
+            {/* Çerez politikası uygulama içinden de açılabiliyor. Metnin
+                içindeki tercih düğmeleri sayesinde kullanıcı ölçümleme
+                kararını buradan da değiştirebiliyor; şerit yalnızca bir kez
+                çıktığı için giriş yapmış birinin başka yolu yoktu. */}
+            <button onClick={() => setLegalType('cookies')} className={menuSatiri}>
+              <Cookie size={18} />
+              {t('cookie_policy_title', { defaultValue: 'Cookie Policy' })}
             </button>
           </div>
         ) : (

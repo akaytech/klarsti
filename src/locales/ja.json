@@ -736,5 +736,6 @@
   "cookie_pref_allow_btn": "計測を許可する",
   "cookie_pref_deny_btn": "計測をオフにする",
   "cookie_pref_reload_note": "変更は次にページを読み込んだときに完全に反映されます。",
-  "settings_title": "設定"
+  "settings_title": "設定",
+  "about_title": "このアプリについて"
 }

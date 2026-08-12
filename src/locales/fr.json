@@ -736,5 +736,6 @@
   "cookie_pref_allow_btn": "Autoriser la mesure",
   "cookie_pref_deny_btn": "Désactiver la mesure",
   "cookie_pref_reload_note": "La modification prend pleinement effet au prochain chargement de la page.",
-  "settings_title": "Paramètres"
+  "settings_title": "Paramètres",
+  "about_title": "À propos"
 }

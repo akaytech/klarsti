@@ -736,5 +736,6 @@
   "cookie_pref_allow_btn": "允许统计",
   "cookie_pref_deny_btn": "关闭统计",
   "cookie_pref_reload_note": "更改将在下次加载页面时完全生效。",
-  "settings_title": "设置"
+  "settings_title": "设置",
+  "about_title": "关于"
 }

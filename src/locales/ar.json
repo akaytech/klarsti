@@ -736,5 +736,6 @@
   "cookie_pref_allow_btn": "السماح بالقياس",
   "cookie_pref_deny_btn": "إيقاف القياس",
   "cookie_pref_reload_note": "يسري التغيير بالكامل عند تحميل الصفحة في المرة القادمة.",
-  "settings_title": "الإعدادات"
+  "settings_title": "الإعدادات",
+  "about_title": "حول"
 }

@@ -736,5 +736,6 @@
   "cookie_pref_allow_btn": "Разрешить измерение",
   "cookie_pref_deny_btn": "Выключить измерение",
   "cookie_pref_reload_note": "Изменение полностью вступит в силу при следующей загрузке страницы.",
-  "settings_title": "Настройки"
+  "settings_title": "Настройки",
+  "about_title": "О приложении"
 }

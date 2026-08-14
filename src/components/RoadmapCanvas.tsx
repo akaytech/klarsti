@@ -7,17 +7,18 @@ import {
 } from '@xyflow/react';
 import { Network, LayoutGrid } from 'lucide-react';
 import type { NodeMouseHandler, Edge } from '@xyflow/react';
-import type { GoalNode as GoalNodeType } from '../store/useRoadmapStore';
+import type { GoalNode as GoalNodeType, GoalStatus } from '../store/useRoadmapStore';
 import '@xyflow/react/dist/style.css';
 import { useRoadmapStore, getDescendants, getActiveWbsTree, isPristineWbs, WBS_NODE_W, WBS_NODE_H } from '../store/useRoadmapStore';
 import { useShallow } from 'zustand/react/shallow';
-import { islemBasla, islemBitir } from '../store/gecmis';
+import { islem, islemBasla, islemBitir } from '../store/gecmis';
 import { getDepth } from '../utils/layout';
 import { useTheme } from '../theme';
 import CanvasBackdrop from './CanvasBackdrop';
 import { metinAlaninda } from '../utils/metinAlaninda';
 import GoalNode from './GoalNode';
 import PaneContextMenu from './PaneContextMenu';
+import SelectionContextMenu from './SelectionContextMenu';
 import WbsTreesMenu from './WbsTreesMenu';
 import { useTranslation } from 'react-i18next';
 
@@ -33,13 +34,15 @@ const EMPTY_EDGES: Edge[] = [];
 export default function RoadmapCanvas({ onNodeSelect }: { onNodeSelect: (id: string | null) => void }) {
   const themeColors = useTheme();
   const { t } = useTranslation();
-  const {  aktifAgac, onNodesChange, onEdgesChange, onConnect, toggleExpand, addGoal, loadWbsExample, nudgeGoals, realignAllGoals, normalizeWbsLayout  } = useRoadmapStore(useShallow((state) => ({
+  const {  aktifAgac, onNodesChange, onEdgesChange, onConnect, toggleExpand, addGoal, updateGoal, deleteGoal, loadWbsExample, nudgeGoals, realignAllGoals, normalizeWbsLayout  } = useRoadmapStore(useShallow((state) => ({
       aktifAgac: getActiveWbsTree(state),
       onNodesChange: state.onNodesChange,
       onEdgesChange: state.onEdgesChange,
       onConnect: state.onConnect,
       toggleExpand: state.toggleExpand,
       addGoal: state.addGoal,
+      updateGoal: state.updateGoal,
+      deleteGoal: state.deleteGoal,
       loadWbsExample: state.loadWbsExample,
       nudgeGoals: state.nudgeGoals,
       realignAllGoals: state.realignAllGoals,
@@ -53,6 +56,9 @@ export default function RoadmapCanvas({ onNodeSelect }: { onNodeSelect: (id: str
 
   const { setCenter, getZoom, screenToFlowPosition } = useReactFlow();
   const [paneMenu, setPaneMenu] = useState<{ top: number; left: number; clientX: number; clientY: number } | null>(null);
+  // Seçili kimlikler menü açılırken dondurularak saklanıyor: menüdeki bir
+  // seçeneğe tıklamak seçimi bozarsa işlem yine doğru kutulara uygulanmalı.
+  const [secimMenusu, setSecimMenusu] = useState<{ top: number; left: number; idler: string[] } | null>(null);
   // Kullanıcı "kendim oluşturacağım" derse panel bu oturum boyunca geri gelmez.
   const [starterDismissed, setStarterDismissed] = useState(false);
   const isEmptyCanvas = nodes.length === 0;
@@ -162,22 +168,57 @@ export default function RoadmapCanvas({ onNodeSelect }: { onNodeSelect: (id: str
     }
   }, []);
 
+  /**
+   * Toplu seçim menüsü mü açılmalı?
+   *
+   * Sağ tık şimdiye kadar iki duruma bakıyordu: kutuya mı geldi, boşluğa mı.
+   * Shift ile birden fazla kutu seçildiğinde ikisi de yanlış cevap veriyordu —
+   * seçimin içindeki boşluk "boş kanvas" sayılıyor ve kutu ekleme menüsü
+   * açılıyordu. İki kutudan itibaren üçüncü menü devreye giriyor.
+   */
+  const secilenler = useCallback(() => nodes.filter((n) => n.selected).map((n) => n.id), [nodes]);
+
+  const topluMenuAc = useCallback((event: React.MouseEvent | MouseEvent, idler: string[]) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setSecimMenusu({ top: event.clientY, left: event.clientX, idler });
+    setPaneMenu(null);
+    setContextMenuNodeId(null);
+  }, [setContextMenuNodeId]);
+
   const onNodeContextMenu = useCallback(
     (event: React.MouseEvent, node: any) => {
       // Açıklama kutusu gibi yazı alanlarında sağ tık tarayıcının kendi
       // menüsüne bırakılıyor: kullanıcı orada Kes/Kopyala/Yapıştır bekliyor.
       if (metinAlaninda(event.target)) return;
+
+      // Seçili kutulardan birine sağ tıklamak da "bu seçimle iş yapacağım"
+      // demek; tek kutu menüsü açılsaydı seçim yok sayılmış olurdu.
+      const secili = secilenler();
+      if (secili.length > 1 && secili.includes(node.id)) {
+        topluMenuAc(event, secili);
+        return;
+      }
+
       event.preventDefault();
       event.stopPropagation();
       setContextMenuNodeId(node.id);
       setPaneMenu(null);
+      setSecimMenusu(null);
     },
-    [setContextMenuNodeId]
+    [setContextMenuNodeId, secilenler, topluMenuAc]
   );
 
   const onPaneContextMenu = useCallback(
     (event: React.MouseEvent | MouseEvent) => {
       if (metinAlaninda(event.target)) return;
+
+      const secili = secilenler();
+      if (secili.length > 1) {
+        topluMenuAc(event, secili);
+        return;
+      }
+
       event.preventDefault();
       event.stopPropagation();
       setPaneMenu({
@@ -187,9 +228,39 @@ export default function RoadmapCanvas({ onNodeSelect }: { onNodeSelect: (id: str
         clientY: event.clientY,
       });
       setContextMenuNodeId(null);
+      setSecimMenusu(null);
     },
-    [setContextMenuNodeId]
+    [setContextMenuNodeId, secilenler, topluMenuAc]
   );
+
+  /**
+   * Toplu işlemler. Hepsi tek `islem` sınırı içinde: yedi kutunun durumu
+   * değiştirilip geri alındığında yedisi birden dönüyor, yedi kez geri almak
+   * gerekmiyor. İç içe işlemleri gecmis.ts tek kayda indiriyor.
+   *
+   * Tek kutuluk eylemler olduğu gibi çağrılıyor; durum değişiminin ebeveyne
+   * yansıması, yeniden dizilim ve ajanda eşleşmesi orada zaten çözülmüş.
+   */
+  const topluDurum = useCallback((idler: string[], status: GoalStatus) => {
+    islem(() => idler.forEach((id) => updateGoal(id, { status })));
+  }, [updateGoal]);
+
+  const topluAcKapa = useCallback((idler: string[], acik: boolean) => {
+    // Karar tıklama anındaki duruma göre veriliyor: yalnızca istenen halde
+    // olmayanlar çevriliyor, böylece karışık seçimde hepsi aynı hale geliyor.
+    const cevrilecek = idler.filter((id) => {
+      const kutu = nodes.find((n) => n.id === id);
+      return kutu && !!kutu.data.isExpanded !== acik;
+    });
+    if (cevrilecek.length === 0) return;
+    islem(() => cevrilecek.forEach((id) => toggleExpand(id)));
+  }, [nodes, toggleExpand]);
+
+  const topluSil = useCallback((idler: string[]) => {
+    // Bir ebeveyn silinince altındakiler de gidiyor; sonradan gelen kimlik
+    // ağaçta bulunamıyor ve sessizce atlanıyor.
+    islem(() => idler.forEach((id) => deleteGoal(id)));
+  }, [deleteGoal]);
 
   // Kanvas kaydırılınca/yakınlaştırılınca menü düğümle birlikte sürükleniyor ve
   // ekran dışına çıkabiliyordu; hareket başlar başlamaz kapatıyoruz.
@@ -197,6 +268,7 @@ export default function RoadmapCanvas({ onNodeSelect }: { onNodeSelect: (id: str
     document.dispatchEvent(new Event('close-menus'));
     setContextMenuNodeId(null);
     setPaneMenu(null);
+    setSecimMenusu(null);
     setEditingDescriptionId(null);
   }, [setContextMenuNodeId, setEditingDescriptionId]);
 
@@ -211,6 +283,7 @@ export default function RoadmapCanvas({ onNodeSelect }: { onNodeSelect: (id: str
     }
     setContextMenuNodeId(null);
     setPaneMenu(null);
+    setSecimMenusu(null);
     setEditingDescriptionId(null);
     onNodeSelect(null);
   }, [onNodeSelect, screenToFlowPosition, addGoal, t, setEditingDescriptionId, setContextMenuNodeId]);
@@ -317,6 +390,19 @@ export default function RoadmapCanvas({ onNodeSelect }: { onNodeSelect: (id: str
             addGoal(null, t('new_project_node'), pos);
             setPaneMenu(null);
           }}
+        />
+      )}
+
+      {secimMenusu && (
+        <SelectionContextMenu
+          x={secimMenusu.left}
+          y={secimMenusu.top}
+          sayi={secimMenusu.idler.length}
+          onClose={() => setSecimMenusu(null)}
+          onStatus={(status) => topluDurum(secimMenusu.idler, status)}
+          onExpand={() => topluAcKapa(secimMenusu.idler, true)}
+          onCollapse={() => topluAcKapa(secimMenusu.idler, false)}
+          onDelete={() => topluSil(secimMenusu.idler)}
         />
       )}
 

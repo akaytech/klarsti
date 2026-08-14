@@ -743,6 +743,10 @@
   "cookie_pref_reload_note": "Değişiklik tam olarak bir sonraki sayfa açılışında geçerli olur.",
   "settings_title": "Ayarlar",
   "about_title": "Hakkında",
+  "bulk_selected_count": "{{adet}} kutu seçildi",
+  "bulk_expand": "Alt kutuları aç",
+  "bulk_collapse": "Alt kutuları kapat",
+  "bulk_delete": "Seçilenleri sil",
   "notepad_prev_day": "Önceki gün",
   "notepad_next_day": "Sonraki gün",
   "notepad_today": "Bugün"

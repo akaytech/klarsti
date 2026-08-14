@@ -743,6 +743,10 @@
   "cookie_pref_reload_note": "Die Änderung wird beim nächsten Laden der Seite vollständig wirksam.",
   "settings_title": "Einstellungen",
   "about_title": "Über",
+  "bulk_selected_count": "{{adet}} Kästen ausgewählt",
+  "bulk_expand": "Unterkästen ausklappen",
+  "bulk_collapse": "Unterkästen einklappen",
+  "bulk_delete": "Auswahl löschen",
   "notepad_prev_day": "Vorheriger Tag",
   "notepad_next_day": "Nächster Tag",
   "notepad_today": "Heute"

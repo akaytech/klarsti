@@ -743,6 +743,10 @@
   "cookie_pref_reload_note": "変更は次にページを読み込んだときに完全に反映されます。",
   "settings_title": "設定",
   "about_title": "このアプリについて",
+  "bulk_selected_count": "{{adet}} 個のボックスを選択中",
+  "bulk_expand": "子ボックスを展開",
+  "bulk_collapse": "子ボックスを折りたたむ",
+  "bulk_delete": "選択したものを削除",
   "notepad_prev_day": "前の日",
   "notepad_next_day": "次の日",
   "notepad_today": "今日"

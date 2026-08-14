@@ -743,6 +743,10 @@
   "cookie_pref_reload_note": "更改将在下次加载页面时完全生效。",
   "settings_title": "设置",
   "about_title": "关于",
+  "bulk_selected_count": "已选择 {{adet}} 个方框",
+  "bulk_expand": "展开子方框",
+  "bulk_collapse": "折叠子方框",
+  "bulk_delete": "删除所选",
   "notepad_prev_day": "前一天",
   "notepad_next_day": "后一天",
   "notepad_today": "今天"

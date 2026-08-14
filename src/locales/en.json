@@ -743,6 +743,10 @@
   "cookie_pref_reload_note": "The change takes full effect the next time the page loads.",
   "settings_title": "Settings",
   "about_title": "About",
+  "bulk_selected_count": "{{adet}} boxes selected",
+  "bulk_expand": "Expand children",
+  "bulk_collapse": "Collapse children",
+  "bulk_delete": "Delete selected",
   "notepad_prev_day": "Previous day",
   "notepad_next_day": "Next day",
   "notepad_today": "Today"

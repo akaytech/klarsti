@@ -743,6 +743,10 @@
   "cookie_pref_reload_note": "Изменение полностью вступит в силу при следующей загрузке страницы.",
   "settings_title": "Настройки",
   "about_title": "О приложении",
+  "bulk_selected_count": "Выбрано блоков: {{adet}}",
+  "bulk_expand": "Развернуть дочерние",
+  "bulk_collapse": "Свернуть дочерние",
+  "bulk_delete": "Удалить выбранные",
   "notepad_prev_day": "Предыдущий день",
   "notepad_next_day": "Следующий день",
   "notepad_today": "Сегодня"

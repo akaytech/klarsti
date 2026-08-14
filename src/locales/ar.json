@@ -743,6 +743,10 @@
   "cookie_pref_reload_note": "يسري التغيير بالكامل عند تحميل الصفحة في المرة القادمة.",
   "settings_title": "الإعدادات",
   "about_title": "حول",
+  "bulk_selected_count": "تم تحديد {{adet}} مربعات",
+  "bulk_expand": "توسيع المربعات الفرعية",
+  "bulk_collapse": "طي المربعات الفرعية",
+  "bulk_delete": "حذف المحدد",
   "notepad_prev_day": "اليوم السابق",
   "notepad_next_day": "اليوم التالي",
   "notepad_today": "اليوم"

@@ -7,7 +7,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebaseCore';
 import { toast } from 'sonner';
-import { LogOut, Palette, User, Shield, FileText, Languages, ChevronLeft, ChevronRight, Check, Loader2, LifeBuoy, Trash2, Settings, Cookie, Info } from 'lucide-react';
+import { LogOut, Palette, User, Shield, FileText, Languages, ChevronLeft, ChevronRight, Check, Loader2, LifeBuoy, Trash2, Settings, Cookie, Info, Grid3x3 } from 'lucide-react';
 import type { LegalType } from '../content/legalContent';
 import packageJson from '../../package.json';
 import { flushPendingSaves } from './SyncManager';
@@ -15,6 +15,7 @@ import { destekPostasiBaglantisi } from '../utils/destekPostasi';
 import LegalModal from './LegalModal';
 import DeleteAccountModal from './DeleteAccountModal';
 import ThemeOptionList from './ThemeOptionList';
+import CanvasBackgroundOptionList from './CanvasBackgroundOptionList';
 import { useTheme } from '../theme';
 import { useDisariTiklama } from '../utils/menuKapatma';
 import { DESTEKLENEN_DILLER } from '../config/languages';
@@ -61,7 +62,7 @@ export default function TopRightUserMenu() {
   // Ayarlar ve Hakkında bilerek ayrı: Ayarlar değiştirilen şeyler, Hakkında
   // okunan belgeler. Yasal metinler önce Ayarlar'ın içindeydi ve oraya ait
   // değillerdi — kullanıcı bir tercih menüsünde belge bulmayı beklemiyor.
-  const [subMenu, setSubMenu] = useState<'ayarlar' | 'hakkinda' | 'language' | 'theme' | null>(null);
+  const [subMenu, setSubMenu] = useState<'ayarlar' | 'hakkinda' | 'language' | 'theme' | 'canvasBg' | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useDisariTiklama(menuRef, () => {
@@ -186,6 +187,13 @@ export default function TopRightUserMenu() {
               />
             </button>
 
+            {/* Zemin deseni temanın hemen altında: ikisi de görünüm tercihi ve
+                kullanıcı biri için gelmişken diğerini de görsün. */}
+            <button onClick={() => setSubMenu('canvasBg')} className={menuSatiri}>
+              <Grid3x3 size={18} />
+              {t('canvas_bg_selector', { defaultValue: 'Canvas Background' })}
+            </button>
+
             <button onClick={() => setSubMenu('language')} className={menuSatiri}>
               <Languages size={18} />
               {t('change_language_settings', { defaultValue: 'Change Language Settings' })}
@@ -262,12 +270,16 @@ export default function TopRightUserMenu() {
               <span className="text-sm font-bold text-slate-800 dark:text-slate-100">
                 {subMenu === 'theme'
                   ? t('theme_selector', { defaultValue: 'Theme' })
-                  : t('language_selector', { defaultValue: 'Language' })}
+                  : subMenu === 'canvasBg'
+                    ? t('canvas_bg_selector', { defaultValue: 'Canvas Background' })
+                    : t('language_selector', { defaultValue: 'Language' })}
               </span>
             </div>
 
             {subMenu === 'theme' ? (
               <ThemeOptionList />
+            ) : subMenu === 'canvasBg' ? (
+              <CanvasBackgroundOptionList />
             ) : (
             <div className="flex flex-col gap-1 max-h-[300px] overflow-y-auto px-1">
               {DESTEKLENEN_DILLER.map(({ code, nativeName }) => {

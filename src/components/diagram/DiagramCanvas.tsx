@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ReactFlow,
-  Background,
   useReactFlow,
   Controls,
   MiniMap,
@@ -10,7 +9,7 @@ import {
 import type { NodeMouseHandler } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useTranslation } from 'react-i18next';
-import { useTheme } from '../../theme';
+import CanvasBackdrop from '../CanvasBackdrop';
 import { getDiagramKind, type DiagramKind } from '../../config/diagramKinds';
 import { edgeStyle } from '../../config/diagramShared';
 import { getActiveChart } from '../../store/slices/diagramOps';
@@ -24,7 +23,6 @@ import { islemBasla, islemBitir } from '../../store/gecmis';
 // Akış diyagramları ve organizasyon şemaları bu kanvası paylaşıyor; hangi
 // katalogla çalışacağını `kind` belirliyor (bkz. config/diagramKinds.ts).
 export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
-  const themeColors = useTheme();
   const { t } = useTranslation();
   const k = getDiagramKind(kind);
   const { charts, activeId, onNodesChange, onEdgesChange, onConnect, addNode, updateNode, deleteNode } = useDiagram(kind);
@@ -130,7 +128,7 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
         }}
         proOptions={{ hideAttribution: true }}
       >
-        <Background color={themeColors.canvasDot} gap={24} size={2} />
+        <CanvasBackdrop />
         <Controls className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 fill-slate-700 dark:fill-slate-300 shadow-xl" />
 
         {/* Şema menüsü. React Flow'un kendi stil dosyası panele margin veriyor

@@ -1,7 +1,6 @@
 import { useCallback, useRef, useState, useEffect } from 'react';
 import {
   ReactFlow,
-  Background,
   MiniMap,
   Panel,
   useReactFlow,
@@ -15,6 +14,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { islemBasla, islemBitir } from '../store/gecmis';
 import { getDepth } from '../utils/layout';
 import { useTheme } from '../theme';
+import CanvasBackdrop from './CanvasBackdrop';
 import GoalNode from './GoalNode';
 import PaneContextMenu from './PaneContextMenu';
 import WbsTreesMenu from './WbsTreesMenu';
@@ -253,7 +253,7 @@ export default function RoadmapCanvas({ onNodeSelect }: { onNodeSelect: (id: str
         </Panel>
 
         <MiniMap position="bottom-right" className="!w-48 !h-48 !rounded-full overflow-hidden border-4 border-slate-200 dark:border-slate-700 shadow-2xl dark:bg-slate-800 bg-white" maskColor={themeColors.minimapMask} nodeColor={themeColors.minimapNode} zoomable pannable />
-        <Background color={themeColors.canvasDot} gap={24} size={2} />
+        <CanvasBackdrop />
 
         {showStarterPanel && (
           <Panel position="top-center" className="mt-20">

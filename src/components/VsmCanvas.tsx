@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ReactFlow, Background, Controls, Panel, useReactFlow } from '@xyflow/react';
+import { ReactFlow, Controls, Panel, useReactFlow } from '@xyflow/react';
 import type { NodeMouseHandler } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
+import CanvasBackdrop from './CanvasBackdrop';
 import { useShallow } from 'zustand/react/shallow';
 import { useRoadmapStore, getActiveVsmMap } from '../store/useRoadmapStore';
 import { islem, islemBasla, islemBitir } from '../store/gecmis';
@@ -23,7 +24,6 @@ import {
   VsmInfoElectronicEdge,
   VsmEdgeMarkers,
 } from './VsmEdges';
-import { useTheme } from '../theme';
 import VsmContextMenu from './VsmContextMenu';
 import type { VsmMenuHedefi } from './VsmContextMenu';
 import VsmTimelineOverlay from './VsmTimelineOverlay';
@@ -67,7 +67,6 @@ function Gosterge({ Simge, baslik, deger, renk }: { Simge: typeof Clock; baslik:
 }
 
 export default function VsmCanvas() {
-  const themeColors = useTheme();
   const { t } = useTranslation();
   const { screenToFlowPosition } = useReactFlow();
 
@@ -211,7 +210,7 @@ export default function VsmCanvas() {
           fitViewOptions={{ duration: 600, padding: 0.2 }}
           defaultEdgeOptions={{ type: 'vsmPush' }}
         >
-          <Background color={themeColors.canvasDot} gap={20} size={1} />
+          <CanvasBackdrop gap={20} size={1} />
           <Controls className="!border-slate-200 !bg-white !shadow-md dark:!border-slate-700 dark:!bg-slate-800" />
 
           <Panel position="top-left" style={{ marginTop: 68 }}>

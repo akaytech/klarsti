@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ReactFlow,
-  Background,
   MiniMap,
   Panel,
   useReactFlow
@@ -14,7 +13,7 @@ import { Brain } from 'lucide-react';
 import { useRoadmapStore } from '../store/useRoadmapStore';
 import { useShallow } from 'zustand/react/shallow';
 import { getActiveMindmap, getMindmapRoot } from '../store/slices/createMindmapSlice';
-import { useTheme } from '../theme';
+import CanvasBackdrop from './CanvasBackdrop';
 import MindmapNode from './MindmapNode';
 import MindmapContextMenu from './MindmapContextMenu';
 import MindmapMapsMenu from './MindmapMapsMenu';
@@ -28,7 +27,6 @@ const BOS_DUGUMLER: MindmapNodeTipi[] = [];
 const BOS_KENARLAR: Edge[] = [];
 
 export default function MindmapCanvas() {
-  const themeColors = useTheme();
   const { t } = useTranslation();
   const {
     mindmaps, activeMindmapId, onMindmapNodesChange, onMindmapEdgesChange,
@@ -200,7 +198,7 @@ export default function MindmapCanvas() {
         deleteKeyCode={null}
         proOptions={{ hideAttribution: true }}
       >
-        <Background color={themeColors.canvasDot} gap={24} size={2} />
+        <CanvasBackdrop />
 
         {/* Zoom paneli kaldırıldı: sol altta kısayol ipucunun üstüne biniyordu
             ve zihin haritası zaten açılışta kendini sığdırıyor. Yakınlaştırma

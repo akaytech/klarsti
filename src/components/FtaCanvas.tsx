@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import {
   ReactFlow,
-  Background,
   MiniMap,
   Panel,
   useReactFlow,
@@ -13,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { useRoadmapStore, isPristineFta, getActiveFta } from '../store/useRoadmapStore';
 import { useShallow } from 'zustand/react/shallow';
 import { useTheme } from '../theme';
+import CanvasBackdrop from './CanvasBackdrop';
 import FtaNode from './FtaNode';
 import FtaContextMenu from './FtaContextMenu';
 import { calculateProbability, FtaProbabilityContext } from '../utils/ftaProbability';
@@ -138,7 +138,7 @@ export default function FtaCanvas() {
           </Panel>
         )}
 
-        <Background color={themeColors.canvasDot} gap={24} size={2} />
+        <CanvasBackdrop />
 
         {showStarterPanel && (
           <Panel position="top-center" className="mt-20">

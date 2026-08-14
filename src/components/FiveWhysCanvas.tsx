@@ -1,7 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
 import {
   ReactFlow,
-  Background,
   MiniMap,
   Panel,
   ReactFlowProvider,
@@ -14,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { Activity } from 'lucide-react';
 
 import { useTheme } from '../theme';
+import CanvasBackdrop from './CanvasBackdrop';
 import FiveWhysNode from './FiveWhysNode';
 import FiveWhysContextMenu from './FiveWhysContextMenu';
 import PaneContextMenu from './PaneContextMenu';
@@ -158,7 +158,7 @@ function FiveWhysCanvasInner() {
           proOptions={{ hideAttribution: true }}
         >
           <MiniMap position="bottom-right" className="!w-48 !h-48 !rounded-full overflow-hidden border-4 border-slate-200 dark:border-slate-700 shadow-2xl dark:bg-slate-800 bg-white" maskColor={themeColors.minimapMask} nodeColor={themeColors.minimapNode} zoomable pannable />
-          <Background color={themeColors.canvasDot} gap={24} size={2} />
+          <CanvasBackdrop />
 
           {aktifAnaliz && (
             <Panel position="top-left" style={{ marginTop: 68 }}>

@@ -56,6 +56,18 @@ o zaman klasörün paylaşılmamış ayarları ve üye listesi de görünürdü.
 üretilmişti (`migrated-wbs`, `migrated-mindmap`...). Öneksiz yazılsaydı iki ayrı
 projedeki iki ağaç aynı dokümanı paylaşırdı.
 
+### Adres biçimi
+
+```
+/project/{klasorId}/{arac}[/{calismaId}]   kendi klasörün
+/work/{klasorId}/{arac}[/{calismaId}]      paylaşılan çalışma linki
+```
+
+`calismaId` 0.8.21-5'te eklendi. Öncesinde açık çalışma yalnızca hafızadaydı;
+sayfa yenilenince listenin ilkine dönülüyordu, ve klasörü zaten açan birinde
+paylaşım linki hedefini ıskalıyordu. Kimlik listede yoksa yok sayılıyor.
+Seçimi olan yedi araçta geçerli (`toolWorks.ts` → `aktifAlan`).
+
 ### İlgili dosyalar
 
 | Dosya | Rolü |

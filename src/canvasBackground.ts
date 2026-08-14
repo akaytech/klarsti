@@ -23,14 +23,19 @@ export interface CanvasBgDef {
   defaultLabel: string;
 }
 
+/** Listede varsayılan başta: seçenekler desensizden yoğuna doğru gidiyor. */
 export const CANVAS_BACKGROUNDS: CanvasBgDef[] = [
-  { id: 'dots', labelKey: 'canvas_bg_dots', defaultLabel: 'Dotted' },
-  { id: 'grid', labelKey: 'canvas_bg_grid', defaultLabel: 'Grid' },
-  { id: 'cross', labelKey: 'canvas_bg_cross', defaultLabel: 'Crosses' },
   { id: 'none', labelKey: 'canvas_bg_none', defaultLabel: 'Plain' },
+  { id: 'dots', labelKey: 'canvas_bg_dots', defaultLabel: 'Dotted' },
+  { id: 'cross', labelKey: 'canvas_bg_cross', defaultLabel: 'Crosses' },
+  { id: 'grid', labelKey: 'canvas_bg_grid', defaultLabel: 'Grid' },
 ];
 
-const DEFAULT_BG: CanvasBgId = 'dots';
+/**
+ * Varsayılan sade: desensiz zemin çizimi öne çıkarıyor, kutular ve oklar
+ * daha net okunuyor. Desen isteyen Ayarlar'dan seçiyor.
+ */
+const DEFAULT_BG: CanvasBgId = 'none';
 const STORAGE_KEY = 'klarsti-canvas-bg';
 
 const BG_IDS = new Set<string>(CANVAS_BACKGROUNDS.map((b) => b.id));

@@ -9,7 +9,7 @@ import TopRightProjectsMenu from './components/TopRightProjectsMenu';
 import TopRightMobileMoreMenu from './components/TopRightMobileMoreMenu';
 import TopRightAgendaButton from './components/TopRightAgendaButton';
 import { useRoadmapStore, type ToolId } from './store/useRoadmapStore';
-import { aracSecimEylemi } from './config/toolWorks';
+import { aracSecimEylemi, aracAktifAlan, aracAnahtari } from './config/toolWorks';
 import { useAuthStore } from './store/useAuthStore';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -22,13 +22,40 @@ const Workspace = React.lazy(() => import('./components/Workspace'));
 const PROJE_COZUM_DENEME = 3;
 const PROJE_COZUM_ARALIK_MS = 1200;
 
-// Paylaşılan çalışma linki açıldığında o çalışma seçili gelsin. Bazı araçlar
-// bütün çalışmalarını tek sayfada listeliyor (SWOT, kılçık, PDCA...); orada
-// seçilecek bir şey yok, aracı açmak yetiyor.
+// Adresteki çalışma seçili gelsin. Bazı araçlar bütün çalışmalarını tek
+// sayfada listeliyor (SWOT, kılçık, PDCA...); orada seçilecek bir şey yok,
+// aracı açmak yetiyor.
+//
+// Kimliğin gerçekten var olup olmadığına bakılmıyor: silinmiş bir çalışmanın
+// linki açıldığında getActiveXxx zaten listenin ilkine düşüyor. Burada
+// eleseydik, çalışma listesi henüz gelmemişken açılan linkler de elenirdi.
 const calismayiAc = (tool: string, workId?: string) => {
   if (!workId) return;
   const eylem = aracSecimEylemi(tool as ToolId);
   if (eylem) useRoadmapStore.getState()[eylem](workId);
+};
+
+/** Bir aracın o an açık çalışmasının kimliği; seçimi olmayan araçlarda yok. */
+const acikCalismaId = (tool: string | null): string | undefined => {
+  if (!tool) return undefined;
+  const alan = aracAktifAlan(tool as ToolId);
+  if (!alan) return undefined;
+  return (useRoadmapStore.getState() as Record<string, any>)[alan] || undefined;
+};
+
+/**
+ * Adresteki kimlik gerçekten o araçta duruyor mu?
+ *
+ * Silinmiş bir çalışmanın linki açıldığında ekran zaten ilk çalışmaya düşüyor
+ * ama adres çubuğunda olmayan bir kimlik asılı kalıyordu: ekran bir şeyi,
+ * adres başka bir şeyi söylüyordu. Yalnızca çalışma listesinin geldiğinden
+ * emin olunan yerde çağrılmalı; liste henüz boşken her kimlik "yok" görünür.
+ */
+const calismaListedeVar = (tool: string, workId: string): boolean => {
+  const anahtar = aracAnahtari(tool as ToolId);
+  if (!anahtar) return false;
+  const liste = (useRoadmapStore.getState() as Record<string, any>)[anahtar];
+  return Array.isArray(liste) && liste.some((c: any) => c?.id === workId);
 };
 
 export default function AuthenticatedApp() {
@@ -47,6 +74,14 @@ export default function AuthenticatedApp() {
     joinSharedProject: state.joinSharedProject,
     projectsLoaded: state.projectsLoaded
   })));
+
+  // Açık çalışma değişince adres de değişmeli, o yüzden bu değere abone
+  // olunuyor. Alan araçtan araca değiştiği için tek tek yazmak yerine
+  // toolWorks'ten okunuyor.
+  const acikCalisma = useRoadmapStore((state) => {
+    const alan = state.activeTool ? aracAktifAlan(state.activeTool) : undefined;
+    return alan ? ((state as Record<string, any>)[alan] as string | null) : null;
+  });
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -81,7 +116,10 @@ export default function AuthenticatedApp() {
   // Listede olmayan bir proje kimliğini açmayı dener: önce liste güncellenmiş mi
   // diye bakar, olmadıysa paylaşılmış proje olabileceği için katılmayı dener ve
   // birkaç tur boyunca bunu tekrarlar. Yalnızca gerçekten açılamadığında konuşur.
-  const cozBekleyenProjeyi = useCallback(async (pId: string) => {
+  // tool/workId yalnızca adreste yazıyorsa veriliyor: proje geç açıldığında
+  // adresteki çalışma da açılsın diye. Olmadan, proje listeye düştüğü anda
+  // adres çubuğu çalışmasız hale yeniden yazılıyor ve link hedefini kaybediyordu.
+  const cozBekleyenProjeyi = useCallback(async (pId: string, tool?: string, workId?: string) => {
     if (cozumDevamRef.current.has(pId)) return;
     cozumDevamRef.current.add(pId);
 
@@ -95,6 +133,7 @@ export default function AuthenticatedApp() {
         if (durum.projects.some((p) => p.id === pId)) {
           bekleyenProjeRef.current = null;
           durum.loadProject(pId);
+          if (tool) calismayiAc(tool, workId);
           return;
         }
 
@@ -110,6 +149,7 @@ export default function AuthenticatedApp() {
       if (son.projects.some((p) => p.id === pId)) {
         bekleyenProjeRef.current = null;
         son.loadProject(pId);
+        if (tool) calismayiAc(tool, workId);
         return;
       }
 
@@ -200,9 +240,11 @@ export default function AuthenticatedApp() {
           isUrlSyncRunning = true;
         }
       } else if (path.startsWith('/project/')) {
+        // /project/{klasorId}/{arac}[/{calismaId}]
         const parts = path.split('/');
         const pId = parts[2];
         const tId = parts[3];
+        const wId = parts[4];
 
         let needsStateUpdate = false;
         if (pId && pId !== currentProjectId) {
@@ -212,7 +254,7 @@ export default function AuthenticatedApp() {
              bekleyenProjeRef.current = null;
            } else {
              bekleyenProjeRef.current = pId;
-             cozBekleyenProjeyi(pId);
+             cozBekleyenProjeyi(pId, tId, wId);
            }
            needsStateUpdate = true;
         } else if (pId) {
@@ -220,6 +262,14 @@ export default function AuthenticatedApp() {
         }
         if (tId && tId !== activeTool) {
            setActiveTool(tId as any);
+           needsStateUpdate = true;
+        }
+        // Açık çalışma yalnızca hafızada duruyordu; sayfa yenilenince
+        // unutuluyor ve listenin ilkine dönülüyordu. Artık adresten okunuyor.
+        // Klasör bu noktada yüklenmiş oluyor (ya yukarıda loadProject çalıştı
+        // ya da zaten açıktı), o yüzden listede arama güvenli.
+        if (tId && wId && wId !== acikCalismaId(tId) && calismaListedeVar(tId, wId)) {
+           calismayiAc(tId, wId);
            needsStateUpdate = true;
         }
 
@@ -243,6 +293,10 @@ export default function AuthenticatedApp() {
             bekleyenProjeRef.current = null;
           }
           if (tId !== activeTool) setActiveTool(tId as any);
+          // Klasör zaten bizdeyken paylaşılan çalışma linki hedefi ıskalıyordu:
+          // yalnızca cozBekleyenCalismayi çalışmayı açıyordu, o da sadece klasör
+          // henüz bizde değilken devreye giriyor.
+          if (wId && wId !== acikCalismaId(tId)) calismayiAc(tId, wId);
           isUrlSyncRunning = true;
         }
       }
@@ -262,12 +316,17 @@ export default function AuthenticatedApp() {
       } else if (!activeTool) {
         if (path !== '/') navigate('/');
       } else if (currentProjectId && activeTool) {
-        const newPath = `/project/${currentProjectId}/${activeTool}`;
+        // Çalışma kimliği yalnızca seçilmişse ekleniyor. Kullanıcı aracı henüz
+        // açtıysa hangi çalışmada olduğu belli değil (ilki gösteriliyor);
+        // uydurma bir kimlik yazmak, sonradan silinse bile adreste kalırdı.
+        const newPath = acikCalisma
+          ? `/project/${currentProjectId}/${activeTool}/${acikCalisma}`
+          : `/project/${currentProjectId}/${activeTool}`;
         if (path !== newPath) navigate(newPath);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname, user, currentProjectId, activeTool, projects, loadProject, joinSharedProject, projectsLoaded, navigate, setActiveTool, cozBekleyenProjeyi, cozBekleyenCalismayi]);
+  }, [location.pathname, user, currentProjectId, activeTool, acikCalisma, projects, loadProject, joinSharedProject, projectsLoaded, navigate, setActiveTool, cozBekleyenProjeyi, cozBekleyenCalismayi]);
 
   return (
     <>

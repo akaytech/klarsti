@@ -58,16 +58,22 @@ interface AracTanimi {
    * bir şey yok, aracı açmak yetiyor.
    */
   secim?: CalismaSecimEylemi;
+  /**
+   * Açık çalışmanın kimliğini tutan store alanı. Adres çubuğu bunu okuyup
+   * yazıyor; olmasaydı sayfa yenilenince açık çalışma unutulur ve listenin
+   * ilkine dönülürdü. Yalnızca `secim` olan araçlarda var.
+   */
+  aktifAlan?: string;
 }
 
 const TANIMLAR: Record<ToolId, AracTanimi | null> = {
-  wbs: { anahtar: 'wbsTrees', adAlani: 'name', enAzKutu: 2, secim: 'setActiveWbsTree', yenidenAdlandir: 'renameWbsTree', sil: 'deleteWbsTree' },
-  '5whys': { anahtar: 'fiveWhysAnalyses', adAlani: 'name', enAzKutu: 2, secim: 'setActiveFiveWhys', yenidenAdlandir: 'renameFiveWhysAnalysis', sil: 'deleteFiveWhysAnalysis' },
-  fta: { anahtar: 'ftaAnalyses', adAlani: 'name', enAzKutu: 2, secim: 'setActiveFta', yenidenAdlandir: 'renameFtaAnalysis', sil: 'deleteFtaAnalysis' },
-  mindmap: { anahtar: 'mindmaps', adAlani: 'name', enAzKutu: 2, secim: 'setActiveMindmap', yenidenAdlandir: 'renameMindmap', sil: 'deleteMindmap' },
-  flowchart: { anahtar: 'flowcharts', adAlani: 'name', secim: 'setActiveFlowchart', yenidenAdlandir: 'renameFlowchart', sil: 'deleteFlowchart' },
-  orgchart: { anahtar: 'orgcharts', adAlani: 'name', secim: 'setActiveOrgchart', yenidenAdlandir: 'renameOrgchart', sil: 'deleteOrgchart' },
-  vsm: { anahtar: 'vsmMaps', adAlani: 'name', secim: 'setActiveVsmMap', yenidenAdlandir: 'renameVsmMap', sil: 'deleteVsmMap' },
+  wbs: { anahtar: 'wbsTrees', adAlani: 'name', enAzKutu: 2, secim: 'setActiveWbsTree', aktifAlan: 'activeWbsTreeId', yenidenAdlandir: 'renameWbsTree', sil: 'deleteWbsTree' },
+  '5whys': { anahtar: 'fiveWhysAnalyses', adAlani: 'name', enAzKutu: 2, secim: 'setActiveFiveWhys', aktifAlan: 'activeFiveWhysId', yenidenAdlandir: 'renameFiveWhysAnalysis', sil: 'deleteFiveWhysAnalysis' },
+  fta: { anahtar: 'ftaAnalyses', adAlani: 'name', enAzKutu: 2, secim: 'setActiveFta', aktifAlan: 'activeFtaId', yenidenAdlandir: 'renameFtaAnalysis', sil: 'deleteFtaAnalysis' },
+  mindmap: { anahtar: 'mindmaps', adAlani: 'name', enAzKutu: 2, secim: 'setActiveMindmap', aktifAlan: 'activeMindmapId', yenidenAdlandir: 'renameMindmap', sil: 'deleteMindmap' },
+  flowchart: { anahtar: 'flowcharts', adAlani: 'name', secim: 'setActiveFlowchart', aktifAlan: 'activeFlowchartId', yenidenAdlandir: 'renameFlowchart', sil: 'deleteFlowchart' },
+  orgchart: { anahtar: 'orgcharts', adAlani: 'name', secim: 'setActiveOrgchart', aktifAlan: 'activeOrgchartId', yenidenAdlandir: 'renameOrgchart', sil: 'deleteOrgchart' },
+  vsm: { anahtar: 'vsmMaps', adAlani: 'name', secim: 'setActiveVsmMap', aktifAlan: 'activeVsmMapId', yenidenAdlandir: 'renameVsmMap', sil: 'deleteVsmMap' },
   swot: { anahtar: 'swot', adAlani: 'title', yenidenAdlandir: 'updateSwotTitle', sil: 'deleteSwot' },
   ishikawa: { anahtar: 'ishikawa', adAlani: 'problemStatement', yenidenAdlandir: 'updateIshikawaProblem', sil: 'deleteIshikawa' },
   pdca: { anahtar: 'pdca', adAlani: 'goal', yenidenAdlandir: 'updatePdcaGoal', sil: 'deletePdcaCycle' },
@@ -81,6 +87,10 @@ const TANIMLAR: Record<ToolId, AracTanimi | null> = {
 
 export const aracSecimEylemi = (tool: ToolId): CalismaSecimEylemi | undefined =>
   TANIMLAR[tool]?.secim;
+
+/** Açık çalışmanın kimliğini tutan store alanının adı. */
+export const aracAktifAlan = (tool: ToolId): string | undefined =>
+  TANIMLAR[tool]?.aktifAlan;
 
 /**
  * Çalışma üzerindeki eylemler. Store nesnesi dışarıdan veriliyor: bu dosya

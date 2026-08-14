@@ -10,6 +10,7 @@ import type { NodeMouseHandler } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useTranslation } from 'react-i18next';
 import CanvasBackdrop from '../CanvasBackdrop';
+import { metinAlaninda } from '../../utils/metinAlaninda';
 import { getDiagramKind, type DiagramKind } from '../../config/diagramKinds';
 import { edgeStyle } from '../../config/diagramShared';
 import { getActiveChart } from '../../store/slices/diagramOps';
@@ -72,6 +73,9 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
 
   const onNodeContextMenu = useCallback(
     (event: React.MouseEvent, node: any) => {
+      // Yazı alanlarında sağ tık tarayıcının kendi menüsüne bırakılıyor:
+      // kullanıcı orada Kes/Kopyala/Yapıştır bekliyor, kutu menüsünü değil.
+      if (metinAlaninda(event.target)) return;
       event.preventDefault();
       event.stopPropagation();
       document.dispatchEvent(new Event('close-menus'));

@@ -4,6 +4,7 @@ import { ReactFlow, Controls, Panel, useReactFlow } from '@xyflow/react';
 import type { NodeMouseHandler } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import CanvasBackdrop from './CanvasBackdrop';
+import { metinAlaninda } from '../utils/metinAlaninda';
 import { useShallow } from 'zustand/react/shallow';
 import { useRoadmapStore, getActiveVsmMap } from '../store/useRoadmapStore';
 import { islem, islemBasla, islemBitir } from '../store/gecmis';
@@ -122,6 +123,9 @@ export default function VsmCanvas() {
   }, []);
 
   const menuAc = useCallback((event: React.MouseEvent, hedef: VsmMenuHedefi) => {
+    // Yazı alanlarında sağ tık tarayıcının kendi menüsüne bırakılıyor:
+    // kullanıcı orada Kes/Kopyala/Yapıştır bekliyor, kutu menüsünü değil.
+    if (metinAlaninda(event.target)) return;
     event.preventDefault();
     event.stopPropagation();
     setMenu({ hedef, top: event.clientY, left: event.clientX });
@@ -129,6 +133,7 @@ export default function VsmCanvas() {
 
   const onPaneContextMenu = useCallback((event: React.MouseEvent | MouseEvent) => {
     const e = event as React.MouseEvent;
+    if (metinAlaninda(e.target)) return;
     e.preventDefault();
     setMenu({
       hedef: { tur: 'pane', konum: screenToFlowPosition({ x: e.clientX, y: e.clientY }) },

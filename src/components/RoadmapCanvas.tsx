@@ -15,6 +15,7 @@ import { islemBasla, islemBitir } from '../store/gecmis';
 import { getDepth } from '../utils/layout';
 import { useTheme } from '../theme';
 import CanvasBackdrop from './CanvasBackdrop';
+import { metinAlaninda } from '../utils/metinAlaninda';
 import GoalNode from './GoalNode';
 import PaneContextMenu from './PaneContextMenu';
 import WbsTreesMenu from './WbsTreesMenu';
@@ -154,6 +155,9 @@ export default function RoadmapCanvas({ onNodeSelect }: { onNodeSelect: (id: str
 
   const onNodeContextMenu = useCallback(
     (event: React.MouseEvent, node: any) => {
+      // Açıklama kutusu gibi yazı alanlarında sağ tık tarayıcının kendi
+      // menüsüne bırakılıyor: kullanıcı orada Kes/Kopyala/Yapıştır bekliyor.
+      if (metinAlaninda(event.target)) return;
       event.preventDefault();
       event.stopPropagation();
       setContextMenuNodeId(node.id);
@@ -164,6 +168,7 @@ export default function RoadmapCanvas({ onNodeSelect }: { onNodeSelect: (id: str
 
   const onPaneContextMenu = useCallback(
     (event: React.MouseEvent | MouseEvent) => {
+      if (metinAlaninda(event.target)) return;
       event.preventDefault();
       event.stopPropagation();
       setPaneMenu({

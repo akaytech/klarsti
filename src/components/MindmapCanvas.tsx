@@ -14,6 +14,7 @@ import { useRoadmapStore } from '../store/useRoadmapStore';
 import { useShallow } from 'zustand/react/shallow';
 import { getActiveMindmap, getMindmapRoot } from '../store/slices/createMindmapSlice';
 import CanvasBackdrop from './CanvasBackdrop';
+import { metinAlaninda } from '../utils/metinAlaninda';
 import MindmapNode from './MindmapNode';
 import MindmapContextMenu from './MindmapContextMenu';
 import MindmapMapsMenu from './MindmapMapsMenu';
@@ -133,6 +134,9 @@ export default function MindmapCanvas() {
   }, [setMindmapEditingLabel, setMindmapDescriptionId, setMindmapSelected]);
 
   const onNodeContextMenu = useCallback((event: React.MouseEvent, node: any) => {
+    // Yazı alanlarında sağ tık tarayıcının kendi menüsüne bırakılıyor:
+    // kullanıcı orada Kes/Kopyala/Yapıştır bekliyor, kutu menüsünü değil.
+    if (metinAlaninda(event.target)) return;
     event.preventDefault();
     event.stopPropagation();
     setMindmapSelected(node.id);

@@ -13,6 +13,7 @@ import { useRoadmapStore, isPristineFta, getActiveFta } from '../store/useRoadma
 import { useShallow } from 'zustand/react/shallow';
 import { useTheme } from '../theme';
 import CanvasBackdrop from './CanvasBackdrop';
+import { metinAlaninda } from '../utils/metinAlaninda';
 import FtaNode from './FtaNode';
 import FtaContextMenu from './FtaContextMenu';
 import { calculateProbability, FtaProbabilityContext } from '../utils/ftaProbability';
@@ -68,6 +69,9 @@ export default function FtaCanvas() {
 
   const onNodeContextMenu = useCallback(
     (event: React.MouseEvent, node: any) => {
+      // Yazı alanlarında sağ tık tarayıcının kendi menüsüne bırakılıyor:
+      // kullanıcı orada Kes/Kopyala/Yapıştır bekliyor, kutu menüsünü değil.
+      if (metinAlaninda(event.target)) return;
       event.preventDefault();
       event.stopPropagation();
       setMenu({

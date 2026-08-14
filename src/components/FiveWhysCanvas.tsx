@@ -14,6 +14,7 @@ import { Activity } from 'lucide-react';
 
 import { useTheme } from '../theme';
 import CanvasBackdrop from './CanvasBackdrop';
+import { metinAlaninda } from '../utils/metinAlaninda';
 import FiveWhysNode from './FiveWhysNode';
 import FiveWhysContextMenu from './FiveWhysContextMenu';
 import PaneContextMenu from './PaneContextMenu';
@@ -72,6 +73,9 @@ function FiveWhysCanvasInner() {
 
   const onNodeContextMenu = useCallback(
     (event: React.MouseEvent, node: any) => {
+      // Yazı alanlarında sağ tık tarayıcının kendi menüsüne bırakılıyor:
+      // kullanıcı orada Kes/Kopyala/Yapıştır bekliyor, kutu menüsünü değil.
+      if (metinAlaninda(event.target)) return;
       event.preventDefault();
       // Durdurulmazsa olay sarmalayıcıya kadar çıkıp kanvas menüsünü de
       // tetikliyor, o da kutu menüsünü kapatıyordu: sağ tık hep aynı menüyü
@@ -89,6 +93,7 @@ function FiveWhysCanvasInner() {
 
   const onPaneContextMenu = useCallback(
     (event: React.MouseEvent | MouseEvent) => {
+      if (metinAlaninda(event.target)) return;
       event.preventDefault();
       event.stopPropagation();
       setPaneMenu({

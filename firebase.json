@@ -14,11 +14,6 @@
     "trailingSlash": false,
     "redirects": [
       {
-        "source": "/favicon.ico",
-        "destination": "/klarsti-ikon-192.png",
-        "type": 301
-      },
-      {
         "source": "/favicon-32.png",
         "destination": "/klarsti-ikon-32.png",
         "type": 301
@@ -40,6 +35,10 @@
       }
     ],
     "rewrites": [
+      {
+        "source": "/favicon.ico",
+        "destination": "/klarsti-ikon-192.png"
+      },
       {
         "source": "**",
         "destination": "/index.html"

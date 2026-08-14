@@ -22,10 +22,10 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      // Sekme ikonu favicon-32.png. Eskiden yanında bir de favicon.svg
+      // Sekme ikonu klarsti-ikon-32.png. Eskiden yanında bir de favicon.svg
       // duruyordu; içeriği Vite şablonundan kalma mor bir şimşekti, hiçbir
       // yerden çağrılmıyordu, silindi.
-      includeAssets: ['favicon-32.png'],
+      includeAssets: ['klarsti-ikon-32.png'],
       // Manifest ikonları varsayılan olarak precache'e ekleniyordu. İkonu
       // tarayıcı zaten ihtiyaç duyduğunda kendisi indirir; önden indirmek
       // her ilk ziyarete boşuna yük bindiriyordu.
@@ -83,21 +83,21 @@ export default defineConfig({
         // Artık gerçekten o ölçülerde üretilmiş dosyalar veriliyor.
         icons: [
           {
-            src: 'logo-192.png',
+            src: 'klarsti-ikon-192.png',
             sizes: '192x192',
             type: 'image/png',
             purpose: 'any'
           },
           {
-            src: 'logo-512.png',
+            src: 'klarsti-ikon-512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any'
           },
           {
             // Android uyarlanabilir ikon için: logonun kenar boşluğu geniş,
-            // maskeleme güvenli alanın dışını kırpsa da "S" tam kalıyor.
-            src: 'logo-512.png',
+            // maskeleme güvenli alanın dışını kırpsa da yazı tam kalıyor.
+            src: 'klarsti-ikon-512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable'

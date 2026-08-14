@@ -3,14 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <!-- Sekme ikonu küçük dosya olmalı: eskiden 1024x1024'lük logo.png (837 KB)
-         verildiği için her ziyaret sırf favicon uğruna o dosyayı indiriyordu. -->
-    <link rel="icon" type="image/png" sizes="32x32" href="%BASE_URL%favicon-32.png" />
+         verildiği için her ziyaret sırf favicon uğruna o dosyayı indiriyordu.
+
+         Dosya adlari marka degisikliginde bilerek yenilendi (favicon-32 ->
+         klarsti-ikon-32 vb.). Eski adlar dururken sadece iceriklerini
+         degistirmistik; Google ikonlari adrese gore sakladigi icin arama
+         sonuclarinda haftalarca eski Solvinger ikonu gorunmeye devam etti.
+         Ikon degisirse dosyanin adi da degismeli. -->
+    <link rel="icon" type="image/png" sizes="32x32" href="%BASE_URL%klarsti-ikon-32.png" />
     <!-- Google arama sonuclarindaki ikon icin. Kucuk olani sekme icin yeterli
          ama Google ikonun 48'in kati bir boyutta olmasini istiyor; 32x32 onun
          altinda kaliyor ve secilecegi garanti degil. Tarayici sekme icin yine
          kucugunu aliyor, bu dosya yalnizca 3 KB. -->
-    <link rel="icon" type="image/png" sizes="192x192" href="%BASE_URL%logo-192.png" />
-    <link rel="apple-touch-icon" href="%BASE_URL%logo-192.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="%BASE_URL%klarsti-ikon-192.png" />
+    <link rel="apple-touch-icon" href="%BASE_URL%klarsti-ikon-192.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Mobil tarayicilarda adres cubugunun rengi. Manifest'teki theme_color
          ile ayni kalmali (bkz. vite.config.ts). -->
@@ -42,14 +48,14 @@
     <meta property="og:site_name" content="Klarsti" />
     <meta property="og:title" content="Klarsti - The Ultimate Problem Solving Platform" />
     <meta property="og:description" content="Collaborative root-cause analysis and strategic planning tools for modern teams. Start solving complex problems today." />
-    <meta property="og:image" content="https://klarsti.com/logo.png" />
+    <meta property="og:image" content="https://klarsti.com/klarsti-paylasim.png" />
     <meta property="og:url" content="https://klarsti.com/" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Klarsti - The Ultimate Problem Solving Platform" />
     <meta name="twitter:description" content="Collaborative root-cause analysis and strategic planning tools for modern teams." />
-    <meta name="twitter:image" content="https://klarsti.com/logo.png" />
+    <meta name="twitter:image" content="https://klarsti.com/klarsti-paylasim.png" />
 
     <!-- Google'in site adi olarak "klarsti.com" degil "Klarsti" yazmasi icin
          gereken isaret. Google bunu yalnizca ana sayfadan okuyor; arac
@@ -72,7 +78,7 @@
           "@type": "Organization",
           "name": "Klarsti",
           "url": "https://klarsti.com/",
-          "logo": "https://klarsti.com/logo-512.png",
+          "logo": "https://klarsti.com/klarsti-ikon-512.png",
           "email": "support@klarsti.com",
           "sameAs": [
             "https://www.instagram.com/klarsti.app/",

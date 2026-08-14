@@ -15,7 +15,27 @@
     "redirects": [
       {
         "source": "/favicon.ico",
-        "destination": "/logo-192.png",
+        "destination": "/klarsti-ikon-192.png",
+        "type": 301
+      },
+      {
+        "source": "/favicon-32.png",
+        "destination": "/klarsti-ikon-32.png",
+        "type": 301
+      },
+      {
+        "source": "/logo-192.png",
+        "destination": "/klarsti-ikon-192.png",
+        "type": 301
+      },
+      {
+        "source": "/logo-512.png",
+        "destination": "/klarsti-ikon-512.png",
+        "type": 301
+      },
+      {
+        "source": "/logo.png",
+        "destination": "/klarsti-paylasim.png",
         "type": 301
       }
     ],

@@ -21,6 +21,11 @@ export default function CanvasBackdrop({ gap = 24, size = 2 }: { gap?: number; s
     // çizgilerden ölçüyor. Üstteki çizgi rengi için canvasEdge ödünç
     // alındı — temalarda canvasDot'un bir ton koyusu olarak zaten duruyor,
     // ızgaranın ikinci katı için ayrı bir renk tanımlamaya gerek kalmadı.
+    //
+    // Solukluk renkle değil saydamlıkla ayarlanıyor: renkler temadan
+    // geliyor ve altı tema için ayrı ayrı açık ton türetmek gerekirdi.
+    // Saydamlık hepsinde aynı işi görüyor, koyu temalarda da doğru yönde
+    // çalışıyor (çizgi zemine yaklaşıyor).
     return (
       <>
         <Background
@@ -28,14 +33,16 @@ export default function CanvasBackdrop({ gap = 24, size = 2 }: { gap?: number; s
           variant={BackgroundVariant.Lines}
           color={themeColors.canvasDot}
           gap={gap}
-          lineWidth={0.6}
+          lineWidth={0.5}
+          style={{ opacity: 0.55 }}
         />
         <Background
           id="izgara-kalin"
           variant={BackgroundVariant.Lines}
           color={themeColors.canvasEdge}
           gap={gap * 5}
-          lineWidth={1}
+          lineWidth={0.8}
+          style={{ opacity: 0.5 }}
         />
       </>
     );

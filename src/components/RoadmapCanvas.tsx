@@ -99,6 +99,15 @@ export default function RoadmapCanvas({ onNodeSelect }: { onNodeSelect: (id: str
     }
     
     onNodeSelect(node.id);
+
+    // Kutunun ismine tıklamak "kutuya tıklandı" sayılmıyor. İsim değiştirmek
+    // için çift tıklandığında araya iki tek tıklama giriyor; alt kutular
+    // açılıp hemen kapanıyor ve kamera her seferinde kutuya yaklaşıyordu.
+    // Yalnızca yazının kendisi kapsam dışı: ismin durduğu blok kutunun
+    // neredeyse tamamını kapladığı için kısa isimli kutularda tıklanacak yer
+    // kalmazdı.
+    if ((event.target as HTMLElement)?.closest?.('[data-kutu-basligi]')) return;
+
     toggleExpand(node.id);
 
     // Kutunun ortasına yaklaş. Eskiden yarım kutu boyu sağa kaçıyordu: burada

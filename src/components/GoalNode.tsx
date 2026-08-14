@@ -236,7 +236,11 @@ export default function GoalNode({ data, selected }: { data: GoalNodeData; selec
             />
           ) : (
             <div className="flex flex-col gap-1">
-              <h3 className="text-[13px] font-semibold leading-snug line-clamp-2 cursor-text select-none" title={t('double_click_edit')}>{data.label}</h3>
+              {/* data-kutu-basligi: kanvas, tıklamanın buraya gelip gelmediğine
+                  bakıp alt kutuları açıp kapamayı atlıyor (bkz. RoadmapCanvas
+                  onNodeClick). İsim değiştirmek için çift tıklarken alt kutular
+                  açılıp kapanıyordu. */}
+              <h3 data-kutu-basligi className="text-[13px] font-semibold leading-snug line-clamp-2 cursor-text select-none" title={t('double_click_edit')}>{data.label}</h3>
               {(data.targetDate || data.targetTime) && (
                 <div className="text-[10px] font-medium bg-slate-100 dark:bg-slate-700/70 text-slate-600 dark:text-slate-300 w-fit px-1.5 py-0.5 rounded-md">
                   {data.targetDate} {data.targetTime}{data.targetEndTime ? ` - ${data.targetEndTime}` : ''}

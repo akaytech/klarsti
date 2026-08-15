@@ -38,6 +38,31 @@ export default function SwotCanvas() {
     setNewTitle('');
   };
 
+  /**
+   * Örnek şablonu yükler. Eskiden bu kod, boş ekranda duran ayrı bir kartın
+   * içindeydi; kart oluşturma satırıyla aynı şeyi soruyor ve iki yerden iki
+   * ayrı çağrı yapıyordu. Kart kalktı, iş buraya taşındı.
+   *
+   * `addSwot` kimliği kendi üretiyor ve geri döndürmüyor; maddeleri eklemek
+   * için depodaki en yeni analizi okumak gerekiyor, o yüzden kısa bir
+   * beklemeyle devam ediliyor.
+   */
+  const ornekYukle = () => {
+    useRoadmapStore.getState().addSwot(t('swot_example_title'));
+    setTimeout(() => {
+      const sonSwot = useRoadmapStore.getState().swot[0];
+      if (!sonSwot) return;
+      const { addSwotItem } = useRoadmapStore.getState();
+      const maddeler: Array<['S' | 'W' | 'O' | 'T', string]> = [
+        ['S', 'swot_example_s1'], ['S', 'swot_example_s2'],
+        ['W', 'swot_example_w1'], ['W', 'swot_example_w2'],
+        ['O', 'swot_example_o1'], ['O', 'swot_example_o2'],
+        ['T', 'swot_example_t1'], ['T', 'swot_example_t2']
+      ];
+      for (const [tur, anahtar] of maddeler) addSwotItem(sonSwot.id, tur, t(anahtar));
+    }, 50);
+  };
+
   const handleAddItem = (e: React.FormEvent, analysisId: string, type: SwotType) => {
     e.preventDefault();
     const key = `${analysisId}-${type}`;
@@ -72,6 +97,18 @@ export default function SwotCanvas() {
               <span className="font-bold">{t('btn_create')}</span>
             </button>
           </form>
+          {/* Örnek şablon burada, oluşturma satırının hemen altında. Eskiden
+              sayfanın altında ayrı bir kartın içindeydi ve aynı soruyu ikinci
+              kez soruyordu. Yalnız hiç analiz yokken görünüyor. */}
+          {swot.length === 0 && (
+            <button
+              onClick={ornekYukle}
+              className="mt-3 flex items-center gap-1.5 text-sm font-semibold text-indigo-600 transition-colors hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
+            >
+              <Zap size={15} />
+              {t('load_example')}
+            </button>
+          )}
         </div>
 
         <div className="mx-auto max-w-7xl space-y-16">
@@ -172,47 +209,13 @@ export default function SwotCanvas() {
         )})}
         </div>
 
+        {/* Boş durum tek satır. Eskiden 64 piksellik simge, iki kat boşluk ve
+            altında ayrı bir kart vardı; toplamı 500 pikseli aşıyor ve ekranı
+            oluşturma satırından uzaklaştırıyordu. */}
         {swot.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-20 text-slate-400 dark:text-slate-500">
-            <Target size={64} className="mb-6 opacity-20" />
-            <p className="text-lg mb-8">{t('swot_no_analysis')}</p>
-            
-            <div className="flex flex-col items-center p-8 bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl max-w-md text-center">
-              <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">{t('swot_example_heading')}</h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
-                {t('swot_example_hint')}
-              </p>
-              <button
-                onClick={() => {
-                  // We simulate addSwot but we need to do it via store.
-                  // Since addSwot generates an ID internally, we can just call it, then find the newly created one.
-                  // Wait, addSwot pushes to the array. We can just use the store's set function if we had access, 
-                  // but we can just use the existing actions sequentially.
-                  useRoadmapStore.getState().addSwot(t('swot_example_title'));
-
-                  // Wait for state to update, then get the newest SWOT ID to add items.
-                  setTimeout(() => {
-                    const latestSwot = useRoadmapStore.getState().swot[0]; // because unshift is used, or push?
-                    if (latestSwot) {
-                      const sId = latestSwot.id;
-                      const { addSwotItem } = useRoadmapStore.getState();
-                      addSwotItem(sId, 'S', t('swot_example_s1'));
-                      addSwotItem(sId, 'S', t('swot_example_s2'));
-                      addSwotItem(sId, 'W', t('swot_example_w1'));
-                      addSwotItem(sId, 'W', t('swot_example_w2'));
-                      addSwotItem(sId, 'O', t('swot_example_o1'));
-                      addSwotItem(sId, 'O', t('swot_example_o2'));
-                      addSwotItem(sId, 'T', t('swot_example_t1'));
-                      addSwotItem(sId, 'T', t('swot_example_t2'));
-                    }
-                  }, 50);
-                }}
-                className="flex items-center gap-2 rounded-xl bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 px-6 py-3 font-bold transition-all hover:bg-indigo-200 dark:hover:bg-indigo-900 hover:-translate-y-0.5 active:translate-y-0"
-              >
-                <Zap size={20} />
-                {t('load_example')}
-              </button>
-            </div>
+          <div className="flex items-center justify-center gap-2.5 py-10 text-slate-400 dark:text-slate-500">
+            <Target size={18} className="shrink-0 opacity-40" />
+            <p className="text-sm">{t('swot_no_analysis')}</p>
           </div>
         )}
       </div>

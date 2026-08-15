@@ -213,9 +213,9 @@ export default function WaterfallCanvas() {
           ))}
           
           {waterfall.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-24 text-slate-400 dark:text-slate-500">
-              <Layers size={72} className="mb-6 opacity-20" />
-              <p className="text-xl">{t('wf_empty')}</p>
+            <div className="flex items-center justify-center gap-2.5 py-10 text-slate-400 dark:text-slate-500">
+              <Layers size={18} className="shrink-0 opacity-40" />
+              <p className="text-sm">{t('wf_empty')}</p>
             </div>
           )}
         </div>

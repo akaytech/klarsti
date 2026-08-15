@@ -21,6 +21,7 @@ import CanvasAddButton from './CanvasAddButton';
 import { DAL_RENKLERI, mindmapYerlesimi } from '../utils/mindmapLayout';
 import CanvasMiniMap from './CanvasMiniMap';
 import CanvasControls from './CanvasControls';
+import CanvasKarsilama from './CanvasKarsilama';
 
 const nodeTypes = {
   mindmapNode: MindmapNode,
@@ -61,6 +62,9 @@ export default function MindmapCanvas() {
 
   const { fitView } = useReactFlow();
   const [menu, setMenu] = useState<{ id: string; top: number; left: number } | null>(null);
+  // "İlk dalı ekle" şeridi kapatılabilsin; harita zaten açık, kullanıcı
+  // dalı klavyeden de ekleyebiliyor.
+  const [karsilamaKapandi, setKarsilamaKapandi] = useState(false);
 
   // Harita değişince yeni haritanın tamamı ekrana sığsın; yoksa öncekinin
   // kamera konumu kalıyor ve kullanıcı boş bir alana bakıyor.
@@ -235,40 +239,38 @@ export default function MindmapCanvas() {
         {/* Bütün haritalar silinmişse kanvas boş kalır; buradan yenisi kurulur. */}
         {!aktifHarita && (
           <Panel position="top-center" className="mt-24">
-            <div className="max-w-sm rounded-2xl border border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-slate-800/90 backdrop-blur p-6 text-center shadow-2xl">
-              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-400">
-                <Brain size={24} />
-              </div>
-              <p className="text-sm text-slate-500 dark:text-slate-400">{t('mindmap_no_map_hint')}</p>
-              <button
-                onClick={() => addMindmap(t('mindmap_map_name_n', { sira: 1 }), t('mindmap_root'))}
-                className="mt-4 rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-purple-700"
-              >
-                {t('mindmap_new_map')}
-              </button>
-            </div>
+            {/* Harita yokken kapatma yok: kapatılınca ekranda hiçbir şey
+                kalmıyor ve kullanıcının harita açmak için tutunacağı yer
+                olmuyor. */}
+            <CanvasKarsilama
+              simge={<Brain size={18} />}
+              aciklama={t('mindmap_no_map_hint')}
+              tema="purple"
+              birincil={{
+                etiket: t('mindmap_new_map'),
+                onClick: () => addMindmap(t('mindmap_map_name_n', { sira: 1 }), t('mindmap_root'))
+              }}
+            />
           </Panel>
         )}
 
-        {aktifHarita && mindmapNodes.length <= 1 && (
+        {aktifHarita && mindmapNodes.length <= 1 && !karsilamaKapandi && (
           <Panel position="top-center" className="mt-24">
-            <div className="max-w-sm rounded-2xl border border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-slate-800/90 backdrop-blur p-6 text-center shadow-2xl">
-              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-400">
-                <Brain size={24} />
-              </div>
-              <p className="text-sm text-slate-500 dark:text-slate-400">{t('mindmap_start_hint')}</p>
-              <button
-                onClick={() => {
+            <CanvasKarsilama
+              simge={<Brain size={18} />}
+              aciklama={t('mindmap_start_hint')}
+              tema="purple"
+              birincil={{
+                etiket: t('mindmap_add_child'),
+                onClick: () => {
                   if (!kok) return;
                   const yeni = addMindmapChild(kok.id, t('mindmap_new_node'));
                   if (yeni) { setMindmapSelected(yeni); setMindmapEditingLabel(yeni); }
                   setTimeout(() => fitView({ duration: 400, padding: 0.25 }), 60);
-                }}
-                className="mt-4 rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-purple-700"
-              >
-                {t('mindmap_add_child')}
-              </button>
-            </div>
+                }
+              }}
+              onKapat={() => setKarsilamaKapandi(true)}
+            />
           </Panel>
         )}
 

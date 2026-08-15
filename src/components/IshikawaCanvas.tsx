@@ -171,9 +171,11 @@ export default function IshikawaCanvas() {
           ))}
           
           {ishikawa.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-20 text-slate-400 dark:text-slate-500">
-              <Fish size={64} className="mb-4 opacity-20" />
-              <p className="text-lg">{t('ishi_empty')}</p>
+            /* Tek satır: 64 piksellik simge ve 160 piksel boşluk ekranı
+               oluşturma satırından uzaklaştırıyordu. */
+            <div className="flex items-center justify-center gap-2.5 py-10 text-slate-400 dark:text-slate-500">
+              <Fish size={18} className="shrink-0 opacity-40" />
+              <p className="text-sm">{t('ishi_empty')}</p>
             </div>
           )}
         </div>

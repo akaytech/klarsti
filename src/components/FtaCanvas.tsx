@@ -16,7 +16,7 @@ import { metinAlaninda } from '../utils/metinAlaninda';
 import FtaNode from './FtaNode';
 import FtaContextMenu from './FtaContextMenu';
 import CanvasAddButton from './CanvasAddButton';
-import KilavuzuAcButton from './KilavuzuAcButton';
+import CanvasKarsilama from './CanvasKarsilama';
 import { useEkranaSigdir } from '../utils/ekranaSigdir';
 import { calculateProbability, FtaProbabilityContext } from '../utils/ftaProbability';
 import AnalysisMenu from './AnalysisMenu';
@@ -178,35 +178,20 @@ export default function FtaCanvas() {
 
         {showStarterPanel && (
           <Panel position="top-center" className="mt-20">
-            <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur border border-slate-200 dark:border-slate-700 rounded-2xl p-8 shadow-2xl text-center max-w-md">
-              <div className="w-16 h-16 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <GitBranch size={32} />
-              </div>
-              <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">
-                {t('fta_empty')}
-              </h3>
-              <p className="text-slate-500 dark:text-slate-400 mb-6 text-sm">
-                {t('fta_empty_hint')}
-              </p>
-              <div className="flex flex-col gap-3">
-                <button
-                  onClick={() => {
-                    if (isEmptyCanvas) addFtaRoot();
-                    setStarterDismissed(true);
-                  }}
-                  className="w-full py-3 px-6 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all hover:shadow-lg hover:shadow-indigo-500/20 active:scale-95"
-                >
-                  {isEmptyCanvas ? t('fta_add_root') : t('start_from_scratch')}
-                </button>
-                <button
-                  onClick={() => loadFtaExample()}
-                  className="w-full py-3 px-6 bg-indigo-100 hover:bg-indigo-200 dark:bg-indigo-900/50 dark:hover:bg-indigo-800 text-indigo-700 dark:text-indigo-300 rounded-xl font-bold transition-all active:scale-95"
-                >
-                  {t('load_example')}
-                </button>
-                <KilavuzuAcButton />
-              </div>
-            </div>
+            <CanvasKarsilama
+              simge={<GitBranch size={18} />}
+              baslik={t('fta_empty')}
+              aciklama={t('fta_empty_hint')}
+              birincil={{
+                etiket: isEmptyCanvas ? t('fta_add_root') : t('start_from_scratch'),
+                onClick: () => {
+                  if (isEmptyCanvas) addFtaRoot();
+                  setStarterDismissed(true);
+                }
+              }}
+              ikincil={{ etiket: t('load_example'), onClick: () => loadFtaExample() }}
+              onKapat={() => setStarterDismissed(true)}
+            />
           </Panel>
         )}
       </ReactFlow>

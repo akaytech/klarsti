@@ -32,6 +32,7 @@ import VsmMapsMenu from './VsmMapsMenu';
 import VsmSettingsPanel from './VsmSettingsPanel';
 import CanvasAddButton from './CanvasAddButton';
 import CanvasControls from './CanvasControls';
+import CanvasKarsilama from './CanvasKarsilama';
 import { useEkranaSigdir } from '../utils/ekranaSigdir';
 import ConfirmModal from './ConfirmModal';
 import { vsmHesapla, saniyeBicimle, sayiBicimle } from '../utils/vsmHesap';
@@ -265,24 +266,15 @@ export default function VsmCanvas() {
 
           {harita.nodes.length === 0 && (
             <Panel position="top-center" className="mt-28">
-              <div className="max-w-sm rounded-2xl border border-slate-200 bg-white/95 p-6 text-center shadow-2xl backdrop-blur dark:border-slate-700 dark:bg-slate-800/95">
-                <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-100 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-400">
-                  <Workflow size={24} />
-                </div>
-                <p className="text-sm text-slate-500 dark:text-slate-400">{t('vsm_start_hint')}</p>
-                <button
-                  onClick={iskeletKur}
-                  className="mt-4 w-full rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-indigo-700"
-                >
-                  {t('vsm_start_skeleton')}
-                </button>
-                <button
-                  onClick={() => addVsmNode('vsmProcess', t('vsm_untitled_process'), { x: 0, y: 0 })}
-                  className="mt-2 w-full rounded-xl px-5 py-2 text-sm font-semibold text-slate-500 transition-colors hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700"
-                >
-                  {t('vsm_start_empty')}
-                </button>
-              </div>
+              <CanvasKarsilama
+                simge={<Workflow size={18} />}
+                aciklama={t('vsm_start_hint')}
+                birincil={{ etiket: t('vsm_start_skeleton'), onClick: iskeletKur }}
+                ikincil={{
+                  etiket: t('vsm_start_empty'),
+                  onClick: () => addVsmNode('vsmProcess', t('vsm_untitled_process'), { x: 0, y: 0 })
+                }}
+              />
             </Panel>
           )}
         </ReactFlow>

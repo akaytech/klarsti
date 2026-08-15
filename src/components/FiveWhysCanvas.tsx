@@ -19,7 +19,7 @@ import FiveWhysContextMenu from './FiveWhysContextMenu';
 import PaneContextMenu from './PaneContextMenu';
 import AnalysisMenu from './AnalysisMenu';
 import CanvasAddButton from './CanvasAddButton';
-import KilavuzuAcButton from './KilavuzuAcButton';
+import CanvasKarsilama from './CanvasKarsilama';
 import { useEkranaSigdir } from '../utils/ekranaSigdir';
 import CanvasMiniMap from './CanvasMiniMap';
 import CanvasControls from './CanvasControls';
@@ -41,6 +41,9 @@ function FiveWhysCanvasInner() {
   const { screenToFlowPosition } = useReactFlow();
   const [menu, setMenu] = useState<{ id: string; top: number; left: number } | null>(null);
   const [paneMenu, setPaneMenu] = useState<{ top: number; left: number; clientX: number; clientY: number } | null>(null);
+  // Karşılama şeridi kapatılabilsin diye: eskiden kaldırmanın tek yolu
+  // düğmelerden birine basmaktı, sadece tuvale bakmak isteyen sıkışıyordu.
+  const [karsilamaKapandi, setKarsilamaKapandi] = useState(false);
 
   const {
     onFiveWhysNodesChange,
@@ -221,34 +224,16 @@ function FiveWhysCanvasInner() {
             </Panel>
           )}
           
-          {fiveWhysNodes.length === 0 && (
+          {fiveWhysNodes.length === 0 && !karsilamaKapandi && (
              <Panel position="top-center" className="mt-20">
-               <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur border border-slate-200 dark:border-slate-700 rounded-2xl p-8 shadow-2xl text-center max-w-md">
-                 <div className="w-16 h-16 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                   <Activity size={32} />
-                 </div>
-                 <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">
-                   {t('whys_empty')}
-                 </h3>
-                 <p className="text-slate-500 dark:text-slate-400 mb-6 text-sm">
-                   {t('whys_empty_hint')}
-                 </p>
-                 <div className="flex flex-col gap-3">
-                   <button
-                     onClick={() => addFiveWhysNode(null, 'problem', t('whys_placeholder'))}
-                     className="w-full py-3 px-6 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all hover:shadow-lg hover:shadow-indigo-500/20 active:scale-95"
-                   >
-                     {t('whys_add_root')}
-                   </button>
-                   <button
-                     onClick={() => loadFiveWhysExample()}
-                     className="w-full py-3 px-6 bg-indigo-100 hover:bg-indigo-200 dark:bg-indigo-900/50 dark:hover:bg-indigo-800 text-indigo-700 dark:text-indigo-300 rounded-xl font-bold transition-all active:scale-95"
-                   >
-                     {t('load_example')}
-                   </button>
-                   <KilavuzuAcButton />
-                 </div>
-               </div>
+               <CanvasKarsilama
+                 simge={<Activity size={18} />}
+                 baslik={t('whys_empty')}
+                 aciklama={t('whys_empty_hint')}
+                 birincil={{ etiket: t('whys_add_root'), onClick: () => addFiveWhysNode(null, 'problem', t('whys_placeholder')) }}
+                 ikincil={{ etiket: t('load_example'), onClick: () => loadFiveWhysExample() }}
+                 onKapat={() => setKarsilamaKapandi(true)}
+               />
              </Panel>
           )}
         </ReactFlow>

@@ -11,6 +11,7 @@ import { ArrowRight } from 'lucide-react';
 import PublicHeader from './PublicHeader';
 import PublicFooter from './PublicFooter';
 import UrunDemosu from './UrunDemosu';
+import FiyatVeSorular from './FiyatVeSorular';
 
 export default function LandingPage() {
   const { t } = useTranslation();
@@ -223,6 +224,12 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Fiyat ve sık sorulanlar. Yeri bilerek burası: ziyaretçi ürünü,
+          kliplerini ve araç listesini gördükten sonra "peki ücretli mi,
+          verilerime ne oluyor?" diye soruyor. Kayıt çağrısının hemen üstünde
+          cevabını buluyor. */}
+      <FiyatVeSorular />
 
       {/* CTA Section */}
       <section className="py-32 relative overflow-hidden">

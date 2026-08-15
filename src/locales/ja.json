@@ -784,5 +784,12 @@
   "demo_pareto_desc": "どの問題が最も重いかを数字で確認できます。",
   "demo_mindmap_desc": "アイデアを枝分かれさせ、一か所にまとめます。",
   "landing_badge": "問題解決と計画のための道具箱 — {{sayi}} のツールをひとつの場所に。",
-  "guide_how_button": "使い方を見る"
+  "guide_how_button": "使い方を見る",
+  "ws_intent_heading": "何をしますか？",
+  "amac_parcala": "大きな仕事を分解する",
+  "amac_kok_neden": "問題の原因を探す",
+  "amac_surec": "流れを最初から最後まで描く",
+  "amac_karar": "選択肢の中から決める",
+  "amac_fikir": "アイデアを一か所に集める",
+  "amac_durum": "状況を全体として見る"
 }

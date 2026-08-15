@@ -784,5 +784,12 @@
   "demo_pareto_desc": "Sieh in Zahlen, welches Problem am schwersten wiegt.",
   "demo_mindmap_desc": "Verzweige deine Ideen und halte sie an einem Ort zusammen.",
   "landing_badge": "Werkzeuge zum Problemlösen und Planen — {{sayi}} Werkzeuge an einem Ort.",
-  "guide_how_button": "Wie funktioniert das?"
+  "guide_how_button": "Wie funktioniert das?",
+  "ws_intent_heading": "Was möchtest du tun?",
+  "amac_parcala": "Ein großes Vorhaben in Teile zerlegen",
+  "amac_kok_neden": "Die Ursache eines Problems finden",
+  "amac_surec": "Einen Ablauf von Anfang bis Ende darstellen",
+  "amac_karar": "Zwischen Optionen entscheiden",
+  "amac_fikir": "Meine Ideen an einem Ort sammeln",
+  "amac_durum": "Die Lage als Ganzes sehen"
 }

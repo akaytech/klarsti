@@ -784,5 +784,12 @@
   "demo_pareto_desc": "用数字看清哪个问题最要紧。",
   "demo_mindmap_desc": "让想法自然分叉，集中在一处。",
   "landing_badge": "解决问题与做计划的工具 —— {{sayi}} 个工具，集中在一处。",
-  "guide_how_button": "怎么用？"
+  "guide_how_button": "怎么用？",
+  "ws_intent_heading": "你想做什么？",
+  "amac_parcala": "把一件大事拆成小块",
+  "amac_kok_neden": "找出问题的根源",
+  "amac_surec": "把流程从头画到尾",
+  "amac_karar": "在几个选项之间做决定",
+  "amac_fikir": "把想法集中到一处",
+  "amac_durum": "把整体情况看清楚"
 }

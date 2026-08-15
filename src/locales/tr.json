@@ -784,5 +784,12 @@
   "demo_pareto_desc": "Hangi sorunun ağır bastığını rakamla gör.",
   "demo_mindmap_desc": "Fikirleri dallandırarak topla, dağılmadan çalış.",
   "landing_badge": "Problem çözme ve planlama araçları — {{sayi}} araç, tek yerde.",
-  "guide_how_button": "Nasıl çalışır?"
+  "guide_how_button": "Nasıl çalışır?",
+  "ws_intent_heading": "Ne yapmak istiyorsun?",
+  "amac_parcala": "Büyük bir işi parçalara böleceğim",
+  "amac_kok_neden": "Bir sorunun kaynağını arıyorum",
+  "amac_surec": "Bir süreci baştan sona çizeceğim",
+  "amac_karar": "Seçenekler arasında karar vereceğim",
+  "amac_fikir": "Fikirlerimi bir araya toplayacağım",
+  "amac_durum": "Durumu bütün olarak göreceğim"
 }

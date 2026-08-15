@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { CATEGORY_ORDER, PROJECT_TOOLS, TOOLS } from '../config/tools';
+import { AMACLAR } from '../config/amaclar';
 import { useTranslation } from 'react-i18next';
 import { useRoadmapStore, type ToolId } from '../store/useRoadmapStore';
 import { useShallow } from 'zustand/react/shallow';
@@ -73,18 +74,21 @@ export default function WelcomeScreen() {
     setKlasorBekleyenArac(null);
   };
 
-  const ToolCard = ({ id, icon: Icon, title, desc, featured = false }: any) => {
+  // Kategori listelerindeki araç kartı. Eskiden bir de "featured" (büyük)
+  // hali vardı; onu kullanan "Önerilen Başlangıç Araçları" bölümü kalkınca
+  // ölü kod olarak kalmıştı.
+  const ToolCard = ({ id, icon: Icon, title, desc }: any) => {
     const theme = toolTheme[id] || toolTheme.wbs;
     return (
       <button
         onClick={() => handleToolClick(id)}
-        className={`group flex flex-col items-start rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 transition-all hover:-translate-y-1 hover:shadow-xl motion-reduce:hover:translate-y-0 ${theme.hoverBorder} text-start ${featured ? 'p-8 md:p-10 shadow-sm' : 'p-6'}`}
+        className={`group flex flex-col items-start rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 transition-all hover:-translate-y-1 hover:shadow-xl motion-reduce:hover:translate-y-0 ${theme.hoverBorder} text-start`}
       >
         <div className={`mb-4 flex h-14 w-14 items-center justify-center rounded-2xl ${theme.bg} transition-transform group-hover:scale-110 group-hover:rotate-3 motion-reduce:group-hover:scale-100 motion-reduce:group-hover:rotate-0`}>
           <Icon size={28} className={theme.text} />
         </div>
-        <h3 className={`font-bold text-slate-800 dark:text-slate-100 ${featured ? 'mb-3 text-2xl' : 'mb-2 text-lg'}`}>{title}</h3>
-        <p className={`text-slate-500 dark:text-slate-400 ${featured ? 'text-base' : 'text-sm'}`}>{desc}</p>
+        <h3 className="mb-2 text-lg font-bold text-slate-800 dark:text-slate-100">{title}</h3>
+        <p className="text-sm text-slate-500 dark:text-slate-400">{desc}</p>
       </button>
     );
   };
@@ -157,16 +161,42 @@ export default function WelcomeScreen() {
           </section>
         )}
 
-        {/* Featured / Recommended Tools */}
+        {/* Ne yapmak istiyorsun?
+            Buranın eski hali "Önerilen Başlangıç Araçları" idi: üç araç kartı.
+            İyi bir fikirdi ama yine araç adı soruyordu; altında zaten bütün
+            liste duruyor. Kullanıcı aracın adını değil derdini biliyor. */}
         <section className="mb-16">
           <div className="mb-6 flex items-center gap-3">
             <div className="h-8 w-1 rounded-full bg-indigo-500"></div>
-            <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{t('cat_recommended')}</h2>
+            <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{t('ws_intent_heading')}</h2>
           </div>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {['wbs', '5whys', 'flowchart'].map(id => {
-              const tool = PROJECT_TOOLS.find(t => t.id === id)!;
-              return <ToolCard key={tool.id} id={tool.id} icon={tool.icon} title={t(tool.labelKey)} desc={t(tool.descKey)} featured={true} />;
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {AMACLAR.map((amac) => {
+              const arac = araclar.get(amac.arac);
+              const tema = toolTheme[amac.arac] || toolTheme.wbs;
+              const Simge = arac?.icon;
+              return (
+                <button
+                  key={amac.id}
+                  onClick={() => {
+                    logAppEvent('intent_selected', { intent: amac.id, tool: amac.arac });
+                    handleToolClick(amac.arac);
+                  }}
+                  className="group flex items-center gap-4 rounded-3xl border border-slate-200 bg-white p-5 text-start transition-all hover:-translate-y-1 hover:border-indigo-500/30 hover:shadow-xl motion-reduce:hover:translate-y-0 dark:border-slate-800 dark:bg-slate-900"
+                >
+                  <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${tema.bg}`}>
+                    {Simge && <Simge size={22} className={tema.text} />}
+                  </div>
+                  <span className="min-w-0">
+                    <span className="block font-bold text-slate-800 dark:text-slate-100">{t(amac.metinKey)}</span>
+                    {/* Araç adı da yazıyor: kullanıcı zamanla adları öğreniyor. */}
+                    <span className="block truncate text-sm text-slate-500 dark:text-slate-400">
+                      {arac ? t(arac.labelKey) : ''}
+                    </span>
+                  </span>
+                  <ArrowRight size={16} className="ms-auto shrink-0 text-slate-300 transition-transform group-hover:translate-x-1 motion-reduce:group-hover:translate-x-0 dark:text-slate-600 rtl:rotate-180" />
+                </button>
+              );
             })}
           </div>
         </section>

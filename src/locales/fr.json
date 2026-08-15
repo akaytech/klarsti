@@ -784,5 +784,12 @@
   "demo_pareto_desc": "Vois en chiffres quel problème pèse le plus.",
   "demo_mindmap_desc": "Ramifie tes idées et garde-les au même endroit.",
   "landing_badge": "Des outils pour résoudre et planifier — {{sayi}} outils au même endroit.",
-  "guide_how_button": "Comment ça marche ?"
+  "guide_how_button": "Comment ça marche ?",
+  "ws_intent_heading": "Que veux-tu faire ?",
+  "amac_parcala": "Découper un gros chantier en morceaux",
+  "amac_kok_neden": "Trouver la source d’un problème",
+  "amac_surec": "Tracer un processus du début à la fin",
+  "amac_karar": "Choisir entre plusieurs options",
+  "amac_fikir": "Rassembler mes idées au même endroit",
+  "amac_durum": "Voir la situation dans son ensemble"
 }

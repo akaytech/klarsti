@@ -784,5 +784,12 @@
   "demo_pareto_desc": "Vê em números qual problema pesa mais.",
   "demo_mindmap_desc": "Ramifica as ideias e mantém tudo num só lugar.",
   "landing_badge": "Ferramentas para resolver problemas e planear — {{sayi}} ferramentas num só lugar.",
-  "guide_how_button": "Como funciona?"
+  "guide_how_button": "Como funciona?",
+  "ws_intent_heading": "O que queres fazer?",
+  "amac_parcala": "Dividir um trabalho grande em partes",
+  "amac_kok_neden": "Encontrar a origem de um problema",
+  "amac_surec": "Desenhar um processo do início ao fim",
+  "amac_karar": "Decidir entre opções",
+  "amac_fikir": "Reunir as minhas ideias num só lugar",
+  "amac_durum": "Ver a situação como um todo"
 }

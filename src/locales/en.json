@@ -784,5 +784,12 @@
   "demo_pareto_desc": "See which problem weighs most, in numbers.",
   "demo_mindmap_desc": "Branch out your ideas and keep them in one place.",
   "landing_badge": "Problem solving and planning tools — {{sayi}} tools in one place.",
-  "guide_how_button": "How does it work?"
+  "guide_how_button": "How does it work?",
+  "ws_intent_heading": "What do you want to do?",
+  "amac_parcala": "Break a big job into pieces",
+  "amac_kok_neden": "Find the source of a problem",
+  "amac_surec": "Map a process from start to finish",
+  "amac_karar": "Decide between options",
+  "amac_fikir": "Gather my ideas in one place",
+  "amac_durum": "See the whole situation at once"
 }

@@ -775,5 +775,8 @@
   "new_folder_label": "Nom du dossier",
   "new_folder_create": "Créer",
   "minimap_show": "Afficher la mini-carte",
-  "minimap_hide": "Masquer la mini-carte"
+  "minimap_hide": "Masquer la mini-carte",
+  "notepad_day_flow": "Le déroulé du jour",
+  "notepad_legend_entries": "Contient des entrées",
+  "notepad_legend_journal": "Contient un bilan de fin de journée"
 }

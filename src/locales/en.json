@@ -775,5 +775,8 @@
   "new_folder_label": "Folder name",
   "new_folder_create": "Create",
   "minimap_show": "Show minimap",
-  "minimap_hide": "Hide minimap"
+  "minimap_hide": "Hide minimap",
+  "notepad_day_flow": "That day's flow",
+  "notepad_legend_entries": "Has entries",
+  "notepad_legend_journal": "Has an end-of-day review"
 }

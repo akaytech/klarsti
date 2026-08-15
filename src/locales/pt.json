@@ -775,5 +775,8 @@
   "new_folder_label": "Nome da pasta",
   "new_folder_create": "Criar",
   "minimap_show": "Mostrar o minimapa",
-  "minimap_hide": "Ocultar o minimapa"
+  "minimap_hide": "Ocultar o minimapa",
+  "notepad_day_flow": "O dia em detalhe",
+  "notepad_legend_entries": "Tem registros",
+  "notepad_legend_journal": "Tem uma revisão do fim do dia"
 }

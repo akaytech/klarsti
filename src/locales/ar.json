@@ -775,5 +775,8 @@
   "new_folder_label": "اسم المجلد",
   "new_folder_create": "إنشاء",
   "minimap_show": "إظهار الخريطة المصغرة",
-  "minimap_hide": "إخفاء الخريطة المصغرة"
+  "minimap_hide": "إخفاء الخريطة المصغرة",
+  "notepad_day_flow": "مجريات ذلك اليوم",
+  "notepad_legend_entries": "يحتوي على سجلات",
+  "notepad_legend_journal": "يحتوي على مراجعة نهاية اليوم"
 }

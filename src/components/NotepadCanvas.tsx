@@ -339,6 +339,20 @@ const NotepadCanvas: React.FC = () => {
                 })}
               </div>
               <p className="text-xs text-slate-400 dark:text-slate-500 mt-4">{t('notepad_calendar_hint')}</p>
+
+              {/* Noktaların ne anlama geldiği hiçbir yerde yazmıyordu; iki
+                  ayrı renk vardı ve farkı yalnızca ikisini de kullanan biri
+                  zamanla çıkarabiliyordu. */}
+              <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs text-slate-400 dark:text-slate-500">
+                <span className="flex items-center gap-1.5">
+                  <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
+                  {t('notepad_legend_entries')}
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-fuchsia-500" />
+                  {t('notepad_legend_journal')}
+                </span>
+              </div>
             </div>
 
             <div>
@@ -639,7 +653,10 @@ const NotepadCanvas: React.FC = () => {
                   value={draftText}
                   onChange={(e) => setDraftText(e.target.value)}
                   placeholder={t('notepad_write_placeholder')}
-                  className="w-full min-h-[55vh] rounded-xl border-none bg-white dark:bg-slate-800/80 p-4 text-base leading-relaxed text-slate-700 dark:text-slate-200 placeholder-slate-300 dark:placeholder-slate-600 outline-none resize-y custom-scrollbar shadow-sm"
+                  // Dar ekranda alçak: orada bu alan tek başına bütün ekranı
+                  // kaplıyordu. Geniş ekranda yan sütunda durduğu için 55vh
+                  // kimseyi rahatsız etmiyor, oradaki boy korunuyor.
+                  className="w-full min-h-[30vh] lg:min-h-[55vh] rounded-xl border-none bg-white dark:bg-slate-800/80 p-4 text-base leading-relaxed text-slate-700 dark:text-slate-200 placeholder-slate-300 dark:placeholder-slate-600 outline-none resize-y custom-scrollbar shadow-sm"
                 />
 
                 <div className="flex items-center justify-between mt-3">
@@ -668,8 +685,14 @@ const NotepadCanvas: React.FC = () => {
               </div>
               )}
 
-              <div>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">{t('notepad_today_flow')}</p>
+              {/* Dar ekranda gün akışı yazma alanının ÜSTÜNE geçiyor: iki sütun
+                  alt alta dizilince yazma alanı (55vh) bütün ekranı kaplıyor ve
+                  kullanıcı o gün ne yazdığını görmek için aşağı kaydırmak
+                  zorunda kalıyordu. Geniş ekranda ikisi yan yana, sıra değişmiyor. */}
+              <div className="order-first lg:order-none">
+                <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">
+                  {selectedDate === todayKey ? t('notepad_today_flow') : t('notepad_day_flow')}
+                </p>
                 <div className="space-y-2">
                   {dayEntries.length === 0 && (
                     <p className="text-sm text-slate-400 dark:text-slate-500">{t('notepad_no_entries_today')}</p>

@@ -775,5 +775,8 @@
   "new_folder_label": "フォルダー名",
   "new_folder_create": "作成",
   "minimap_show": "ミニマップを表示",
-  "minimap_hide": "ミニマップを隠す"
+  "minimap_hide": "ミニマップを隠す",
+  "notepad_day_flow": "その日の流れ",
+  "notepad_legend_entries": "記録あり",
+  "notepad_legend_journal": "一日のふりかえりあり"
 }

@@ -775,5 +775,8 @@
   "new_folder_label": "文件夹名称",
   "new_folder_create": "创建",
   "minimap_show": "显示缩略图",
-  "minimap_hide": "隐藏缩略图"
+  "minimap_hide": "隐藏缩略图",
+  "notepad_day_flow": "当天的安排",
+  "notepad_legend_entries": "有记录",
+  "notepad_legend_journal": "有当天回顾"
 }

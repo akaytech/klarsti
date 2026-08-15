@@ -775,5 +775,8 @@
   "new_folder_label": "Ordnername",
   "new_folder_create": "Erstellen",
   "minimap_show": "Übersichtskarte einblenden",
-  "minimap_hide": "Übersichtskarte ausblenden"
+  "minimap_hide": "Übersichtskarte ausblenden",
+  "notepad_day_flow": "Ablauf des Tages",
+  "notepad_legend_entries": "Hat Einträge",
+  "notepad_legend_journal": "Hat einen Tagesrückblick"
 }

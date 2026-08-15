@@ -174,15 +174,14 @@ export default function Navbar() {
       </div>
 
       {/* Version Info */}
+      {/* Sürüm numarasının altında bir de "Geliştirme Aşamasında" yazıyordu.
+          Aynı mesaj tanıtım sayfasının üst barında zaten var; uygulamanın
+          içindeki kullanıcı ürünü kullanmaya çoktan başlamış oluyor ve
+          hatırlatmayı ikinci kez okuyordu. */}
       <div className="py-3 text-center opacity-50 flex flex-col items-center shrink-0">
         <span className={clsx("font-bold text-slate-400 dark:text-slate-500", isExpanded ? "text-[10px]" : "text-[8px]")}>
           v{packageJson.version}
         </span>
-        {isExpanded && (
-          <span className="text-[9px] font-medium text-slate-400 dark:text-slate-500 mt-0.5 whitespace-nowrap px-2">
-            {t('in_development')}
-          </span>
-        )}
       </div>
       </div>
     </div>

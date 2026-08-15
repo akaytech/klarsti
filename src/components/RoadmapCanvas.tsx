@@ -297,7 +297,11 @@ export default function RoadmapCanvas({ onNodeSelect }: { onNodeSelect: (id: str
    *   - seçim yoksa → projenin altına faz
    * Yeni bir proje isteyen soldaki menüden yeni ağaç açıyor.
    */
-  const kokKutu = nodes.find((n) => getDepth(n.id, edges) === 0) ?? null;
+  // Kök = kendisine gelen bir bağ olmayan kutu. Her kutu için getDepth
+  // çağırmak yerine hedefler bir kez kümeye alınıyor; yüz kutuluk bir ağaçta
+  // aradaki fark her boyamada hissediliyor.
+  const bagliHedefler = new Set(edges.map((e) => e.target));
+  const kokKutu = nodes.find((n) => !bagliHedefler.has(n.id)) ?? null;
   const secililer = nodes.filter((n) => n.selected);
   const hedefKutu = secililer.length === 1 ? secililer[0] : kokKutu;
   const hedefDerinlik = hedefKutu ? getDepth(hedefKutu.id, edges) : -1;

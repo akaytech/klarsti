@@ -768,5 +768,10 @@
   "works_sort_name": "By name",
   "works_count": "{{sayi}} works",
   "works_empty": "You have no works yet. Pick a tool below to start.",
-  "works_none_found": "No work matches your search."
+  "works_none_found": "No work matches your search.",
+  "new_folder_title": "New folder",
+  "new_folder_hint": "Your works live inside a folder. What should this one be called?",
+  "new_folder_placeholder": "e.g. Coffee shop launch",
+  "new_folder_label": "Folder name",
+  "new_folder_create": "Create"
 }

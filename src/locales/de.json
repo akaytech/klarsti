@@ -768,5 +768,10 @@
   "works_sort_name": "Nach Name",
   "works_count": "{{sayi}} Arbeiten",
   "works_empty": "Du hast noch keine Arbeiten. Wähle unten ein Werkzeug.",
-  "works_none_found": "Keine Arbeit passt zu deiner Suche."
+  "works_none_found": "Keine Arbeit passt zu deiner Suche.",
+  "new_folder_title": "Neuer Ordner",
+  "new_folder_hint": "Deine Arbeiten liegen in einem Ordner. Wie soll dieser heißen?",
+  "new_folder_placeholder": "z. B. Eröffnung des Cafés",
+  "new_folder_label": "Ordnername",
+  "new_folder_create": "Erstellen"
 }

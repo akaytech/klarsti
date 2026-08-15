@@ -768,5 +768,10 @@
   "works_sort_name": "Por nome",
   "works_count": "{{sayi}} trabalhos",
   "works_empty": "Você ainda não tem trabalhos. Escolha uma ferramenta abaixo para começar.",
-  "works_none_found": "Nenhum trabalho corresponde à sua busca."
+  "works_none_found": "Nenhum trabalho corresponde à sua busca.",
+  "new_folder_title": "Nova pasta",
+  "new_folder_hint": "Seus trabalhos ficam dentro de uma pasta. Como quer chamá-la?",
+  "new_folder_placeholder": "Ex.: Abertura da cafeteria",
+  "new_folder_label": "Nome da pasta",
+  "new_folder_create": "Criar"
 }

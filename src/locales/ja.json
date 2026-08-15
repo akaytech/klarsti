@@ -768,5 +768,10 @@
   "works_sort_name": "名前順",
   "works_count": "作業 {{sayi}} 件",
   "works_empty": "まだ作業がありません。下からツールを選んで始めてください。",
-  "works_none_found": "検索に一致する作業はありません。"
+  "works_none_found": "検索に一致する作業はありません。",
+  "new_folder_title": "新しいフォルダー",
+  "new_folder_hint": "作業はフォルダーの中に入ります。このフォルダーの名前を決めてください。",
+  "new_folder_placeholder": "例: カフェの開店",
+  "new_folder_label": "フォルダー名",
+  "new_folder_create": "作成"
 }

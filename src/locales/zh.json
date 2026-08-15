@@ -768,5 +768,10 @@
   "works_sort_name": "按名称",
   "works_count": "{{sayi}} 个工作",
   "works_empty": "你还没有任何工作。从下面选一个工具开始吧。",
-  "works_none_found": "没有符合搜索条件的工作。"
+  "works_none_found": "没有符合搜索条件的工作。",
+  "new_folder_title": "新建文件夹",
+  "new_folder_hint": "你的工作都放在文件夹里。给这个文件夹起个名字吧。",
+  "new_folder_placeholder": "例如：咖啡店开业",
+  "new_folder_label": "文件夹名称",
+  "new_folder_create": "创建"
 }

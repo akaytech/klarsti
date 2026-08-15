@@ -768,5 +768,10 @@
   "works_sort_name": "حسب الاسم",
   "works_count": "{{sayi}} عملًا",
   "works_empty": "ليس لديك أعمال بعد. اختر أداة من الأسفل للبدء.",
-  "works_none_found": "لا يوجد عمل يطابق بحثك."
+  "works_none_found": "لا يوجد عمل يطابق بحثك.",
+  "new_folder_title": "مجلد جديد",
+  "new_folder_hint": "أعمالك تُحفظ داخل مجلد. ما الاسم الذي تريده لهذا المجلد؟",
+  "new_folder_placeholder": "مثال: افتتاح المقهى",
+  "new_folder_label": "اسم المجلد",
+  "new_folder_create": "إنشاء"
 }

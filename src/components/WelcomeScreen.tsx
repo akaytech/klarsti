@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { CATEGORY_ORDER, PROJECT_TOOLS, TOOLS } from '../config/tools';
@@ -8,15 +8,17 @@ import { useShallow } from 'zustand/react/shallow';
 import { logAppEvent } from '../firebase';
 import { toolTheme } from '../config/toolTheme';
 import { tumCalismalar, calismayiAc, tarihEtiketi } from '../utils/calismaListesi';
+import NewFolderModal from './NewFolderModal';
 
 /** "Kaldığın yer" şeridinde kaç çalışma gösterilecek. */
 const SON_CALISMA_SAYISI = 4;
 
 export default function WelcomeScreen() {
-  const { setActiveTool, projects, createProject, currentProjectId, works } = useRoadmapStore(useShallow((state) => ({
+  const { setActiveTool, projects, createProject, loadProject, currentProjectId, works } = useRoadmapStore(useShallow((state) => ({
     setActiveTool: state.setActiveTool,
     projects: state.projects,
     createProject: state.createProject,
+    loadProject: state.loadProject,
     currentProjectId: state.currentProjectId,
     works: state.works
   })));
@@ -35,12 +37,40 @@ export default function WelcomeScreen() {
     logAppEvent('welcome_screen_viewed');
   }, []);
 
+  const [klasorBekleyenArac, setKlasorBekleyenArac] = useState<ToolId | null>(null);
+
+  /**
+   * Araç tıklaması. Üç durum var, eskiden ikisi de aynı yere çıkıyordu:
+   *
+   * `currentProjectId` sayfa her yenilendiğinde null'a düşüyor ve hiçbir yer
+   * onu kendiliğinden doldurmuyor. Eski kod "açık klasör yoksa yeni klasör aç"
+   * diyordu; sonuç, kullanıcının her oturumda bir tane daha "Yeni Çalışma"
+   * biriktirmesiydi. Artık klasörü olan kullanıcıya yenisi açılmıyor, en son
+   * dokunduğu klasör açılıyor. Gerçekten klasörü olmayana da adı soruluyor.
+   */
   const handleToolClick = (tool: ToolId) => {
     logAppEvent('tool_selected', { tool });
-    if (!currentProjectId || !projects.some(p => p.id === currentProjectId)) {
-      createProject(t('new_project'), tool);
+
+    if (currentProjectId && projects.some((p) => p.id === currentProjectId)) {
+      setActiveTool(tool);
+      return;
     }
-    setActiveTool(tool);
+
+    if (projects.length > 0) {
+      const sonKlasor = [...projects].sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0))[0];
+      loadProject(sonKlasor.id);
+      setActiveTool(tool);
+      return;
+    }
+
+    setKlasorBekleyenArac(tool);
+  };
+
+  const klasoruOlustur = (ad: string) => {
+    if (!klasorBekleyenArac) return;
+    createProject(ad, klasorBekleyenArac);
+    setActiveTool(klasorBekleyenArac);
+    setKlasorBekleyenArac(null);
   };
 
   const ToolCard = ({ id, icon: Icon, title, desc, featured = false }: any) => {
@@ -159,6 +189,12 @@ export default function WelcomeScreen() {
           })}
         </div>
       </div>
+
+      <NewFolderModal
+        acik={klasorBekleyenArac !== null}
+        onKapat={() => setKlasorBekleyenArac(null)}
+        onOlustur={klasoruOlustur}
+      />
     </div>
   );
 }

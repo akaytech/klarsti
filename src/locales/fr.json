@@ -768,5 +768,10 @@
   "works_sort_name": "Par nom",
   "works_count": "{{sayi}} travaux",
   "works_empty": "Vous n’avez encore aucun travail. Choisissez un outil ci-dessous pour commencer.",
-  "works_none_found": "Aucun travail ne correspond à votre recherche."
+  "works_none_found": "Aucun travail ne correspond à votre recherche.",
+  "new_folder_title": "Nouveau dossier",
+  "new_folder_hint": "Vos travaux vivent dans un dossier. Comment voulez-vous l’appeler ?",
+  "new_folder_placeholder": "Ex. : Ouverture du café",
+  "new_folder_label": "Nom du dossier",
+  "new_folder_create": "Créer"
 }

@@ -7,6 +7,7 @@ import clsx from 'clsx';
 import packageJson from '../../package.json';
 import { useTranslation } from 'react-i18next';
 import { CATEGORY_ORDER, PROJECT_TOOLS } from '../config/tools';
+import NewFolderModal from './NewFolderModal';
 import { useDisariTiklama } from '../utils/menuKapatma';
 
 const NAVBAR_THEME: Record<ToolId, { activeBtn: string; iconBg: string }> = {
@@ -30,21 +31,45 @@ const NAVBAR_THEME: Record<ToolId, { activeBtn: string; iconBg: string }> = {
 export default function Navbar() {
   const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
-  const {  activeTool, setActiveTool, projects, createProject, currentProjectId  } = useRoadmapStore(useShallow((state) => ({
+  const {  activeTool, setActiveTool, projects, createProject, loadProject, currentProjectId  } = useRoadmapStore(useShallow((state) => ({
       activeTool: state.activeTool,
       setActiveTool: state.setActiveTool,
       projects: state.projects,
       createProject: state.createProject,
+      loadProject: state.loadProject,
       currentProjectId: state.currentProjectId
     })));
   const menuRef = useRef<HTMLDivElement>(null);
 
+  const [klasorBekleyenArac, setKlasorBekleyenArac] = useState<ToolId | null>(null);
+
+  // Karşılama ekranındaki mantığın aynısı (bkz. WelcomeScreen.handleToolClick):
+  // açık klasör varsa ona, yoksa en son dokunulan klasöre gidilir; hiç klasör
+  // yoksa adı sorulur. Eskiden ikinci durumda da yeni klasör açılıyordu ve
+  // kullanıcı her oturumda bir "Yeni Çalışma" daha biriktiriyordu.
   const handleToolClick = (tool: ToolId) => {
-    if (!currentProjectId || !projects.some(p => p.id === currentProjectId)) {
-      createProject(t('new_project'), tool);
-    }
-    setActiveTool(tool);
     setIsExpanded(false);
+
+    if (currentProjectId && projects.some(p => p.id === currentProjectId)) {
+      setActiveTool(tool);
+      return;
+    }
+
+    if (projects.length > 0) {
+      const sonKlasor = [...projects].sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0))[0];
+      loadProject(sonKlasor.id);
+      setActiveTool(tool);
+      return;
+    }
+
+    setKlasorBekleyenArac(tool);
+  };
+
+  const klasoruOlustur = (ad: string) => {
+    if (!klasorBekleyenArac) return;
+    createProject(ad, klasorBekleyenArac);
+    setActiveTool(klasorBekleyenArac);
+    setKlasorBekleyenArac(null);
   };
 
   useDisariTiklama(menuRef, () => setIsExpanded(false));
@@ -161,6 +186,12 @@ export default function Navbar() {
       </div>
       </div>
     </div>
+
+    <NewFolderModal
+      acik={klasorBekleyenArac !== null}
+      onKapat={() => setKlasorBekleyenArac(null)}
+      onOlustur={klasoruOlustur}
+    />
     </>
   );
 }

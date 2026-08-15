@@ -768,5 +768,10 @@
   "works_sort_name": "По названию",
   "works_count": "Работ: {{sayi}}",
   "works_empty": "У вас пока нет работ. Выберите инструмент ниже, чтобы начать.",
-  "works_none_found": "По вашему запросу ничего не найдено."
+  "works_none_found": "По вашему запросу ничего не найдено.",
+  "new_folder_title": "Новая папка",
+  "new_folder_hint": "Ваши работы лежат в папке. Как её назвать?",
+  "new_folder_placeholder": "Напр.: Открытие кофейни",
+  "new_folder_label": "Название папки",
+  "new_folder_create": "Создать"
 }

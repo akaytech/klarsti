@@ -10,6 +10,7 @@ import type { ToolId } from '../store/useRoadmapStore';
 import { ArrowRight } from 'lucide-react';
 import PublicHeader from './PublicHeader';
 import PublicFooter from './PublicFooter';
+import UrunDemosu from './UrunDemosu';
 
 export default function LandingPage() {
   const { t } = useTranslation();
@@ -106,17 +107,9 @@ export default function LandingPage() {
             </button>
           </div>
 
-          <div className="mt-16 max-w-3xl mx-auto">
-            <img
-              src={`${import.meta.env.BASE_URL}office.2.webp`}
-              alt={t('landing_hero_image_alt')}
-              width={1600}
-              height={873}
-              fetchPriority="high"
-              decoding="async"
-              className="w-full rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800"
-            />
-          </div>
+          {/* Eskiden burada bir ofis fotoğrafı vardı: ziyaretçi neye kayıt
+              olduğunu göremiyordu. Yerini ürünün kendi görüntüsü aldı. */}
+          <UrunDemosu />
         </div>
       </section>
 

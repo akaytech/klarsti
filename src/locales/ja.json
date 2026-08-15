@@ -778,5 +778,9 @@
   "minimap_hide": "ミニマップを隠す",
   "notepad_day_flow": "一日の流れ",
   "notepad_legend_entries": "記録あり",
-  "notepad_legend_journal": "一日のふりかえりあり"
+  "notepad_legend_journal": "一日のふりかえりあり",
+  "demo_wbs_desc": "大きな仕事をフェーズと作業パッケージに分け、今どこにいるかを確認できます。",
+  "demo_whys_desc": "問題を一段ずつ掘り下げ、根本原因にたどり着きます。",
+  "demo_pareto_desc": "どの問題が最も重いかを数字で確認できます。",
+  "demo_mindmap_desc": "アイデアを枝分かれさせ、一か所にまとめます。"
 }

@@ -27,6 +27,11 @@ const AdminPage = gecikmeliEkran(() => import('./components/AdminPage'));
 // Zaten Suspense içinde çiziliyordu, gecikmeli olması bir şey değiştirmiyor.
 const AuthPage = gecikmeliEkran(() => import('./components/AuthPage'));
 
+// Tanıtım kliplerinin çekim ekranı. Yalnızca geliştirme kipinde var: koşul
+// derleme sırasında `false`a düştüğü için bu satır ve arkasındaki bütün demo
+// kodu yayın paketine hiç girmiyor.
+const DemoStudio = import.meta.env.DEV ? gecikmeliEkran(() => import('./demo/DemoStudio')) : null;
+
 const LoadingScreen = () => (
   <div className="flex h-screen w-screen items-center justify-center bg-slate-50 dark:bg-slate-900">
     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
@@ -59,7 +64,11 @@ function App() {
       <Toaster position="bottom-center" theme={theme.isDark ? 'dark' : 'light'} richColors />
       <CookieConsent />
 
-      {aracSayfasi ? (
+      {DemoStudio && location.pathname.startsWith('/demo-cekim/') ? (
+        <Suspense fallback={<LoadingScreen />}>
+          <DemoStudio ad={location.pathname.replace('/demo-cekim/', '')} />
+        </Suspense>
+      ) : aracSayfasi ? (
         <Suspense fallback={<LoadingScreen />}>
           <ToolLandingPage sayfa={aracSayfasi} />
         </Suspense>

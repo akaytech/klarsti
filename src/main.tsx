@@ -118,7 +118,16 @@ class ErrorBoundary extends Component<{children: ReactNode, fallback: ReactNode}
   }
 }
 
-createRoot(document.getElementById('root')!).render(
+// Kök bir kez kuruluyor ve pencerede saklanıyor. Geliştirmede bu dosya bazen
+// iki kez çalışıyor (Vite sıcak güncellemeyi uyguladığında main.tsx `?t=` ekli
+// ikinci bir adresten yeniden yükleniyor); kök saklanmasa aynı kaba iki React
+// ağacı birden kuruluyor ve sayfa "bir şeyler ters gitti" ekranına düşüyordu.
+// Yayında koşul hiç işlemiyor, kök zaten tek sefer kuruluyor.
+type KokTasiyan = typeof globalThis & { __klarstiKok?: ReturnType<typeof createRoot> };
+const kokKap = globalThis as KokTasiyan;
+kokKap.__klarstiKok ??= createRoot(document.getElementById('root')!);
+
+kokKap.__klarstiKok.render(
   <StrictMode>
     <ErrorBoundary fallback={<div className="flex items-center justify-center min-h-screen p-4 text-center"><h1>Bir şeyler ters gitti. Ekibimiz bilgilendirildi, lütfen sayfayı yenile.</h1></div>}>
       <Suspense fallback={YuklemeEkrani}>

@@ -1,7 +1,7 @@
 {
   "name": "klarsti",
   "private": true,
-  "version": "0.8.23-3",
+  "version": "0.8.23-4",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,7 +9,8 @@
     "build:firebase": "tsc -b && cross-env VITE_DEPLOY_TARGET=firebase vite build && node scripts/staticPages.mjs",
     "lint": "oxlint",
     "preview": "vite preview",
-    "export-code": "node scripts/export_code.cjs"
+    "export-code": "node scripts/export_code.cjs",
+    "klip": "node scripts/klipCek.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -45,6 +46,7 @@
     "autoprefixer": "^10.5.3",
     "cross-env": "^10.1.0",
     "oxlint": "^1.71.0",
+    "playwright-core": "^1.62.1",
     "postcss": "^8.5.19",
     "tailwindcss": "^4.3.2",
     "typescript": "~6.0.2",

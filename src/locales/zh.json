@@ -778,5 +778,9 @@
   "minimap_hide": "隐藏缩略图",
   "notepad_day_flow": "当天的安排",
   "notepad_legend_entries": "有记录",
-  "notepad_legend_journal": "有当天回顾"
+  "notepad_legend_journal": "有当天回顾",
+  "demo_wbs_desc": "把大任务拆成阶段和工作包，随时看清进度。",
+  "demo_whys_desc": "一步步追问，直到找出根本原因。",
+  "demo_pareto_desc": "用数字看清哪个问题最要紧。",
+  "demo_mindmap_desc": "让想法自然分叉，集中在一处。"
 }

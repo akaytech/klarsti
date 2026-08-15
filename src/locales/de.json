@@ -778,5 +778,9 @@
   "minimap_hide": "Übersichtskarte ausblenden",
   "notepad_day_flow": "Ablauf des Tages",
   "notepad_legend_entries": "Hat Einträge",
-  "notepad_legend_journal": "Hat einen Tagesrückblick"
+  "notepad_legend_journal": "Hat einen Tagesrückblick",
+  "demo_wbs_desc": "Zerlege ein großes Vorhaben in Phasen und Arbeitspakete und behalte den Stand im Blick.",
+  "demo_whys_desc": "Frage dich Schritt für Schritt bis zur eigentlichen Ursache durch.",
+  "demo_pareto_desc": "Sieh in Zahlen, welches Problem am schwersten wiegt.",
+  "demo_mindmap_desc": "Verzweige deine Ideen und halte sie an einem Ort zusammen."
 }

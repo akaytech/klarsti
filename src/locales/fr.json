@@ -778,5 +778,9 @@
   "minimap_hide": "Masquer la mini-carte",
   "notepad_day_flow": "Le déroulé du jour",
   "notepad_legend_entries": "Contient des entrées",
-  "notepad_legend_journal": "Contient un bilan de fin de journée"
+  "notepad_legend_journal": "Contient un bilan de fin de journée",
+  "demo_wbs_desc": "Découpe un gros chantier en phases et en lots de travail, et vois où tu en es.",
+  "demo_whys_desc": "Interroge le problème étape par étape jusqu’à la cause racine.",
+  "demo_pareto_desc": "Vois en chiffres quel problème pèse le plus.",
+  "demo_mindmap_desc": "Ramifie tes idées et garde-les au même endroit."
 }

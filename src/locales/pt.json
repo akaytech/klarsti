@@ -778,5 +778,9 @@
   "minimap_hide": "Ocultar o minimapa",
   "notepad_day_flow": "O dia em detalhe",
   "notepad_legend_entries": "Tem registros",
-  "notepad_legend_journal": "Tem uma revisão do fim do dia"
+  "notepad_legend_journal": "Tem uma revisão do fim do dia",
+  "demo_wbs_desc": "Divide um trabalho grande em fases e pacotes de trabalho e vê em que ponto estás.",
+  "demo_whys_desc": "Questiona o problema passo a passo até chegar à causa raiz.",
+  "demo_pareto_desc": "Vê em números qual problema pesa mais.",
+  "demo_mindmap_desc": "Ramifica as ideias e mantém tudo num só lugar."
 }

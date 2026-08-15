@@ -30,6 +30,8 @@ import type { VsmMenuHedefi } from './VsmContextMenu';
 import VsmTimelineOverlay from './VsmTimelineOverlay';
 import VsmMapsMenu from './VsmMapsMenu';
 import VsmSettingsPanel from './VsmSettingsPanel';
+import CanvasAddButton from './CanvasAddButton';
+import { useEkranaSigdir } from '../utils/ekranaSigdir';
 import ConfirmModal from './ConfirmModal';
 import { vsmHesapla, saniyeBicimle, sayiBicimle } from '../utils/vsmHesap';
 import { Clock, Gauge, Sparkles, AlertTriangle, Workflow } from 'lucide-react';
@@ -147,6 +149,28 @@ export default function VsmCanvas() {
     setMenu(null);
   }, []);
 
+  // Harita değişince ya da iskelet kurulunca kamera içeriğe sığdırılıyor.
+  useEkranaSigdir(harita?.id, harita?.nodes.length ?? 0, { padding: 0.2, duration: 600 });
+
+  /**
+   * Alttaki "kutu ekle" düğmesi. Değer akışında kutunun türü (işlem, stok,
+   * müşteri, kaizen...) seçilmek zorunda; düğme boş kanvasa sağ tıklamakla
+   * aynı menüyü açıyor. Yeni kutu, kullanıcının o an baktığı yerin ortasına
+   * konuyor — düğmenin dibine değil.
+   */
+  const dugmeIleEkle = useCallback((yer: { x: number; y: number }) => {
+    const kutu = sarmalayici.current?.getBoundingClientRect();
+    const merkez = kutu
+      ? { x: kutu.left + kutu.width / 2, y: kutu.top + kutu.height / 2 }
+      : yer;
+    document.dispatchEvent(new Event('close-menus'));
+    setMenu({
+      hedef: { tur: 'pane', konum: screenToFlowPosition(merkez) },
+      top: yer.y,
+      left: yer.x,
+    });
+  }, [screenToFlowPosition]);
+
   /**
    * Boş haritayı iskeletle doldurur: tedarikçi → stok → işlem → stok → müşteri.
    * Eskiden bir useEffect kanvas boşaldıkça tedarikçi kutusunu geri koyuyordu;
@@ -212,7 +236,7 @@ export default function VsmCanvas() {
           onPaneClick={onPaneClick}
           fitView
           deleteKeyCode={['Delete']}
-          fitViewOptions={{ duration: 600, padding: 0.2 }}
+          fitViewOptions={{ duration: 600, padding: 0.2, maxZoom: 1.2 }}
           defaultEdgeOptions={{ type: 'vsmPush' }}
         >
           <CanvasBackdrop gap={20} size={1} />
@@ -227,6 +251,14 @@ export default function VsmCanvas() {
           </Panel>
 
           <VsmTimelineOverlay />
+
+          {harita.nodes.length > 0 && (
+            <CanvasAddButton
+              etiket={t('canvas_add_box')}
+              ipucu={t('canvas_add_hint_menu')}
+              onClick={dugmeIleEkle}
+            />
+          )}
 
           {harita.nodes.length === 0 && (
             <Panel position="top-center" className="mt-28">

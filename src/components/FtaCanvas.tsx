@@ -16,6 +16,8 @@ import CanvasBackdrop from './CanvasBackdrop';
 import { metinAlaninda } from '../utils/metinAlaninda';
 import FtaNode from './FtaNode';
 import FtaContextMenu from './FtaContextMenu';
+import CanvasAddButton from './CanvasAddButton';
+import { useEkranaSigdir } from '../utils/ekranaSigdir';
 import { calculateProbability, FtaProbabilityContext } from '../utils/ftaProbability';
 import AnalysisMenu from './AnalysisMenu';
 
@@ -88,6 +90,24 @@ export default function FtaCanvas() {
     setMenu(null);
   }, []);
 
+  // Ağaç değişince ya da örnek yüklenince kamera içeriğe sığdırılıyor.
+  useEkranaSigdir(aktifAgac?.id, ftaNodes.length, { padding: 0.2 });
+
+  /**
+   * Alttaki "kutu ekle" düğmesi. Hata ağacında yeni kutunun türü (olay, temel
+   * neden, VE/VEYA kapısı...) seçilmek zorunda; o yüzden düğme doğrudan
+   * eklemiyor, sağ tıkla açılan menünün aynısını düğmenin üstünde açıyor.
+   * Seçili kutu yoksa altına ekleyecek bir yer de yok: düğme pasif kalıyor.
+   */
+  const secili = ftaNodes.filter((n) => n.selected);
+  const seciliKutu = secili.length === 1 ? secili[0] : null;
+
+  const dugmeIleEkle = useCallback((yer: { x: number; y: number }) => {
+    if (!seciliKutu) return;
+    document.dispatchEvent(new Event('close-menus'));
+    setMenu({ id: seciliKutu.id, top: yer.y, left: yer.x });
+  }, [seciliKutu]);
+
   const probabilityMap = useMemo(() => {
     const cache = new Map<string, number | undefined>();
     ftaNodes.forEach(n => calculateProbability(n.id, ftaNodes, ftaEdges, cache));
@@ -110,7 +130,7 @@ export default function FtaCanvas() {
         onPaneClick={onPaneClick}
         fitView
         deleteKeyCode={['Delete']}
-        fitViewOptions={{ duration: 1000 }}
+        fitViewOptions={{ duration: 1000, maxZoom: 1.2 }}
         minZoom={0.1}
         defaultEdgeOptions={{
           type: 'smoothstep',
@@ -143,6 +163,15 @@ export default function FtaCanvas() {
         )}
 
         <CanvasBackdrop />
+
+        {!showStarterPanel && ftaNodes.length > 0 && (
+          <CanvasAddButton
+            etiket={t('canvas_add_box')}
+            ipucu={seciliKutu ? t('canvas_add_hint_menu') : t('canvas_add_select_first')}
+            pasif={!seciliKutu}
+            onClick={dugmeIleEkle}
+          />
+        )}
 
         {showStarterPanel && (
           <Panel position="top-center" className="mt-20">

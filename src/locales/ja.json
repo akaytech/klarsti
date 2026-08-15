@@ -749,5 +749,13 @@
   "bulk_delete": "選択したものを削除",
   "notepad_prev_day": "前の日",
   "notepad_next_day": "次の日",
-  "notepad_today": "今日"
+  "notepad_today": "今日",
+  "canvas_add_box": "ボックスを追加",
+  "canvas_add_child": "子ボックスを追加",
+  "canvas_add_hint_child": "選択したボックスの下に新しいボックスを追加します。",
+  "canvas_add_hint_root": "キャンバスに新しいボックスを追加します。",
+  "canvas_add_hint_menu": "追加するボックスの種類を選ぶ一覧を開きます。",
+  "canvas_add_select_first": "先にボックスを選択してください。",
+  "canvas_add_shortcut_ctrl": "ショートカット: Ctrl + クリック",
+  "canvas_add_shortcut_tab": "ショートカット: Tab"
 }

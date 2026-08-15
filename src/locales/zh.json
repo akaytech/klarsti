@@ -749,5 +749,13 @@
   "bulk_delete": "删除所选",
   "notepad_prev_day": "前一天",
   "notepad_next_day": "后一天",
-  "notepad_today": "今天"
+  "notepad_today": "今天",
+  "canvas_add_box": "添加方框",
+  "canvas_add_child": "添加子方框",
+  "canvas_add_hint_child": "在所选方框下方添加一个新方框。",
+  "canvas_add_hint_root": "在画布上添加一个新方框。",
+  "canvas_add_hint_menu": "打开列表以选择要添加的方框类型。",
+  "canvas_add_select_first": "请先选择一个方框。",
+  "canvas_add_shortcut_ctrl": "快捷键：Ctrl + 单击",
+  "canvas_add_shortcut_tab": "快捷键：Tab"
 }

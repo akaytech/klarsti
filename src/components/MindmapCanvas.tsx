@@ -18,6 +18,7 @@ import { metinAlaninda } from '../utils/metinAlaninda';
 import MindmapNode from './MindmapNode';
 import MindmapContextMenu from './MindmapContextMenu';
 import MindmapMapsMenu from './MindmapMapsMenu';
+import CanvasAddButton from './CanvasAddButton';
 import { DAL_RENKLERI, mindmapYerlesimi } from '../utils/mindmapLayout';
 
 const nodeTypes = {
@@ -30,12 +31,13 @@ const BOS_KENARLAR: Edge[] = [];
 export default function MindmapCanvas() {
   const { t } = useTranslation();
   const {
-    mindmaps, activeMindmapId, onMindmapNodesChange, onMindmapEdgesChange,
+    mindmaps, activeMindmapId, mindmapSelectedId, onMindmapNodesChange, onMindmapEdgesChange,
     addMindmap, addMindmapChild, addMindmapSibling, deleteMindmapNode, toggleMindmapCollapse,
     setMindmapEditingLabel, setMindmapDescriptionId, toggleMindmapDone, setMindmapSelected
   } = useRoadmapStore(useShallow((s) => ({
     mindmaps: s.mindmaps,
     activeMindmapId: s.activeMindmapId,
+    mindmapSelectedId: s.mindmapSelectedId,
     onMindmapNodesChange: s.onMindmapNodesChange,
     onMindmapEdgesChange: s.onMindmapEdgesChange,
     addMindmap: s.addMindmap,
@@ -183,6 +185,18 @@ export default function MindmapCanvas() {
 
   const kok = getMindmapRoot(mindmapNodes, mindmapEdges);
 
+  /**
+   * Alttaki "alt dal ekle" düğmesi. Tab tuşuyla aynı iş; klavye kısayolunu
+   * bilmeyen ve fareyle çalışan kullanıcının görünen yolu bu.
+   */
+  const dugmeIleEkle = useCallback(() => {
+    const hedef = mindmapSelectedId || kok?.id;
+    if (!hedef) return;
+    setMenu(null);
+    const yeni = addMindmapChild(hedef, t('mindmap_new_node'));
+    if (yeni) { setMindmapSelected(yeni); setMindmapEditingLabel(yeni); }
+  }, [mindmapSelectedId, kok?.id, addMindmapChild, setMindmapSelected, setMindmapEditingLabel, t]);
+
   return (
     <div className="flex-1 h-full w-full relative transition-colors bg-slate-50 dark:bg-slate-900">
       <ReactFlow
@@ -261,6 +275,15 @@ export default function MindmapCanvas() {
           className="!w-40 !h-40 !rounded-full overflow-hidden border-4 border-slate-200 dark:border-slate-700 shadow-2xl dark:bg-slate-800 bg-white"
           nodeColor={(n) => DAL_RENKLERI[((n.data as any)?.branch ?? 0) % DAL_RENKLERI.length]}
         />
+
+        {/* Yalnız kök varken üstteki karşılama panelinde zaten düğme duruyor. */}
+        {aktifHarita && mindmapNodes.length > 1 && (
+          <CanvasAddButton
+            etiket={t('mindmap_add_child')}
+            ipucu={`${t('canvas_add_hint_child')} ${t('canvas_add_shortcut_tab')}`}
+            onClick={dugmeIleEkle}
+          />
+        )}
       </ReactFlow>
 
       {menu && (

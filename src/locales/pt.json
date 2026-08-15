@@ -749,5 +749,13 @@
   "bulk_delete": "Excluir selecionados",
   "notepad_prev_day": "Dia anterior",
   "notepad_next_day": "Próximo dia",
-  "notepad_today": "Hoje"
+  "notepad_today": "Hoje",
+  "canvas_add_box": "Adicionar caixa",
+  "canvas_add_child": "Adicionar subcaixa",
+  "canvas_add_hint_child": "Adiciona uma caixa abaixo da selecionada.",
+  "canvas_add_hint_root": "Adiciona uma nova caixa à tela.",
+  "canvas_add_hint_menu": "Abre a lista para escolher o tipo de caixa.",
+  "canvas_add_select_first": "Selecione uma caixa primeiro.",
+  "canvas_add_shortcut_ctrl": "Atalho: Ctrl + clique",
+  "canvas_add_shortcut_tab": "Atalho: Tab"
 }

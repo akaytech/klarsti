@@ -749,5 +749,13 @@
   "bulk_delete": "Supprimer la sélection",
   "notepad_prev_day": "Jour précédent",
   "notepad_next_day": "Jour suivant",
-  "notepad_today": "Aujourd'hui"
+  "notepad_today": "Aujourd'hui",
+  "canvas_add_box": "Ajouter une case",
+  "canvas_add_child": "Ajouter une sous-case",
+  "canvas_add_hint_child": "Ajoute une case sous celle qui est sélectionnée.",
+  "canvas_add_hint_root": "Ajoute une nouvelle case au canevas.",
+  "canvas_add_hint_menu": "Ouvre la liste pour choisir le type de case.",
+  "canvas_add_select_first": "Sélectionnez d'abord une case.",
+  "canvas_add_shortcut_ctrl": "Raccourci : Ctrl + clic",
+  "canvas_add_shortcut_tab": "Raccourci : Tab"
 }

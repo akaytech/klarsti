@@ -749,5 +749,13 @@
   "bulk_delete": "Seçilenleri sil",
   "notepad_prev_day": "Önceki gün",
   "notepad_next_day": "Sonraki gün",
-  "notepad_today": "Bugün"
+  "notepad_today": "Bugün",
+  "canvas_add_box": "Kutu Ekle",
+  "canvas_add_child": "Alt Kutu Ekle",
+  "canvas_add_hint_child": "Seçili kutunun altına yeni bir kutu ekler.",
+  "canvas_add_hint_root": "Tuvale yeni bir kutu ekler.",
+  "canvas_add_hint_menu": "Eklenecek kutu türünü seçmek için listeyi açar.",
+  "canvas_add_select_first": "Önce bir kutu seç.",
+  "canvas_add_shortcut_ctrl": "Kısayol: Ctrl + tık",
+  "canvas_add_shortcut_tab": "Kısayol: Tab"
 }

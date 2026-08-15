@@ -17,6 +17,8 @@ import { useTheme } from '../theme';
 import CanvasBackdrop from './CanvasBackdrop';
 import { metinAlaninda } from '../utils/metinAlaninda';
 import GoalNode from './GoalNode';
+import CanvasAddButton from './CanvasAddButton';
+import { useEkranaSigdir } from '../utils/ekranaSigdir';
 import PaneContextMenu from './PaneContextMenu';
 import SelectionContextMenu from './SelectionContextMenu';
 import WbsTreesMenu from './WbsTreesMenu';
@@ -83,6 +85,11 @@ export default function RoadmapCanvas({ onNodeSelect }: { onNodeSelect: (id: str
     const zamanlayici = setTimeout(() => normalizeWbsLayout(), 300);
     return () => clearTimeout(zamanlayici);
   }, [normalizeWbsLayout, aktifAgac?.id]);
+
+  // Ağaç değişince ya da örnek şablon yüklenince kamera içeriğe sığdırılıyor.
+  // Gecikme yukarıdaki dizilim düzeltmesinden (300 ms) sonraya ayarlı; daha
+  // erken sığdırılırsa kutuların düzeltilmemiş konumlarına göre hesaplanıyor.
+  useEkranaSigdir(aktifAgac?.id, nodes.length, { padding: 0.18, duration: 500, gecikme: 380 });
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => { if (e.key === 'Shift') setIsShiftPressed(true); };
@@ -272,6 +279,25 @@ export default function RoadmapCanvas({ onNodeSelect }: { onNodeSelect: (id: str
     setEditingDescriptionId(null);
   }, [setContextMenuNodeId, setEditingDescriptionId]);
 
+  /**
+   * Alttaki "kutu ekle" düğmesi. Ctrl+tık ile birebir aynı işi yapıyor:
+   * seçili bir kutu varsa altına, yoksa tuvale yeni bir kök açıyor. Kısayolu
+   * bilmeyen kullanıcının tek görünür yolu bu.
+   */
+  const tekSeciliVar = nodes.filter((n) => n.selected).length === 1;
+
+  const dugmeIleEkle = useCallback(() => {
+    document.dispatchEvent(new Event('close-menus'));
+    const secili = nodes.filter((n) => n.selected);
+    if (secili.length === 1) {
+      const id = secili[0].id;
+      const derinlik = getDepth(id, edges);
+      addGoal(id, derinlik === 0 ? t('new_task') : t('new_subtask'));
+      return;
+    }
+    addGoal(null, t('new_project_node'));
+  }, [nodes, edges, addGoal, t]);
+
   const onPaneClick = useCallback((event: React.MouseEvent) => {
     document.dispatchEvent(new Event('close-menus'));
     if (event.ctrlKey || event.metaKey) {
@@ -306,7 +332,9 @@ export default function RoadmapCanvas({ onNodeSelect }: { onNodeSelect: (id: str
         onMoveStart={onMoveStart}
         fitView
         deleteKeyCode={['Delete']}
-        fitViewOptions={{ duration: 1000 }}
+        // maxZoom: tek kutulu bir ağaçta sığdırma varsayılan üst sınıra (2 kat)
+        // kadar yaklaşıyor ve sonradan gelen kutular o yakınlıkta kalıyordu.
+        fitViewOptions={{ duration: 1000, maxZoom: 1.2 }}
         minZoom={0.1}
         defaultEdgeOptions={{
           type: 'smoothstep',
@@ -341,6 +369,15 @@ export default function RoadmapCanvas({ onNodeSelect }: { onNodeSelect: (id: str
 
         <MiniMap position="bottom-right" className="!w-48 !h-48 !rounded-full overflow-hidden border-4 border-slate-200 dark:border-slate-700 shadow-2xl dark:bg-slate-800 bg-white" maskColor={themeColors.minimapMask} nodeColor={themeColors.minimapNode} zoomable pannable />
         <CanvasBackdrop />
+
+        {/* Başlangıç paneli açıkken gizli: orada zaten iki büyük düğme var. */}
+        {!showStarterPanel && (
+          <CanvasAddButton
+            etiket={tekSeciliVar ? t('canvas_add_child') : t('canvas_add_box')}
+            ipucu={`${tekSeciliVar ? t('canvas_add_hint_child') : t('canvas_add_hint_root')} ${t('canvas_add_shortcut_ctrl')}`}
+            onClick={dugmeIleEkle}
+          />
+        )}
 
         {showStarterPanel && (
           <Panel position="top-center" className="mt-20">

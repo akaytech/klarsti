@@ -749,5 +749,13 @@
   "bulk_delete": "Elimina selezione",
   "notepad_prev_day": "Giorno precedente",
   "notepad_next_day": "Giorno successivo",
-  "notepad_today": "Oggi"
+  "notepad_today": "Oggi",
+  "canvas_add_box": "Aggiungi riquadro",
+  "canvas_add_child": "Aggiungi sotto-riquadro",
+  "canvas_add_hint_child": "Aggiunge un riquadro sotto quello selezionato.",
+  "canvas_add_hint_root": "Aggiunge un nuovo riquadro alla tela.",
+  "canvas_add_hint_menu": "Apre l'elenco per scegliere il tipo di riquadro.",
+  "canvas_add_select_first": "Seleziona prima un riquadro.",
+  "canvas_add_shortcut_ctrl": "Scorciatoia: Ctrl + clic",
+  "canvas_add_shortcut_tab": "Scorciatoia: Tab"
 }

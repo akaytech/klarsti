@@ -749,5 +749,13 @@
   "bulk_delete": "Auswahl löschen",
   "notepad_prev_day": "Vorheriger Tag",
   "notepad_next_day": "Nächster Tag",
-  "notepad_today": "Heute"
+  "notepad_today": "Heute",
+  "canvas_add_box": "Feld hinzufügen",
+  "canvas_add_child": "Unterfeld hinzufügen",
+  "canvas_add_hint_child": "Fügt unter dem ausgewählten Feld ein neues Feld hinzu.",
+  "canvas_add_hint_root": "Fügt der Arbeitsfläche ein neues Feld hinzu.",
+  "canvas_add_hint_menu": "Öffnet die Liste, um die Art des Feldes zu wählen.",
+  "canvas_add_select_first": "Wähle zuerst ein Feld aus.",
+  "canvas_add_shortcut_ctrl": "Kurzbefehl: Strg + Klick",
+  "canvas_add_shortcut_tab": "Kurzbefehl: Tab"
 }

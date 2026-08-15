@@ -749,5 +749,13 @@
   "bulk_delete": "Eliminar selección",
   "notepad_prev_day": "Día anterior",
   "notepad_next_day": "Día siguiente",
-  "notepad_today": "Hoy"
+  "notepad_today": "Hoy",
+  "canvas_add_box": "Añadir cuadro",
+  "canvas_add_child": "Añadir cuadro hijo",
+  "canvas_add_hint_child": "Añade un cuadro debajo del seleccionado.",
+  "canvas_add_hint_root": "Añade un cuadro nuevo al lienzo.",
+  "canvas_add_hint_menu": "Abre la lista para elegir el tipo de cuadro.",
+  "canvas_add_select_first": "Selecciona primero un cuadro.",
+  "canvas_add_shortcut_ctrl": "Atajo: Ctrl + clic",
+  "canvas_add_shortcut_tab": "Atajo: Tab"
 }

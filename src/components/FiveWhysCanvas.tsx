@@ -19,6 +19,8 @@ import FiveWhysNode from './FiveWhysNode';
 import FiveWhysContextMenu from './FiveWhysContextMenu';
 import PaneContextMenu from './PaneContextMenu';
 import AnalysisMenu from './AnalysisMenu';
+import CanvasAddButton from './CanvasAddButton';
+import { useEkranaSigdir } from '../utils/ekranaSigdir';
 
 const nodeTypes = {
   fiveWhysNode: FiveWhysNode,
@@ -70,6 +72,28 @@ function FiveWhysCanvasInner() {
   const aktifAnaliz = useRoadmapStore(getActiveFiveWhys);
   const fiveWhysNodes = aktifAnaliz?.nodes ?? BOS_NODES;
   const fiveWhysEdges = aktifAnaliz?.edges ?? BOS_EDGES;
+
+  // Analiz değişince ya da örnek yüklenince kamera içeriğe sığdırılıyor.
+  useEkranaSigdir(aktifAnaliz?.id, fiveWhysNodes.length, { padding: 0.2 });
+
+  /**
+   * Alttaki "kutu ekle" düğmesi. Ctrl+tık ile aynı iş: seçili kutunun altına
+   * bir "neden" açıyor, seçim yoksa yeni bir problem kutusu koyuyor. Kök neden
+   * (solution) kutusunun altına eklenmiyor; kısayol da eklemiyordu.
+   */
+  const secili = fiveWhysNodes.filter((n: any) => n.selected);
+  const seciliKutu = secili.length === 1 && secili[0].data?.type !== 'solution' ? secili[0] : null;
+
+  const dugmeIleEkle = useCallback(() => {
+    setMenu(null);
+    setPaneMenu(null);
+    const su = fiveWhysNodes.filter((n: any) => n.selected);
+    if (su.length === 1 && su[0].data?.type !== 'solution') {
+      addFiveWhysNode(su[0].id, 'why', t('whys_placeholder'));
+      return;
+    }
+    addFiveWhysNode(null, 'problem', t('whys_placeholder'));
+  }, [fiveWhysNodes, addFiveWhysNode, t]);
 
   const onNodeContextMenu = useCallback(
     (event: React.MouseEvent, node: any) => {
@@ -152,7 +176,7 @@ function FiveWhysCanvasInner() {
           onNodeClick={onNodeClick}
           onPaneClick={onPaneClick}
           fitView
-          fitViewOptions={{ padding: 0.2 }}
+          fitViewOptions={{ padding: 0.2, maxZoom: 1.2 }}
           minZoom={0.1}
           deleteKeyCode={['Delete']}
           defaultEdgeOptions={{
@@ -164,6 +188,15 @@ function FiveWhysCanvasInner() {
         >
           <MiniMap position="bottom-right" className="!w-48 !h-48 !rounded-full overflow-hidden border-4 border-slate-200 dark:border-slate-700 shadow-2xl dark:bg-slate-800 bg-white" maskColor={themeColors.minimapMask} nodeColor={themeColors.minimapNode} zoomable pannable />
           <CanvasBackdrop />
+
+          {/* Boş tuvalde gizli: oradaki karşılama panelinde zaten iki düğme var. */}
+          {fiveWhysNodes.length > 0 && (
+            <CanvasAddButton
+              etiket={seciliKutu ? t('canvas_add_child') : t('canvas_add_box')}
+              ipucu={`${seciliKutu ? t('canvas_add_hint_child') : t('canvas_add_hint_root')} ${t('canvas_add_shortcut_ctrl')}`}
+              onClick={dugmeIleEkle}
+            />
+          )}
 
           {aktifAnaliz && (
             <Panel position="top-left" style={{ marginTop: 68 }}>

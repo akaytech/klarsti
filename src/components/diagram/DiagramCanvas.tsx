@@ -18,6 +18,7 @@ import DiagramNode from './DiagramNode';
 import DiagramContextMenu from './DiagramContextMenu';
 import DiagramTypePicker from './DiagramTypePicker';
 import DiagramChartsMenu from './DiagramChartsMenu';
+import CanvasAddButton from '../CanvasAddButton';
 import { useDiagram } from './useDiagram';
 import { islemBasla, islemBitir } from '../../store/gecmis';
 
@@ -98,6 +99,21 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
     setMenu(null);
   }, []);
 
+  /**
+   * Alttaki "kutu ekle" düğmesi. Şemada yeni kutunun şekli (adım, karar,
+   * başlangıç...) seçilmek zorunda; düğme doğrudan eklemiyor, kutuya sağ
+   * tıkınca açılan menünün aynısını düğmenin üstünde açıyor. Yeni kutu seçili
+   * kutunun altına iniyor, o yüzden seçim yokken düğme pasif.
+   */
+  const secili = aktif?.nodes.filter((n) => n.selected) ?? [];
+  const seciliKutu = secili.length === 1 ? secili[0] : null;
+
+  const dugmeIleEkle = useCallback((yer: { x: number; y: number }) => {
+    if (!seciliKutu) return;
+    document.dispatchEvent(new Event('close-menus'));
+    setMenu({ id: seciliKutu.id, top: yer.y, left: yer.x });
+  }, [seciliKutu]);
+
   // Projede hiç şema yoksa doğrudan tür seçim ekranı çıkar.
   if (!aktif) {
     return <DiagramTypePicker kind={kind} />;
@@ -123,7 +139,7 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
         onMoveStart={onMoveStart}
         fitView
         deleteKeyCode={['Delete']}
-        fitViewOptions={{ duration: 1000 }}
+        fitViewOptions={{ duration: 1000, maxZoom: 1.2 }}
         minZoom={0.1}
         defaultEdgeOptions={{
           type: tur.edge.type,
@@ -154,6 +170,15 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
           className="!w-48 !h-48 !rounded-full overflow-hidden border-4 border-slate-200 dark:border-slate-700 shadow-2xl dark:bg-slate-800 bg-white"
           nodeColor={(n) => k.getShape((n.data as any)?.shape).minimapColor}
         />
+
+        {aktif.nodes.length > 0 && (
+          <CanvasAddButton
+            etiket={t('canvas_add_box')}
+            ipucu={seciliKutu ? t('canvas_add_hint_menu') : t('canvas_add_select_first')}
+            pasif={!seciliKutu}
+            onClick={dugmeIleEkle}
+          />
+        )}
       </ReactFlow>
 
       {menu && (

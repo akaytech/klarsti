@@ -749,5 +749,13 @@
   "bulk_delete": "Удалить выбранные",
   "notepad_prev_day": "Предыдущий день",
   "notepad_next_day": "Следующий день",
-  "notepad_today": "Сегодня"
+  "notepad_today": "Сегодня",
+  "canvas_add_box": "Добавить блок",
+  "canvas_add_child": "Добавить дочерний блок",
+  "canvas_add_hint_child": "Добавляет новый блок под выбранным.",
+  "canvas_add_hint_root": "Добавляет новый блок на холст.",
+  "canvas_add_hint_menu": "Открывает список, чтобы выбрать тип блока.",
+  "canvas_add_select_first": "Сначала выберите блок.",
+  "canvas_add_shortcut_ctrl": "Сочетание: Ctrl + щелчок",
+  "canvas_add_shortcut_tab": "Сочетание: Tab"
 }

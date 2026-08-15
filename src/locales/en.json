@@ -749,5 +749,13 @@
   "bulk_delete": "Delete selected",
   "notepad_prev_day": "Previous day",
   "notepad_next_day": "Next day",
-  "notepad_today": "Today"
+  "notepad_today": "Today",
+  "canvas_add_box": "Add box",
+  "canvas_add_child": "Add child box",
+  "canvas_add_hint_child": "Adds a new box under the selected one.",
+  "canvas_add_hint_root": "Adds a new box to the canvas.",
+  "canvas_add_hint_menu": "Opens the list so you can pick the kind of box to add.",
+  "canvas_add_select_first": "Select a box first.",
+  "canvas_add_shortcut_ctrl": "Shortcut: Ctrl + click",
+  "canvas_add_shortcut_tab": "Shortcut: Tab"
 }

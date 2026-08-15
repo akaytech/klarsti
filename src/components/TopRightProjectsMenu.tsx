@@ -241,7 +241,7 @@ function ToolTreeItem({
           onClick={() => setIsExpanded(!isExpanded)}
           aria-label={isExpanded ? t('collapse_tool', { defaultValue: 'Collapse' }) : t('expand_tool', { defaultValue: 'Expand' })}
           aria-expanded={isExpanded}
-          className="shrink-0 p-0.5"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700"
         >
           {isExpanded ? <ChevronDown size={12} className="text-slate-400" /> : <ChevronRight size={12} className="text-slate-400" />}
         </button>
@@ -279,7 +279,7 @@ function ToolTreeItem({
             e.stopPropagation();
             requestDelete(t('clear_tool_title'), t('clear_tool_msg'), () => clearToolData(project.id, tool.id));
           }}
-          className="p-2 text-slate-400 opacity-40 transition-opacity hover:text-red-500 group-hover/tool:opacity-100"
+          className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 opacity-40 transition-opacity hover:text-red-500 group-hover/tool:opacity-100"
           title={t('delete')}
           aria-label={t('delete')}
         >
@@ -352,7 +352,7 @@ function ProjectTreeItem({ project, isCurrent, onClose, requestDelete, requestSh
             onClick={() => setIsExpanded(!isExpanded)}
             aria-label={isExpanded ? t('collapse_project') : t('expand_project')}
             aria-expanded={isExpanded}
-            className="shrink-0 p-0.5"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700"
           >
             {isExpanded ? <ChevronDown size={14} className="text-slate-400" /> : <ChevronRight size={14} className="text-slate-400" />}
           </button>
@@ -401,7 +401,7 @@ function ProjectTreeItem({ project, isCurrent, onClose, requestDelete, requestSh
                      e.stopPropagation();
                      requestShare({ projectId: project.id });
                   }}
-                  className="relative p-2 text-slate-400 hover:text-indigo-500 transition-colors"
+                  className="relative flex h-9 w-9 items-center justify-center rounded-lg text-slate-400 hover:text-indigo-500 transition-colors"
                   title={t('share')} aria-label={t('share')}
                 >
                   <Link2 size={14} />
@@ -415,7 +415,7 @@ function ProjectTreeItem({ project, isCurrent, onClose, requestDelete, requestSh
                      e.stopPropagation();
                      setIsEditing(true);
                   }}
-                  className="p-2 text-slate-400 hover:text-indigo-500 transition-colors"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-400 hover:text-indigo-500 transition-colors"
                   title={t('rename_title')} aria-label={t('rename_title')}
                 >
                   <Pencil size={14} />
@@ -432,7 +432,7 @@ function ProjectTreeItem({ project, isCurrent, onClose, requestDelete, requestSh
                    () => deleteProject(project.id)
                  );
               }}
-              className="p-2 text-slate-400 hover:text-red-500 transition-colors"
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-400 hover:text-red-500 transition-colors"
               title={project.klasorYok ? t('leave_shared_btn', { defaultValue: 'Leave' }) : t('delete_project_btn')}
               aria-label={project.klasorYok ? t('leave_shared_btn', { defaultValue: 'Leave' }) : t('delete_project_btn')}
             >
@@ -524,7 +524,7 @@ export default function TopRightProjectsMenu() {
           <button 
             onClick={() => setIsCreating(true)}
             aria-label={t('new_project')}
-            className="rounded bg-indigo-50 dark:bg-indigo-900/50 p-2 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900 transition-colors"
+            className="flex h-9 w-9 items-center justify-center rounded bg-indigo-50 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900 transition-colors"
           >
              <Plus size={16} />
           </button>

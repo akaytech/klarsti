@@ -142,9 +142,13 @@ export default function HistogramCanvas() {
   };
 
   return (
-    <div className="flex h-full flex-1 overflow-hidden bg-slate-50 pt-16 dark:bg-slate-900 md:pt-20">
+    // Dar ekranda yan yana durmuyor: sol panelin 320 piksellik tabanı telefon
+    // ekranının tamamına yakınını yiyor, grafiğe avuç içi kadar yer kalıyordu.
+    // Telefonda panel üstte, grafik altında; panelin boyu da sınırlı ki grafik
+    // bir parmak kaydırmayla görünsün.
+    <div className="flex h-full flex-1 flex-col overflow-hidden bg-slate-50 pt-16 dark:bg-slate-900 md:flex-row md:pt-20">
       {/* SOL: veri girişi ve ayarlar */}
-      <div className="flex w-1/3 min-w-[320px] flex-col overflow-hidden border-e border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-800/50">
+      <div className="flex max-h-[45vh] w-full shrink-0 flex-col overflow-hidden border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-800/50 md:max-h-none md:w-1/3 md:min-w-[320px] md:border-b-0 md:border-e">
         <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
           {adDuzenleniyor && aktif ? (
             <DebouncedField
@@ -256,8 +260,8 @@ export default function HistogramCanvas() {
       </div>
 
       {/* SAĞ: grafik ve istatistikler */}
-      <div className="flex flex-1 flex-col items-center overflow-auto bg-slate-50 p-6 dark:bg-slate-900">
-        <div className="w-full max-w-4xl rounded-2xl border border-slate-200 bg-white p-6 shadow-xl dark:border-slate-700 dark:bg-slate-800">
+      <div className="flex flex-1 flex-col items-center overflow-auto bg-slate-50 p-4 dark:bg-slate-900 sm:p-6">
+        <div className="w-full max-w-4xl rounded-2xl border border-slate-200 bg-white p-4 shadow-xl dark:border-slate-700 dark:bg-slate-800 sm:p-6">
           <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-slate-800 dark:text-slate-100">
             <BarChart className="text-blue-500" />
             {t('histogram_chart')}

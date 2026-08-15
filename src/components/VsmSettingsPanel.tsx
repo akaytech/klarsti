@@ -42,7 +42,7 @@ export default function VsmSettingsPanel({ harita }: { harita: VsmHarita }) {
   const birimler = { sec: t('vsm_time_unit_sec'), min: t('vsm_time_unit_min'), hr: t('vsm_time_unit_hr') };
 
   return (
-    <div className="w-64 rounded-2xl border border-slate-200 bg-white/95 shadow-lg backdrop-blur-md dark:border-slate-700 dark:bg-slate-800/95">
+    <div className="w-56 sm:w-64 rounded-2xl border border-slate-200 bg-white/95 shadow-lg backdrop-blur-md dark:border-slate-700 dark:bg-slate-800/95">
       <button
         onClick={() => setAcik((a) => !a)}
         className="flex w-full items-center gap-3 rounded-2xl px-3 py-2.5 text-start transition-colors hover:bg-slate-50 dark:hover:bg-slate-700/50"

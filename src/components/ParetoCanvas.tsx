@@ -112,10 +112,13 @@ export default function ParetoCanvas() {
   const gap = chartData.length > 0 ? (chartWidth / chartData.length) * 0.2 : 0;
 
   return (
-    <div className="flex-1 flex h-full overflow-hidden bg-slate-50 dark:bg-slate-900 pt-16 md:pt-20">
-      
+    // Dar ekranda yan yana durmuyor: sol panele ekranın üçte biri, yani telefonda
+    // 125 piksel düşüyordu; içindeki tablo sığmıyor, başlık ve düğmeler kırpılıyordu.
+    // Telefonda veri girişi üstte, grafik altında.
+    <div className="flex-1 flex flex-col md:flex-row h-full overflow-hidden bg-slate-50 dark:bg-slate-900 pt-16 md:pt-20">
+
       {/* LEFT PANEL: Data Entry Table */}
-      <div className="w-1/3 flex flex-col border-e border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/50 overflow-hidden">
+      <div className="w-full shrink-0 max-h-[45vh] md:max-h-none md:w-1/3 flex flex-col border-b md:border-b-0 md:border-e border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/50 overflow-hidden">
         <div className="p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-800">
           {isEditingTitle && activePareto && currentProjectId ? (
              <DebouncedField
@@ -139,18 +142,18 @@ export default function ParetoCanvas() {
                 ))}
               </select>
               {activePareto && (
-                <button onClick={() => setIsEditingTitle(true)} className="p-2 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors shrink-0" title={t('rename_title')} aria-label={t('rename_title')}>
+                <button onClick={() => setIsEditingTitle(true)} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" title={t('rename_title')} aria-label={t('rename_title')}>
                   <Edit2 size={16} />
                 </button>
               )}
               {activePareto && (
-                <button onClick={() => setConfirmDeleteOpen(true)} className="p-2 text-slate-400 hover:text-red-500 transition-colors shrink-0" title={t('delete_pareto_title')} aria-label={t('delete_pareto_title')}>
+                <button onClick={() => setConfirmDeleteOpen(true)} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-400 hover:text-red-500 transition-colors" title={t('delete_pareto_title')} aria-label={t('delete_pareto_title')}>
                   <Trash2 size={16} />
                 </button>
               )}
             </div>
           )}
-          <button onClick={handleCreateAnalysis} className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors shrink-0" title={t('pareto_add_analysis')} aria-label={t('pareto_add_analysis')}>
+          <button onClick={handleCreateAnalysis} className="flex h-9 w-9 shrink-0 items-center justify-center text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors" title={t('pareto_add_analysis')} aria-label={t('pareto_add_analysis')}>
             <Plus size={20} />
           </button>
         </div>
@@ -194,7 +197,7 @@ export default function ParetoCanvas() {
                     <button
                       onClick={() => deleteParetoItem(currentProjectId, activePareto.id, item.id)}
                       aria-label={t('delete')}
-                      className="p-2 text-slate-400 hover:text-red-500 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all rounded hover:bg-red-50 dark:hover:bg-red-900/30"
+                      className="flex h-9 w-9 items-center justify-center text-slate-400 hover:text-red-500 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all rounded hover:bg-red-50 dark:hover:bg-red-900/30"
                     >
                       <Trash2 size={14} />
                     </button>
@@ -222,8 +225,8 @@ export default function ParetoCanvas() {
       </div>
 
       {/* RIGHT PANEL: Chart Canvas */}
-      <div className="flex-1 relative p-6 flex flex-col items-center justify-center overflow-auto bg-slate-50 dark:bg-slate-900">
-        <div className="w-full max-w-4xl bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-6 flex flex-col items-center">
+      <div className="flex-1 relative p-4 sm:p-6 flex flex-col items-center justify-center overflow-auto bg-slate-50 dark:bg-slate-900">
+        <div className="w-full max-w-4xl bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-4 sm:p-6 flex flex-col items-center">
           <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-6 flex items-center gap-2">
             <BarChart2 className="text-blue-500" />
             {t('pareto_chart')}

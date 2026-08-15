@@ -211,3 +211,23 @@ select:disabled {
 .dark .custom-scrollbar:hover::-webkit-scrollbar-thumb {
   background-color: rgb(100 116 139); /* slate-500 */
 }
+
+/*
+ * iOS'ta yazı kutusuna dokununca sayfanın zumlanmasını engeller.
+ *
+ * Safari, yazısı 16 pikselden küçük bir kutuya dokunulduğunda sayfayı
+ * kendiliğinden büyütüyor ve kutudan çıkınca geri küçültmüyor: kullanıcı
+ * yanlamasına kaymış bir sayfada kalıyor. Ölçüyü tarayıcıya yasaklamak
+ * (maximum-scale) yerine kutuların yazısını dar ekranda 16 piksele
+ * çıkarıyoruz; parmakla yazması da böylesi kolay.
+ *
+ * Yalnız dokunmatik ve dar ekranda geçerli: geniş ekranda tasarımdaki
+ * küçük yazılı alanlar olduğu gibi kalıyor.
+ */
+@media (max-width: 767px) and (pointer: coarse) {
+  input:not([type='checkbox']):not([type='radio']):not([type='range']),
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}

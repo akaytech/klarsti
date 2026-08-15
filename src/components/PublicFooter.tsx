@@ -59,7 +59,9 @@ export default function PublicFooter() {
               sığmıyor. Simgeler tek tek sarmalanınca dördü üstte kalıp üçü
               alta düşüyordu ve bozuk duruyordu. Tek kutu olunca kırılma
               hep aynı yerden oluyor: yazılar bir satır, simgeler bir satır. */}
-          <div className="flex flex-wrap items-center justify-center gap-3">
+          {/* Simgeler 18 piksel ama dokunma alanı 40: parmakla 18 piksellik
+              bir hedefe basmak telefonda kumar oynamak demek. */}
+          <div className="flex flex-wrap items-center justify-center gap-1">
           {SOSYAL_HESAPLAR.map(({ ad, adres, Ikon }) => (
             <a
               key={ad}
@@ -67,7 +69,7 @@ export default function PublicFooter() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`Klarsti ${ad}`}
-              className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors"
+              className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-300 transition-colors"
             >
               <Ikon size={18} />
             </a>

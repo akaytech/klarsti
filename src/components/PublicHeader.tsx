@@ -85,8 +85,11 @@ export default function PublicHeader() {
                 <Palette size={20} />
               </button>
 
+              {/* Dar ekranda düğmenin sağına açılıyor: bu düğme çubuğun
+                  ortasında duruyor, sağa hizalanan menü telefonda ekranın
+                  solundan taşıyordu. */}
               <div
-                className={`absolute end-0 top-12 w-52 origin-top-right rtl:origin-top-left rounded-2xl bg-white dark:bg-slate-800 p-2 shadow-xl border border-slate-200 dark:border-slate-700 transition-all duration-200 ease-out ${showThemePicker ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}
+                className={`absolute start-0 sm:start-auto sm:end-0 top-12 w-52 origin-top-left sm:origin-top-right rtl:origin-top-right sm:rtl:origin-top-left rounded-2xl bg-white dark:bg-slate-800 p-2 shadow-xl border border-slate-200 dark:border-slate-700 transition-all duration-200 ease-out ${showThemePicker ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}
               >
                 <ThemeOptionList onPick={() => setShowThemePicker(false)} />
               </div>
@@ -103,7 +106,7 @@ export default function PublicHeader() {
               </button>
 
               <div
-                className={`absolute end-0 top-12 w-48 origin-top-right rtl:origin-top-left rounded-2xl bg-white dark:bg-slate-800 p-2 shadow-xl border border-slate-200 dark:border-slate-700 transition-all duration-200 ease-out ${showLanguagePicker ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}
+                className={`absolute start-0 sm:start-auto sm:end-0 top-12 w-48 origin-top-left sm:origin-top-right rtl:origin-top-right sm:rtl:origin-top-left rounded-2xl bg-white dark:bg-slate-800 p-2 shadow-xl border border-slate-200 dark:border-slate-700 transition-all duration-200 ease-out ${showLanguagePicker ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}
               >
                 <div className="flex flex-col gap-1 max-h-[300px] overflow-y-auto px-1 custom-scrollbar">
                   {DESTEKLENEN_DILLER.map(({ code, nativeName }) => {

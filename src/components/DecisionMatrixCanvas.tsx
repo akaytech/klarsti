@@ -80,7 +80,7 @@ export const DecisionMatrixCanvas: React.FC<DecisionMatrixCanvasProps> = ({ proj
       <div className="max-w-7xl mx-auto space-y-6">
         
         {/* Header Section */}
-        <div className="bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-sm border border-slate-200 dark:border-slate-700 relative overflow-hidden group">
+        <div className="bg-white dark:bg-slate-800 rounded-3xl p-4 sm:p-6 shadow-sm border border-slate-200 dark:border-slate-700 relative overflow-hidden group">
           <div className="absolute top-0 end-0 w-64 h-64 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 dark:from-indigo-500/20 dark:to-purple-500/20 rounded-full blur-3xl -me-32 -mt-32 transition-transform duration-700 group-hover:scale-150" />
           
           <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -94,7 +94,9 @@ export const DecisionMatrixCanvas: React.FC<DecisionMatrixCanvasProps> = ({ proj
               </p>
             </div>
             
-            <div className="flex items-center gap-3">
+            {/* Dar ekranda alt satıra iniyorlar; yan yana zorlanınca "sil"
+                düğmesi ekranın dışında kalıyordu. */}
+            <div className="flex flex-wrap items-center gap-3">
               <button
                 onClick={handleAddCriteria}
                 className="flex items-center gap-2 px-4 py-2 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-xl hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-all active:scale-95 font-medium text-sm"
@@ -142,12 +144,15 @@ export const DecisionMatrixCanvas: React.FC<DecisionMatrixCanvasProps> = ({ proj
               <thead>
                 <tr>
                   {/* Top-Left Corner (Criteria/Weight Headers) */}
-                  <th className="p-4 bg-slate-50 dark:bg-slate-800/50 border-b border-e border-slate-200 dark:border-slate-700 sticky start-0 z-10 w-64 min-w-[16rem]">
+                  {/* Sütunlar dar ekranda daralıyor: eskiden yalnız bu sabit
+                      sütun telefon ekranının üçte ikisini alıyor, puanlara
+                      avuç içi kadar yer kalıyordu. */}
+                  <th className="p-2 sm:p-4 bg-slate-50 dark:bg-slate-800/50 border-b border-e border-slate-200 dark:border-slate-700 sticky start-0 z-10 w-40 min-w-[10rem] sm:w-64 sm:min-w-[16rem]">
                     <div className="flex flex-col gap-2">
                       <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{t('decision_criteria_name')}</span>
                     </div>
                   </th>
-                  <th className="p-4 bg-slate-50 dark:bg-slate-800/50 border-b border-e border-slate-200 dark:border-slate-700 w-24 min-w-[6rem] text-center">
+                  <th className="p-2 sm:p-4 bg-slate-50 dark:bg-slate-800/50 border-b border-e border-slate-200 dark:border-slate-700 w-20 min-w-[5rem] sm:w-24 sm:min-w-[6rem] text-center">
                     <div className="flex flex-col items-center gap-1 justify-center">
                       <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{t('decision_criteria_weight')}</span>
                     </div>
@@ -157,7 +162,7 @@ export const DecisionMatrixCanvas: React.FC<DecisionMatrixCanvasProps> = ({ proj
                   {project.options.map((option) => (
                     <th 
                       key={option.id}
-                      className={`p-4 bg-slate-50 dark:bg-slate-800/50 border-b border-e border-slate-200 dark:border-slate-700 min-w-[12rem] transition-colors ${hoveredCol === option.id ? 'bg-indigo-50/50 dark:bg-indigo-500/5' : ''}`}
+                      className={`p-2 sm:p-4 bg-slate-50 dark:bg-slate-800/50 border-b border-e border-slate-200 dark:border-slate-700 min-w-[8rem] sm:min-w-[12rem] transition-colors ${hoveredCol === option.id ? 'bg-indigo-50/50 dark:bg-indigo-500/5' : ''}`}
                       onMouseEnter={() => setHoveredCol(option.id)}
                       onMouseLeave={() => setHoveredCol(null)}
                     >
@@ -191,7 +196,7 @@ export const DecisionMatrixCanvas: React.FC<DecisionMatrixCanvasProps> = ({ proj
                     onMouseLeave={() => setHoveredRow(null)}
                   >
                     {/* Criteria Name */}
-                    <td className="p-4 border-b border-e border-slate-200 dark:border-slate-700 sticky start-0 z-10 bg-white dark:bg-slate-800 group/crit">
+                    <td className="p-2 sm:p-4 border-b border-e border-slate-200 dark:border-slate-700 sticky start-0 z-10 bg-white dark:bg-slate-800 group/crit">
                       <div className="flex items-center justify-between gap-2">
                         <DebouncedField
                           initialValue={criteria.name}
@@ -211,7 +216,7 @@ export const DecisionMatrixCanvas: React.FC<DecisionMatrixCanvasProps> = ({ proj
                     </td>
                     
                     {/* Criteria Weight */}
-                    <td className="p-4 border-b border-e border-slate-200 dark:border-slate-700 text-center">
+                    <td className="p-2 sm:p-4 border-b border-e border-slate-200 dark:border-slate-700 text-center">
                       {/* Ağırlık ve puan her tuş vuruşunda değil, alandan
                           çıkınca (ya da Enter'la) yazılıyor: iki basamaklı bir
                           sayı yazmak iki ayrı geri alma adımı üretmesin. */}
@@ -231,7 +236,7 @@ export const DecisionMatrixCanvas: React.FC<DecisionMatrixCanvasProps> = ({ proj
                     {project.options.map((option) => (
                       <td 
                         key={`${criteria.id}-${option.id}`}
-                        className={`p-4 border-b border-e border-slate-200 dark:border-slate-700 transition-colors ${hoveredCol === option.id ? 'bg-indigo-50/30 dark:bg-indigo-500/5' : ''}`}
+                        className={`p-2 sm:p-4 border-b border-e border-slate-200 dark:border-slate-700 transition-colors ${hoveredCol === option.id ? 'bg-indigo-50/30 dark:bg-indigo-500/5' : ''}`}
                         onMouseEnter={() => setHoveredCol(option.id)}
                         onMouseLeave={() => setHoveredCol(null)}
                       >
@@ -258,7 +263,7 @@ export const DecisionMatrixCanvas: React.FC<DecisionMatrixCanvasProps> = ({ proj
                   <tr>
                     <td 
                       colSpan={2} 
-                      className="p-4 border-t-2 border-e border-slate-200 dark:border-slate-700 sticky start-0 z-10 bg-slate-50 dark:bg-slate-800/80 font-bold text-slate-700 dark:text-slate-300 text-end"
+                      className="p-2 sm:p-4 border-t-2 border-e border-slate-200 dark:border-slate-700 sticky start-0 z-10 bg-slate-50 dark:bg-slate-800/80 font-bold text-slate-700 dark:text-slate-300 text-end"
                     >
                       {t('decision_total_score')}:
                     </td>
@@ -269,7 +274,7 @@ export const DecisionMatrixCanvas: React.FC<DecisionMatrixCanvasProps> = ({ proj
                       return (
                         <td 
                           key={`total-${option.id}`}
-                          className={`p-4 border-t-2 border-e border-slate-200 dark:border-slate-700 text-center relative overflow-hidden transition-all duration-500 ${
+                          className={`p-2 sm:p-4 border-t-2 border-e border-slate-200 dark:border-slate-700 text-center relative overflow-hidden transition-all duration-500 ${
                             isWinner 
                               ? 'bg-emerald-50 dark:bg-emerald-900/20' 
                               : hoveredCol === option.id 

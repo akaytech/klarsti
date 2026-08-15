@@ -759,7 +759,7 @@ const NotepadCanvas: React.FC = () => {
                             onClick={(e) => moveEntryToToday(e, entry)}
                             aria-label={t('notepad_move_to_today')}
                             title={t('notepad_move_to_today')}
-                            className="p-2 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/20 rounded-md transition-colors"
+                            className="flex h-9 w-9 shrink-0 items-center justify-center text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/20 rounded-md transition-colors"
                           >
                             <CalendarArrowUp className="w-4 h-4" />
                           </button>
@@ -767,7 +767,7 @@ const NotepadCanvas: React.FC = () => {
                         <button
                           onClick={(e) => handleDelete(e, entry.id)}
                           aria-label={t('notepad_delete_note')}
-                          className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/20 rounded-md transition-colors"
+                          className="flex h-9 w-9 shrink-0 items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/20 rounded-md transition-colors"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>

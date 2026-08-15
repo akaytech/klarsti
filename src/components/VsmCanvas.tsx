@@ -247,7 +247,9 @@ export default function VsmCanvas() {
             <VsmMapsMenu aktif={harita} />
           </Panel>
 
-          <Panel position="top-right" style={{ marginTop: 68 }}>
+          {/* Dar ekranda harita menüsünün altına iniyor; ikisi aynı hizada
+              durunca telefonda üst üste biniyorlardı. */}
+          <Panel position="top-right" className="!mt-[116px] sm:!mt-[68px]">
             <VsmSettingsPanel harita={harita} />
           </Panel>
 

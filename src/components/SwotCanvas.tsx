@@ -53,18 +53,20 @@ export default function SwotCanvas() {
       <div className="flex-1 overflow-auto p-6 md:p-8 space-y-12">
         {/* Create Form */}
         <div className="mx-auto max-w-3xl">
-          <form onSubmit={handleCreate} className="flex gap-3">
+          {/* Dar ekranda alt alta: yan yanayken metin kutusu küçülmüyor ve
+              düğme ekranın dışında kalıyordu, telefonda ilk analiz açılamıyordu. */}
+          <form onSubmit={handleCreate} className="flex flex-col gap-3 sm:flex-row">
             <input
               type="text"
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
               placeholder={t('swot_name_placeholder')}
-              className="flex-1 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-6 py-4 text-lg outline-none focus:border-indigo-500 dark:focus:border-indigo-500 shadow-sm text-slate-800 dark:text-slate-100"
+              className="min-w-0 flex-1 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-6 py-4 text-lg outline-none focus:border-indigo-500 dark:focus:border-indigo-500 shadow-sm text-slate-800 dark:text-slate-100"
             />
             <button
               type="submit"
               disabled={!newTitle.trim()}
-              className="flex items-center gap-2 rounded-2xl bg-indigo-600 px-8 py-4 text-white shadow-sm transition-all hover:bg-indigo-700 active:scale-95 disabled:opacity-50"
+              className="flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-8 py-4 text-white shadow-sm transition-all hover:bg-indigo-700 active:scale-95 disabled:opacity-50"
             >
               <Plus size={24} />
               <span className="font-bold">{t('btn_create')}</span>
@@ -89,7 +91,7 @@ export default function SwotCanvas() {
               />
               <button
                 onClick={() => setDeleteTargetId(safeId)}
-                className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-xl transition-all"
+                className="flex h-9 w-9 shrink-0 items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-xl transition-all"
                 title={t('delete')} aria-label={t('delete')}
               >
                 <Trash2 size={18} />

@@ -11,12 +11,15 @@ import { Controls } from '@xyflow/react';
  * Kilit düğmesi kapalı: React Flow'un "etkileşimi kilitle" düğmesi uygulamanın
  * hiçbir yerinde karşılığı olmayan bir kavram, basan kullanıcı tuvalin neden
  * donduğunu anlamıyordu.
+ *
+ * Düğme boyu React Flow'da 26 piksel geliyor; parmak için küçük olduğundan
+ * 36'ya çıkarıldı, simge aynı kalsın diye iç boşluk da büyütüldü.
  */
 export default function CanvasControls() {
   return (
     <Controls
       showInteractive={false}
-      className="!shadow-xl [&>button]:!border-slate-200 [&>button]:!bg-white [&>button]:!fill-slate-600 hover:[&>button]:!bg-slate-100 dark:[&>button]:!border-slate-700 dark:[&>button]:!bg-slate-800 dark:[&>button]:!fill-slate-300 dark:hover:[&>button]:!bg-slate-700"
+      className="!shadow-xl [&>button]:!h-9 [&>button]:!w-9 [&>button]:!p-2 [&>button]:!border-slate-200 [&>button]:!bg-white [&>button]:!fill-slate-600 hover:[&>button]:!bg-slate-100 dark:[&>button]:!border-slate-700 dark:[&>button]:!bg-slate-800 dark:[&>button]:!fill-slate-300 dark:hover:[&>button]:!bg-slate-700"
     />
   );
 }

@@ -135,7 +135,9 @@ export default function WelcomeScreen() {
               )}
             </div>
 
-            <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
+            {/* grid-cols-1: sütun genişliği kendiliğinden hesaplanınca kesilmeyen
+                uzun başlık sütunu şişiriyor ve kartlar ekranın sağından taşıyordu. */}
+            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
               {sonCalismalar.slice(0, SON_CALISMA_SAYISI).map((calisma) => {
                 const arac = araclar.get(calisma.tool);
                 const tema = toolTheme[calisma.tool] || toolTheme.wbs;
@@ -175,7 +177,7 @@ export default function WelcomeScreen() {
             <div className="h-6 w-1 rounded-full bg-indigo-500"></div>
             <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">{t('ws_intent_heading')}</h2>
           </div>
-          <div className="grid gap-2.5 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-2.5 md:grid-cols-2 lg:grid-cols-3">
             {AMACLAR.map((amac) => {
               const arac = araclar.get(amac.arac);
               const tema = toolTheme[amac.arac] || toolTheme.wbs;
@@ -217,7 +219,7 @@ export default function WelcomeScreen() {
             <div className="h-6 w-1 rounded-full bg-slate-300 dark:bg-slate-700"></div>
             <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">{t('ws_all_tools')}</h2>
           </div>
-          <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
             {CATEGORY_ORDER.flatMap((cat) => PROJECT_TOOLS.filter((tool) => tool.category === cat)).map((tool) => (
               <ToolCard key={tool.id} id={tool.id} icon={tool.icon} title={t(tool.labelKey)} desc={t(tool.descKey)} />
             ))}

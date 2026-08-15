@@ -58,18 +58,20 @@ export default function WaterfallCanvas() {
 
       <div className="flex-1 overflow-auto p-6 md:p-8 space-y-12">
         <div className="mx-auto max-w-4xl">
-          <form onSubmit={handleCreate} className="flex gap-3">
+          {/* Dar ekranda alt alta: yan yanayken metin kutusu küçülmüyor ve
+              düğme ekranın dışında kalıyordu, telefonda ilk proje açılamıyordu. */}
+          <form onSubmit={handleCreate} className="flex flex-col gap-3 sm:flex-row">
             <input
               type="text"
               value={newProject}
               onChange={(e) => setNewProject(e.target.value)}
               placeholder={t('wf_placeholder')}
-              className="flex-1 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-6 py-4 text-lg outline-none focus:border-blue-500 dark:focus:border-blue-500 shadow-sm text-slate-800 dark:text-slate-100"
+              className="min-w-0 flex-1 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-6 py-4 text-lg outline-none focus:border-blue-500 dark:focus:border-blue-500 shadow-sm text-slate-800 dark:text-slate-100"
             />
             <button
               type="submit"
               disabled={!newProject.trim()}
-              className="flex items-center gap-2 rounded-2xl bg-blue-600 px-8 py-4 text-white shadow-sm transition-all hover:bg-blue-700 active:scale-95 disabled:opacity-50"
+              className="flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-blue-600 px-8 py-4 text-white shadow-sm transition-all hover:bg-blue-700 active:scale-95 disabled:opacity-50"
             >
               <Plus size={24} />
               <span className="font-bold">{t('start')}</span>

@@ -792,5 +792,9 @@
   "amac_karar": "الاختيار بين البدائل",
   "amac_fikir": "جمع أفكاري في مكان واحد",
   "amac_durum": "رؤية الوضع كاملاً",
-  "node_progress_hint": "اكتمل {{biten}} من {{toplam}} من المربعات التابعة"
+  "node_progress_hint": "اكتمل {{biten}} من {{toplam}} من المربعات التابعة",
+  "nav_search_placeholder": "ابحث عن أداة",
+  "nav_recent_tools": "المستخدمة مؤخراً",
+  "nav_search_empty": "لا توجد أداة مطابقة",
+  "nav_search_clear": "مسح البحث"
 }

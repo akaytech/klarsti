@@ -792,5 +792,9 @@
   "amac_karar": "Zwischen Optionen entscheiden",
   "amac_fikir": "Meine Ideen an einem Ort sammeln",
   "amac_durum": "Die Lage als Ganzes sehen",
-  "node_progress_hint": "{{biten}} von {{toplam}} untergeordneten Kästen sind fertig"
+  "node_progress_hint": "{{biten}} von {{toplam}} untergeordneten Kästen sind fertig",
+  "nav_search_placeholder": "Werkzeug suchen",
+  "nav_recent_tools": "Zuletzt benutzt",
+  "nav_search_empty": "Kein passendes Werkzeug",
+  "nav_search_clear": "Suche löschen"
 }

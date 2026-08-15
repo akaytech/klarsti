@@ -1,8 +1,9 @@
-import { useState, useRef } from 'react';
+import { useMemo, useState, useRef } from 'react';
 
 import { useRoadmapStore, type ToolId } from '../store/useRoadmapStore';
 import { useShallow } from 'zustand/react/shallow';
-import { ChevronRight, ChevronLeft } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Search, X } from 'lucide-react';
+import { tumCalismalar } from '../utils/calismaListesi';
 import clsx from 'clsx';
 import packageJson from '../../package.json';
 import { useTranslation } from 'react-i18next';
@@ -28,18 +29,88 @@ const NAVBAR_THEME: Record<ToolId, { activeBtn: string; iconBg: string }> = {
   vsm: { activeBtn: "bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400", iconBg: "bg-indigo-100 text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-400" },
 };
 
+/** Menünün üstünde kaç tane "son kullandığın" araç gösterilecek. */
+const SON_ARAC_SAYISI = 3;
+
+/**
+ * Listedeki tek bir araç satırı. Üç yerde birden çiziliyor: arama sonucu,
+ * son kullandıkların ve kategoriler.
+ *
+ * Navbar'ın İÇİNDE tanımlanmamalı: aramaya her harf yazıldığında bileşen
+ * yeniden üretilir, React de bütün satırları söküp yeniden kurardı.
+ */
+function AracDugmesi({ tool, aktif, etiket, onClick }: {
+  tool: (typeof PROJECT_TOOLS)[number];
+  aktif: boolean;
+  etiket: string;
+  onClick: () => void;
+}) {
+  const Icon = tool.icon;
+  const theme = NAVBAR_THEME[tool.id];
+  return (
+    <button
+      onClick={onClick}
+      className={clsx(
+        // text-start şart: tarayıcı düğme içindeki yazıyı varsayılan olarak
+        // ortalar. Türkçede araç adları tek satıra sığdığı için görünmüyordu,
+        // ama İngilizcede "Work Breakdown Structure" iki satıra taşıyor ve
+        // satırlar ortalanmış duruyordu.
+        'flex w-full items-center gap-3 rounded-xl px-3 py-1.5 text-start text-sm font-semibold transition-colors',
+        aktif ? theme.activeBtn : 'text-slate-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800'
+      )}
+    >
+      <div className={clsx('flex h-7 w-7 shrink-0 items-center justify-center rounded-lg', theme.iconBg)}>
+        <Icon size={14} />
+      </div>
+      <span>{etiket}</span>
+    </button>
+  );
+}
+
 export default function Navbar() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
-  const {  activeTool, setActiveTool, projects, createProject, loadProject, currentProjectId  } = useRoadmapStore(useShallow((state) => ({
+  const {  activeTool, setActiveTool, projects, works, createProject, loadProject, currentProjectId  } = useRoadmapStore(useShallow((state) => ({
       activeTool: state.activeTool,
       setActiveTool: state.setActiveTool,
       projects: state.projects,
+      works: state.works,
       createProject: state.createProject,
       loadProject: state.loadProject,
       currentProjectId: state.currentProjectId
     })));
   const menuRef = useRef<HTMLDivElement>(null);
+  const [arama, setArama] = useState('');
+
+  const kucult = (metin: string) => metin.toLocaleLowerCase(i18n.language);
+
+  // Aramada araç adı da açıklaması da taranıyor: kullanıcı "kök neden" yazıp
+  // Kılçık'ı bulabilmeli, aracın adını bilmek zorunda değil.
+  const aramaSonucu = useMemo(() => {
+    const q = kucult(arama.trim());
+    if (!q) return null;
+    return PROJECT_TOOLS.filter(
+      (tool) => kucult(t(tool.labelKey)).includes(q) || kucult(t(tool.descKey)).includes(q)
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [arama, i18n.language, t]);
+
+  // Son kullandıkların: ayrı bir kayıt tutulmuyor, en son dokunulan
+  // çalışmaların araçlarından çıkarılıyor. Hiç çalışması olmayan kullanıcıda
+  // bölüm hiç çizilmiyor.
+  const sonAraclar = useMemo(() => {
+    const sirali = tumCalismalar(projects, works).sort((a, b) => b.guncellendi - a.guncellendi);
+    const gorulen: ToolId[] = [];
+    for (const calisma of sirali) {
+      if (gorulen.includes(calisma.tool)) continue;
+      if (!PROJECT_TOOLS.some((x) => x.id === calisma.tool)) continue;
+      gorulen.push(calisma.tool);
+      if (gorulen.length === SON_ARAC_SAYISI) break;
+    }
+    return gorulen.map((id) => PROJECT_TOOLS.find((x) => x.id === id)!);
+  }, [projects, works]);
+
+
 
   const [klasorBekleyenArac, setKlasorBekleyenArac] = useState<ToolId | null>(null);
 
@@ -49,6 +120,9 @@ export default function Navbar() {
   // kullanıcı her oturumda bir "Yeni Çalışma" daha biriktiriyordu.
   const handleToolClick = (tool: ToolId) => {
     setIsExpanded(false);
+    // Menü kapanırken arama da sıfırlanıyor; yoksa bir dahaki açılışta
+    // filtrelenmiş liste karşılıyor ve araçların yarısı yok sanılıyor.
+    setArama('');
 
     if (currentProjectId && projects.some(p => p.id === currentProjectId)) {
       setActiveTool(tool);
@@ -97,6 +171,7 @@ export default function Navbar() {
       <button
         onClick={(e) => {
           e.stopPropagation();
+          if (isExpanded) setArama('');
           setIsExpanded(!isExpanded);
         }}
         aria-label={t(isExpanded ? 'collapse_sidebar' : 'expand_sidebar', { defaultValue: 'Toggle sidebar' })}
@@ -134,47 +209,72 @@ export default function Navbar() {
       </div>
 
       <div className="flex-1 flex flex-col py-2 px-3 gap-1 overflow-y-auto custom-scrollbar">
-        {CATEGORY_ORDER.map((cat, index) => {
-          const catTools = PROJECT_TOOLS.filter(t => t.category === cat);
-          if (catTools.length === 0) return null;
-          
-          return (
-            <div key={cat} className="contents">
-              <div className={`mb-1 px-3 shrink-0 ${index > 0 ? 'mt-4' : 'mt-2'}`}>
-                {/* Renkler ölçüldü: eski hali (açıkta slate-400, koyuda
-                    slate-500) beyaz zeminde 2,6'ya düşüyordu; okunabilir
-                    sayılmak için 4,5 gerekiyor. Açık temalarda slate-600
-                    (5,3–7,6), koyu temalarda slate-400 (6,4–7,7). */}
-                <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">{t(cat)}</h3>
-              </div>
-              
-              {catTools.map(tool => {
-                const Icon = tool.icon;
-                const theme = NAVBAR_THEME[tool.id];
-                return (
-                  <button
-                    key={tool.id}
-                    onClick={() => handleToolClick(tool.id)}
-                    className={clsx(
-                      // text-start şart: tarayıcı düğme içindeki yazıyı
-                      // varsayılan olarak ortalar. Türkçede araç adları tek
-                      // satıra sığdığı için görünmüyordu, ama İngilizcede
-                      // "Work Breakdown Structure" iki satıra taşıyor ve
-                      // satırlar ortalanmış duruyordu.
-                      "flex w-full items-center gap-3 rounded-xl px-3 py-1.5 text-start text-sm font-semibold transition-colors",
-                      activeTool === tool.id ? theme.activeBtn : "text-slate-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800"
-                    )}
-                  >
-                    <div className={clsx("flex h-7 w-7 shrink-0 items-center justify-center rounded-lg", theme.iconBg)}>
-                      <Icon size={14} />
-                    </div>
-                    <span>{t(tool.labelKey)}</span>
-                  </button>
-                );
-              })}
-            </div>
-          );
-        })}
+        {/* Arama kutusu. 15 araç listeye sığmıyor, alttakileri görmek için
+            kaydırmak gerekiyordu. Kutu kaydırırken de yerinde kalsın diye
+            yapışkan. */}
+        <div className="sticky top-0 z-10 -mx-3 mb-1 bg-white px-3 pb-2 dark:bg-slate-900">
+          <div className="relative">
+            <Search size={15} className="pointer-events-none absolute start-3 top-1/2 -translate-y-1/2 text-slate-400" aria-hidden />
+            <input
+              type="text"
+              value={arama}
+              onChange={(e) => setArama(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Escape') setArama(''); }}
+              placeholder={t('nav_search_placeholder')}
+              aria-label={t('nav_search_placeholder')}
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2 ps-9 pe-8 text-sm text-slate-700 outline-none transition-colors placeholder:text-slate-400 focus:border-indigo-400 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:focus:bg-slate-800"
+            />
+            {arama && (
+              <button
+                onClick={() => setArama('')}
+                aria-label={t('nav_search_clear')}
+                className="absolute end-2 top-1/2 -translate-y-1/2 rounded-lg p-1 text-slate-400 transition-colors hover:bg-slate-200 hover:text-slate-600 dark:hover:bg-slate-700 dark:hover:text-slate-200"
+              >
+                <X size={14} />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {aramaSonucu ? (
+          aramaSonucu.length > 0 ? (
+            aramaSonucu.map((tool) => <AracDugmesi key={tool.id} tool={tool} aktif={activeTool === tool.id} etiket={t(tool.labelKey)} onClick={() => handleToolClick(tool.id)} />)
+          ) : (
+            <p className="px-3 py-6 text-center text-sm text-slate-500 dark:text-slate-400">{t('nav_search_empty')}</p>
+          )
+        ) : (
+          <>
+            {/* Son kullandıkların: ayrı bir kayıt tutulmuyor, en son
+                dokunulan çalışmaların araçlarından çıkarılıyor. */}
+            {sonAraclar.length > 0 && (
+              <>
+                <div className="mb-1 mt-2 px-3 shrink-0">
+                  <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">{t('nav_recent_tools')}</h3>
+                </div>
+                {sonAraclar.map((tool) => <AracDugmesi key={'son-' + tool.id} tool={tool} aktif={activeTool === tool.id} etiket={t(tool.labelKey)} onClick={() => handleToolClick(tool.id)} />)}
+              </>
+            )}
+
+            {CATEGORY_ORDER.map((cat, index) => {
+              const catTools = PROJECT_TOOLS.filter(t => t.category === cat);
+              if (catTools.length === 0) return null;
+
+              return (
+                <div key={cat} className="contents">
+                  <div className={`mb-1 px-3 shrink-0 ${index > 0 || sonAraclar.length > 0 ? 'mt-4' : 'mt-2'}`}>
+                    {/* Renkler ölçüldü: eski hali (açıkta slate-400, koyuda
+                        slate-500) beyaz zeminde 2,6'ya düşüyordu; okunabilir
+                        sayılmak için 4,5 gerekiyor. Açık temalarda slate-600
+                        (5,3–7,6), koyu temalarda slate-400 (6,4–7,7). */}
+                    <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">{t(cat)}</h3>
+                  </div>
+
+                  {catTools.map((tool) => <AracDugmesi key={tool.id} tool={tool} aktif={activeTool === tool.id} etiket={t(tool.labelKey)} onClick={() => handleToolClick(tool.id)} />)}
+                </div>
+              );
+            })}
+          </>
+        )}
       </div>
 
       {/* Version Info */}

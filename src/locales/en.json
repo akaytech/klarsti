@@ -792,5 +792,9 @@
   "amac_karar": "Decide between options",
   "amac_fikir": "Gather my ideas in one place",
   "amac_durum": "See the whole situation at once",
-  "node_progress_hint": "{{biten}} of the {{toplam}} boxes below are done"
+  "node_progress_hint": "{{biten}} of the {{toplam}} boxes below are done",
+  "nav_search_placeholder": "Search tools",
+  "nav_recent_tools": "Recently used",
+  "nav_search_empty": "No matching tool",
+  "nav_search_clear": "Clear search"
 }

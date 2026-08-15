@@ -792,5 +792,9 @@
   "amac_karar": "Decidere tra più opzioni",
   "amac_fikir": "Raccogliere le mie idee in un unico posto",
   "amac_durum": "Vedere la situazione nel suo insieme",
-  "node_progress_hint": "{{biten}} dei {{toplam}} riquadri sottostanti sono completati"
+  "node_progress_hint": "{{biten}} dei {{toplam}} riquadri sottostanti sono completati",
+  "nav_search_placeholder": "Cerca uno strumento",
+  "nav_recent_tools": "Usati di recente",
+  "nav_search_empty": "Nessuno strumento corrisponde",
+  "nav_search_clear": "Cancella la ricerca"
 }

@@ -792,5 +792,9 @@
   "amac_karar": "Decidir entre opções",
   "amac_fikir": "Reunir minhas ideias em um só lugar",
   "amac_durum": "Ver a situação como um todo",
-  "node_progress_hint": "{{biten}} das {{toplam}} caixas abaixo estão concluídas"
+  "node_progress_hint": "{{biten}} das {{toplam}} caixas abaixo estão concluídas",
+  "nav_search_placeholder": "Buscar ferramenta",
+  "nav_recent_tools": "Usadas recentemente",
+  "nav_search_empty": "Nenhuma ferramenta corresponde",
+  "nav_search_clear": "Limpar busca"
 }

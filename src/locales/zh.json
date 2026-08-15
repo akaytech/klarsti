@@ -792,5 +792,9 @@
   "amac_karar": "在几个选项之间做决定",
   "amac_fikir": "把想法集中到一处",
   "amac_durum": "把整体情况看清楚",
-  "node_progress_hint": "下方 {{toplam}} 个方块中已完成 {{biten}} 个"
+  "node_progress_hint": "下方 {{toplam}} 个方块中已完成 {{biten}} 个",
+  "nav_search_placeholder": "搜索工具",
+  "nav_recent_tools": "最近用过",
+  "nav_search_empty": "没有匹配的工具",
+  "nav_search_clear": "清除搜索"
 }

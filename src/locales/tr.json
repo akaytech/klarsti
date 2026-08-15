@@ -792,5 +792,9 @@
   "amac_karar": "Seçenekler arasında karar vereceğim",
   "amac_fikir": "Fikirlerimi bir araya toplayacağım",
   "amac_durum": "Durumu bütün olarak göreceğim",
-  "node_progress_hint": "Altındaki {{toplam}} kutudan {{biten}} tanesi bitti"
+  "node_progress_hint": "Altındaki {{toplam}} kutudan {{biten}} tanesi bitti",
+  "nav_search_placeholder": "Araç ara",
+  "nav_recent_tools": "Son kullandıkların",
+  "nav_search_empty": "Eşleşen araç yok",
+  "nav_search_clear": "Aramayı temizle"
 }

@@ -12,6 +12,10 @@ import { Check, ChevronDown } from 'lucide-react';
  * hesap silme kullanıcının kendi elinde. Bir özellik değişirse buradaki
  * cevap da değişmeli.
  *
+ * Ücretsizlik bugüne dair söyleniyor, geleceğe dair değil: ileride
+ * ücretlendirme gelirse araçlar da ücretli olacak. Bu yüzden burada
+ * "bugün ücretsiz olan ücretsiz kalır" gibi bir söz VERİLMEZ.
+ *
  * DİKKAT: Tanıtım sayfasının içinde, yani siteyi ilk açan herkese iniyor.
  * Buraya depo ya da tuval kodu girmemeli. Açılır cevaplar için JavaScript
  * de yok, tarayıcının kendi <details> öğesi kullanılıyor.

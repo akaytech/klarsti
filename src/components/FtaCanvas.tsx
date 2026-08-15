@@ -166,7 +166,7 @@ export default function FtaCanvas() {
 
         {!showStarterPanel && ftaNodes.length > 0 && (
           <CanvasAddButton
-            etiket={t('canvas_add_box')}
+            etiket={t('canvas_add_generic')}
             ipucu={seciliKutu ? t('canvas_add_hint_menu') : t('canvas_add_select_first')}
             pasif={!seciliKutu}
             onClick={dugmeIleEkle}

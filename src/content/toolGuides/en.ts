@@ -39,31 +39,33 @@ const guides: ToolGuideBundle = {
   wbs: {
     title: 'Work Breakdown Structure (WBS)',
     summary:
-      'A tree that splits a large piece of work into pieces you can actually do. Every box is a task carrying a status, a due date, working hours and a description. Unlike a mind map, here you are managing work, not ideas.',
+      'A tree with three levels: the PROJECT on top, PHASES under it, and WORK PACKAGES under the phases. Every box carries a status, a due date, working hours and a description. Unlike a mind map, here you are managing work, not ideas.',
     whenToUse: [
       'Breaking a project down until it is clear who does what.',
       'Fixing the scope: work that is not on the tree is not in the project.',
-      'Tying tasks to dates and tracking progress through statuses.'
+      'Tying work to dates and tracking progress through statuses.'
     ],
     steps: [
-      'On an empty canvas, hold Ctrl and click an empty spot, or right-click it, to create a root task.',
-      'Ctrl-click a box to add a subtask under it. This is the fastest way to grow the tree.',
+      'A tree holds one project box. For a second project, open a new tree from the "Trees" menu on the left.',
+      'The add button at the bottom follows your selection: with the project selected it says "Add phase", with a phase or work package selected it says "Add work package". With nothing selected it adds a phase under the project.',
+      'To do the same with the keyboard, Ctrl-click a box: it opens a new one underneath.',
       'A plain click selects the box, expands or collapses the branches below it, and centres the camera on it.',
       'Right-click a box to set its name, due date, start and end time, description and status (To Do / In Progress / Done / Failed).',
-      'The same menu has "Add to Agenda", which moves the task into your agenda on the chosen date. It warns you if the date is already in the past.',
-      'Mark a task as Failed and the menu offers "analyze root cause"; one click sends that task to the 5 Whys tool as a problem.'
+      'The same menu has "Add to Agenda", which moves the item into your agenda on the chosen date. It warns you if the date is already in the past.',
+      'Mark an item as Failed and the menu offers "analyze root cause"; one click sends it to the 5 Whys tool as a problem.'
     ],
     shortcuts: [
-      { keys: ['Mod', 'Click'], desc: 'On empty space: new root task' },
-      { keys: ['Mod', 'Click'], desc: 'On a box: add a subtask under it' },
+      { keys: ['Mod', 'Click'], desc: 'On the project box: add a phase under it' },
+      { keys: ['Mod', 'Click'], desc: 'On a phase or work package: add a work package under it' },
       { keys: ['Shift', 'Drag'], desc: 'Move a box together with every branch below it' },
       { keys: ['Delete'], desc: 'Delete the selected box' },
       { keys: ['Mod', 'Z'], desc: 'Undo' },
       { keys: ['Mod', 'Y'], desc: 'Redo' }
     ],
     tips: [
+      'What sits under a work package is a work package too; the breakdown can go as deep as you need.',
       'Drag without Shift and only the box you grabbed moves; everything below it stays put.',
-      'Keep breaking work down until each leaf is small enough for one person to finish alone.',
+      'Keep breaking work down until each work package is small enough for one person to finish alone.',
       'To clear a date, use the small cross next to the date field in the right-click menu; the times are cleared with it.'
     ]
   },

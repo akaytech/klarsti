@@ -42,34 +42,36 @@ const guides: ToolGuideBundle = {
   },
 
   wbs: {
-    title: "Struttura di scomposizione del lavoro (WBS)",
+    title: 'Struttura di scomposizione del lavoro (WBS)',
     summary:
-      "Un albero che divide un lavoro grande in pezzi che puoi davvero eseguire. Ogni riquadro è un'attività con uno stato, una scadenza, degli orari e una descrizione. A differenza della mappa mentale, qui gestisci lavoro, non idee.",
+      'Un albero su tre livelli: in cima il PROGETTO, sotto le FASI e sotto ancora i PACCHETTI DI LAVORO. Ogni riquadro porta stato, data di fine, ore di lavoro e descrizione. A differenza di una mappa mentale, qui gestisci lavoro, non idee.',
     whenToUse: [
-      "Scomporre un progetto finché non è chiaro chi fa che cosa.",
-      "Fissare il perimetro: il lavoro che non è sull'albero non fa parte del progetto.",
-      "Legare le attività alle date e seguire l'avanzamento attraverso gli stati."
+      'Per scomporre un progetto finché è chiaro chi fa cosa.',
+      'Per fissare il perimetro: ciò che non è nell’albero non è nel progetto.',
+      'Per legare il lavoro alle date e seguire l’avanzamento con gli stati.'
     ],
     steps: [
-      "Su una tela vuota, tieni premuto Ctrl e fai clic su un punto libero, oppure clic destro, per creare un'attività radice.",
-      "Ctrl + clic su un riquadro aggiunge una sotto-attività sotto di esso. È il modo più rapido per far crescere l'albero.",
-      "Un clic semplice seleziona il riquadro, espande o comprime i rami sottostanti e centra la vista su di esso.",
-      "Clic destro su un riquadro per impostarne nome, scadenza, ora di inizio e fine, descrizione e stato (Da fare / In corso / Completato / Fallito).",
-      "Nello stesso menu c'è «Aggiungi all'agenda», che porta l'attività nella tua agenda alla data scelta. Ti avvisa se la data è già passata.",
-      "Se segni un'attività come Fallita, il menu propone «analizza la causa profonda»: con un clic quell'attività passa allo strumento dei 5 perché come problema."
+      'Un albero contiene un solo riquadro progetto. Per un secondo progetto apri un nuovo albero dal menu "Alberi" a sinistra.',
+      'Il pulsante in basso segue la selezione: sul progetto dice "Aggiungi fase", su una fase o un pacchetto dice "Aggiungi pacchetto di lavoro". Senza selezione aggiunge una fase sotto il progetto.',
+      'Lo stesso da tastiera: Ctrl+clic su un riquadro apre quello nuovo sotto.',
+      'Un clic normale seleziona il riquadro, apre o chiude i rami sottostanti e centra la camera su di esso.',
+      'Clic destro su un riquadro: nome, data di fine, orario di inizio e fine, descrizione e stato (Da fare / In corso / Fatto / Fallito).',
+      'Nello stesso menu "Aggiungi all’agenda" porta l’elemento nella tua agenda alla data scelta. Avvisa se la data è già passata.',
+      'Se segni un elemento come Fallito, il menu propone "analizza la causa radice"; con un clic passa ai 5 Perché come problema.'
     ],
     shortcuts: [
-      { keys: ["Mod", "Clic"], desc: "Su spazio vuoto: nuova attività radice" },
-      { keys: ["Mod", "Clic"], desc: "Su un riquadro: aggiungi una sotto-attività" },
-      { keys: ["Shift", "Trascina"], desc: "Sposta un riquadro con tutti i rami sottostanti" },
-      { keys: ["Canc"], desc: "Elimina il riquadro selezionato" },
-      { keys: ["Mod", "Z"], desc: "Annulla" },
-      { keys: ["Mod", "Y"], desc: "Ripeti" }
+      { keys: ['Mod', 'Clic'], desc: 'Sul riquadro progetto: aggiunge una fase' },
+      { keys: ['Mod', 'Clic'], desc: 'Su fase o pacchetto: aggiunge un pacchetto di lavoro' },
+      { keys: ['Shift', 'Trascina'], desc: 'Sposta un riquadro con tutti i rami sottostanti' },
+      { keys: ['Delete'], desc: 'Elimina il riquadro selezionato' },
+      { keys: ['Mod', 'Z'], desc: 'Annulla' },
+      { keys: ['Mod', 'Y'], desc: 'Ripeti' }
     ],
     tips: [
-      "Se trascini senza Shift si sposta solo il riquadro che hai preso; tutto ciò che sta sotto resta fermo.",
-      "Continua a scomporre finché ogni foglia non è abbastanza piccola da essere portata a termine da una sola persona.",
-      "Per togliere una data usa la piccola croce accanto al campo data nel menu del clic destro; anche gli orari vengono cancellati."
+      'Ciò che sta sotto un pacchetto di lavoro è ancora un pacchetto di lavoro; la scomposizione può scendere quanto serve.',
+      'Trascinando senza Shift si muove solo il riquadro preso; quello che sta sotto resta fermo.',
+      'Continua a scomporre finché ogni pacchetto può essere chiuso da una sola persona.',
+      'Per cancellare una data usa la crocetta accanto al campo nel menu del clic destro; gli orari se ne vanno con lei.'
     ]
   },
 

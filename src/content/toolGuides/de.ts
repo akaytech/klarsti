@@ -39,31 +39,33 @@ const guides: ToolGuideBundle = {
   wbs: {
     title: 'Projektstrukturplan (PSP)',
     summary:
-      'Ein Baum, der große Arbeit in tatsächlich machbare Teile zerlegt. Jedes Kästchen ist eine Aufgabe mit Status, Fälligkeitsdatum, Arbeitszeit und Beschreibung. Anders als in der Mindmap steuerst du hier Arbeit, nicht Ideen.',
+      'Ein Baum mit drei Ebenen: oben das PROJEKT, darunter die PHASEN, darunter die ARBEITSPAKETE. Jedes Kästchen trägt Status, Fälligkeitsdatum, Arbeitszeit und Beschreibung. Anders als in der Mindmap steuerst du hier Arbeit, nicht Ideen.',
     whenToUse: [
       'Um ein Projekt so weit herunterzubrechen, dass klar ist, wer was macht.',
       'Um den Umfang festzuzurren: Was nicht im Baum steht, gehört nicht zum Projekt.',
-      'Um Aufgaben an Termine zu binden und den Fortschritt über Status zu verfolgen.'
+      'Um Arbeit an Termine zu binden und den Fortschritt über Status zu verfolgen.'
     ],
     steps: [
-      'Halte auf der leeren Fläche Strg gedrückt und klicke, oder mach einen Rechtsklick: So entsteht eine Wurzelaufgabe.',
-      'Strg-Klick auf ein Kästchen fügt darunter eine Teilaufgabe ein. Das ist der schnellste Weg zu wachsen.',
+      'Ein Baum enthält ein Projektkästchen. Für ein zweites Projekt öffnest du links im Menü "Bäume" einen neuen Baum.',
+      'Die Schaltfläche unten richtet sich nach der Auswahl: Beim Projekt heißt sie "Phase hinzufügen", bei einer Phase oder einem Arbeitspaket "Arbeitspaket hinzufügen". Ohne Auswahl kommt eine Phase unter das Projekt.',
+      'Dasselbe per Tastatur: Strg-Klick auf ein Kästchen legt darunter ein neues an.',
       'Ein einfacher Klick wählt das Kästchen aus, klappt die Zweige darunter auf oder zu und zentriert die Kamera darauf.',
       'Rechtsklick auf ein Kästchen: Name, Fälligkeitsdatum, Start- und Endzeit, Beschreibung und Status (Zu erledigen / In Arbeit / Erledigt / Fehlgeschlagen).',
-      'Im selben Menü verschiebt "Zur Agenda hinzufügen" die Aufgabe mit dem gewählten Datum in deine Agenda. Bei einem vergangenen Datum kommt eine Warnung.',
-      'Markierst du eine Aufgabe als fehlgeschlagen, erscheint "Ursache analysieren"; ein Klick überträgt sie als Problem in die 5-Warum-Analyse.'
+      'Im selben Menü verschiebt "Zur Agenda hinzufügen" den Eintrag mit dem gewählten Datum in deine Agenda. Bei einem vergangenen Datum kommt eine Warnung.',
+      'Markierst du einen Eintrag als fehlgeschlagen, erscheint "Ursache analysieren"; ein Klick überträgt ihn als Problem in die 5-Warum-Analyse.'
     ],
     shortcuts: [
-      { keys: ['Mod', 'Klick'], desc: 'Auf leerer Fläche: neue Wurzelaufgabe' },
-      { keys: ['Mod', 'Klick'], desc: 'Auf einem Kästchen: Teilaufgabe darunter' },
+      { keys: ['Mod', 'Klick'], desc: 'Auf dem Projektkästchen: Phase darunter' },
+      { keys: ['Mod', 'Klick'], desc: 'Auf Phase oder Arbeitspaket: Arbeitspaket darunter' },
       { keys: ['Shift', 'Ziehen'], desc: 'Kästchen samt aller Zweige darunter verschieben' },
       { keys: ['Delete'], desc: 'Ausgewähltes Kästchen löschen' },
       { keys: ['Mod', 'Z'], desc: 'Rückgängig' },
       { keys: ['Mod', 'Y'], desc: 'Wiederholen' }
     ],
     tips: [
+      'Was unter einem Arbeitspaket liegt, ist wieder ein Arbeitspaket; der Plan darf so tief gehen wie nötig.',
       'Ziehst du ohne Shift, bewegt sich nur das angefasste Kästchen; alles darunter bleibt liegen.',
-      'Zerlege so lange, bis jedes Blatt klein genug ist, dass eine Person es allein abschließen kann.',
+      'Zerlege so lange, bis jedes Arbeitspaket klein genug ist, dass eine Person es allein abschließen kann.',
       'Ein Datum löschst du über das kleine Kreuz neben dem Datumsfeld im Rechtsklickmenü; die Uhrzeiten verschwinden mit.'
     ]
   },

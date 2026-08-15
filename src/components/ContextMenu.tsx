@@ -11,6 +11,8 @@ type ContextMenuProps = {
   node: GoalNode;
   onClose: () => void;
   onAddSubGoal: () => void;
+  /** Ekleme satırının yazısı: proje kutusunda "Faz Ekle", gerisinde "İş Paketi Ekle". */
+  addLabel: string;
   onUpdate: (data: Partial<GoalNodeData>) => void;
   onOpenDescription: () => void;
   onDelete: () => void;
@@ -22,6 +24,7 @@ export default function ContextMenu({
   node,
   onClose,
   onAddSubGoal,
+  addLabel,
   onUpdate,
   onOpenDescription,
   onDelete,
@@ -225,7 +228,7 @@ export default function ContextMenu({
         onClick={() => { onAddSubGoal(); onClose(); }}
         className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-start text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
       >
-        <Plus size={18} /> {t('add_subgoal')}
+        <Plus size={18} /> {addLabel}
       </button>
       
       <div className="my-2 h-px w-full bg-slate-100 dark:bg-slate-700" />

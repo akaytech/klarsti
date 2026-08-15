@@ -280,7 +280,7 @@ export default function MindmapCanvas() {
         {aktifHarita && mindmapNodes.length > 1 && (
           <CanvasAddButton
             etiket={t('mindmap_add_child')}
-            ipucu={`${t('canvas_add_hint_child')} ${t('canvas_add_shortcut_tab')}`}
+            ipucu={t('canvas_add_shortcut_tab')}
             onClick={dugmeIleEkle}
           />
         )}

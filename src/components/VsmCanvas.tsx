@@ -254,7 +254,7 @@ export default function VsmCanvas() {
 
           {harita.nodes.length > 0 && (
             <CanvasAddButton
-              etiket={t('canvas_add_box')}
+              etiket={t('canvas_add_generic')}
               ipucu={t('canvas_add_hint_menu')}
               onClick={dugmeIleEkle}
             />

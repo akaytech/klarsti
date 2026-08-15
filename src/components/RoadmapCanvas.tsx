@@ -13,6 +13,8 @@ import { useRoadmapStore, getDescendants, getActiveWbsTree, isPristineWbs, WBS_N
 import { useShallow } from 'zustand/react/shallow';
 import { islem, islemBasla, islemBitir } from '../store/gecmis';
 import { getDepth } from '../utils/layout';
+import { altKutuAdi, altKutuEkleEtiketi } from '../utils/wbsSeviye';
+import { toast } from 'sonner';
 import { useTheme } from '../theme';
 import CanvasBackdrop from './CanvasBackdrop';
 import { metinAlaninda } from '../utils/metinAlaninda';
@@ -105,9 +107,7 @@ export default function RoadmapCanvas({ onNodeSelect }: { onNodeSelect: (id: str
   const onNodeClick: NodeMouseHandler = useCallback((event, node) => {
     document.dispatchEvent(new Event('close-menus'));
     if (event.ctrlKey || event.metaKey) {
-       const depth = getDepth(node.id, edges);
-       const label = depth === 0 ? t('new_task') : t('new_subtask');
-       addGoal(node.id, label);
+       addGoal(node.id, altKutuAdi(t, getDepth(node.id, edges)));
        return;
     }
     
@@ -228,6 +228,14 @@ export default function RoadmapCanvas({ onNodeSelect }: { onNodeSelect: (id: str
 
       event.preventDefault();
       event.stopPropagation();
+      // Boş alan menüsünün tek işi projeyi açmak. Proje zaten varsa menüyü
+      // açmıyoruz: bir ağaçta ikinci proje olmaz, yeni proje soldaki menüden
+      // yeni bir ağaç açılarak kuruluyor.
+      if (nodes.length > 0) {
+        setContextMenuNodeId(null);
+        setSecimMenusu(null);
+        return;
+      }
       setPaneMenu({
         top: event.clientY,
         left: event.clientX,
@@ -237,7 +245,7 @@ export default function RoadmapCanvas({ onNodeSelect }: { onNodeSelect: (id: str
       setContextMenuNodeId(null);
       setSecimMenusu(null);
     },
-    [setContextMenuNodeId, secilenler, topluMenuAc]
+    [setContextMenuNodeId, secilenler, topluMenuAc, nodes.length]
   );
 
   /**
@@ -280,39 +288,54 @@ export default function RoadmapCanvas({ onNodeSelect }: { onNodeSelect: (id: str
   }, [setContextMenuNodeId, setEditingDescriptionId]);
 
   /**
-   * Alttaki "kutu ekle" düğmesi. Ctrl+tık ile birebir aynı işi yapıyor:
-   * seçili bir kutu varsa altına, yoksa tuvale yeni bir kök açıyor. Kısayolu
-   * bilmeyen kullanıcının tek görünür yolu bu.
+   * Alttaki ekleme düğmesi.
+   *
+   * Bir kırılım ağacında tek proje olur, o yüzden düğme asla ikinci bir proje
+   * açmıyor. Hedefi hep bellidir:
+   *   - ağaç boşsa → projenin kendisi
+   *   - bir kutu seçiliyse → onun altı (proje seçiliyse faz, gerisi iş paketi)
+   *   - seçim yoksa → projenin altına faz
+   * Yeni bir proje isteyen soldaki menüden yeni ağaç açıyor.
    */
-  const tekSeciliVar = nodes.filter((n) => n.selected).length === 1;
+  const kokKutu = nodes.find((n) => getDepth(n.id, edges) === 0) ?? null;
+  const secililer = nodes.filter((n) => n.selected);
+  const hedefKutu = secililer.length === 1 ? secililer[0] : kokKutu;
+  const hedefDerinlik = hedefKutu ? getDepth(hedefKutu.id, edges) : -1;
+
+  const dugmeEtiketi = !hedefKutu ? t('wbs_add_project') : altKutuEkleEtiketi(t, hedefDerinlik);
+  const dugmeIpucu = !hedefKutu
+    ? t('wbs_hint_project')
+    : hedefDerinlik === 0
+      ? t('wbs_hint_phase')
+      : t('wbs_hint_package');
 
   const dugmeIleEkle = useCallback(() => {
     document.dispatchEvent(new Event('close-menus'));
-    const secili = nodes.filter((n) => n.selected);
-    if (secili.length === 1) {
-      const id = secili[0].id;
-      const derinlik = getDepth(id, edges);
-      addGoal(id, derinlik === 0 ? t('new_task') : t('new_subtask'));
+    if (!hedefKutu) {
+      addGoal(null, t('new_project_node'));
       return;
     }
-    addGoal(null, t('new_project_node'));
-  }, [nodes, edges, addGoal, t]);
+    addGoal(hedefKutu.id, altKutuAdi(t, hedefDerinlik));
+  }, [hedefKutu, hedefDerinlik, addGoal, t]);
 
   const onPaneClick = useCallback((event: React.MouseEvent) => {
     document.dispatchEvent(new Event('close-menus'));
     if (event.ctrlKey || event.metaKey) {
-       const pos = screenToFlowPosition({
-         x: event.clientX,
-         y: event.clientY,
-       });
-       addGoal(null, t('new_project_node'), pos);
+      // Ağaçta proje varsa Ctrl+tık ikinci bir proje AÇMIYOR; eskiden açıyordu
+      // ve kullanıcı farkında olmadan yan yana iki kök ağaç kuruyordu.
+      if (nodes.length > 0) {
+        toast.info(t('wbs_one_project'));
+      } else {
+        const pos = screenToFlowPosition({ x: event.clientX, y: event.clientY });
+        addGoal(null, t('new_project_node'), pos);
+      }
     }
     setContextMenuNodeId(null);
     setPaneMenu(null);
     setSecimMenusu(null);
     setEditingDescriptionId(null);
     onNodeSelect(null);
-  }, [onNodeSelect, screenToFlowPosition, addGoal, t, setEditingDescriptionId, setContextMenuNodeId]);
+  }, [onNodeSelect, screenToFlowPosition, addGoal, t, nodes.length, setEditingDescriptionId, setContextMenuNodeId]);
 
   return (
     <div className="h-full w-full relative bg-slate-50 dark:bg-slate-900 transition-colors" ref={reactFlowWrapper} onContextMenu={onPaneContextMenu as any}>
@@ -373,8 +396,8 @@ export default function RoadmapCanvas({ onNodeSelect }: { onNodeSelect: (id: str
         {/* Başlangıç paneli açıkken gizli: orada zaten iki büyük düğme var. */}
         {!showStarterPanel && (
           <CanvasAddButton
-            etiket={tekSeciliVar ? t('canvas_add_child') : t('canvas_add_box')}
-            ipucu={`${tekSeciliVar ? t('canvas_add_hint_child') : t('canvas_add_hint_root')} ${t('canvas_add_shortcut_ctrl')}`}
+            etiket={dugmeEtiketi}
+            ipucu={`${dugmeIpucu} ${t('canvas_add_shortcut_ctrl')}`}
             onClick={dugmeIleEkle}
           />
         )}

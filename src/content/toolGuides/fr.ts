@@ -37,34 +37,36 @@ const guides: ToolGuideBundle = {
   },
 
   wbs: {
-    title: 'Organigramme des tâches (WBS)',
+    title: 'Organigramme des tâches (OTP)',
     summary:
-      'Un arbre qui découpe un gros travail en morceaux réellement faisables. Chaque boîte est une tâche portant un statut, une échéance, des horaires et une description. Contrairement à la carte mentale, ici vous pilotez du travail, pas des idées.',
+      'Un arbre à trois niveaux : le PROJET en haut, les PHASES en dessous, et les LOTS DE TRAVAIL sous les phases. Chaque case porte un statut, une échéance, des heures de travail et une description. Contrairement à une carte mentale, ici vous pilotez du travail, pas des idées.',
     whenToUse: [
-      'Pour découper un projet jusqu\'à ce qu\'il soit clair qui fait quoi.',
-      'Pour figer le périmètre : ce qui n\'est pas dans l\'arbre n\'est pas dans le projet.',
-      'Pour rattacher les tâches à des dates et suivre l\'avancement par les statuts.'
+      'Pour découper un projet jusqu’à savoir clairement qui fait quoi.',
+      'Pour figer le périmètre : ce qui n’est pas dans l’arbre n’est pas dans le projet.',
+      'Pour relier le travail au calendrier et suivre l’avancement par les statuts.'
     ],
     steps: [
-      'Sur le canevas vide, maintenez Ctrl et cliquez dans le vide, ou faites un clic droit : une tâche racine est créée.',
-      'Ctrl+clic sur une boîte ajoute une sous-tâche en dessous. C\'est la façon la plus rapide de faire grandir l\'arbre.',
-      'Un simple clic sélectionne la boîte, déplie ou replie ses branches et recentre la caméra dessus.',
-      'Clic droit sur une boîte : nom, échéance, heures de début et de fin, description et statut (À faire / En cours / Terminé / Échoué).',
-      'Dans ce même menu, « Ajouter à l\'agenda » place la tâche dans votre agenda à la date choisie. Si la date est passée, un avertissement s\'affiche.',
-      'Marquez une tâche comme échouée et « analyser la cause racine » apparaît ; un clic l\'envoie comme problème dans l\'outil 5 Pourquoi.'
+      'Un arbre contient une seule case projet. Pour un deuxième projet, ouvrez un nouvel arbre dans le menu « Arbres » à gauche.',
+      'Le bouton en bas suit la sélection : sur le projet il affiche « Ajouter une phase », sur une phase ou un lot « Ajouter un lot de travail ». Sans sélection, il ajoute une phase sous le projet.',
+      'La même chose au clavier : Ctrl+clic sur une case ouvre une nouvelle case en dessous.',
+      'Un clic simple sélectionne la case, ouvre ou ferme les branches en dessous et centre la caméra dessus.',
+      'Clic droit sur une case : nom, échéance, heures de début et de fin, description et statut (À faire / En cours / Terminé / Échoué).',
+      'Le même menu propose « Ajouter à l’agenda », qui place l’élément dans votre agenda à la date choisie. Il vous prévient si la date est passée.',
+      'Marquez un élément comme Échoué et le menu propose « analyser la cause racine » ; un clic l’envoie dans les 5 Pourquoi comme problème.'
     ],
     shortcuts: [
-      { keys: ['Mod', 'Clic'], desc: 'Dans le vide : nouvelle tâche racine' },
-      { keys: ['Mod', 'Clic'], desc: 'Sur une boîte : sous-tâche en dessous' },
-      { keys: ['Shift', 'Glisser'], desc: 'Déplacer une boîte avec toutes ses branches' },
-      { keys: ['Suppr'], desc: 'Supprimer la boîte sélectionnée' },
+      { keys: ['Mod', 'Clic'], desc: 'Sur la case projet : ajoute une phase' },
+      { keys: ['Mod', 'Clic'], desc: 'Sur une phase ou un lot : ajoute un lot de travail' },
+      { keys: ['Shift', 'Glisser'], desc: 'Déplacer une case avec toutes ses branches' },
+      { keys: ['Delete'], desc: 'Supprimer la case sélectionnée' },
       { keys: ['Mod', 'Z'], desc: 'Annuler' },
       { keys: ['Mod', 'Y'], desc: 'Rétablir' }
     ],
     tips: [
-      'Sans Shift, seule la boîte saisie bouge ; tout ce qui est en dessous reste en place.',
-      'Continuez à découper jusqu\'à ce que chaque feuille soit assez petite pour qu\'une personne la termine seule.',
-      'Pour effacer une date, utilisez la petite croix à côté du champ dans le menu contextuel ; les heures partent avec.'
+      'Ce qui se trouve sous un lot de travail est encore un lot de travail ; le découpage peut descendre autant que nécessaire.',
+      'Sans Shift, seule la case saisie bouge ; ce qui est en dessous reste en place.',
+      'Découpez jusqu’à ce que chaque lot puisse être terminé par une seule personne.',
+      'Pour effacer une date, cliquez sur la petite croix à côté du champ dans le menu contextuel ; les heures partent avec.'
     ]
   },
 

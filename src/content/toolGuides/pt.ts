@@ -37,34 +37,36 @@ const guides: ToolGuideBundle = {
   },
 
   wbs: {
-    title: 'Estrutura analítica do projeto (EAP)',
+    title: 'Estrutura Analítica do Projeto (EAP)',
     summary:
-      'Uma árvore que divide um trabalho grande em partes que dá para fazer de verdade. Cada caixa é uma tarefa com estado, prazo, horário e descrição. Diferente do mapa mental, aqui você gerencia trabalho, não ideias.',
+      'Uma árvore em três níveis: no topo o PROJETO, abaixo as FASES e sob elas os PACOTES DE TRABALHO. Cada caixa carrega status, data de fim, horas de trabalho e descrição. Diferente de um mapa mental, aqui você gerencia trabalho, não ideias.',
     whenToUse: [
-      'Para dividir um projeto até ficar claro quem faz o quê.',
+      'Para decompor um projeto até ficar claro quem faz o quê.',
       'Para fixar o escopo: o que não está na árvore não está no projeto.',
-      'Para amarrar as tarefas a datas e acompanhar o avanço pelos estados.'
+      'Para ligar o trabalho ao calendário e acompanhar o avanço pelos status.'
     ],
     steps: [
-      'Na tela vazia, segure Ctrl e clique em um espaço livre, ou use o botão direito: nasce uma tarefa raiz.',
-      'Ctrl+clique numa caixa adiciona uma subtarefa abaixo dela. É a forma mais rápida de fazer a árvore crescer.',
-      'Um clique simples seleciona a caixa, abre ou fecha os ramos abaixo dela e centraliza a câmera.',
-      'Clique com o botão direito numa caixa: nome, prazo, hora de início e fim, descrição e estado (A fazer / Em andamento / Concluído / Falhou).',
-      'Nesse mesmo menu, "Adicionar à agenda" leva a tarefa para a sua agenda na data escolhida. Se a data já passou, aparece um aviso.',
-      'Ao marcar uma tarefa como falha, surge "analisar a causa raiz"; um clique a envia como problema para a ferramenta 5 Porquês.'
+      'Uma árvore tem uma única caixa de projeto. Para um segundo projeto, abra uma árvore nova no menu "Árvores" à esquerda.',
+      'O botão de baixo segue a seleção: com o projeto selecionado diz "Adicionar fase"; com uma fase ou pacote, "Adicionar pacote de trabalho". Sem seleção, adiciona uma fase abaixo do projeto.',
+      'O mesmo pelo teclado: Ctrl+clique numa caixa abre outra abaixo dela.',
+      'Um clique simples seleciona a caixa, abre ou fecha os ramos abaixo e centraliza a câmera nela.',
+      'Clique direito numa caixa: nome, data de fim, hora de início e fim, descrição e status (A fazer / Em andamento / Concluído / Falhou).',
+      'No mesmo menu, "Adicionar à agenda" leva o item para a sua agenda na data escolhida. Avisa se a data já passou.',
+      'Se marcar um item como Falhou, o menu oferece "analisar a causa raiz"; um clique o envia aos 5 Porquês como problema.'
     ],
     shortcuts: [
-      { keys: ['Mod', 'Clique'], desc: 'Em espaço livre: nova tarefa raiz' },
-      { keys: ['Mod', 'Clique'], desc: 'Sobre uma caixa: subtarefa abaixo dela' },
-      { keys: ['Shift', 'Arrastar'], desc: 'Mover a caixa junto com todos os ramos abaixo' },
+      { keys: ['Mod', 'Clique'], desc: 'Na caixa do projeto: adiciona uma fase' },
+      { keys: ['Mod', 'Clique'], desc: 'Numa fase ou pacote: adiciona um pacote de trabalho' },
+      { keys: ['Shift', 'Arrastar'], desc: 'Mover uma caixa com todos os ramos abaixo' },
       { keys: ['Delete'], desc: 'Excluir a caixa selecionada' },
       { keys: ['Mod', 'Z'], desc: 'Desfazer' },
       { keys: ['Mod', 'Y'], desc: 'Refazer' }
     ],
     tips: [
-      'Sem o Shift, só a caixa que você segurou se move; o que está abaixo fica no lugar.',
-      'Continue dividindo até cada folha ficar pequena o bastante para uma pessoa terminar sozinha.',
-      'Para apagar uma data, use o xis ao lado do campo de data no menu de contexto; os horários somem junto.'
+      'O que fica abaixo de um pacote de trabalho também é pacote de trabalho; a decomposição pode descer o quanto precisar.',
+      'Arrastando sem Shift, só a caixa que você pegou se move; o que está abaixo fica no lugar.',
+      'Continue decompondo até cada pacote caber numa pessoa só.',
+      'Para limpar uma data, use o xis ao lado do campo no menu do clique direito; os horários saem junto.'
     ]
   },
 

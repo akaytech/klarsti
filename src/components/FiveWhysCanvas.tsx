@@ -77,23 +77,20 @@ function FiveWhysCanvasInner() {
   useEkranaSigdir(aktifAnaliz?.id, fiveWhysNodes.length, { padding: 0.2 });
 
   /**
-   * Alttaki "kutu ekle" düğmesi. Ctrl+tık ile aynı iş: seçili kutunun altına
-   * bir "neden" açıyor, seçim yoksa yeni bir problem kutusu koyuyor. Kök neden
-   * (solution) kutusunun altına eklenmiyor; kısayol da eklemiyordu.
+   * Alttaki "neden ekle" düğmesi. Ctrl+tık ile aynı iş: seçili kutunun altına
+   * bir neden açıyor. Seçim yokken yeni bir problem AÇMIYOR — kullanıcı düğmeye
+   * basıp nereden geldiği belirsiz ikinci bir kök bulmasın diye pasif kalıyor.
+   * Kök neden (solution) kutusunun altına da eklenmiyor; kısayol da eklemiyordu.
    */
   const secili = fiveWhysNodes.filter((n: any) => n.selected);
   const seciliKutu = secili.length === 1 && secili[0].data?.type !== 'solution' ? secili[0] : null;
 
   const dugmeIleEkle = useCallback(() => {
+    if (!seciliKutu) return;
     setMenu(null);
     setPaneMenu(null);
-    const su = fiveWhysNodes.filter((n: any) => n.selected);
-    if (su.length === 1 && su[0].data?.type !== 'solution') {
-      addFiveWhysNode(su[0].id, 'why', t('whys_placeholder'));
-      return;
-    }
-    addFiveWhysNode(null, 'problem', t('whys_placeholder'));
-  }, [fiveWhysNodes, addFiveWhysNode, t]);
+    addFiveWhysNode(seciliKutu.id, 'why', t('whys_placeholder'));
+  }, [seciliKutu, addFiveWhysNode, t]);
 
   const onNodeContextMenu = useCallback(
     (event: React.MouseEvent, node: any) => {
@@ -192,8 +189,9 @@ function FiveWhysCanvasInner() {
           {/* Boş tuvalde gizli: oradaki karşılama panelinde zaten iki düğme var. */}
           {fiveWhysNodes.length > 0 && (
             <CanvasAddButton
-              etiket={seciliKutu ? t('canvas_add_child') : t('canvas_add_box')}
-              ipucu={`${seciliKutu ? t('canvas_add_hint_child') : t('canvas_add_hint_root')} ${t('canvas_add_shortcut_ctrl')}`}
+              etiket={t('whys_add_cause')}
+              ipucu={seciliKutu ? t('canvas_add_shortcut_ctrl') : t('canvas_add_select_first')}
+              pasif={!seciliKutu}
               onClick={dugmeIleEkle}
             />
           )}

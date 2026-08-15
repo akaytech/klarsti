@@ -37,34 +37,36 @@ const guides: ToolGuideBundle = {
   },
 
   wbs: {
-    title: 'Estructura de desglose del trabajo (EDT)',
+    title: 'Estructura de Desglose del Trabajo (EDT)',
     summary:
-      'Un árbol que parte un trabajo grande en piezas que realmente se pueden hacer. Cada caja es una tarea con estado, fecha límite, horario y descripción. A diferencia del mapa mental, aquí gestionas trabajo, no ideas.',
+      'Un árbol de tres niveles: arriba el PROYECTO, debajo las FASES y bajo ellas los PAQUETES DE TRABAJO. Cada cuadro lleva estado, fecha de fin, horas de trabajo y descripción. A diferencia de un mapa mental, aquí gestionas trabajo, no ideas.',
     whenToUse: [
-      'Para descomponer un proyecto hasta que quede claro quién hace qué.',
+      'Para desglosar un proyecto hasta que quede claro quién hace qué.',
       'Para fijar el alcance: lo que no está en el árbol no está en el proyecto.',
-      'Para atar las tareas a fechas y seguir el avance mediante estados.'
+      'Para atar el trabajo al calendario y seguir el avance con los estados.'
     ],
     steps: [
-      'En el lienzo vacío, mantén Ctrl y haz clic en un hueco, o usa el clic derecho: se crea una tarea raíz.',
-      'Ctrl+clic sobre una caja añade una subtarea debajo. Es la forma más rápida de hacer crecer el árbol.',
-      'Un clic normal selecciona la caja, pliega o despliega sus ramas y centra la cámara en ella.',
-      'Clic derecho en una caja: nombre, fecha límite, hora de inicio y fin, descripción y estado (Por hacer / En curso / Hecho / Fallido).',
-      'En ese mismo menú, "Añadir a la agenda" lleva la tarea a tu agenda en la fecha elegida. Si la fecha ya pasó, avisa.',
-      'Si marcas una tarea como fallida, aparece "analizar la causa raíz"; con un clic pasa a la herramienta 5 Porqués como problema.'
+      'Un árbol tiene un solo cuadro de proyecto. Para un segundo proyecto, abre un árbol nuevo en el menú "Árboles" de la izquierda.',
+      'El botón de abajo cambia según la selección: con el proyecto seleccionado dice "Añadir fase"; con una fase o un paquete, "Añadir paquete de trabajo". Sin selección, añade una fase bajo el proyecto.',
+      'Lo mismo con el teclado: Ctrl+clic en un cuadro abre uno nuevo debajo.',
+      'Un clic normal selecciona el cuadro, abre o cierra las ramas de abajo y centra la cámara en él.',
+      'Clic derecho en un cuadro: nombre, fecha de fin, hora de inicio y fin, descripción y estado (Por hacer / En curso / Hecho / Fallido).',
+      'En ese mismo menú, "Añadir a la agenda" lleva el elemento a tu agenda en la fecha elegida. Avisa si la fecha ya pasó.',
+      'Si marcas algo como Fallido, el menú ofrece "analizar la causa raíz"; con un clic pasa a los 5 Porqués como problema.'
     ],
     shortcuts: [
-      { keys: ['Mod', 'Clic'], desc: 'En un hueco: nueva tarea raíz' },
-      { keys: ['Mod', 'Clic'], desc: 'Sobre una caja: añadir subtarea debajo' },
-      { keys: ['Shift', 'Arrastrar'], desc: 'Mover una caja con todas sus ramas' },
-      { keys: ['Delete'], desc: 'Borrar la caja seleccionada' },
+      { keys: ['Mod', 'Clic'], desc: 'En el cuadro del proyecto: añade una fase' },
+      { keys: ['Mod', 'Clic'], desc: 'En una fase o paquete: añade un paquete de trabajo' },
+      { keys: ['Shift', 'Arrastrar'], desc: 'Mover un cuadro con todas sus ramas' },
+      { keys: ['Delete'], desc: 'Eliminar el cuadro seleccionado' },
       { keys: ['Mod', 'Z'], desc: 'Deshacer' },
       { keys: ['Mod', 'Y'], desc: 'Rehacer' }
     ],
     tips: [
-      'Si arrastras sin Shift solo se mueve la caja que agarras; lo de debajo se queda donde está.',
-      'Sigue descomponiendo hasta que cada hoja sea lo bastante pequeña para que una persona la termine sola.',
-      'Para borrar una fecha usa la crucecita junto al campo de fecha en el menú contextual; las horas se borran con ella.'
+      'Lo que va bajo un paquete de trabajo también es un paquete de trabajo; el desglose puede bajar cuanto haga falta.',
+      'Si arrastras sin Shift, solo se mueve el cuadro que agarras; lo de abajo se queda.',
+      'Sigue desglosando hasta que cada paquete lo pueda terminar una sola persona.',
+      'Para borrar una fecha, usa la crucecita junto al campo de fecha en el menú del clic derecho; las horas se borran con ella.'
     ]
   },
 

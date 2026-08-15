@@ -7,6 +7,7 @@ import { useRoadmapStore, getActiveWbsTree } from '../store/useRoadmapStore';
 import InlineDescriptionMenu from './InlineDescriptionMenu';
 import ContextMenu from './ContextMenu';
 import { getDepth } from '../utils/layout';
+import { altKutuAdi, altKutuEkleEtiketi } from '../utils/wbsSeviye';
 import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -160,10 +161,9 @@ export default function GoalNode({ data, selected }: { data: GoalNodeData; selec
           <ContextMenu
             node={nodes.find((n) => n.id === nodeId)!}
             onClose={() => setContextMenuNodeId(null)}
+            addLabel={altKutuEkleEtiketi(t, getDepth(nodeId, edges))}
             onAddSubGoal={() => {
-              const depth = getDepth(nodeId, edges);
-              const label = depth === 0 ? t('new_task') : t('new_subtask');
-              addGoal(nodeId, label);
+              addGoal(nodeId, altKutuAdi(t, getDepth(nodeId, edges)));
               setContextMenuNodeId(null);
             }}
             onUpdate={(data) => updateGoal(nodeId, data)}

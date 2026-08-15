@@ -39,31 +39,33 @@ const kilavuzlar: ToolGuideBundle = {
   wbs: {
     title: 'İş Kırılım Yapısı (WBS)',
     summary:
-      'Büyük bir işi, tek tek yapılabilir parçalara bölen ağaç. Her kutu bir görevdir: durum, bitiş tarihi, çalışma saati ve açıklama taşır. Zihin haritasından farkı, burada fikir değil iş yönetiyor olman.',
+      'Bir işi üç seviyede bölen ağaç: en üstte PROJE, onun altında FAZLAR, fazların altında İŞ PAKETLERİ. Her kutu durum, bitiş tarihi, çalışma saati ve açıklama taşır. Zihin haritasından farkı, burada fikir değil iş yönetiyor olman.',
     whenToUse: [
       'Bir projeyi kimin ne yapacağı belli olacak kadar küçük parçalara ayırmak için.',
       'Kapsamı sabitlemek için: ağaçta olmayan iş projede de yoktur.',
       'İşleri takvime bağlamak ve ilerlemeyi durumlarla takip etmek için.'
     ],
     steps: [
-      'Boş kanvasta Ctrl tuşuna basılı tutup boş bir yere tıkla ya da sağ tıkla: yeni bir kök iş açılır.',
-      'Bir kutuya Ctrl basılı tıklamak altına yeni alt görev ekler. En hızlı büyütme yolu budur.',
+      'Bir ağaçta tek proje kutusu olur. İkinci bir proje için soldaki "Ağaçlar" menüsünden yeni bir ağaç aç.',
+      'Ekranın altındaki ekleme düğmesi hedefe göre değişir: proje seçiliyken "Faz Ekle", faz ya da iş paketi seçiliyken "İş Paketi Ekle" der. Hiçbir şey seçili değilse projenin altına faz ekler.',
+      'Aynı işi kısayolla yapmak istersen kutuya Ctrl basılı tıkla: altına yenisini açar.',
       'Ctrl\'süz tıklamak kutuyu seçer, altındaki dalları açıp kapatır ve kamerayı o kutuya ortalar.',
       'Kutuya sağ tıkla: adı, bitiş tarihi, başlangıç–bitiş saati, açıklama ve durum (Yapılacak / Devam Ediyor / Tamamlandı / Başarısız) buradan ayarlanır.',
-      'Aynı menüdeki "Ajandaya Planla" görevi seçtiğin tarihle ajandana taşır. Geçmiş bir tarih seçilmişse uyarı verir.',
-      'Bir görevi Başarısız işaretlersen menüde "kök nedeni analiz et" çıkar; tek tıkla o görev 5 Neden aracına problem olarak taşınır.'
+      'Aynı menüdeki "Ajandaya Planla" işi seçtiğin tarihle ajandana taşır. Geçmiş bir tarih seçilmişse uyarı verir.',
+      'Bir işi Başarısız işaretlersen menüde "kök nedeni analiz et" çıkar; tek tıkla o iş 5 Neden aracına problem olarak taşınır.'
     ],
     shortcuts: [
-      { keys: ['Mod', 'Tık'], desc: 'Boş alanda: yeni kök iş' },
-      { keys: ['Mod', 'Tık'], desc: 'Kutu üzerinde: altına alt görev' },
+      { keys: ['Mod', 'Tık'], desc: 'Proje kutusunda: altına faz' },
+      { keys: ['Mod', 'Tık'], desc: 'Faz ya da iş paketinde: altına iş paketi' },
       { keys: ['Shift', 'Sürükle'], desc: 'Kutuyu altındaki tüm dallarla birlikte taşı' },
       { keys: ['Delete'], desc: 'Seçili kutuyu sil' },
       { keys: ['Mod', 'Z'], desc: 'Geri al' },
       { keys: ['Mod', 'Y'], desc: 'İleri al' }
     ],
     tips: [
+      'İş paketinin altındaki de iş paketidir; kırılım istediğin kadar derine inebilir.',
       'Shift\'e basmadan sürüklersen sadece tuttuğun kutu hareket eder, altındakiler yerinde kalır.',
-      'Kırılımı, her alt kutu tek bir kişinin tek başına bitirebileceği büyüklüğe inene kadar sürdür.',
+      'Kırılımı, her iş paketi tek bir kişinin tek başına bitirebileceği büyüklüğe inene kadar sürdür.',
       'Tarihi silmek istersen sağ tık menüsündeki tarih alanının yanındaki çarpıya bas; saatler de birlikte temizlenir.'
     ]
   },

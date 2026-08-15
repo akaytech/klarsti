@@ -329,7 +329,9 @@ export const yeniWbsKoku = (label: string): GoalNode => ({
   },
 });
 
-export const getDefaultNodes = (): GoalNode[] => [yeniWbsKoku(i18n.t('new_project'))];
+// Kök kutu PROJE'dir; adı da öyle olmalı. Eskiden `new_project` ("Yeni
+// Çalışma") kullanılıyordu — o anahtar çalışma/klasör adı, kutu adı değil.
+export const getDefaultNodes = (): GoalNode[] => [yeniWbsKoku(i18n.t('new_project_node'))];
 
 /** Yeni proje / yeni araç için tek ağaçlık başlangıç listesi. */
 export const getDefaultWbsTrees = (): WbsTree[] => [{
@@ -347,8 +349,10 @@ export const isPristineWbs = (nodes: GoalNode[], edges: Edge[]): boolean => {
   if (nodes.length > 1 || edges.length > 0) return false;
   const n = nodes[0];
   // İşaret yeni projelerde var; işaretsiz eski projeler için başlık
-  // karşılaştırması geriye dönük uyum olarak korunuyor.
+  // karşılaştırması geriye dönük uyum olarak korunuyor. İki başlık da kabul
+  // ediliyor: kök kutu eskiden "Yeni Çalışma" adıyla geliyordu.
   const basligaDokunulmamis = n.data.isUntouchedDefault === true
+    || n.data.label === i18n.t('new_project_node')
     || n.data.label === i18n.t('new_project');
   // Kökün kimliği artık uuid (bkz. yeniWbsKoku); eskiden burada 'root'
   // aranıyordu, yeni ağaçlarda o koşul hiç tutmazdı.

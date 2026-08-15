@@ -408,7 +408,7 @@
   "landing_step1_title": "メソッドを選択",
   "landing_step1_desc": "{{sayi}}の課題解決・分析ツールから最適なフレームワークを選択します。",
   "landing_step2_title": "チームで分析",
-  "landing_step2_desc": "インタラクティブなキャンバスで作業し、チームとリアルタイムで進行します。",
+  "landing_step2_desc": "インタラクティブなキャンバスで作業すると、変更は数秒でチームに表示されます。",
   "landing_step3_title": "共有して決定",
   "landing_step3_desc": "結果をエクスポートまたは共有して、データに基づく意思決定を行います。",
   "landing_featured_heading": "人気のツール",

@@ -137,15 +137,22 @@ export default function Workspace() {
           </Suspense>
         )}
 
+        {/* Bekleme göstergesi geç beliriyor (bkz. index.css .gec-belir): araç
+            zaten indiyse çember hiç görünmüyor, eskiden bir an parlayıp
+            kayboluyordu ve göz bunu takılma olarak okuyordu. */}
         <Suspense fallback={
           <div className="flex h-full w-full items-center justify-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+            <div className="gec-belir animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
           </div>
         }>
+          {/* `key` araç adında: araç değişince bu kutu yeniden kuruluyor ve
+              belirme animasyonu baştan çalışıyor. Olmadan yeni ekran sert
+              giriyordu. */}
+          <div key={activeTool ?? location.pathname} className="icerik-gir flex min-h-0 w-full flex-1 flex-col">
           {!activeTool && (
             (!projectsLoaded && location.pathname.startsWith('/project/')) ? (
               <div className="flex h-full w-full items-center justify-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+                <div className="gec-belir animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
               </div>
             ) : location.pathname === '/works' ? (
               <WorksPage />
@@ -157,6 +164,7 @@ export default function Workspace() {
             const Canvas = TOOL_COMPONENTS[activeTool];
             return Canvas ? <Canvas /> : null;
           })()}
+          </div>
         </Suspense>
       </div>
     </ReactFlowProvider>

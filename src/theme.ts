@@ -160,9 +160,36 @@ function readAppliedTheme(): ThemeId {
 let current: ThemeId = readAppliedTheme();
 const listeners = new Set<() => void>();
 
+/**
+ * Tema değişirken renklerin yumuşak geçmesi için `<html>` üstüne kısa süreli
+ * konan sınıf ve onu kaldıran zamanlayıcı.
+ *
+ * Neden kalıcı bir kural değil: geçiş kuralı bütün öğelere uygulanıyor
+ * (bkz. index.css `.tema-degisiyor`). Kalıcı olsaydı sıradan her etkileşimde
+ * de renkler gecikmeli değişirdi. Sadece tema değiştiği anda açılıp
+ * kapanıyor.
+ *
+ * Zamanlayıcı saklanıyor: kullanıcı temalar arasında hızlı gezerken her
+ * değişim öncekinin sayacını sıfırlasın, sınıf ortada kalmasın.
+ */
+const TEMA_GECIS_SURESI = 260;
+let temaGecisSayaci: ReturnType<typeof setTimeout> | undefined;
+
+function temaGecisiniBaslat(root: HTMLElement) {
+  if (typeof window === 'undefined') return;
+  root.classList.add('tema-degisiyor');
+  clearTimeout(temaGecisSayaci);
+  temaGecisSayaci = setTimeout(() => root.classList.remove('tema-degisiyor'), TEMA_GECIS_SURESI);
+}
+
 export function applyTheme(id: ThemeId) {
   const theme = getThemeDef(id);
   const root = document.documentElement;
+  // İlk boyamada geçiş yok: sayfa açılırken tema zaten doğru geliyor
+  // (index.html'deki satır içi script), orada solma göstermek anlamsız.
+  if (root.classList.contains(`theme-${theme.id}`) === false && document.readyState !== 'loading') {
+    temaGecisiniBaslat(root);
+  }
   for (const t of THEMES) root.classList.remove(`theme-${t.id}`);
   root.classList.add(`theme-${theme.id}`);
   root.classList.toggle('dark', theme.isDark);

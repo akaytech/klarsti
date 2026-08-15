@@ -231,3 +231,162 @@ select:disabled {
     font-size: 16px;
   }
 }
+
+/* ============================================================
+ * Hareket
+ *
+ * Buradaki her şeyin tek bir kuralı var: hareket istemediğini söylemiş
+ * kullanıcıya hareket yok. Aşağıdaki bloklar bunu tek tek tekrar etmesin
+ * diye en sonda toplu bir kapatma var; yeni bir animasyon eklerken oraya
+ * da eklemeyi unutma.
+ * ============================================================ */
+
+/* --- Modallar ---
+ * Beş modalimiz (silme onayı, yeni klasör, hesap silme, yasal metin,
+ * paylaşım) ekranda birden belirip birden kayboluyordu. Perde soluyor,
+ * kutu hafifçe yükselerek geliyor.
+ *
+ * Yalnız açılış animasyonu var: kapanışı göstermek için modalin kapandıktan
+ * sonra da DOM'da kalması gerekiyor, o da beş bileşeni birden değiştirmek
+ * demek. Açılış tek başına sertliğin çoğunu alıyor.
+ */
+@keyframes klarsti-perde {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes klarsti-kutu {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+.perde-gir { animation: klarsti-perde 180ms ease-out; }
+.kutu-gir { animation: klarsti-kutu 220ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+/* --- Ekran değişimi ---
+ * Araçtan araca geçerken ekran boşalıp yeni araç birden geliyordu.
+ * Yeni ekran hafifçe belirerek giriyor.
+ */
+@keyframes klarsti-icerik {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+.icerik-gir { animation: klarsti-icerik 260ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+/* --- Geç beliren bekleme göstergesi ---
+ * Dönen çember hemen çıkınca, hızlı yüklenen ekranlarda bir anlık parlayıp
+ * kayboluyor ve göz bunu takılma olarak okuyor. Artık ilk 200 milisaniye
+ * görünmüyor: iş o süre içinde biterse kullanıcı hiç çember görmüyor.
+ */
+@keyframes klarsti-gec-belir {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.gec-belir {
+  opacity: 0;
+  animation: klarsti-gec-belir 200ms ease-out 200ms forwards;
+}
+
+/* --- Tuvaldeki kutular ---
+ * Yeni bir dal eklenince ağaç kendini yeniden diziyor ve bütün kutular
+ * anında yeni yerine ışınlanıyordu. Kamera ise yumuşak kayıyor; kamera
+ * süzülürken kutuların zıplaması tutarsız duruyordu.
+ *
+ * Sürüklenen kutu hariç: sürüklerken geçiş olursa kutu parmağın peşinden
+ * gecikmeli gelir, iyileştirme değil bozma olur.
+ *
+ * Bağlantı çizgileri de kutularla aynı sürede: yalnız kutular yumuşarsa
+ * çizgiler kopuk görünür. `d` özelliğinin geçişini desteklemeyen tarayıcıda
+ * çizgi eskisi gibi anında yerleşiyor, yani kötüleşme yok.
+ */
+.react-flow__node {
+  transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.react-flow__node.dragging,
+.react-flow__node:active {
+  transition: none;
+}
+.react-flow__edge-path {
+  transition: d 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* --- Basma geri bildirimi ---
+ * 260 düğmenin yalnız 26'sında basınca küçülme vardı, kalanı parmağın
+ * altında ölü duruyordu.
+ *
+ * `transform` değil `scale` kullanılıyor: transform verseydik düğmenin
+ * kendi hover hareketini (örn. yukarı kalkma) eziyor ve basınca zıplamaya
+ * yol açıyordu. `scale` ayrı bir özellik, üst üste biniyor.
+ */
+button:not(:disabled):active,
+[role='button']:not([aria-disabled='true']):active {
+  scale: 0.97;
+}
+button,
+[role='button'] {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, scale;
+}
+
+/* --- Kaydırınca beliren bölümler (tanıtım sayfası) ---
+ * Başlangıç durumu JavaScript ile veriliyor (bkz. utils/kaydirincaBelir):
+ * doğrudan CSS'e yazsaydık, gözcü çalışmayan bir tarayıcıda sayfa boş
+ * kalırdı. Buradaki iki sınıf yalnız gözcü kurulabildiğinde ekleniyor.
+ */
+.belir {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 500ms ease-out, transform 500ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.belir-acik {
+  opacity: 1;
+  transform: none;
+}
+
+/* --- Tema değişimi ---
+ * Ekrandaki arka planlı öğelerin ancak dörtte birinde renk geçişi vardı;
+ * tema değişince bir kısmı yumuşak soluyor, kalanı anında sıçrıyordu.
+ *
+ * Kalıcı bir global geçiş vermek yerine, yalnız tema değiştiği anda
+ * `<html>` üstüne bu sınıf konuyor ve yarım saniye içinde kaldırılıyor
+ * (bkz. theme.ts). Böylece sıradan etkileşimlerde hiçbir şey yavaşlamıyor.
+ */
+.tema-degisiyor,
+.tema-degisiyor *,
+.tema-degisiyor *::before,
+.tema-degisiyor *::after {
+  transition-property: background-color, border-color, color, fill, stroke !important;
+  transition-duration: 220ms !important;
+  transition-timing-function: ease !important;
+  transition-delay: 0s !important;
+}
+
+/* --- Hareket istemeyen kullanıcı ---
+ * Yukarıdaki her şey burada kapanıyor. Tailwind tarafındaki `motion-reduce:`
+ * sınıfları zaten ayrıca duruyor; bu blok CSS'te tanımladıklarımız için.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .perde-gir,
+  .kutu-gir,
+  .icerik-gir,
+  .gec-belir {
+    animation: none;
+    opacity: 1;
+  }
+  .react-flow__node,
+  .react-flow__edge-path {
+    transition: none;
+  }
+  button:not(:disabled):active,
+  [role='button']:not([aria-disabled='true']):active {
+    scale: 1;
+  }
+  .belir {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .tema-degisiyor,
+  .tema-degisiyor *,
+  .tema-degisiyor *::before,
+  .tema-degisiyor *::after {
+    transition-duration: 0s !important;
+  }
+}

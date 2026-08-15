@@ -103,14 +103,14 @@ export default function DeleteAccountModal({ isOpen, onClose }: {
 
   return (
     <div
-      className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[110] flex items-center justify-center p-4"
+      className="perde-gir fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[110] flex items-center justify-center p-4"
       onClick={() => { if (!siliniyor) onClose(); }}
     >
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="hesap-silme-basligi"
-        className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 max-h-[90vh] overflow-y-auto"
+        className="kutu-gir bg-white dark:bg-slate-900 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800">

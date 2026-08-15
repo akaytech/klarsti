@@ -10,8 +10,22 @@ import type { ToolId } from '../store/useRoadmapStore';
 import { ArrowRight } from 'lucide-react';
 import PublicHeader from './PublicHeader';
 import PublicFooter from './PublicFooter';
+import { useKaydirincaBelir } from '../utils/kaydirincaBelir';
 import UrunDemosu from './UrunDemosu';
 import FiyatVeSorular from './FiyatVeSorular';
+
+/**
+ * Kaydırınca beliren bölüm. Giriş bölümü (hero) bilerek bunun dışında:
+ * sayfayı açan kullanıcı ilk ekranı beklemeden görmeli.
+ */
+function BelirenBolum({ children, ...ozellikler }: React.ComponentPropsWithoutRef<'section'>) {
+  const ref = useKaydirincaBelir<HTMLElement>();
+  return (
+    <section ref={ref} {...ozellikler}>
+      {children}
+    </section>
+  );
+}
 
 export default function LandingPage() {
   const { t } = useTranslation();
@@ -123,7 +137,7 @@ export default function LandingPage() {
       </section>
 
       {/* Featured Tools Strip */}
-      <section className="py-16 bg-white dark:bg-slate-950 border-t border-slate-100 dark:border-slate-900">
+      <BelirenBolum className="py-16 bg-white dark:bg-slate-950 border-t border-slate-100 dark:border-slate-900">
         <div className="container mx-auto px-6">
           <h2 className="text-center text-sm font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-8">
             {t('landing_featured_heading')}
@@ -146,10 +160,10 @@ export default function LandingPage() {
             ))}
           </div>
         </div>
-      </section>
+      </BelirenBolum>
 
       {/* How it Works Section */}
-      <section className="py-24 bg-slate-50 dark:bg-slate-900 relative border-t border-slate-200/50 dark:border-slate-800/50">
+      <BelirenBolum className="py-24 bg-slate-50 dark:bg-slate-900 relative border-t border-slate-200/50 dark:border-slate-800/50">
         <div className="container mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-24">
             <h2 className="text-3xl md:text-5xl font-black mb-6 tracking-tight">{t('landing_how_it_works_heading')}</h2>
@@ -186,10 +200,10 @@ export default function LandingPage() {
             {t('ws_development_note')}
           </p>
         </div>
-      </section>
+      </BelirenBolum>
 
       {/* Tools Section */}
-      <section
+      <BelirenBolum
         id="tools"
         className="py-24 bg-white dark:bg-slate-950 relative border-t border-slate-100 dark:border-slate-900"
         style={{ scrollMarginTop: '6rem' }}
@@ -232,7 +246,7 @@ export default function LandingPage() {
             ))}
           </div>
         </div>
-      </section>
+      </BelirenBolum>
 
       {/* Fiyat ve sık sorulanlar. Yeri bilerek burası: ziyaretçi ürünü,
           kliplerini ve araç listesini gördükten sonra "peki ücretli mi,
@@ -241,7 +255,7 @@ export default function LandingPage() {
       <FiyatVeSorular />
 
       {/* CTA Section */}
-      <section className="py-32 relative overflow-hidden">
+      <BelirenBolum className="py-32 relative overflow-hidden">
         <div className="absolute inset-0 bg-indigo-600 dark:bg-indigo-900"></div>
         <div
           className="absolute inset-0 opacity-10"
@@ -259,7 +273,7 @@ export default function LandingPage() {
             {t('landing_cta_button')}
           </button>
         </div>
-      </section>
+      </BelirenBolum>
       </main>
 
       <PublicFooter />

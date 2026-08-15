@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef, useEffect, useLayoutEffect, useMemo } from 'react';
 import { Clock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
@@ -29,6 +29,27 @@ export default function CustomTimeSelect({ value, onChange, placeholder, classNa
     return minTime ? arr.filter((t) => t > minTime) : arr;
   }, [minTime]);
 
+  /**
+   * Listeyi seçili saatin üstünde açar.
+   *
+   * Eskiden liste en baştan çiziliyor, 10 milisaniye sonra `scrollIntoView`
+   * ile seçili saate atlıyordu: kullanıcı önce gece yarısını görüyor, sonra
+   * liste gözünün önünde zıplıyordu. Yumuşak kaydırmak da çözüm değil —
+   * açılırken listenin süzülmesi beklemeye dönüşür.
+   *
+   * Artık konum, liste görünmeden önce doğrudan veriliyor: hiç sıçrama yok.
+   */
+  // `useLayoutEffect`: tarayıcı listeyi boyamadan önce çalışıyor. Normal
+  // effect'te bir kare boyunca liste en baştan görünür, sıçrama geri gelirdi.
+  useLayoutEffect(() => {
+    if (!isOpen) return;
+    const liste = listRef.current;
+    if (!liste) return;
+    const secili = liste.querySelector('.selected-time') as HTMLElement | null;
+    if (!secili) return;
+    liste.scrollTop = secili.offsetTop - liste.clientHeight / 2 + secili.clientHeight / 2;
+  }, [isOpen]);
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
@@ -37,15 +58,6 @@ export default function CustomTimeSelect({ value, onChange, placeholder, classNa
     };
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
-      // Scroll to selected value
-      setTimeout(() => {
-        if (listRef.current) {
-          const selectedEl = listRef.current.querySelector('.selected-time') as HTMLElement;
-          if (selectedEl) {
-            selectedEl.scrollIntoView({ block: 'center' });
-          }
-        }
-      }, 10);
     }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);

@@ -1,4 +1,4 @@
-import React, { useEffect, Suspense, useRef, useCallback } from 'react';
+import { useEffect, Suspense, useRef, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -12,8 +12,9 @@ import { useRoadmapStore, type ToolId } from './store/useRoadmapStore';
 import { aracSecimEylemi, aracAktifAlan, aracAnahtari } from './config/toolWorks';
 import { useAuthStore } from './store/useAuthStore';
 import { useShallow } from 'zustand/react/shallow';
+import { gecikmeliEkran } from './utils/surumTazeleme';
 
-const Workspace = React.lazy(() => import('./components/Workspace'));
+const Workspace = gecikmeliEkran(() => import('./components/Workspace'));
 
 // Adres çubuğundaki proje soğuk açılışta hemen çözülemeyebilir: proje listesi
 // gecikir, Firestore'un auth/App Check jetonu bir tık geç bağlanır, ya da link

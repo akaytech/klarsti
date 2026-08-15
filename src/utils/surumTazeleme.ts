@@ -11,6 +11,16 @@
 //
 // Vite bu durumda `vite:preloadError` firlatiyor. Sayfayi bir kez
 // tazelemek dogru dosya adlarini getiriyor.
+//
+// Ama o olay her seferinde gelmiyor. Firebase Hosting kayip dosyaya 404
+// degil, 200 ile index.html donduruyor; on yukleme istegi basarili sayildigi
+// icin Vite hicbir sey firlatmiyor. Hata bir adim sonra, modulun kendisi
+// calistirilmaya calisilirken "Failed to fetch dynamically imported module"
+// diye geliyor ve dogruca React.lazy'nin sozunu reddediyor. Bu yuzden ikinci
+// bir agimiz var: `gecikmeliEkran`, her gec yuklenen ekrani sarmalayip ayni
+// tazelemeyi oradan tetikliyor.
+
+import { lazy, type ComponentType } from 'react';
 
 /**
  * Tazeleme kararı verildi mi?
@@ -37,18 +47,59 @@ const DONGU_ESIGI_MS = 10_000;
 // Uzun sure acik kalan sekmeler yeni surumu kendiliginden gorsun.
 const GUNCELLEME_ARALIGI_MS = 60 * 60 * 1000;
 
+/**
+ * Sayfayi bir kez tazeler. Tazeleme yapildiysa true doner.
+ *
+ * Cagri iki yerden geliyor (Vite'in olayi ve gec yuklenen ekranin hatasi);
+ * dongu esigi ikisi icin ortak, yoksa biri digerinin ardindan tekrar
+ * yenilerdi.
+ */
+function tazelemeyiDene(): boolean {
+  // Cevrimdisiyken tazelemenin kayip parcayi getirme ihtimali yok; kullaniciyi
+  // acik sayfasindan etmenin anlami kalmiyor, hata ekrani daha durust.
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) return false;
+
+  const son = Number(sessionStorage.getItem(SON_TAZELEME_ANAHTARI) || 0);
+  if (Date.now() - son < DONGU_ESIGI_MS) return false;
+
+  sessionStorage.setItem(SON_TAZELEME_ANAHTARI, String(Date.now()));
+  tazelemeYolda = true;
+  window.location.reload();
+  return true;
+}
+
+/** Hata, inmeyen bir parcadan mi kaynaklaniyor? */
+function parcaHatasiMi(hata: unknown): boolean {
+  const mesaj = String((hata as { message?: string })?.message ?? hata ?? '');
+  return /dynamically imported module|Importing a module script failed|module script failed|Failed to fetch/i.test(mesaj);
+}
+
+/**
+ * Gec yuklenen ekranlar icin `React.lazy` sarmalayicisi.
+ *
+ * Parca inmezse sayfayi bir kez tazeliyor. Tazeleme yoldayken React'e hicbir
+ * zaman cozulmeyen bir soz veriliyor: ekranda hata degil, normal yukleme
+ * gostergesi kaliyor ve kullanici arizayi hic gormeden yeni surume geciyor.
+ */
+export function gecikmeliEkran<T extends ComponentType<any>>(
+  yukleyici: () => Promise<{ default: T }>
+) {
+  return lazy(() =>
+    yukleyici().catch((hata) => {
+      if (parcaHatasiMi(hata) && tazelemeyiDene()) {
+        return new Promise<{ default: T }>(() => { /* sayfa tazeleniyor */ });
+      }
+      throw hata;
+    })
+  );
+}
+
 export function surumTazelemeyiBaslat() {
   if (typeof window === 'undefined') return;
 
   window.addEventListener('vite:preloadError', (olay) => {
-    const son = Number(sessionStorage.getItem(SON_TAZELEME_ANAHTARI) || 0);
-    if (Date.now() - son < DONGU_ESIGI_MS) return;
-
-    sessionStorage.setItem(SON_TAZELEME_ANAHTARI, String(Date.now()));
-    tazelemeYolda = true;
     // Olay iptal edilebilir; engellemezsek Vite hatayi ayrica firlatiyor.
-    olay.preventDefault();
-    window.location.reload();
+    if (tazelemeyiDene()) olay.preventDefault();
   });
 
   if ('serviceWorker' in navigator) {

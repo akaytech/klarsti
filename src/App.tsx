@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import { Suspense } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import { useAuthStore } from './store/useAuthStore';
@@ -9,22 +9,23 @@ import { contactPageBul } from './config/contactPage';
 // Çerez şeridi gecikmeli DEĞİL: her sayfada, giriş yapılmamışken de
 // görünmesi gerekiyor ve içinde ağır hiçbir şey yok (bkz. CookieConsent).
 import CookieConsent from './components/CookieConsent';
+import { gecikmeliEkran } from './utils/surumTazeleme';
 
-const AuthenticatedApp = React.lazy(() => import('./AuthenticatedApp'));
-const LandingPage = React.lazy(() => import('./components/LandingPage'));
-const VerifyEmailPage = React.lazy(() => import('./components/VerifyEmailPage'));
-const ToolLandingPage = React.lazy(() => import('./components/ToolLandingPage'));
-const LegalPage = React.lazy(() => import('./components/LegalPage'));
-const ContactPage = React.lazy(() => import('./components/ContactPage'));
+const AuthenticatedApp = gecikmeliEkran(() => import('./AuthenticatedApp'));
+const LandingPage = gecikmeliEkran(() => import('./components/LandingPage'));
+const VerifyEmailPage = gecikmeliEkran(() => import('./components/VerifyEmailPage'));
+const ToolLandingPage = gecikmeliEkran(() => import('./components/ToolLandingPage'));
+const LegalPage = gecikmeliEkran(() => import('./components/LegalPage'));
+const ContactPage = gecikmeliEkran(() => import('./components/ContactPage'));
 // Yönetim ekranı gecikmeli ve AuthenticatedApp'in DIŞINDA: oradaki adres
 // eşitleme mantığı tanımadığı her yolu '/' ile eziyor, /admin açılır açılmaz
 // ana ekrana atılırdı. Ayrıca o ekran projelerin ağır deposunu kuruyor;
 // yönetim ekranının hiçbirine ihtiyacı yok.
-const AdminPage = React.lazy(() => import('./components/AdminPage'));
+const AdminPage = gecikmeliEkran(() => import('./components/AdminPage'));
 // Giriş ekranı da gecikmeli: tek statik import olarak duruyordu ve Firebase
 // Auth'u (60 KB) siteyi ilk kez açan herkesin ilk yüklemesine sokuyordu.
 // Zaten Suspense içinde çiziliyordu, gecikmeli olması bir şey değiştirmiyor.
-const AuthPage = React.lazy(() => import('./components/AuthPage'));
+const AuthPage = gecikmeliEkran(() => import('./components/AuthPage'));
 
 const LoadingScreen = () => (
   <div className="flex h-screen w-screen items-center justify-center bg-slate-50 dark:bg-slate-900">

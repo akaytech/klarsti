@@ -13,26 +13,27 @@ import GlobalExportButton from './GlobalExportButton';
 import GlobalShareButton from './GlobalShareButton';
 import ToolGuideButton from './ToolGuideButton';
 import WelcomeScreen from './WelcomeScreen';
+import { gecikmeliEkran } from '../utils/surumTazeleme';
 
 // Kılavuz metinleri ve paneli ayrı bir parçada: kullanıcı kılavuzu
 // açmadıkça indirilmiyor.
-const ToolGuidePanel = React.lazy(() => import('./ToolGuidePanel'));
+const ToolGuidePanel = gecikmeliEkran(() => import('./ToolGuidePanel'));
 
-const RoadmapCanvas = React.lazy(() => import('./RoadmapCanvas'));
-const FiveWhysCanvas = React.lazy(() => import('./FiveWhysCanvas'));
-const SwotCanvas = React.lazy(() => import('./SwotCanvas'));
-const IshikawaCanvas = React.lazy(() => import('./IshikawaCanvas'));
-const PdcaCanvas = React.lazy(() => import('./PdcaCanvas'));
-const WaterfallCanvas = React.lazy(() => import('./WaterfallCanvas'));
-const FtaCanvas = React.lazy(() => import('./FtaCanvas'));
-const DecisionMatrixCanvas = React.lazy(() => import('./DecisionMatrixCanvas').then(m => ({ default: m.DecisionMatrixCanvas })));
-const FlowchartCanvas = React.lazy(() => import('./FlowchartCanvas'));
-const OrgchartCanvas = React.lazy(() => import('./OrgchartCanvas'));
-const MindmapCanvas = React.lazy(() => import('./MindmapCanvas'));
-const ParetoCanvas = React.lazy(() => import('./ParetoCanvas'));
-const HistogramCanvas = React.lazy(() => import('./HistogramCanvas'));
-const NotepadCanvas = React.lazy(() => import('./NotepadCanvas'));
-const VsmCanvas = React.lazy(() => import('./VsmCanvas'));
+const RoadmapCanvas = gecikmeliEkran(() => import('./RoadmapCanvas'));
+const FiveWhysCanvas = gecikmeliEkran(() => import('./FiveWhysCanvas'));
+const SwotCanvas = gecikmeliEkran(() => import('./SwotCanvas'));
+const IshikawaCanvas = gecikmeliEkran(() => import('./IshikawaCanvas'));
+const PdcaCanvas = gecikmeliEkran(() => import('./PdcaCanvas'));
+const WaterfallCanvas = gecikmeliEkran(() => import('./WaterfallCanvas'));
+const FtaCanvas = gecikmeliEkran(() => import('./FtaCanvas'));
+const DecisionMatrixCanvas = gecikmeliEkran(() => import('./DecisionMatrixCanvas').then(m => ({ default: m.DecisionMatrixCanvas })));
+const FlowchartCanvas = gecikmeliEkran(() => import('./FlowchartCanvas'));
+const OrgchartCanvas = gecikmeliEkran(() => import('./OrgchartCanvas'));
+const MindmapCanvas = gecikmeliEkran(() => import('./MindmapCanvas'));
+const ParetoCanvas = gecikmeliEkran(() => import('./ParetoCanvas'));
+const HistogramCanvas = gecikmeliEkran(() => import('./HistogramCanvas'));
+const NotepadCanvas = gecikmeliEkran(() => import('./NotepadCanvas'));
+const VsmCanvas = gecikmeliEkran(() => import('./VsmCanvas'));
 
 function DecisionMatrixWrapper() {
   const { currentProjectId, projects, addDecisionProject } = useRoadmapStore(useShallow((state) => ({

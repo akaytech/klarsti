@@ -782,5 +782,6 @@
   "demo_wbs_desc": "Zerlege ein großes Vorhaben in Phasen und Arbeitspakete und behalte den Stand im Blick.",
   "demo_whys_desc": "Frage dich Schritt für Schritt bis zur eigentlichen Ursache durch.",
   "demo_pareto_desc": "Sieh in Zahlen, welches Problem am schwersten wiegt.",
-  "demo_mindmap_desc": "Verzweige deine Ideen und halte sie an einem Ort zusammen."
+  "demo_mindmap_desc": "Verzweige deine Ideen und halte sie an einem Ort zusammen.",
+  "landing_badge": "Werkzeuge zum Problemlösen und Planen — {{sayi}} Werkzeuge an einem Ort."
 }

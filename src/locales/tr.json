@@ -782,5 +782,6 @@
   "demo_wbs_desc": "Büyük bir işi fazlara ve iş paketlerine böl, nerede olduğunu gör.",
   "demo_whys_desc": "Sorunu adım adım sorgula, kök nedene in.",
   "demo_pareto_desc": "Hangi sorunun ağır bastığını rakamla gör.",
-  "demo_mindmap_desc": "Fikirleri dallandırarak topla, dağılmadan çalış."
+  "demo_mindmap_desc": "Fikirleri dallandırarak topla, dağılmadan çalış.",
+  "landing_badge": "Problem çözme ve planlama araçları — {{sayi}} araç, tek yerde."
 }

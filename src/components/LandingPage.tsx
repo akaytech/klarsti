@@ -75,7 +75,10 @@ export default function LandingPage() {
               <span className="animate-ping motion-reduce:animate-none absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
             </span>
-            {t('welcome_msg')}
+            {/* Burada eskiden "Projelerini buluta kaydetmek için giriş yap."
+                yazıyordu (welcome_msg). Sayfanın ilk okunan yeri ürünün ne
+                olduğunu söylemeli; o metin giriş ekranında duruyor. */}
+            {t('landing_badge', { sayi: TOOLS.length })}
           </div>
 
           <h1 className="mx-auto max-w-4xl text-5xl font-black tracking-tight md:text-7xl lg:text-8xl bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400 mb-8">
@@ -84,10 +87,6 @@ export default function LandingPage() {
 
           <p className="mx-auto max-w-2xl text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-12 leading-relaxed">
             {t('hero_subtitle')}
-          </p>
-
-          <p className="mx-auto max-w-2xl text-sm text-slate-500 dark:text-slate-400 mb-10 -mt-6">
-            {t('ws_development_note')}
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -168,6 +167,14 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
+
+          {/* "Hâlâ geliştiriliyor" notu. Eskiden sayfanın en tepesinde,
+              başlığın hemen altındaydı: ziyaretçi ürünün ne olduğunu
+              görmeden önce okuduğu ilk cümle buydu. Artık üç adımı ve
+              demoyu gördükten sonra çıkıyor. */}
+          <p className="mx-auto mt-20 max-w-2xl text-center text-sm text-slate-500 dark:text-slate-400">
+            {t('ws_development_note')}
+          </p>
         </div>
       </section>
 

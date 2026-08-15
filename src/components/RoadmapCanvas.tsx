@@ -19,6 +19,7 @@ import CanvasBackdrop from './CanvasBackdrop';
 import { metinAlaninda } from '../utils/metinAlaninda';
 import GoalNode from './GoalNode';
 import CanvasAddButton from './CanvasAddButton';
+import KilavuzuAcButton from './KilavuzuAcButton';
 import { useEkranaSigdir } from '../utils/ekranaSigdir';
 import PaneContextMenu from './PaneContextMenu';
 import SelectionContextMenu from './SelectionContextMenu';
@@ -437,6 +438,7 @@ export default function RoadmapCanvas({ onNodeSelect }: { onNodeSelect: (id: str
                 >
                   {t('load_example')}
                 </button>
+                <KilavuzuAcButton />
               </div>
             </div>
           </Panel>

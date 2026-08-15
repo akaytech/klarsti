@@ -19,6 +19,7 @@ import FiveWhysContextMenu from './FiveWhysContextMenu';
 import PaneContextMenu from './PaneContextMenu';
 import AnalysisMenu from './AnalysisMenu';
 import CanvasAddButton from './CanvasAddButton';
+import KilavuzuAcButton from './KilavuzuAcButton';
 import { useEkranaSigdir } from '../utils/ekranaSigdir';
 import CanvasMiniMap from './CanvasMiniMap';
 import CanvasControls from './CanvasControls';
@@ -245,6 +246,7 @@ function FiveWhysCanvasInner() {
                    >
                      {t('load_example')}
                    </button>
+                   <KilavuzuAcButton />
                  </div>
                </div>
              </Panel>

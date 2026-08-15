@@ -14,6 +14,8 @@ import GlobalShareButton from './GlobalShareButton';
 import ToolGuideButton from './ToolGuideButton';
 import WelcomeScreen from './WelcomeScreen';
 import { gecikmeliEkran } from '../utils/surumTazeleme';
+import { GUIDE_TOOLS } from '../content/toolGuides/available';
+import { kilavuzGosterildiMi, kilavuzuGosterildiIsaretle } from '../utils/kilavuzGosterimi';
 
 // Kılavuz metinleri ve paneli ayrı bir parçada: kullanıcı kılavuzu
 // açmadıkça indirilmiyor.
@@ -87,6 +89,18 @@ export default function Workspace() {
   })));
   const location = useLocation();
   const guideOpen = useUIStore((s) => s.guideOpen);
+  const setGuideOpen = useUIStore((s) => s.setGuideOpen);
+
+  // Bir araç bu tarayıcıda ilk kez açıldığında kılavuzu bir kez kendiliğinden
+  // aç. Kılavuz ürünün en iyi parçası ama sağ üstteki düğmeyi ilk kez giren
+  // kullanıcı aramıyordu. İkinci açılışta çıkmıyor; kapatıldığında da bir daha
+  // gelmiyor (işaret açılışta konuyor).
+  React.useEffect(() => {
+    if (!activeTool || !GUIDE_TOOLS.includes(activeTool)) return;
+    if (kilavuzGosterildiMi(activeTool)) return;
+    kilavuzuGosterildiIsaretle(activeTool);
+    setGuideOpen(true);
+  }, [activeTool, setGuideOpen]);
   // Panel bir kez açıldıktan sonra DOM'da kalıyor; kapanış animasyonu ancak
   // böyle görünüyor (anında unmount edilirse panel kayarak değil, yok olarak
   // gidiyordu).

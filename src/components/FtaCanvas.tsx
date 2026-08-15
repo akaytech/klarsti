@@ -16,6 +16,7 @@ import { metinAlaninda } from '../utils/metinAlaninda';
 import FtaNode from './FtaNode';
 import FtaContextMenu from './FtaContextMenu';
 import CanvasAddButton from './CanvasAddButton';
+import KilavuzuAcButton from './KilavuzuAcButton';
 import { useEkranaSigdir } from '../utils/ekranaSigdir';
 import { calculateProbability, FtaProbabilityContext } from '../utils/ftaProbability';
 import AnalysisMenu from './AnalysisMenu';
@@ -203,6 +204,7 @@ export default function FtaCanvas() {
                 >
                   {t('load_example')}
                 </button>
+                <KilavuzuAcButton />
               </div>
             </div>
           </Panel>

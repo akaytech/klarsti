@@ -64,10 +64,14 @@ export default function WorksPage() {
         </div>
 
         <div className="min-w-0 flex-1">
-          <h3 className="truncate font-bold text-slate-800 dark:text-slate-100">
+          {/* Uzun adlar kesiliyor; tamamı üstüne gelince görünsün. */}
+          <h3 className="truncate font-bold text-slate-800 dark:text-slate-100" title={calisma.ad || t('untitled_work')}>
             {calisma.ad || t('untitled_work')}
           </h3>
-          <p className="truncate text-sm text-slate-500 dark:text-slate-400">
+          <p
+            className="truncate text-sm text-slate-500 dark:text-slate-400"
+            title={`${calisma.projectName} · ${arac ? t(arac.labelKey) : calisma.tool}`}
+          >
             {calisma.projectName} · {arac ? t(arac.labelKey) : calisma.tool}
           </p>
         </div>

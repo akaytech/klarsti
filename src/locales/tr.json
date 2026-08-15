@@ -791,5 +791,6 @@
   "amac_surec": "Bir süreci baştan sona çizeceğim",
   "amac_karar": "Seçenekler arasında karar vereceğim",
   "amac_fikir": "Fikirlerimi bir araya toplayacağım",
-  "amac_durum": "Durumu bütün olarak göreceğim"
+  "amac_durum": "Durumu bütün olarak göreceğim",
+  "node_progress_hint": "Altındaki {{toplam}} kutudan {{biten}} tanesi bitti"
 }

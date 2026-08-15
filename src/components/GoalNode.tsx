@@ -109,6 +109,9 @@ export default function GoalNode({ data, selected }: { data: GoalNodeData; selec
         selected ? 'ring-2 ring-indigo-500 dark:ring-indigo-400' : ''
       )}
     >
+      {/* "1/3" rozeti. Üstüne gelince sayının ne anlama geldiği yazıyor:
+          eskiden yalnızca düğmenin ne yaptığı yazıyordu, sayının alt kutu
+          sayısı mı yoksa biten sayısı mı olduğu hiçbir yerde söylenmiyordu. */}
       {hasCompletedChildren && (
         <button
           onClick={(e) => {
@@ -121,7 +124,8 @@ export default function GoalNode({ data, selected }: { data: GoalNodeData; selec
               ? "bg-slate-100 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600"
               : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-slate-700"
           )}
-          title={data.hideCompleted ? t('show_hidden') : t('hide_completed')}
+          title={`${t('node_progress_hint', { biten: completedChildrenCount, toplam: childrenIds.length })} — ${data.hideCompleted ? t('show_hidden') : t('hide_completed')}`}
+          aria-label={`${t('node_progress_hint', { biten: completedChildrenCount, toplam: childrenIds.length })} — ${data.hideCompleted ? t('show_hidden') : t('hide_completed')}`}
         >
           {data.hideCompleted ? <EyeOff size={12} /> : <Eye size={12} />}
           {/* Kaç alt görev bitti: sayı tek başına ne kadarın kaldığını

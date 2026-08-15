@@ -791,5 +791,6 @@
   "amac_surec": "Tracer un processus du début à la fin",
   "amac_karar": "Choisir entre plusieurs options",
   "amac_fikir": "Rassembler mes idées au même endroit",
-  "amac_durum": "Voir la situation dans son ensemble"
+  "amac_durum": "Voir la situation dans son ensemble",
+  "node_progress_hint": "{{biten}} des {{toplam}} cases en dessous sont terminées"
 }

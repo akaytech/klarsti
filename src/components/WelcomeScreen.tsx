@@ -145,10 +145,11 @@ export default function WelcomeScreen() {
                     <div className={`mb-3 flex h-10 w-10 items-center justify-center rounded-xl ${tema.bg}`}>
                       {Simge && <Simge size={20} className={tema.text} />}
                     </div>
-                    <h3 className="mb-1 w-full truncate font-bold text-slate-800 dark:text-slate-100">
+                    {/* Uzun adlar kesiliyor; tamamı üstüne gelince görünsün. */}
+                    <h3 className="mb-1 w-full truncate font-bold text-slate-800 dark:text-slate-100" title={calisma.ad || t('untitled_work')}>
                       {calisma.ad || t('untitled_work')}
                     </h3>
-                    <p className="w-full truncate text-sm text-slate-500 dark:text-slate-400">
+                    <p className="w-full truncate text-sm text-slate-500 dark:text-slate-400" title={calisma.projectName}>
                       {calisma.projectName}
                     </p>
                     <p className="mt-2 text-xs text-slate-400 dark:text-slate-500">

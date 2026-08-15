@@ -791,5 +791,6 @@
   "amac_surec": "Map a process from start to finish",
   "amac_karar": "Decide between options",
   "amac_fikir": "Gather my ideas in one place",
-  "amac_durum": "See the whole situation at once"
+  "amac_durum": "See the whole situation at once",
+  "node_progress_hint": "{{biten}} of the {{toplam}} boxes below are done"
 }

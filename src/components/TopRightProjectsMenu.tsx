@@ -375,8 +375,9 @@ function ProjectTreeItem({ project, isCurrent, onClose, requestDelete, requestSh
               className="flex-1 min-w-0 bg-white dark:bg-slate-800 border border-indigo-300 dark:border-indigo-500 rounded px-1.5 py-0.5 text-sm font-bold text-slate-800 dark:text-slate-100 outline-none"
             />
           ) : (
-            <span 
+            <span
               className="flex-1 truncate text-start text-sm font-bold cursor-pointer"
+              title={project.name}
               onDoubleClick={() => setIsEditing(true)}
               onClick={() => {
                 if (!isCurrent) loadProject(project.id);

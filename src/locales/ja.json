@@ -791,5 +791,6 @@
   "amac_surec": "流れを最初から最後まで描く",
   "amac_karar": "選択肢の中から決める",
   "amac_fikir": "アイデアを一か所に集める",
-  "amac_durum": "状況を全体として見る"
+  "amac_durum": "状況を全体として見る",
+  "node_progress_hint": "下の {{toplam}} 個のうち {{biten}} 個が完了"
 }

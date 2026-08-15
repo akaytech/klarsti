@@ -791,5 +791,6 @@
   "amac_surec": "Einen Ablauf von Anfang bis Ende darstellen",
   "amac_karar": "Zwischen Optionen entscheiden",
   "amac_fikir": "Meine Ideen an einem Ort sammeln",
-  "amac_durum": "Die Lage als Ganzes sehen"
+  "amac_durum": "Die Lage als Ganzes sehen",
+  "node_progress_hint": "{{biten}} von {{toplam}} untergeordneten Kästen sind fertig"
 }

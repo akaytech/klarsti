@@ -791,5 +791,6 @@
   "amac_surec": "把流程从头画到尾",
   "amac_karar": "在几个选项之间做决定",
   "amac_fikir": "把想法集中到一处",
-  "amac_durum": "把整体情况看清楚"
+  "amac_durum": "把整体情况看清楚",
+  "node_progress_hint": "下方 {{toplam}} 个方块中已完成 {{biten}} 个"
 }

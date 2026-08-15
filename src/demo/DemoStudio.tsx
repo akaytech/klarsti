@@ -11,6 +11,7 @@ import RoadmapCanvas from '../components/RoadmapCanvas';
 import FiveWhysCanvas from '../components/FiveWhysCanvas';
 import ParetoCanvas from '../components/ParetoCanvas';
 import MindmapCanvas from '../components/MindmapCanvas';
+import WelcomeScreen from '../components/WelcomeScreen';
 
 /**
  * Tanıtım kliplerinin çekildiği ekran: /demo-cekim/<sahne>?tema=acik
@@ -28,6 +29,9 @@ const TUVALLER = {
   '5whys': FiveWhysCanvas,
   pareto: ParetoCanvas,
   mindmap: MindmapCanvas,
+  // Tuval değil: giriş ekranının kendisi. Oturum açmadan görünmediği için
+  // yerleşimini yerelde ancak buradan ölçebiliyoruz.
+  karsilama: WelcomeScreen,
 } as const;
 
 declare global {
@@ -67,7 +71,9 @@ export default function DemoStudio({ ad }: { ad: string }) {
         projects: [{ id: 'demo', name: 'Demo', ownerId: 'demo', toolData: {} } as never],
         currentProjectId: 'demo',
         projectsLoaded: true,
-        activeTool: sahne.arac,
+        // Karşılama ekranı "hiçbir araç açık değil" hâli; onun sahnesinde
+        // activeTool boş kalıyor.
+        activeTool: sahne.arac === 'karsilama' ? null : sahne.arac,
         wbsTrees: [],
         activeWbsTreeId: null,
         fiveWhysAnalyses: [],

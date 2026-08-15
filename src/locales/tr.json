@@ -796,5 +796,6 @@
   "nav_search_placeholder": "Araç ara",
   "nav_recent_tools": "Son kullandıkların",
   "nav_search_empty": "Eşleşen araç yok",
-  "nav_search_clear": "Aramayı temizle"
+  "nav_search_clear": "Aramayı temizle",
+  "ws_all_tools": "Bütün araçlar"
 }

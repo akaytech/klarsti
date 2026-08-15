@@ -796,5 +796,6 @@
   "nav_search_placeholder": "Buscar herramienta",
   "nav_recent_tools": "Usadas hace poco",
   "nav_search_empty": "Ninguna herramienta coincide",
-  "nav_search_clear": "Borrar búsqueda"
+  "nav_search_clear": "Borrar búsqueda",
+  "ws_all_tools": "Todas las herramientas"
 }

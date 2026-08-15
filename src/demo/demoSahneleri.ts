@@ -15,8 +15,8 @@ import { bekle, imlecBaslangic, imlecGit, inputaYaz, odaktanCik, sigdir, tikla, 
 export type Sahne = {
   /** Dosya adı: public/tanitim/<ad>.mp4 */
   ad: string;
-  /** Hangi tuval çizilecek. */
-  arac: 'wbs' | '5whys' | 'pareto' | 'mindmap';
+  /** Hangi ekran çizilecek. 'karsilama' tuval değil, giriş ekranının kendisi. */
+  arac: 'wbs' | '5whys' | 'pareto' | 'mindmap' | 'karsilama';
   kur: () => void;
   oyna: () => Promise<void>;
 };
@@ -244,6 +244,50 @@ const zihinHarita: Sahne = {
   },
 };
 
-export const SAHNELER: Sahne[] = [isKirilimi, besNeden, pareto, zihinHarita];
+// --- Karşılama ekranı ------------------------------------------------------
+
+/**
+ * Klip çekmek için değil, ölçmek için: giriş ekranı yalnızca oturum açmış
+ * kullanıcıya görünüyor, o yüzden yerleşimi (ekrana sığıyor mu, kaydırma
+ * gerekiyor mu) yerelde başka türlü kontrol edilemiyor.
+ */
+const karsilama: Sahne = {
+  ad: 'karsilama',
+  arac: 'karsilama',
+  kur: () => {
+    const d = depo();
+    // Birkaç çalışma: "Kaldığın Yer" şeridi ve "son kullandıkların" ancak
+    // çalışma varken çiziliyor, ekranın en uzun hâli bu.
+    d.addWbsTree('Kahve Dükkanı Şubesi', 'Yeni Kahve Dükkanı Şubesi Açılışı');
+    d.addFiveWhysAnalysis('Sabah kuyruğu', 'Sabah saatlerinde kuyruk çok uzun');
+    d.addMindmap('Açılış Kampanyası', 'Açılış Kampanyası');
+    d.addSwot('Yeni Şube');
+
+    // "Kaldığın Yer" şeridi klasörün toolData'sını okuyor; gerçek uygulamada
+    // oraya SyncManager yazıyor, burada elle kuruluyor. Yoksa ekranın en uzun
+    // hâli ölçülemiyor.
+    const s = depo();
+    useRoadmapStore.setState({
+      projects: [
+        {
+          id: 'demo',
+          name: 'Kahve Dükkanı',
+          toolData: {
+            wbsTrees: s.wbsTrees,
+            fiveWhysAnalyses: s.fiveWhysAnalyses,
+            mindmaps: s.mindmaps,
+            swot: s.swot,
+          },
+          updatedAt: Date.now(),
+        } as never,
+      ],
+    });
+  },
+  oyna: async () => {
+    await bekle(600);
+  },
+};
+
+export const SAHNELER: Sahne[] = [isKirilimi, besNeden, pareto, zihinHarita, karsilama];
 
 export const sahneBul = (ad: string) => SAHNELER.find((s) => s.ad === ad);

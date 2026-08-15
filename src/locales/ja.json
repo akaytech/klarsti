@@ -796,5 +796,6 @@
   "nav_search_placeholder": "ツールを検索",
   "nav_recent_tools": "最近使ったもの",
   "nav_search_empty": "該当するツールなし",
-  "nav_search_clear": "検索をクリア"
+  "nav_search_clear": "検索をクリア",
+  "ws_all_tools": "すべてのツール"
 }

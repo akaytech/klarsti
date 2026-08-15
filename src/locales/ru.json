@@ -796,5 +796,6 @@
   "nav_search_placeholder": "Найти инструмент",
   "nav_recent_tools": "Недавние",
   "nav_search_empty": "Ничего не найдено",
-  "nav_search_clear": "Очистить поиск"
+  "nav_search_clear": "Очистить поиск",
+  "ws_all_tools": "Все инструменты"
 }

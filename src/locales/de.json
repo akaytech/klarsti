@@ -796,5 +796,6 @@
   "nav_search_placeholder": "Werkzeug suchen",
   "nav_recent_tools": "Zuletzt benutzt",
   "nav_search_empty": "Kein passendes Werkzeug",
-  "nav_search_clear": "Suche löschen"
+  "nav_search_clear": "Suche löschen",
+  "ws_all_tools": "Alle Werkzeuge"
 }

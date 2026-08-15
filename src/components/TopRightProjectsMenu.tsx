@@ -42,6 +42,19 @@ export interface PaylasimHedefi {
 }
 
 /**
+ * Silme düğmesinin önündeki ince çizgi ve boşluk.
+ *
+ * Neden var: paylaş, yeniden adlandır ve sil yan yana, aynı boyda ve
+ * aralarında boşluk olmadan duruyordu. Silme düğmesine yanlışlıkla basmak
+ * kolaydı; onay penceresi kurtarıyordu ama o pencereye hiç gelinmemeli.
+ * Silme artık ayrı bir bölge: göz onu diğer ikisinden ayırıyor, el de
+ * kayarken araya boşluk giriyor.
+ */
+function SilmeAyraci() {
+  return <span aria-hidden="true" className="mx-1 h-4 w-px shrink-0 bg-slate-200 dark:bg-slate-700" />;
+}
+
+/**
  * Tek bir çalışma satırı: adı, paylaşımı, adını değiştirme ve silme.
  *
  * Eylemler açık projenin verisi üzerinde çalışıyor. Bu yüzden başka bir
@@ -120,7 +133,7 @@ function WorkTreeItem({
           <button
             onClick={() => onOpen(calisma.id)}
             onDoubleClick={() => setIsEditing(true)}
-            className="w-full truncate rounded-lg px-2 py-1 pe-[76px] text-start text-xs text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+            className="w-full truncate rounded-lg px-2 py-1 pe-[86px] text-start text-xs text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
             title={gorunenAd}
           >
             {gorunenAd}
@@ -152,6 +165,7 @@ function WorkTreeItem({
             >
               <Pencil size={12} />
             </button>
+            <SilmeAyraci />
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -234,7 +248,7 @@ function ToolTreeItem({
 
         <button
           onClick={() => onOpenTool(tool.id)}
-          className="flex flex-1 items-center gap-2 overflow-hidden rounded-lg p-1.5 pe-[80px] text-start text-xs font-medium text-slate-600 transition-colors hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-800"
+          className="flex flex-1 items-center gap-2 overflow-hidden rounded-lg p-1.5 pe-[90px] text-start text-xs font-medium text-slate-600 transition-colors hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-800"
         >
           <Icon size={14} className={`shrink-0 ${tool.color}`} />
           <span className="truncate">{t(tool.label)}</span>
@@ -259,6 +273,7 @@ function ToolTreeItem({
             <span aria-hidden="true" className="absolute end-1 top-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
           )}
         </button>
+        <SilmeAyraci />
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -406,6 +421,7 @@ function ProjectTreeItem({ project, isCurrent, onClose, requestDelete, requestSh
                 </button>
               </>
             )}
+            <SilmeAyraci />
             <button
               onClick={(e) => {
                  e.stopPropagation();

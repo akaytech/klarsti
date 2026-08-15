@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ReactFlow,
-  MiniMap,
   Panel,
   useReactFlow
 } from '@xyflow/react';
@@ -20,6 +19,8 @@ import MindmapContextMenu from './MindmapContextMenu';
 import MindmapMapsMenu from './MindmapMapsMenu';
 import CanvasAddButton from './CanvasAddButton';
 import { DAL_RENKLERI, mindmapYerlesimi } from '../utils/mindmapLayout';
+import CanvasMiniMap from './CanvasMiniMap';
+import CanvasControls from './CanvasControls';
 
 const nodeTypes = {
   mindmapNode: MindmapNode,
@@ -271,10 +272,8 @@ export default function MindmapCanvas() {
           </Panel>
         )}
 
-        <MiniMap zoomable pannable position="bottom-right"
-          className="!w-40 !h-40 !rounded-full overflow-hidden border-4 border-slate-200 dark:border-slate-700 shadow-2xl dark:bg-slate-800 bg-white"
-          nodeColor={(n) => DAL_RENKLERI[((n.data as any)?.branch ?? 0) % DAL_RENKLERI.length]}
-        />
+        <CanvasControls />
+        <CanvasMiniMap nodeColor={(n) => DAL_RENKLERI[((n.data as any)?.branch ?? 0) % DAL_RENKLERI.length]} />
 
         {/* Yalnız kök varken üstteki karşılama panelinde zaten düğme duruyor. */}
         {aktifHarita && mindmapNodes.length > 1 && (

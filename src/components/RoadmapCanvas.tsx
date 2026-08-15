@@ -1,7 +1,6 @@
 import { useCallback, useRef, useState, useEffect } from 'react';
 import {
   ReactFlow,
-  MiniMap,
   Panel,
   useReactFlow,
 } from '@xyflow/react';
@@ -25,6 +24,8 @@ import PaneContextMenu from './PaneContextMenu';
 import SelectionContextMenu from './SelectionContextMenu';
 import WbsTreesMenu from './WbsTreesMenu';
 import { useTranslation } from 'react-i18next';
+import CanvasMiniMap from './CanvasMiniMap';
+import CanvasControls from './CanvasControls';
 
 const nodeTypes = {
   goalNode: GoalNode,
@@ -394,7 +395,8 @@ export default function RoadmapCanvas({ onNodeSelect }: { onNodeSelect: (id: str
           )}
         </Panel>
 
-        <MiniMap position="bottom-right" className="!w-48 !h-48 !rounded-full overflow-hidden border-4 border-slate-200 dark:border-slate-700 shadow-2xl dark:bg-slate-800 bg-white" maskColor={themeColors.minimapMask} nodeColor={themeColors.minimapNode} zoomable pannable />
+        <CanvasControls />
+        <CanvasMiniMap nodeColor={themeColors.minimapNode} maskColor={themeColors.minimapMask} />
         <CanvasBackdrop />
 
         {/* Başlangıç paneli açıkken gizli: orada zaten iki büyük düğme var. */}

@@ -2,8 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ReactFlow,
   useReactFlow,
-  Controls,
-  MiniMap,
   Panel
 } from '@xyflow/react';
 import type { NodeMouseHandler } from '@xyflow/react';
@@ -21,6 +19,8 @@ import DiagramChartsMenu from './DiagramChartsMenu';
 import CanvasAddButton from '../CanvasAddButton';
 import { useDiagram } from './useDiagram';
 import { islemBasla, islemBitir } from '../../store/gecmis';
+import CanvasMiniMap from '../CanvasMiniMap';
+import CanvasControls from '../CanvasControls';
 
 // Akış diyagramları ve organizasyon şemaları bu kanvası paylaşıyor; hangi
 // katalogla çalışacağını `kind` belirliyor (bkz. config/diagramKinds.ts).
@@ -149,7 +149,7 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
         proOptions={{ hideAttribution: true }}
       >
         <CanvasBackdrop />
-        <Controls className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 fill-slate-700 dark:fill-slate-300 shadow-xl" />
+        <CanvasControls />
 
         {/* Şema menüsü. React Flow'un kendi stil dosyası panele margin veriyor
             ve Tailwind sınıfı ona yeniliyor, o yüzden satır içi stil: geri al /
@@ -166,10 +166,7 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
           )}
         </Panel>
 
-        <MiniMap zoomable pannable position="bottom-right"
-          className="!w-48 !h-48 !rounded-full overflow-hidden border-4 border-slate-200 dark:border-slate-700 shadow-2xl dark:bg-slate-800 bg-white"
-          nodeColor={(n) => k.getShape((n.data as any)?.shape).minimapColor}
-        />
+        <CanvasMiniMap nodeColor={(n) => k.getShape((n.data as any)?.shape).minimapColor} />
 
         {aktif.nodes.length > 0 && (
           <CanvasAddButton

@@ -773,5 +773,7 @@
   "new_folder_hint": "你的工作都放在文件夹里。给这个文件夹起个名字吧。",
   "new_folder_placeholder": "例如：咖啡店开业",
   "new_folder_label": "文件夹名称",
-  "new_folder_create": "创建"
+  "new_folder_create": "创建",
+  "minimap_show": "显示缩略图",
+  "minimap_hide": "隐藏缩略图"
 }

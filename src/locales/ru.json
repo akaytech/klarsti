@@ -773,5 +773,7 @@
   "new_folder_hint": "Ваши работы лежат в папке. Как её назвать?",
   "new_folder_placeholder": "Напр.: Открытие кофейни",
   "new_folder_label": "Название папки",
-  "new_folder_create": "Создать"
+  "new_folder_create": "Создать",
+  "minimap_show": "Показать мини-карту",
+  "minimap_hide": "Скрыть мини-карту"
 }

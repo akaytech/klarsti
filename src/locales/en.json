@@ -773,5 +773,7 @@
   "new_folder_hint": "Your works live inside a folder. What should this one be called?",
   "new_folder_placeholder": "e.g. Coffee shop launch",
   "new_folder_label": "Folder name",
-  "new_folder_create": "Create"
+  "new_folder_create": "Create",
+  "minimap_show": "Show minimap",
+  "minimap_hide": "Hide minimap"
 }

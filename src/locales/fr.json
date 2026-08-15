@@ -773,5 +773,7 @@
   "new_folder_hint": "Vos travaux vivent dans un dossier. Comment voulez-vous l’appeler ?",
   "new_folder_placeholder": "Ex. : Ouverture du café",
   "new_folder_label": "Nom du dossier",
-  "new_folder_create": "Créer"
+  "new_folder_create": "Créer",
+  "minimap_show": "Afficher la mini-carte",
+  "minimap_hide": "Masquer la mini-carte"
 }

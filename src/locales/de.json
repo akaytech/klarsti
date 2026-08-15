@@ -773,5 +773,7 @@
   "new_folder_hint": "Deine Arbeiten liegen in einem Ordner. Wie soll dieser heißen?",
   "new_folder_placeholder": "z. B. Eröffnung des Cafés",
   "new_folder_label": "Ordnername",
-  "new_folder_create": "Erstellen"
+  "new_folder_create": "Erstellen",
+  "minimap_show": "Übersichtskarte einblenden",
+  "minimap_hide": "Übersichtskarte ausblenden"
 }

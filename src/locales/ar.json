@@ -773,5 +773,7 @@
   "new_folder_hint": "أعمالك تُحفظ داخل مجلد. ما الاسم الذي تريده لهذا المجلد؟",
   "new_folder_placeholder": "مثال: افتتاح المقهى",
   "new_folder_label": "اسم المجلد",
-  "new_folder_create": "إنشاء"
+  "new_folder_create": "إنشاء",
+  "minimap_show": "إظهار الخريطة المصغرة",
+  "minimap_hide": "إخفاء الخريطة المصغرة"
 }

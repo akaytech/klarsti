@@ -773,5 +773,7 @@
   "new_folder_hint": "作業はフォルダーの中に入ります。このフォルダーの名前を決めてください。",
   "new_folder_placeholder": "例: カフェの開店",
   "new_folder_label": "フォルダー名",
-  "new_folder_create": "作成"
+  "new_folder_create": "作成",
+  "minimap_show": "ミニマップを表示",
+  "minimap_hide": "ミニマップを隠す"
 }

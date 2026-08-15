@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import {
   ReactFlow,
-  MiniMap,
   Panel,
   useReactFlow,
 } from '@xyflow/react';
@@ -20,6 +19,8 @@ import CanvasAddButton from './CanvasAddButton';
 import { useEkranaSigdir } from '../utils/ekranaSigdir';
 import { calculateProbability, FtaProbabilityContext } from '../utils/ftaProbability';
 import AnalysisMenu from './AnalysisMenu';
+import CanvasMiniMap from './CanvasMiniMap';
+import CanvasControls from './CanvasControls';
 
 const nodeTypes = {
   ftaNode: FtaNode,
@@ -139,7 +140,8 @@ export default function FtaCanvas() {
         }}
         proOptions={{ hideAttribution: true }}
       >
-        <MiniMap position="bottom-right" className="!w-48 !h-48 !rounded-full overflow-hidden border-4 border-slate-200 dark:border-slate-700 shadow-2xl dark:bg-slate-800 bg-white" maskColor={themeColors.minimapMask} nodeColor={themeColors.minimapNode} zoomable pannable />
+        <CanvasControls />
+        <CanvasMiniMap nodeColor={themeColors.minimapNode} maskColor={themeColors.minimapMask} />
         {aktifAgac && (
           <Panel position="top-left" style={{ marginTop: 68 }}>
             <AnalysisMenu

@@ -52,7 +52,10 @@ const UndoRedoControls: React.FC = () => {
   }, [handleUndo, handleRedo]);
 
   return (
-    <div className="absolute top-4 start-4 z-[100] flex items-center gap-1 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md p-1.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+    // z-30: dar ekranda sol menü üstten kayarak açılıyor (kendisi z-50, arkasındaki
+    // karartma z-40). Bu küme z-[100] olduğu için ikisinin de üstünde kalıyor ve
+    // menü açıkken logonun üstüne biniyordu.
+    <div className="absolute top-4 start-4 z-30 flex items-center gap-1 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md p-1.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
       <button
         onClick={handleUndo}
         disabled={!canUndo}

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ReactFlow, Controls, Panel, useReactFlow } from '@xyflow/react';
+import { ReactFlow, Panel, useReactFlow } from '@xyflow/react';
 import type { NodeMouseHandler } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import CanvasBackdrop from './CanvasBackdrop';
@@ -31,6 +31,7 @@ import VsmTimelineOverlay from './VsmTimelineOverlay';
 import VsmMapsMenu from './VsmMapsMenu';
 import VsmSettingsPanel from './VsmSettingsPanel';
 import CanvasAddButton from './CanvasAddButton';
+import CanvasControls from './CanvasControls';
 import { useEkranaSigdir } from '../utils/ekranaSigdir';
 import ConfirmModal from './ConfirmModal';
 import { vsmHesapla, saniyeBicimle, sayiBicimle } from '../utils/vsmHesap';
@@ -240,7 +241,7 @@ export default function VsmCanvas() {
           defaultEdgeOptions={{ type: 'vsmPush' }}
         >
           <CanvasBackdrop gap={20} size={1} />
-          <Controls className="!border-slate-200 !bg-white !shadow-md dark:!border-slate-700 dark:!bg-slate-800" />
+          <CanvasControls />
 
           <Panel position="top-left" style={{ marginTop: 68 }}>
             <VsmMapsMenu aktif={harita} />

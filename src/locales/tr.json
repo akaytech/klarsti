@@ -773,5 +773,7 @@
   "new_folder_hint": "Çalışmaların bir klasörün içinde durur. Bu klasöre ne ad vermek istersin?",
   "new_folder_placeholder": "Örn: Kahve dükkanı açılışı",
   "new_folder_label": "Klasör adı",
-  "new_folder_create": "Oluştur"
+  "new_folder_create": "Oluştur",
+  "minimap_show": "Küçük haritayı göster",
+  "minimap_hide": "Küçük haritayı gizle"
 }

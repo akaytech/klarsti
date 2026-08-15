@@ -773,5 +773,7 @@
   "new_folder_hint": "Tus trabajos viven dentro de una carpeta. ¿Cómo quieres llamarla?",
   "new_folder_placeholder": "Ej.: Apertura de la cafetería",
   "new_folder_label": "Nombre de la carpeta",
-  "new_folder_create": "Crear"
+  "new_folder_create": "Crear",
+  "minimap_show": "Mostrar el minimapa",
+  "minimap_hide": "Ocultar el minimapa"
 }

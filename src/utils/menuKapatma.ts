@@ -69,8 +69,13 @@ export function useKapatmaYayini(kapat: () => void) {
 }
 
 /**
- * Üst bardaki menüler: kendi kabının dışına basınca ya da "hepsini kapat"
- * yayınında kapanır.
+ * Üst bardaki menüler: kendi kabının dışına basınca, Escape'e basınca ya da
+ * "hepsini kapat" yayınında kapanır.
+ *
+ * Escape sonradan eklendi: sağ tık menüleri baştan beri kapanıyordu ama üst
+ * bardaki açılır menüler (Çalışmalarım, hesap, üç nokta, araç listesi)
+ * kapanmıyordu. Bilgisayarda çalışan herkesin bir pencereyi kapatmak için ilk
+ * refleksi Escape.
  *
  * Yakalama aşamasında dinleniyor (`capture: true`): menünün içindeki bir düğme
  * tıklamayı durdurabiliyor, normal aşamada beklesek dışarı tıklamayı hiç
@@ -86,12 +91,17 @@ export function useDisariTiklama(
     const disaTiklama = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) kapatRef.current();
     };
+    const tus = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') kapatRef.current();
+    };
     const yayin = () => kapatRef.current();
 
     document.addEventListener('mousedown', disaTiklama, { capture: true });
+    document.addEventListener('keydown', tus);
     document.addEventListener('close-menus', yayin);
     return () => {
       document.removeEventListener('mousedown', disaTiklama, { capture: true });
+      document.removeEventListener('keydown', tus);
       document.removeEventListener('close-menus', yayin);
     };
   }, [ref, kapatRef]);

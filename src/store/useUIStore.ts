@@ -11,7 +11,22 @@ interface UIState {
    *  menüsünden açılıyor; ikisi de aynı bayrağı çeviriyor. */
   guideOpen: boolean;
   setGuideOpen: (open: boolean) => void;
+  /** Tuvalin sağ altındaki küçük harita açık mı? (bkz. CanvasMiniMap) */
+  minimapOpen: boolean;
+  setMinimapOpen: (open: boolean) => void;
 }
+
+// Küçük haritayı kapatan kullanıcı onu her sayfa yenilemesinde geri
+// istemiyor; tercih tarayıcıda duruyor. Gizli sekmede localStorage
+// erişimi hata verebiliyor, o yüzden sarmalanmış.
+const MINIMAP_ANAHTARI = 'klarsti-minimap-acik';
+const minimapBaslangici = (): boolean => {
+  try {
+    return localStorage.getItem(MINIMAP_ANAHTARI) !== '0';
+  } catch {
+    return true;
+  }
+};
 
 export const useUIStore = create<UIState>((set) => ({
   activeTopMenu: null,
@@ -22,4 +37,9 @@ export const useUIStore = create<UIState>((set) => ({
   setTriggerExport: (fn) => set({ triggerExport: fn }),
   guideOpen: false,
   setGuideOpen: (open) => set({ guideOpen: open }),
+  minimapOpen: minimapBaslangici(),
+  setMinimapOpen: (open) => {
+    try { localStorage.setItem(MINIMAP_ANAHTARI, open ? '1' : '0'); } catch { /* gizli sekme */ }
+    set({ minimapOpen: open });
+  },
 }));

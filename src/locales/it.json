@@ -8,7 +8,7 @@
   "auth_feature_1_title": "Analisi rapida",
   "auth_feature_2_desc": "Le modifiche si salvano subito nel cloud: lavora insieme al tuo team.",
   "auth_feature_2_title": "Collaborazione in tempo reale",
-  "auth_legal_text": "Continuando, accetti i nostri <button type='button' class='font-bold hover:underline' onClick='__TERMS__'>Termini di utilizzo</button> e la <button type='button' class='font-bold hover:underline' onClick='__PRIVACY__'>l'Informativa sulla privacy</button>.",
+  "auth_legal_text": "Continuando, accetti i nostri <button type='button' class='font-bold hover:underline' onClick='__TERMS__'>Termini di utilizzo</button> e la <button type='button' class='font-bold hover:underline' onClick='__PRIVACY__'>Informativa sulla privacy</button>.",
   "btn_create": "Crea",
   "cancel": "Annulla",
   "cancel_btn": "Annulla",

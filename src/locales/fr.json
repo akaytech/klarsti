@@ -810,11 +810,16 @@
   "faq_q2": "Qui voit mes données ?",
   "faq_a2": "Toi seul. Personne ne peut voir un travail que tu n’as pas partagé. L’agenda est entièrement personnel ; il reste caché même dans un travail partagé.",
   "faq_q3": "Puis-je essayer sans créer de compte ?",
-  "faq_a3": "Pas encore : un compte est nécessaire. Ton travail est enregistré dans le cloud et s’ouvre sur tous les appareils où tu te connectes.",
+  "faq_a3": "Oui. Utilise « Essayer sans compte » sur la page d’accueil ; ce que tu dessines reste dans ton navigateur et rejoint ton compte à l’inscription.",
   "faq_q4": "Puis-je travailler avec mon équipe ?",
   "faq_a4": "Oui. Dès que tu partages un travail, tes modifications apparaissent en face en quelques secondes.",
   "faq_q5": "Puis-je exporter mes travaux ?",
   "faq_a5": "Oui, tu peux télécharger le travail ouvert sous forme d’image.",
   "faq_q6": "Puis-je supprimer mon compte ?",
-  "faq_a6": "Oui, toi-même depuis le menu du compte. La suppression est définitive et emporte tes travaux."
+  "faq_a6": "Oui, toi-même depuis le menu du compte. La suppression est définitive et emporte tes travaux.",
+  "landing_try_free": "Essayer sans compte",
+  "trial_bar_text": "Cet essai n’existe que dans ce navigateur. Crée un compte et nous enregistrons ton travail.",
+  "trial_bar_button": "Créer un compte",
+  "trial_folder_name": "Mes essais",
+  "trial_migrated": "Ton essai a été ajouté à ton compte."
 }

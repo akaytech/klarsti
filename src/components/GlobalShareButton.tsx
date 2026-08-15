@@ -4,6 +4,7 @@ import { Link } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useRoadmapStore } from '../store/useRoadmapStore';
 import SharePanel from './SharePanel';
+import { denemeKipindeMi } from '../utils/denemeKipi';
 
 // Düğme artık tek tıkla paylaşmıyor, paylaşım penceresini açıyor. Eskiden bir
 // tık projeyi kalıcı olarak herkese açıyordu ve geri alma yolu yoktu; kararı
@@ -30,6 +31,9 @@ const GlobalShareButton: React.FC = () => {
 
   // Ajanda kişiseldir, paylaşılmaz.
   if (!currentProjectId || !activeTool || activeTool === 'notepad') return null;
+  // Hesapsız denemede paylaşım yok: paylaşılan çalışma bir hesaba ait olmak
+  // zorunda. Düğmeyi pasif göstermek yerine hiç göstermiyoruz.
+  if (denemeKipindeMi()) return null;
 
   return (
     <>

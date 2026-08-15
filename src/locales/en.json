@@ -810,11 +810,16 @@
   "faq_q2": "Who can see my data?",
   "faq_a2": "Only you. Nobody can see a work you have not shared. The agenda is entirely personal; it stays hidden even inside a work you share.",
   "faq_q3": "Can I try it without signing up?",
-  "faq_a3": "Not yet — an account is needed. Your work is saved to the cloud and opens on any device you sign in from.",
+  "faq_a3": "Yes. Use “Try without signing up” on the home page; what you draw stays in your browser and moves into your account when you sign up.",
   "faq_q4": "Can I work with my team?",
   "faq_a4": "Yes. Once you share a work, your changes show up on the other side within seconds.",
   "faq_q5": "Can I export my work?",
   "faq_a5": "Yes, you can download the open work as an image.",
   "faq_q6": "Can I delete my account?",
-  "faq_a6": "Yes, from the account menu, by yourself. Deletion is permanent and takes your work with it."
+  "faq_a6": "Yes, from the account menu, by yourself. Deletion is permanent and takes your work with it.",
+  "landing_try_free": "Try without signing up",
+  "trial_bar_text": "This trial lives only in this browser. Create an account and we will save your work.",
+  "trial_bar_button": "Create account",
+  "trial_folder_name": "My trials",
+  "trial_migrated": "Your trial has been added to your account."
 }

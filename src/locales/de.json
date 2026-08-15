@@ -810,11 +810,16 @@
   "faq_q2": "Wer sieht meine Daten?",
   "faq_a2": "Nur du. Eine Arbeit, die du nicht geteilt hast, sieht niemand. Die Agenda ist ganz persönlich; sie bleibt selbst in einer geteilten Arbeit verborgen.",
   "faq_q3": "Kann ich es ohne Anmeldung ausprobieren?",
-  "faq_a3": "Noch nicht — ein Konto ist nötig. Deine Arbeit wird in der Cloud gespeichert und öffnet sich auf jedem Gerät, an dem du dich anmeldest.",
+  "faq_a3": "Ja. Über „Ohne Anmeldung testen“ auf der Startseite; was du zeichnest, bleibt im Browser und wandert bei der Anmeldung in dein Konto.",
   "faq_q4": "Kann ich mit meinem Team arbeiten?",
   "faq_a4": "Ja. Sobald du eine Arbeit teilst, erscheinen deine Änderungen auf der anderen Seite in Sekunden.",
   "faq_q5": "Kann ich meine Arbeit exportieren?",
   "faq_a5": "Ja, du kannst die geöffnete Arbeit als Bild herunterladen.",
   "faq_q6": "Kann ich mein Konto löschen?",
-  "faq_a6": "Ja, im Kontomenü, selbst. Die Löschung ist endgültig und nimmt deine Arbeiten mit."
+  "faq_a6": "Ja, im Kontomenü, selbst. Die Löschung ist endgültig und nimmt deine Arbeiten mit.",
+  "landing_try_free": "Ohne Anmeldung testen",
+  "trial_bar_text": "Dieser Test liegt nur in diesem Browser. Leg ein Konto an, dann speichern wir deine Arbeit.",
+  "trial_bar_button": "Konto anlegen",
+  "trial_folder_name": "Meine Tests",
+  "trial_migrated": "Dein Test wurde deinem Konto hinzugefügt."
 }

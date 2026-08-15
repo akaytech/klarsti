@@ -26,6 +26,9 @@ const AdminPage = gecikmeliEkran(() => import('./components/AdminPage'));
 // Auth'u (60 KB) siteyi ilk kez açan herkesin ilk yüklemesine sokuyordu.
 // Zaten Suspense içinde çiziliyordu, gecikmeli olması bir şey değiştirmiyor.
 const AuthPage = gecikmeliEkran(() => import('./components/AuthPage'));
+// Hesapsız deneme. Gecikmeli: tuval ve depo kodu yalnızca "dene" diyene
+// iniyor, tanıtım sayfasını açan ziyaretçiye değil.
+const DenemeApp = gecikmeliEkran(() => import('./components/DenemeApp'));
 
 // Tanıtım kliplerinin çekim ekranı. Yalnızca geliştirme kipinde var: koşul
 // derleme sırasında `false`a düştüğü için bu satır ve arkasındaki bütün demo
@@ -82,6 +85,12 @@ function App() {
         </Suspense>
       ) : isAuthLoading ? (
         <LoadingScreen />
+      ) : !user && location.pathname === '/dene' ? (
+        // Hesapsız deneme. Oturum açmış kullanıcı buraya düşmüyor: onun için
+        // uygulamanın kendisi zaten açık, denemeye gerek yok.
+        <Suspense fallback={<LoadingScreen />}>
+          <DenemeApp />
+        </Suspense>
       ) : !user ? (
         isAuthRoute ? (
           <Suspense fallback={<LoadingScreen />}>

@@ -810,11 +810,16 @@
   "faq_q2": "¿Quién ve mis datos?",
   "faq_a2": "Solo tú. Nadie puede ver un trabajo que no hayas compartido. La agenda es totalmente personal; queda oculta incluso dentro de un trabajo compartido.",
   "faq_q3": "¿Puedo probarlo sin registrarme?",
-  "faq_a3": "Todavía no: hace falta una cuenta. Tu trabajo se guarda en la nube y se abre en cualquier dispositivo donde inicies sesión.",
+  "faq_a3": "Sí. Usa «Probar sin registrarse» en la página de inicio; lo que dibujes queda en tu navegador y pasa a tu cuenta cuando te registres.",
   "faq_q4": "¿Puedo trabajar con mi equipo?",
   "faq_a4": "Sí. Al compartir un trabajo, tus cambios aparecen al otro lado en segundos.",
   "faq_q5": "¿Puedo exportar mis trabajos?",
   "faq_a5": "Sí, puedes descargar el trabajo abierto como imagen.",
   "faq_q6": "¿Puedo borrar mi cuenta?",
-  "faq_a6": "Sí, tú mismo desde el menú de la cuenta. El borrado es permanente y se lleva tus trabajos."
+  "faq_a6": "Sí, tú mismo desde el menú de la cuenta. El borrado es permanente y se lleva tus trabajos.",
+  "landing_try_free": "Probar sin registrarse",
+  "trial_bar_text": "Esta prueba solo vive en este navegador. Crea una cuenta y guardaremos tu trabajo.",
+  "trial_bar_button": "Crear cuenta",
+  "trial_folder_name": "Mis pruebas",
+  "trial_migrated": "Tu prueba se añadió a tu cuenta."
 }

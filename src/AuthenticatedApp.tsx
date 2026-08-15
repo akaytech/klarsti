@@ -13,6 +13,7 @@ import { aracSecimEylemi, aracAktifAlan, aracAnahtari } from './config/toolWorks
 import { useAuthStore } from './store/useAuthStore';
 import { useShallow } from 'zustand/react/shallow';
 import { gecikmeliEkran } from './utils/surumTazeleme';
+import { denemeyiHesabaTasi } from './store/denemeDevri';
 
 const Workspace = gecikmeliEkran(() => import('./components/Workspace'));
 
@@ -105,6 +106,14 @@ export default function AuthenticatedApp() {
       fetchWorks(user.uid);
     }
   }, [user, user?.uid, fetchProjects, fetchPersonalData, fetchWorks]);
+
+  // Hesapsız denemede çizilenler, giriş yapılır yapılmaz hesaba taşınıyor.
+  // Klasör listesi gelmeden çalışmamalı: taşıma yeni bir klasör açıyor ve
+  // liste henüz boşken açılan klasör, gelen snapshot'ın altında kalabilir.
+  useEffect(() => {
+    if (!user || !projectsLoaded) return;
+    denemeyiHesabaTasi();
+  }, [user, projectsLoaded]);
 
   const isFirstSyncRef = useRef(true);
   const lastPathnameRef = useRef(location.pathname);

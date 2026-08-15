@@ -810,11 +810,16 @@
   "faq_q2": "Verilerim kime görünüyor?",
   "faq_a2": "Yalnızca sana. Paylaşmadığın hiçbir çalışmayı kimse göremez. Ajanda büsbütün kişisel; paylaştığın bir çalışmanın içinde bile görünmez.",
   "faq_q3": "Kayıt olmadan deneyebilir miyim?",
-  "faq_a3": "Şu an hayır, hesap gerekiyor. Çalışmaların buluta kaydediliyor ve girdiğin her cihazdan açılıyor.",
+  "faq_a3": "Evet. Tanıtım sayfasındaki “Kaydolmadan dene” ile hesapsız başlayabilirsin; çizdiğin tarayıcında durur, hesap açtığında hesabına taşınır.",
   "faq_q4": "Ekibimle birlikte çalışabilir miyim?",
   "faq_a4": "Evet. Bir çalışmayı paylaştığında değişikliklerin karşı tarafta saniyeler içinde görünüyor.",
   "faq_q5": "Çalışmalarımı dışarı aktarabilir miyim?",
   "faq_a5": "Evet, açık çalışmanı görüntü olarak indirebilirsin.",
   "faq_q6": "Hesabımı silebilir miyim?",
-  "faq_a6": "Evet, hesap menüsünden kendin silebilirsin. Silme kalıcıdır; çalışmaların da birlikte gider."
+  "faq_a6": "Evet, hesap menüsünden kendin silebilirsin. Silme kalıcıdır; çalışmaların da birlikte gider.",
+  "landing_try_free": "Kaydolmadan dene",
+  "trial_bar_text": "Bu deneme yalnızca bu tarayıcıda duruyor. Hesap aç, çalışmanı kaydedelim.",
+  "trial_bar_button": "Hesap Aç",
+  "trial_folder_name": "Denemelerim",
+  "trial_migrated": "Denemen hesabına eklendi."
 }

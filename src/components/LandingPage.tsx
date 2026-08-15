@@ -97,6 +97,15 @@ export default function LandingPage() {
             >
               {t('register')} <ArrowRight size={20} />
             </button>
+            {/* Kaydolmadan deneme. Ziyaretçi tuvalin nasıl bir şey olduğunu
+                e-posta vermeden görüyor; çizdiği, hesap açtığında hesabına
+                taşınıyor (bkz. DenemeApp). */}
+            <button
+              onClick={() => navigate('/dene')}
+              className="flex items-center gap-2 rounded-full border-2 border-indigo-500 bg-indigo-50/60 px-8 py-4 text-lg font-bold text-indigo-700 backdrop-blur-md transition-all hover:bg-indigo-100 dark:border-indigo-500/70 dark:bg-indigo-900/30 dark:text-indigo-300 dark:hover:bg-indigo-900/50 w-full sm:w-auto justify-center"
+            >
+              {t('landing_try_free')}
+            </button>
             <button
               onClick={() => {
                 document.getElementById('tools')?.scrollIntoView({ behavior: 'smooth' });

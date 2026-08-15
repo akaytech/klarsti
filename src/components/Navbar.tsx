@@ -141,7 +141,11 @@ export default function Navbar() {
           return (
             <div key={cat} className="contents">
               <div className={`mb-1 px-3 shrink-0 ${index > 0 ? 'mt-4' : 'mt-2'}`}>
-                <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{t(cat)}</h3>
+                {/* Renkler ölçüldü: eski hali (açıkta slate-400, koyuda
+                    slate-500) beyaz zeminde 2,6'ya düşüyordu; okunabilir
+                    sayılmak için 4,5 gerekiyor. Açık temalarda slate-600
+                    (5,3–7,6), koyu temalarda slate-400 (6,4–7,7). */}
+                <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">{t(cat)}</h3>
               </div>
               
               {catTools.map(tool => {

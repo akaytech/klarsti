@@ -760,5 +760,13 @@
   "wbs_hint_package": "Adiciona um pacote de trabalho abaixo da caixa selecionada.",
   "wbs_one_project": "Uma árvore de decomposição tem um único projeto. Para outro projeto, abra uma árvore nova no menu à esquerda.",
   "canvas_add_generic": "Adicionar",
-  "whys_add_cause": "Adicionar causa"
+  "whys_add_cause": "Adicionar causa",
+  "ws_recent_heading": "Onde você parou",
+  "works_see_all": "Ver tudo",
+  "works_search_placeholder": "Buscar trabalhos e pastas",
+  "works_sort_recent": "Alterados recentemente",
+  "works_sort_name": "Por nome",
+  "works_count": "{{sayi}} trabalhos",
+  "works_empty": "Você ainda não tem trabalhos. Escolha uma ferramenta abaixo para começar.",
+  "works_none_found": "Nenhum trabalho corresponde à sua busca."
 }

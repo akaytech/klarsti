@@ -760,5 +760,13 @@
   "wbs_hint_package": "選択したボックスの下にワークパッケージを追加します。",
   "wbs_one_project": "1つの分解ツリーにプロジェクトは1つです。別のプロジェクトは左のメニューから新しいツリーを作ってください。",
   "canvas_add_generic": "追加",
-  "whys_add_cause": "原因を追加"
+  "whys_add_cause": "原因を追加",
+  "ws_recent_heading": "前回の続き",
+  "works_see_all": "すべて見る",
+  "works_search_placeholder": "作業とフォルダーを検索",
+  "works_sort_recent": "最近の変更順",
+  "works_sort_name": "名前順",
+  "works_count": "作業 {{sayi}} 件",
+  "works_empty": "まだ作業がありません。下からツールを選んで始めてください。",
+  "works_none_found": "検索に一致する作業はありません。"
 }

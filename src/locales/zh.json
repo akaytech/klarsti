@@ -760,5 +760,13 @@
   "wbs_hint_package": "在所选方框下添加一个工作包。",
   "wbs_one_project": "一棵分解树只有一个项目。要新建项目，请从左侧菜单新建一棵树。",
   "canvas_add_generic": "添加",
-  "whys_add_cause": "添加原因"
+  "whys_add_cause": "添加原因",
+  "ws_recent_heading": "上次的进度",
+  "works_see_all": "查看全部",
+  "works_search_placeholder": "搜索工作和文件夹",
+  "works_sort_recent": "最近修改",
+  "works_sort_name": "按名称",
+  "works_count": "{{sayi}} 个工作",
+  "works_empty": "你还没有任何工作。从下面选一个工具开始吧。",
+  "works_none_found": "没有符合搜索条件的工作。"
 }

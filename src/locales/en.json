@@ -760,5 +760,13 @@
   "wbs_hint_package": "Adds a new work package under the selected box.",
   "wbs_one_project": "A breakdown tree holds one project. For another project, start a new tree from the left menu.",
   "canvas_add_generic": "Add",
-  "whys_add_cause": "Add cause"
+  "whys_add_cause": "Add cause",
+  "ws_recent_heading": "Where you left off",
+  "works_see_all": "See all",
+  "works_search_placeholder": "Search works and folders",
+  "works_sort_recent": "Recently changed",
+  "works_sort_name": "By name",
+  "works_count": "{{sayi}} works",
+  "works_empty": "You have no works yet. Pick a tool below to start.",
+  "works_none_found": "No work matches your search."
 }

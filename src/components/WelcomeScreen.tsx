@@ -1,19 +1,35 @@
-import { useEffect } from 'react';
-import { CATEGORY_ORDER, PROJECT_TOOLS } from '../config/tools';
+import { useEffect, useMemo } from 'react';
+import { ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { CATEGORY_ORDER, PROJECT_TOOLS, TOOLS } from '../config/tools';
 import { useTranslation } from 'react-i18next';
 import { useRoadmapStore, type ToolId } from '../store/useRoadmapStore';
 import { useShallow } from 'zustand/react/shallow';
 import { logAppEvent } from '../firebase';
 import { toolTheme } from '../config/toolTheme';
+import { tumCalismalar, calismayiAc, tarihEtiketi } from '../utils/calismaListesi';
+
+/** "Kaldığın yer" şeridinde kaç çalışma gösterilecek. */
+const SON_CALISMA_SAYISI = 4;
 
 export default function WelcomeScreen() {
-  const { setActiveTool, projects, createProject, currentProjectId } = useRoadmapStore(useShallow((state) => ({
+  const { setActiveTool, projects, createProject, currentProjectId, works } = useRoadmapStore(useShallow((state) => ({
     setActiveTool: state.setActiveTool,
     projects: state.projects,
     createProject: state.createProject,
-    currentProjectId: state.currentProjectId
+    currentProjectId: state.currentProjectId,
+    works: state.works
   })));
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+
+  // İkinci gün gelen kullanıcı araç aramıyor, dün bıraktığı işi arıyor. Araç
+  // listesi hâlâ aşağıda duruyor ama ilk göze çarpan şey artık bu değil.
+  const sonCalismalar = useMemo(
+    () => tumCalismalar(projects, works).sort((a, b) => b.guncellendi - a.guncellendi),
+    [projects, works]
+  );
+  const araclar = useMemo(() => new Map(TOOLS.map((a) => [a.id, a])), []);
 
   useEffect(() => {
     logAppEvent('welcome_screen_viewed');
@@ -60,6 +76,56 @@ export default function WelcomeScreen() {
             {t('ws_subtitle')}
           </p>
         </header>
+
+        {/* Kaldığın yer. Hiç çalışma yokken hiç çizilmiyor: yeni kullanıcıya
+            boş bir kutu göstermek, olmayan bir şeyi eksik gibi hissettiriyor. */}
+        {sonCalismalar.length > 0 && (
+          <section className="mb-16">
+            <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="h-8 w-1 rounded-full bg-emerald-500"></div>
+                <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{t('ws_recent_heading')}</h2>
+              </div>
+              {sonCalismalar.length > SON_CALISMA_SAYISI && (
+                <button
+                  onClick={() => navigate('/works')}
+                  className="flex items-center gap-1.5 text-sm font-bold text-indigo-600 transition-colors hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
+                >
+                  {t('works_see_all')}
+                  <ArrowRight size={16} className="rtl:rotate-180" />
+                </button>
+              )}
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {sonCalismalar.slice(0, SON_CALISMA_SAYISI).map((calisma) => {
+                const arac = araclar.get(calisma.tool);
+                const tema = toolTheme[calisma.tool] || toolTheme.wbs;
+                const Simge = arac?.icon;
+                return (
+                  <button
+                    key={calisma.anahtar}
+                    onClick={() => calismayiAc(calisma)}
+                    className="group flex flex-col items-start rounded-3xl border border-slate-200 bg-white p-5 text-start transition-all hover:-translate-y-1 hover:border-indigo-500/30 hover:shadow-xl motion-reduce:hover:translate-y-0 dark:border-slate-800 dark:bg-slate-900"
+                  >
+                    <div className={`mb-3 flex h-10 w-10 items-center justify-center rounded-xl ${tema.bg}`}>
+                      {Simge && <Simge size={20} className={tema.text} />}
+                    </div>
+                    <h3 className="mb-1 w-full truncate font-bold text-slate-800 dark:text-slate-100">
+                      {calisma.ad || t('untitled_work')}
+                    </h3>
+                    <p className="w-full truncate text-sm text-slate-500 dark:text-slate-400">
+                      {calisma.projectName}
+                    </p>
+                    <p className="mt-2 text-xs text-slate-400 dark:text-slate-500">
+                      {tarihEtiketi(calisma.guncellendi, i18n.language)}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        )}
 
         {/* Featured / Recommended Tools */}
         <section className="mb-16">

@@ -760,5 +760,13 @@
   "wbs_hint_package": "Aggiunge un pacchetto di lavoro sotto il riquadro selezionato.",
   "wbs_one_project": "Un albero di scomposizione contiene un solo progetto. Per un altro progetto, apri un nuovo albero dal menu a sinistra.",
   "canvas_add_generic": "Aggiungi",
-  "whys_add_cause": "Aggiungi causa"
+  "whys_add_cause": "Aggiungi causa",
+  "ws_recent_heading": "Dove eri rimasto",
+  "works_see_all": "Vedi tutti",
+  "works_search_placeholder": "Cerca lavori e cartelle",
+  "works_sort_recent": "Modificati di recente",
+  "works_sort_name": "Per nome",
+  "works_count": "{{sayi}} lavori",
+  "works_empty": "Non hai ancora lavori. Scegli uno strumento qui sotto per iniziare.",
+  "works_none_found": "Nessun lavoro corrisponde alla ricerca."
 }

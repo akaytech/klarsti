@@ -760,5 +760,13 @@
   "wbs_hint_package": "يضيف حزمة عمل أسفل المربع المحدد.",
   "wbs_one_project": "شجرة التجزئة الواحدة تضم مشروعًا واحدًا. لمشروع آخر، افتح شجرة جديدة من القائمة اليسرى.",
   "canvas_add_generic": "إضافة",
-  "whys_add_cause": "إضافة سبب"
+  "whys_add_cause": "إضافة سبب",
+  "ws_recent_heading": "حيث توقفت",
+  "works_see_all": "عرض الكل",
+  "works_search_placeholder": "ابحث في الأعمال والمجلدات",
+  "works_sort_recent": "الأحدث تعديلًا",
+  "works_sort_name": "حسب الاسم",
+  "works_count": "{{sayi}} عملًا",
+  "works_empty": "ليس لديك أعمال بعد. اختر أداة من الأسفل للبدء.",
+  "works_none_found": "لا يوجد عمل يطابق بحثك."
 }

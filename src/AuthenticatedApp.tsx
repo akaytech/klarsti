@@ -233,6 +233,15 @@ export default function AuthenticatedApp() {
           setActiveTool(null);
           isUrlSyncRunning = true;
         }
+      } else if (path === '/works') {
+        // Tam sayfa çalışma listesi. Araç seçili olmaması dışında '/' ile aynı
+        // durum; ayrı bir yol olması linklenebilmesi ve geri düğmesinin
+        // çalışması için.
+        bekleyenProjeRef.current = null;
+        if (activeTool !== null) {
+          setActiveTool(null);
+          isUrlSyncRunning = true;
+        }
       } else if (path === '/agenda') {
         // Ajanda kişisel: proje seçili olmasa da açılır, kendi adresi vardır.
         bekleyenProjeRef.current = null;
@@ -315,7 +324,9 @@ export default function AuthenticatedApp() {
       if (activeTool === 'notepad') {
         if (path !== '/agenda') navigate('/agenda');
       } else if (!activeTool) {
-        if (path !== '/') navigate('/');
+        // '/works' de araçsız bir durum; burada '/' ile ezilirse kullanıcı
+        // listeye girer girmez karşılama ekranına atılırdı.
+        if (path !== '/' && path !== '/works') navigate('/');
       } else if (currentProjectId && activeTool) {
         // Çalışma kimliği yalnızca seçilmişse ekleniyor. Kullanıcı aracı henüz
         // açtıysa hangi çalışmada olduğu belli değil (ilki gösteriliyor);

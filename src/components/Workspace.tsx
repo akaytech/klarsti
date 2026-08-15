@@ -18,6 +18,7 @@ import { gecikmeliEkran } from '../utils/surumTazeleme';
 // Kılavuz metinleri ve paneli ayrı bir parçada: kullanıcı kılavuzu
 // açmadıkça indirilmiyor.
 const ToolGuidePanel = gecikmeliEkran(() => import('./ToolGuidePanel'));
+const WorksPage = gecikmeliEkran(() => import('./WorksPage'));
 
 const RoadmapCanvas = gecikmeliEkran(() => import('./RoadmapCanvas'));
 const FiveWhysCanvas = gecikmeliEkran(() => import('./FiveWhysCanvas'));
@@ -132,6 +133,8 @@ export default function Workspace() {
               <div className="flex h-full w-full items-center justify-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
               </div>
+            ) : location.pathname === '/works' ? (
+              <WorksPage />
             ) : (
               <WelcomeScreen />
             )

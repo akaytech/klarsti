@@ -1,12 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { useRoadmapStore, type ToolId } from '../store/useRoadmapStore';
 import { useUIStore } from '../store/useUIStore';
 import { useShallow } from 'zustand/react/shallow';
 import clsx from 'clsx';
 import ConfirmModal from './ConfirmModal';
 import { ajandaDugmesiGorunurMu } from '../utils/ajandaDugmesi';
-import { Folder, Plus, Trash2, ChevronDown, ChevronRight, Fish, RefreshCcw, Layers, Pencil, AlertOctagon, Scale, GitMerge, BarChart2, BarChart, Activity, Network, Target, Check, Brain, UsersRound, Link2, Map } from 'lucide-react';
+import { Folder, Plus, Trash2, ChevronDown, ChevronRight, Fish, RefreshCcw, Layers, Pencil, AlertOctagon, Scale, GitMerge, BarChart2, BarChart, Activity, Network, Target, Check, Brain, UsersRound, Link2, Map, ArrowRight } from 'lucide-react';
 import type { Project } from '../store/useRoadmapStore';
 import { toolTheme } from '../config/toolTheme';
 import { aracCalismalari, aracSecimEylemi, calismayiYenidenAdlandir, calismayiSil } from '../config/toolWorks';
@@ -461,6 +462,7 @@ export default function TopRightProjectsMenu() {
   const [paylasimHedefi, setPaylasimHedefi] = useState<PaylasimHedefi | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const requestDelete = (title: string, message: string, onConfirm: () => void) => { setConfirmState({ isOpen: true, title, message, onConfirm }); };
   const {  projects, currentProjectId, createProject, setActiveTool, activeTool  } = useRoadmapStore(useShallow((state) => ({
       projects: state.projects,
@@ -592,6 +594,20 @@ export default function TopRightProjectsMenu() {
             </div>
           )}
         </div>
+
+        {/* Bu pencere üç katlı bir ağaç; arama ve tarih için yeri yok. Çok
+            çalışması olan kullanıcının çıkış kapısı burası. */}
+        {projects.length > 0 && (
+          <div className="mt-2 border-t border-slate-100 pt-2 dark:border-slate-700">
+            <button
+              onClick={() => { setActiveTopMenu(null); navigate('/works'); }}
+              className="flex w-full items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-sm font-bold text-indigo-600 transition-colors hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/30"
+            >
+              {t('works_see_all')}
+              <ArrowRight size={15} className="rtl:rotate-180" />
+            </button>
+          </div>
+        )}
       </div>
       <ConfirmModal isOpen={confirmState.isOpen} title={confirmState.title} message={confirmState.message} onConfirm={confirmState.onConfirm} onClose={() => setConfirmState(p => ({...p, isOpen: false}))} />
       {paylasimHedefi && (

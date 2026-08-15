@@ -760,5 +760,13 @@
   "wbs_hint_package": "Seçili kutunun altına yeni bir iş paketi ekler.",
   "wbs_one_project": "Bir kırılım ağacında tek proje olur. Yeni bir proje için soldaki menüden yeni ağaç aç.",
   "canvas_add_generic": "Ekle",
-  "whys_add_cause": "Neden Ekle"
+  "whys_add_cause": "Neden Ekle",
+  "ws_recent_heading": "Kaldığın Yer",
+  "works_see_all": "Hepsini gör",
+  "works_search_placeholder": "Çalışma ya da klasör ara",
+  "works_sort_recent": "Son değişen",
+  "works_sort_name": "Ada göre",
+  "works_count": "{{sayi}} çalışma",
+  "works_empty": "Henüz bir çalışman yok. Aşağıdan bir araç seçerek başla.",
+  "works_none_found": "Aramanla eşleşen çalışma yok."
 }

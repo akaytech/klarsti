@@ -760,5 +760,13 @@
   "wbs_hint_package": "Ajoute un lot de travail sous la case sélectionnée.",
   "wbs_one_project": "Un arbre de découpage contient un seul projet. Pour un autre projet, ouvrez un nouvel arbre dans le menu de gauche.",
   "canvas_add_generic": "Ajouter",
-  "whys_add_cause": "Ajouter une cause"
+  "whys_add_cause": "Ajouter une cause",
+  "ws_recent_heading": "Où vous en étiez",
+  "works_see_all": "Tout voir",
+  "works_search_placeholder": "Rechercher des travaux et des dossiers",
+  "works_sort_recent": "Modifiés récemment",
+  "works_sort_name": "Par nom",
+  "works_count": "{{sayi}} travaux",
+  "works_empty": "Vous n’avez encore aucun travail. Choisissez un outil ci-dessous pour commencer.",
+  "works_none_found": "Aucun travail ne correspond à votre recherche."
 }

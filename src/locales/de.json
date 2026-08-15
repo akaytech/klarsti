@@ -760,5 +760,13 @@
   "wbs_hint_package": "Fügt unter dem ausgewählten Feld ein neues Arbeitspaket hinzu.",
   "wbs_one_project": "Ein Strukturbaum enthält ein Projekt. Für ein weiteres Projekt öffne links einen neuen Baum.",
   "canvas_add_generic": "Hinzufügen",
-  "whys_add_cause": "Ursache hinzufügen"
+  "whys_add_cause": "Ursache hinzufügen",
+  "ws_recent_heading": "Wo du aufgehört hast",
+  "works_see_all": "Alle ansehen",
+  "works_search_placeholder": "Arbeiten und Ordner suchen",
+  "works_sort_recent": "Zuletzt geändert",
+  "works_sort_name": "Nach Name",
+  "works_count": "{{sayi}} Arbeiten",
+  "works_empty": "Du hast noch keine Arbeiten. Wähle unten ein Werkzeug.",
+  "works_none_found": "Keine Arbeit passt zu deiner Suche."
 }

@@ -57,6 +57,10 @@ export default function ToolLandingPage({ sayfa }: { sayfa: ToolPage }) {
   const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const [kilavuz, setKilavuz] = useState<ToolGuide | null>(null);
+  // Kılavuz isteği sonuçlandı mı. `kilavuz`un dolu olmasına bakmak yetmiyor:
+  // metin inemediğinde de sonuçlanmış sayılıyor (bkz. hazır sayfayı kaldıran
+  // effect); yoksa indirme başarısız olunca katman ekranda asılı kalıyordu.
+  const [kilavuzSonuclandi, setKilavuzSonuclandi] = useState(false);
 
   const arac = TOOLS.find((x) => x.id === sayfa.toolId);
   const tema = toolTheme[sayfa.toolId] || toolTheme.wbs;
@@ -79,17 +83,40 @@ export default function ToolLandingPage({ sayfa }: { sayfa: ToolPage }) {
 
   useEffect(() => {
     let iptal = false;
+    setKilavuzSonuclandi(false);
     loadToolGuides(i18n.language)
       .then((paket) => {
-        if (!iptal) setKilavuz(paket[sayfa.toolId] ?? null);
+        if (iptal) return;
+        setKilavuz(paket[sayfa.toolId] ?? null);
+        setKilavuzSonuclandi(true);
       })
       .catch(() => {
-        if (!iptal) setKilavuz(null);
+        if (iptal) return;
+        setKilavuz(null);
+        setKilavuzSonuclandi(true);
       });
     return () => {
       iptal = true;
     };
   }, [sayfa.toolId, i18n.language]);
+
+  // Build sırasında dosyaya gömülen hazır sayfayı kaldır.
+  //
+  // O katman arama motorları için var (bkz. scripts/staticPages.mjs): sunucudan
+  // gelen dosyanın gövdesi eskiden bomboştu, bütün yazı burada çiziliyordu ve
+  // Google'ın okuyacağı bir şey yoktu. Hazır sayfa ekranı kaplıyor, biz kendi
+  // sürümümüzü çizene kadar orada duruyor.
+  //
+  // Kaldırma anı: kılavuz isteği sonuçlandığında, yani ekranda göstereceğimiz
+  // metin hazır olduğunda. Erken kaldırsak sayfa bir an boşalır. Metin
+  // inemediyse de kaldırıyoruz: eksik bir sayfa göstermek, uygulamanın önünü
+  // kapatan bir katmandan iyi. Kullanıcı beklemeden başka bir sayfaya giderse
+  // diye ayrılırken de kaldırılıyor.
+  useEffect(() => {
+    const kaldir = () => document.getElementById('statik-onizleme')?.remove();
+    if (kilavuzSonuclandi) kaldir();
+    return kaldir;
+  }, [kilavuzSonuclandi]);
 
   const digerAraclar = TOOLS.filter((x) => x.id !== sayfa.toolId);
 

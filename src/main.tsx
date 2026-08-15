@@ -120,7 +120,7 @@ class ErrorBoundary extends Component<{children: ReactNode, fallback: ReactNode}
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ErrorBoundary fallback={<div className="flex items-center justify-center min-h-screen p-4 text-center"><h1>Bir şeyler ters gitti. Ekibimiz bilgilendirildi! Lütfen sayfayı yenileyin.</h1></div>}>
+    <ErrorBoundary fallback={<div className="flex items-center justify-center min-h-screen p-4 text-center"><h1>Bir şeyler ters gitti. Ekibimiz bilgilendirildi, lütfen sayfayı yenile.</h1></div>}>
       <Suspense fallback={YuklemeEkrani}>
         {/* basename şart: canlıda base "/" ama dev ve GitHub Pages derlemesinde
             "/klarsti/". HashRouter'da bu fark görünmüyordu çünkü hash yolu

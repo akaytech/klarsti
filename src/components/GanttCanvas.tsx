@@ -38,11 +38,19 @@ const GUN_GENISLIK: Record<Yakinlik, number> = { gun: 30, hafta: 11, ay: 4 };
 const SATIR_YUKSEKLIK = 38;
 const BASLIK_YUKSEKLIK = 52;
 
+/**
+ * Çubuğun zemini ile dolgusu.
+ *
+ * Koyu temada zemin için rengin 900 tonu kullanılıyordu; amber 900 ekranda
+ * kahverengi okunuyor ve çubuk kirli duruyordu. Artık zemin, dolgunun kendi
+ * renginin soluk hali (aynı renk, düşük opaklık) — iki temada da çubuk tek
+ * renkten oluşuyor, dolan kısmı koyu, kalanı açık.
+ */
 const DURUM_STILI: Record<GanttDurum, { cubuk: string; ilerleme: string; nokta: string }> = {
-  bekliyor: { cubuk: 'bg-slate-300 dark:bg-slate-600', ilerleme: 'bg-slate-500 dark:bg-slate-400', nokta: 'bg-slate-400' },
-  devam: { cubuk: 'bg-amber-200 dark:bg-amber-900/70', ilerleme: 'bg-amber-500', nokta: 'bg-amber-500' },
-  bitti: { cubuk: 'bg-emerald-200 dark:bg-emerald-900/70', ilerleme: 'bg-emerald-500', nokta: 'bg-emerald-500' },
-  riskli: { cubuk: 'bg-rose-200 dark:bg-rose-900/70', ilerleme: 'bg-rose-500', nokta: 'bg-rose-500' }
+  bekliyor: { cubuk: 'bg-slate-200 dark:bg-slate-400/25', ilerleme: 'bg-slate-400 dark:bg-slate-400', nokta: 'bg-slate-400' },
+  devam: { cubuk: 'bg-amber-100 dark:bg-amber-500/25', ilerleme: 'bg-amber-500', nokta: 'bg-amber-500' },
+  bitti: { cubuk: 'bg-emerald-100 dark:bg-emerald-500/25', ilerleme: 'bg-emerald-500', nokta: 'bg-emerald-500' },
+  riskli: { cubuk: 'bg-rose-100 dark:bg-rose-500/25', ilerleme: 'bg-rose-500', nokta: 'bg-rose-500' }
 };
 
 const DURUMLAR: GanttDurum[] = ['bekliyor', 'devam', 'bitti', 'riskli'];
@@ -216,8 +224,12 @@ export default function GanttCanvas() {
           dividerOnTop). */}
       <div className="h-16 w-full flex-none border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900" />
 
-      {/* Üst şerit: plan seçimi, yakınlık ve görev ekleme. */}
-      <div className="flex flex-none flex-wrap items-center gap-2 border-b border-slate-200 bg-white px-3 py-2 dark:border-slate-800 dark:bg-slate-900 sm:px-4">
+      {/* Üst şerit: plan seçimi, yakınlık ve görev ekleme.
+
+          z-50 şart: çizelgenin sol sütunu ve başlık şeridi `sticky` ve kendi
+          z değerleri var. Bu şerit onlardan önce çizildiği için çizelge menüsü
+          açıldığında sütunların ALTINDA kalıyor, kullanıcı listeyi göremiyordu. */}
+      <div className="relative z-50 flex flex-none flex-wrap items-center gap-2 border-b border-slate-200 bg-white px-3 py-2 dark:border-slate-800 dark:bg-slate-900 sm:px-4">
         <AnalysisMenu
           Simge={CalendarRange}
           aktifId={plan.id}
@@ -382,6 +394,12 @@ export default function GanttCanvas() {
                     )}
                     <span className="hidden shrink-0 text-[11px] tabular-nums text-slate-400 md:inline">
                       {gunEtiketi(ozet.baslangic, i18n.language)}
+                    </span>
+                    {/* İki tarih bitişik duruyordu, tek bir tarihmiş gibi
+                        okunuyordu. Aradaki ok hangisinin başlangıç olduğunu
+                        söylüyor. */}
+                    <span className="hidden shrink-0 text-[10px] text-slate-300 md:inline dark:text-slate-600" aria-hidden>
+                      →
                     </span>
                     <span className={clsx('hidden shrink-0 text-[11px] tabular-nums md:inline', gecikti ? 'font-bold text-rose-500' : 'text-slate-400')}>
                       {gunEtiketi(ozet.bitis, i18n.language)}

@@ -6,6 +6,7 @@ import { useTheme } from './theme';
 import { toolPageBul } from './config/toolPages';
 import { legalPageBul } from './config/legalPages';
 import { contactPageBul } from './config/contactPage';
+import { aboutPageBul } from './config/aboutPage';
 // Çerez şeridi gecikmeli DEĞİL: her sayfada, giriş yapılmamışken de
 // görünmesi gerekiyor ve içinde ağır hiçbir şey yok (bkz. CookieConsent).
 import CookieConsent from './components/CookieConsent';
@@ -17,6 +18,7 @@ const VerifyEmailPage = gecikmeliEkran(() => import('./components/VerifyEmailPag
 const ToolLandingPage = gecikmeliEkran(() => import('./components/ToolLandingPage'));
 const LegalPage = gecikmeliEkran(() => import('./components/LegalPage'));
 const ContactPage = gecikmeliEkran(() => import('./components/ContactPage'));
+const AboutPage = gecikmeliEkran(() => import('./components/AboutPage'));
 // Yönetim ekranı gecikmeli ve AuthenticatedApp'in DIŞINDA: oradaki adres
 // eşitleme mantığı tanımadığı her yolu '/' ile eziyor, /admin açılır açılmaz
 // ana ekrana atılırdı. Ayrıca o ekran projelerin ağır deposunu kuruyor;
@@ -59,6 +61,9 @@ function App() {
   // İletişim sayfası da aynı sebeple oturumdan bağımsız: yardım arayan
   // kullanıcının çoğu zaman sorunu zaten giriş yapamamak oluyor.
   const iletisimSayfasi = contactPageBul(location.pathname);
+  // Hakkımızda da oturumdan bağımsız: sitenin arkasında kimin olduğunu merak
+  // eden ziyaretçi henüz hesap açmamış oluyor.
+  const hakkimizdaSayfasi = aboutPageBul(location.pathname);
 
   const theme = useTheme();
 
@@ -82,6 +87,10 @@ function App() {
       ) : iletisimSayfasi ? (
         <Suspense fallback={<LoadingScreen />}>
           <ContactPage sayfa={iletisimSayfasi} />
+        </Suspense>
+      ) : hakkimizdaSayfasi ? (
+        <Suspense fallback={<LoadingScreen />}>
+          <AboutPage sayfa={hakkimizdaSayfasi} />
         </Suspense>
       ) : isAuthLoading ? (
         <LoadingScreen />

@@ -47,14 +47,18 @@ const girisler = oku('authPages.json');
 // karşılığı olması gerekiyor, ve mailto: bağlantısı bir sayfa sayılmadığı
 // için site "iletişim bilgisi olmayan site" görünümündeydi.
 const iletisim = oku('contactPage.json');
+// Hakkımızda: hem ziyaretçinin hem arama motorunun "bu sitenin arkasında kim
+// var" sorusunun karşılığı. İletişim sayfasıyla aynı öncelikte.
+const hakkimizda = oku('aboutPage.json');
 
-const TUR = { ARAC: 'arac', YASAL: 'yasal', GIRIS: 'giris', ILETISIM: 'iletisim' };
-const ONCELIK = { [TUR.ARAC]: '0.8', [TUR.ILETISIM]: '0.6', [TUR.GIRIS]: '0.5', [TUR.YASAL]: '0.3' };
+const TUR = { ARAC: 'arac', YASAL: 'yasal', GIRIS: 'giris', ILETISIM: 'iletisim', HAKKIMIZDA: 'hakkimizda' };
+const ONCELIK = { [TUR.ARAC]: '0.8', [TUR.ILETISIM]: '0.6', [TUR.HAKKIMIZDA]: '0.6', [TUR.GIRIS]: '0.5', [TUR.YASAL]: '0.3' };
 const sayfalar = [
   ...araclar.map((s) => ({ ...s, tur: TUR.ARAC })),
   ...yasal.map((s) => ({ ...s, tur: TUR.YASAL })),
   ...girisler.map((s) => ({ ...s, tur: TUR.GIRIS })),
-  ...iletisim.map((s) => ({ ...s, tur: TUR.ILETISIM }))
+  ...iletisim.map((s) => ({ ...s, tur: TUR.ILETISIM })),
+  ...hakkimizda.map((s) => ({ ...s, tur: TUR.HAKKIMIZDA }))
 ];
 
 const kabukYolu = path.join(DIST, 'index.html');
@@ -308,7 +312,7 @@ for (const sayfa of sayfalar) {
 
   html = degistir(html, /<\/head>/i, `${yapilandirilmisVeri(sayfa, adres)}</head>`, '</head>');
 
-  // Araç sayfalarının gövdesi dolduruluyor; yasal/giriş/iletişim sayfaları
+  // Araç sayfalarının gövdesi dolduruluyor; yasal/giriş/iletişim/hakkımızda
   // arama sonucunda öne çıkmak için değil bulunabilir olmak için var, onlarda
   // kabuğun boş gövdesi yeterli.
   if (aracMi(sayfa)) {
@@ -355,5 +359,5 @@ fs.writeFileSync(
 );
 
 console.log(
-  `staticPages: ${uretilen} sayfa (${araclar.length} arac + ${yasal.length} yasal + ${girisler.length} giris + ${iletisim.length} iletisim) + sitemap uretildi`
+  `staticPages: ${uretilen} sayfa (${araclar.length} arac + ${yasal.length} yasal + ${girisler.length} giris + ${iletisim.length} iletisim + ${hakkimizda.length} hakkimizda) + sitemap uretildi`
 );

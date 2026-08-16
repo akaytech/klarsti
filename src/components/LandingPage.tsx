@@ -7,12 +7,14 @@ import { toolPageAdresi } from '../config/toolPages';
 // verbatimModuleSyntax nedeniyle yan etkili import olarak derlenir ve tüm
 // store'u (Firestore, zundo, bütün slice'lar) tanıtım sayfasına yükler.
 import type { ToolId } from '../store/useRoadmapStore';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Ban, ClipboardCheck, Factory, Languages, Network, Presentation, ShieldCheck, Trash2 } from 'lucide-react';
+import { DESTEKLENEN_DILLER } from '../config/languages';
 import PublicHeader from './PublicHeader';
 import PublicFooter from './PublicFooter';
 import { useKaydirincaBelir } from '../utils/kaydirincaBelir';
 import UrunDemosu from './UrunDemosu';
 import FiyatVeSorular from './FiyatVeSorular';
+import YontemBolumu from './YontemBolumu';
 
 /**
  * Kaydırınca beliren bölüm. Giriş bölümü (hero) bilerek bunun dışında:
@@ -75,6 +77,24 @@ export default function LandingPage() {
 
   const FEATURED_TOOL_IDS: ToolId[] = ['wbs', '5whys', 'notepad'];
   const featuredTools = FEATURED_TOOL_IDS.map(id => kartVerisi(TOOLS.find(t => t.id === id)!));
+
+  // "Verilerin güvende" bölümünün üç maddesi. Metinler uydurulmuyor: üçü de
+  // sık sorulanlardaki (faq_a2, faq_a6) cevabın ta kendisi, orada kapalı
+  // kutunun içinde duruyordu. Bir özellik değişirse ikisi birlikte değişmeli.
+  const guvenceler = [
+    { Ikon: ShieldCheck, title: t('landing_security_item1_title'), desc: t('landing_security_item1_desc') },
+    { Ikon: Ban, title: t('landing_security_item2_title'), desc: t('landing_security_item2_desc') },
+    { Ikon: Trash2, title: t('landing_security_item3_title'), desc: t('landing_security_item3_desc') }
+  ];
+
+  // Ziyaretçi araç adlarını değil kendi işini biliyor: "Ishikawa" arayan yok,
+  // "kök nedeni bulmam lazım" diyen var. Bu bölüm araç listesini işe çeviriyor.
+  const kullanicilar = [
+    { Ikon: ClipboardCheck, title: t('landing_persona1_title'), desc: t('landing_persona1_desc') },
+    { Ikon: Network, title: t('landing_persona2_title'), desc: t('landing_persona2_desc') },
+    { Ikon: Presentation, title: t('landing_persona3_title'), desc: t('landing_persona3_desc') },
+    { Ikon: Factory, title: t('landing_persona4_title'), desc: t('landing_persona4_desc') }
+  ];
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 overflow-y-auto overflow-x-hidden selection:bg-indigo-500/30">
@@ -200,8 +220,48 @@ export default function LandingPage() {
           <p className="mx-auto mt-20 max-w-2xl text-center text-sm text-slate-500 dark:text-slate-400">
             {t('ws_development_note')}
           </p>
+
+          {/* Dil sayısı elle yazılmıyor, listeden sayılıyor: yeni bir dil
+              eklendiğinde burası kendiliğinden doğru kalıyor. */}
+          <p className="mx-auto mt-4 flex max-w-2xl items-center justify-center gap-2 text-center text-sm text-slate-500 dark:text-slate-400">
+            <Languages size={16} className="shrink-0" aria-hidden />
+            {t('landing_multilang_note', { sayi: DESTEKLENEN_DILLER.length })}
+          </p>
         </div>
       </BelirenBolum>
+
+      {/* Verilerin güvende. Yeri bilerek araç listesinin ÜSTÜ: ziyaretçi
+          ürüne bakmaya başlamadan önce "verim ne olacak" sorusunun cevabını
+          görüyor. Aynı cevaplar sık sorulanlarda da duruyor; tekrar bilerek. */}
+      <BelirenBolum className="py-24 bg-white dark:bg-slate-950 border-t border-slate-100 dark:border-slate-900">
+        <div className="container mx-auto px-6">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <h2 className="text-3xl md:text-5xl font-black mb-6 tracking-tight">{t('landing_security_heading')}</h2>
+            <p className="text-lg text-slate-500 dark:text-slate-400 leading-relaxed">
+              {t('landing_security_subtitle')}
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            {guvenceler.map((madde, idx) => (
+              <div
+                key={idx}
+                className="flex flex-col items-center rounded-3xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-8 text-center"
+              >
+                <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 dark:bg-emerald-900/40">
+                  <madde.Ikon size={28} className="text-emerald-600 dark:text-emerald-400" />
+                </div>
+                <h3 className="mb-3 text-xl font-bold text-slate-900 dark:text-white">{madde.title}</h3>
+                <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">{madde.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </BelirenBolum>
+
+      {/* Yöntem bölümü ayrı dosyada: araç kılavuzlarını gecikmeli indiriyor,
+          bu sayfaya o yükü koymuyor (bkz. YontemBolumu). */}
+      <YontemBolumu />
 
       {/* Tools Section */}
       <BelirenBolum
@@ -249,11 +309,62 @@ export default function LandingPage() {
         </div>
       </BelirenBolum>
 
+      {/* Kimler kullanıyor. Yeri bilerek araç listesinin ALTI: ziyaretçi on
+          altı aracı gördükten sonra "peki bunlar benim işime nasıl yarıyor"
+          diye soruyor, cevabı hemen burada. */}
+      <BelirenBolum className="py-24 bg-slate-50 dark:bg-slate-900 border-t border-slate-200/50 dark:border-slate-800/50">
+        <div className="container mx-auto px-6">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <h2 className="text-3xl md:text-5xl font-black mb-6 tracking-tight">{t('landing_personas_heading')}</h2>
+            <p className="text-lg text-slate-500 dark:text-slate-400 leading-relaxed">
+              {t('landing_personas_subtitle')}
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            {kullanicilar.map((kisi, idx) => (
+              <div
+                key={idx}
+                className="flex items-start gap-5 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-8"
+              >
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-indigo-100 dark:bg-indigo-900/40">
+                  <kisi.Ikon size={28} className="text-indigo-600 dark:text-indigo-400" />
+                </div>
+                <div>
+                  <h3 className="mb-3 text-xl font-bold text-slate-900 dark:text-white">{kisi.title}</h3>
+                  <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">{kisi.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </BelirenBolum>
+
       {/* Fiyat ve sık sorulanlar. Yeri bilerek burası: ziyaretçi ürünü,
           kliplerini ve araç listesini gördükten sonra "peki ücretli mi,
           verilerime ne oluyor?" diye soruyor. Kayıt çağrısının hemen üstünde
           cevabını buluyor. */}
       <FiyatVeSorular />
+
+      {/* Hakkımızda. Kayıt çağrısının hemen üstünde: ziyaretçinin son sorusu
+          "bunu kim yapıyor, yarın ortadan kaybolur mu" oluyor. */}
+      <BelirenBolum className="py-20 bg-slate-50 dark:bg-slate-900 border-t border-slate-200/50 dark:border-slate-800/50">
+        <div className="container mx-auto max-w-3xl px-6 text-center">
+          <h2 className="mb-6 text-3xl md:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
+            {t('landing_about_heading')}
+          </h2>
+          <p className="text-lg leading-relaxed text-slate-600 dark:text-slate-400">
+            {t('landing_about_body')}
+          </p>
+          <Link
+            to="/about"
+            className="group mt-8 inline-flex items-center gap-2 text-base font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300"
+          >
+            {t('landing_about_cta')}
+            <ArrowRight size={18} className="transition-transform group-hover:translate-x-1 motion-reduce:group-hover:translate-x-0 rtl:rotate-180" />
+          </Link>
+        </div>
+      </BelirenBolum>
 
       {/* CTA Section */}
       <BelirenBolum className="py-32 relative overflow-hidden">

@@ -32,8 +32,10 @@ interface DiagramKindDef {
     chartName: string;
     deleteChart: string;
     deleteChartMsg: string;
-    changeType: string;
-    changeTypeHint: string;
+    /** Menüdeki "Tür" başlığı. Tür yalnızca gösteriliyor, değiştirilemiyor. */
+    chartType: string;
+    /** Türün neden değiştirilemediğini anlatan satır. */
+    typeLockedHint: string;
     edit: string;
     save: string;
     deleteNode: string;
@@ -53,8 +55,8 @@ const ORTAK_METIN = {
   chartName: 'flowchart_chart_name',
   deleteChart: 'flowchart_delete_chart',
   deleteChartMsg: 'flowchart_delete_chart_msg',
-  changeType: 'flowchart_change_type',
-  changeTypeHint: 'flowchart_change_type_hint',
+  chartType: 'flowchart_change_type',
+  typeLockedHint: 'flowchart_change_type_hint',
   edit: 'flowchart_edit',
   save: 'flowchart_save',
   deleteNode: 'flowchart_delete_node',
@@ -87,7 +89,7 @@ export const DIAGRAM_KINDS: Record<DiagramKind, DiagramKindDef> = {
       ...ORTAK_METIN,
       typeTitle: 'org_type_title',
       typeSubtitle: 'org_type_subtitle',
-      changeTypeHint: 'org_change_type_hint',
+      typeLockedHint: 'org_change_type_hint',
       secondaryHint: 'org_secondary_hint'
     }
   }

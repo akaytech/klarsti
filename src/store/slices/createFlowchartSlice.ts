@@ -30,7 +30,6 @@ export interface FlowchartSlice {
   addFlowchart: (type: FlowchartTypeId, name: string, startLabel: string) => void;
   renameFlowchart: (id: string, name: string) => void;
   deleteFlowchart: (id: string) => void;
-  changeFlowchartType: (id: string, type: FlowchartTypeId) => void;
 
   // Aşağıdakiler hep açık olan şema üzerinde çalışır.
   onFlowchartNodesChange: (changes: NodeChange[]) => void;
@@ -67,7 +66,6 @@ export const createFlowchartSlice: StateCreator<
     addFlowchart: ops.add as FlowchartSlice['addFlowchart'],
     renameFlowchart: ops.rename,
     deleteFlowchart: ops.remove,
-    changeFlowchartType: ops.changeType as FlowchartSlice['changeFlowchartType'],
 
     onFlowchartNodesChange: ops.onNodesChange,
     onFlowchartEdgesChange: ops.onEdgesChange,

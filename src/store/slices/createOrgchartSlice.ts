@@ -24,7 +24,6 @@ export interface OrgchartSlice {
   addOrgchart: (type: OrgchartTypeId, name: string, startLabel: string) => void;
   renameOrgchart: (id: string, name: string) => void;
   deleteOrgchart: (id: string) => void;
-  changeOrgchartType: (id: string, type: OrgchartTypeId) => void;
 
   onOrgchartNodesChange: (changes: NodeChange[]) => void;
   onOrgchartEdgesChange: (changes: EdgeChange[]) => void;
@@ -60,7 +59,6 @@ export const createOrgchartSlice: StateCreator<
     addOrgchart: ops.add as OrgchartSlice['addOrgchart'],
     renameOrgchart: ops.rename,
     deleteOrgchart: ops.remove,
-    changeOrgchartType: ops.changeType as OrgchartSlice['changeOrgchartType'],
 
     onOrgchartNodesChange: ops.onNodesChange,
     onOrgchartEdgesChange: ops.onEdgesChange,

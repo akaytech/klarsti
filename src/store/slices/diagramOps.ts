@@ -72,13 +72,6 @@ export function createDiagramOps(cfg: DiagramOpsConfig, set: (fn: (state: any) =
     };
   };
 
-  const bicimiCevir = (shape: string, hedefTur: string): string => {
-    const izinli = cfg.getType(hedefTur).shapes.map((b) => b.id);
-    if (izinli.includes(shape)) return shape;
-    const adaylar = cfg.fallbacks[shape] || [];
-    return adaylar.find((aday) => izinli.includes(aday)) || izinli[0];
-  };
-
   /**
    * Yeni şemanın açılış içeriği. Türün hazır iskeleti varsa o kurulur
    * (organizasyon şemasında türler birbirinden dizilimiyle ayrıldığı için
@@ -168,23 +161,6 @@ export function createDiagramOps(cfg: DiagramOpsConfig, set: (fn: (state: any) =
         };
       });
     },
-
-    changeType: (id: string, type: string) => islem(() => {
-      set((state) => ({
-        ...state,
-        [cfg.listKey]: listesi(state).map((s) => {
-          if (s.id !== id) return s;
-          return {
-            ...s,
-            type,
-            nodes: s.nodes.map((n) => {
-              const yeniBicim = bicimiCevir(n.data.shape, type);
-              return yeniBicim === n.data.shape ? n : { ...n, data: { ...n.data, shape: yeniBicim } };
-            }),
-          };
-        }),
-      }));
-    }),
 
     // Seçim, ölçüm ve sürükleme ara kareleri geçmişe girmiyor; yalnızca silme
     // gerçek bir işlem. Silinen kutunun çizgileri de aynı işlemde gidiyor:

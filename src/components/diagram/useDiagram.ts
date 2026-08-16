@@ -15,7 +15,6 @@ export interface DiagramApi {
   add: (type: string, name: string, startLabel: string) => void;
   rename: (id: string, name: string) => void;
   remove: (id: string) => void;
-  changeType: (id: string, type: string) => void;
   onNodesChange: (changes: NodeChange[]) => void;
   onEdgesChange: (changes: EdgeChange[]) => void;
   onConnect: (connection: Connection) => void;
@@ -34,7 +33,6 @@ export function useDiagram(kind: DiagramKind): DiagramApi {
           add: s.addOrgchart as DiagramApi['add'],
           rename: s.renameOrgchart,
           remove: s.deleteOrgchart,
-          changeType: s.changeOrgchartType as DiagramApi['changeType'],
           onNodesChange: s.onOrgchartNodesChange,
           onEdgesChange: s.onOrgchartEdgesChange,
           onConnect: s.onOrgchartConnect,
@@ -49,7 +47,6 @@ export function useDiagram(kind: DiagramKind): DiagramApi {
           add: s.addFlowchart as DiagramApi['add'],
           rename: s.renameFlowchart,
           remove: s.deleteFlowchart,
-          changeType: s.changeFlowchartType as DiagramApi['changeType'],
           onNodesChange: s.onFlowchartNodesChange,
           onEdgesChange: s.onFlowchartEdgesChange,
           onConnect: s.onFlowchartConnect,

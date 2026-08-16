@@ -8,11 +8,12 @@ import ConfirmModal from '../ConfirmModal';
 import { useKapatmaYayini } from '../../utils/menuKapatma';
 
 // Kanvasın sol üstündeki şema menüsü: projedeki şemalar arasında geçiş,
-// yeni şema, ad değiştirme, tür değiştirme ve silme.
+// yeni şema, ad değiştirme ve silme. Tür burada yalnızca yazıyor:
+// açılmış bir şemanın türü değiştirilemiyor.
 export default function DiagramChartsMenu({ kind, aktif, onYeniSema }: { kind: DiagramKind; aktif: DiagramChart; onYeniSema: () => void }) {
   const { t } = useTranslation();
   const k = getDiagramKind(kind);
-  const { charts, setActive, rename, remove, changeType } = useDiagram(kind);
+  const { charts, setActive, rename, remove } = useDiagram(kind);
 
   const [acik, setAcik] = useState(false);
   const [adDuzenleniyor, setAdDuzenleniyor] = useState(false);
@@ -115,32 +116,21 @@ export default function DiagramChartsMenu({ kind, aktif, onYeniSema }: { kind: D
             </button>
           )}
 
+          {/* Şemanın türü yalnızca GÖSTERİLİYOR, değiştirilemiyor.
+              Buradan tür değiştirilebiliyordu ve bu bir tuzaktı: türler
+              birbirinden farklı kutu şekilleri ve kuralları taşıyor, açılmış
+              bir şemanın türünü değiştirmek çizilmiş işi başka bir yöntemin
+              kalıbına zorluyordu. Başka bir tür isteyen yeni şema açar; tür
+              seçimi orada, işe başlamadan önce yapılıyor. */}
           <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-            {t(k.text.changeType)}
+            {t(k.text.chartType, { defaultValue: 'Tür' })}
           </div>
-          {k.types.map((secenek) => {
-            const SecenekIkon = secenek.icon;
-            const secili = secenek.id === aktif.type;
-            return (
-              <button
-                key={secenek.id}
-                onClick={() => {
-                  if (!secili) changeType(aktif.id, secenek.id);
-                  setAcik(false);
-                }}
-                className={`flex w-full items-center gap-3 rounded-xl px-3 py-2 text-start text-sm font-semibold transition-colors ${
-                  secili
-                    ? 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100'
-                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50'
-                }`}
-              >
-                <SecenekIkon size={16} className="shrink-0 text-slate-400" />
-                {t(secenek.labelKey)}
-              </button>
-            );
-          })}
+          <div className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 dark:text-slate-300">
+            <Ikon size={16} className="shrink-0 text-slate-400" />
+            {t(tur.labelKey)}
+          </div>
           <p className="px-3 pt-1 pb-2 text-xs text-slate-400 dark:text-slate-500">
-            {t(k.text.changeTypeHint)}
+            {t(k.text.typeLockedHint, { defaultValue: 'Tür sonradan değiştirilemez. Başka bir tür için yeni şema aç.' })}
           </p>
 
           <div className="my-1 h-px w-full bg-slate-100 dark:bg-slate-700" />

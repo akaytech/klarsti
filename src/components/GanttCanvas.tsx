@@ -113,10 +113,35 @@ export default function GanttCanvas() {
     [ozetler, bugun]
   );
 
-  const toplamGun = gunSayisi(aralik.basla, aralik.bit);
   const gunGenislik = GUN_GENISLIK[yakinlik];
-  const takvimGenislik = toplamGun * gunGenislik;
   const satirlar = useMemo(() => siraliGorevler(gorevler), [gorevler]);
+
+  // Takvime kalan piksel: kaydırma alanının genişliğinden sol sütun düşülüyor.
+  // Ekran değişince (pencere boyu, yan menünün açılıp kapanması) yeniden
+  // ölçülüyor.
+  const [takvimAlani, setTakvimAlani] = useState(0);
+  useEffect(() => {
+    const el = kaydirmaRef.current;
+    if (!el) return;
+    const olc = () => {
+      const sol = parseFloat(getComputedStyle(el).getPropertyValue('--gantt-sol')) || 0;
+      setTakvimAlani(Math.max(0, el.clientWidth - sol));
+    };
+    olc();
+    const gozlemci = new ResizeObserver(olc);
+    gozlemci.observe(el);
+    return () => gozlemci.disconnect();
+  }, [gorevler.length, karsilamaKapandi]);
+
+  // Takvim her zaman ekranın sonuna kadar iniyor. İşler yakın tarihlerdeyse
+  // aralık kısa kalıyor ve takvim sayfanın ortasında bitip sağ yarısı boş
+  // duruyordu; şerit bir yerde kesilince tuval yarım kalmış gibi görünüyor.
+  // Fazladan günler yalnızca ekranı doldurmak için: veriye dokunmuyor,
+  // kullanıcı o günlere iş taşıyabiliyor.
+  const veriGunu = gunSayisi(aralik.basla, aralik.bit);
+  const ekranGunu = takvimAlani > 0 ? Math.ceil(takvimAlani / gunGenislik) : 0;
+  const toplamGun = Math.max(veriGunu, ekranGunu);
+  const takvimGenislik = toplamGun * gunGenislik;
 
   // Çizelge açılınca bugüne kaydır: uzun bir planda kullanıcı en başa, çoktan
   // bitmiş işlerin oraya bakıyordu.

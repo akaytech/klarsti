@@ -125,6 +125,10 @@ export async function yayinlananYazilariCek(projeId = 'klarsti') {
     }
 
     const satirlar = await cevap.json();
+    // Basarili okuma da yazılıyor: yayin kaydinda "0 yazi" gordugunde bunun
+    // sebebi gercekten yazi olmamasi mi, yoksa okumanin hic olmamasi mi —
+    // bu satir olmadan ikisi ayirt edilemiyor.
+    console.log(`blogCek: Firestore okundu, ${satirlar.filter((s) => s.document).length} yayimlanmis yazi.`);
     return satirlar
       .filter((s) => s.document)
       .map((s) => {

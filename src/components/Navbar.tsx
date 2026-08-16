@@ -1,4 +1,5 @@
-import { useMemo, useState, useRef } from 'react';
+import { useMemo, useState, useRef, type MouseEvent } from 'react';
+import { Link } from 'react-router-dom';
 
 import { useRoadmapStore, type ToolId } from '../store/useRoadmapStore';
 import { useShallow } from 'zustand/react/shallow';
@@ -34,37 +35,78 @@ const NAVBAR_THEME: Record<ToolId, { activeBtn: string; iconBg: string }> = {
 const SON_ARAC_SAYISI = 3;
 
 /**
+ * Tıklama tarayıcıya mı bırakılmalı?
+ *
+ * Sol tıkta uygulamanın kendi mantığı çalışıyor (sayfa yenilenmesin, depo
+ * korunsun). Ama sağ tık, orta tık ve Ctrl/Cmd/Shift+tık tarayıcının işi:
+ * kullanıcı aracı yeni sekmede ya da yeni pencerede açabilmeli. Burada
+ * `preventDefault` çağrılırsa tarayıcı o menüyü hiç açmıyor.
+ */
+function tarayiciyaBirak(e: MouseEvent) {
+  return e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey;
+}
+
+/**
  * Listedeki tek bir araç satırı. Üç yerde birden çiziliyor: arama sonucu,
  * son kullandıkların ve kategoriler.
+ *
+ * Düğme değil link: düğmenin adresi olmadığı için tarayıcı "yeni sekmede aç"
+ * diyemiyordu. Adres yalnızca kullanıcının hiç klasörü yoksa boş kalıyor;
+ * o durumda açılacak bir sayfa da yok, önce klasörün adı soruluyor.
  *
  * Navbar'ın İÇİNDE tanımlanmamalı: aramaya her harf yazıldığında bileşen
  * yeniden üretilir, React de bütün satırları söküp yeniden kurardı.
  */
-function AracDugmesi({ tool, aktif, etiket, onClick }: {
+function AracDugmesi({ tool, aktif, etiket, adres, onClick }: {
   tool: (typeof PROJECT_TOOLS)[number];
   aktif: boolean;
   etiket: string;
+  adres: string | null;
   onClick: () => void;
 }) {
   const Icon = tool.icon;
   const theme = NAVBAR_THEME[tool.id];
-  return (
-    <button
-      onClick={onClick}
-      className={clsx(
-        // text-start şart: tarayıcı düğme içindeki yazıyı varsayılan olarak
-        // ortalar. Türkçede araç adları tek satıra sığdığı için görünmüyordu,
-        // ama İngilizcede "Work Breakdown Structure" iki satıra taşıyor ve
-        // satırlar ortalanmış duruyordu.
-        'flex w-full items-center gap-3 rounded-xl px-3 py-1.5 text-start text-sm font-semibold transition-colors',
-        aktif ? theme.activeBtn : 'text-slate-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800'
-      )}
-    >
+  const sinif = clsx(
+    // text-start şart: tarayıcı düğme içindeki yazıyı varsayılan olarak
+    // ortalar. Türkçede araç adları tek satıra sığdığı için görünmüyordu,
+    // ama İngilizcede "Work Breakdown Structure" iki satıra taşıyor ve
+    // satırlar ortalanmış duruyordu.
+    'flex w-full items-center gap-3 rounded-xl px-3 py-1.5 text-start text-sm font-semibold transition-colors',
+    aktif ? theme.activeBtn : 'text-slate-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800'
+  );
+
+  const icerik = (
+    <>
       <div className={clsx('flex h-7 w-7 shrink-0 items-center justify-center rounded-lg', theme.iconBg)}>
         <Icon size={14} />
       </div>
       <span>{etiket}</span>
-    </button>
+    </>
+  );
+
+  if (!adres) {
+    return (
+      <button onClick={onClick} className={sinif}>
+        {icerik}
+      </button>
+    );
+  }
+
+  return (
+    <Link
+      to={adres}
+      onClick={(e) => {
+        if (tarayiciyaBirak(e)) return;
+        // Sol tık: adresi Link değil, aşağıdaki mantık değiştiriyor. İkisi
+        // birden yönlendirirse geçmişe iki kayıt düşüyor ve geri düğmesi bir
+        // adımda çalışmıyor.
+        e.preventDefault();
+        onClick();
+      }}
+      className={sinif}
+    >
+      {icerik}
+    </Link>
   );
 }
 
@@ -115,29 +157,37 @@ export default function Navbar() {
 
   const [klasorBekleyenArac, setKlasorBekleyenArac] = useState<ToolId | null>(null);
 
-  // Karşılama ekranındaki mantığın aynısı (bkz. WelcomeScreen.handleToolClick):
-  // açık klasör varsa ona, yoksa en son dokunulan klasöre gidilir; hiç klasör
-  // yoksa adı sorulur. Eskiden ikinci durumda da yeni klasör açılıyordu ve
-  // kullanıcı her oturumda bir "Yeni Çalışma" daha biriktiriyordu.
+  // Aracın açılacağı klasör: açık klasör varsa o, yoksa en son dokunulan.
+  // Karşılama ekranındaki mantığın aynısı (bkz. WelcomeScreen.handleToolClick).
+  // Hiç klasör yoksa null; o durumda önce klasörün adı soruluyor. (Eskiden
+  // burada yeni klasör açılıyordu ve kullanıcı her oturumda bir "Yeni Çalışma"
+  // daha biriktiriyordu.)
+  //
+  // Hem linkin adresi hem de tıklama bu tek değerden besleniyor: ikisi ayrı
+  // hesaplansaydı sağ tıkla açılan sekme, sol tıkla açılandan başka bir
+  // klasöre gidebilirdi.
+  const hedefKlasorId = useMemo(() => {
+    if (currentProjectId && projects.some((p) => p.id === currentProjectId)) return currentProjectId;
+    if (projects.length === 0) return null;
+    return [...projects].sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0))[0].id;
+  }, [currentProjectId, projects]);
+
+  // Adres biçimi AuthenticatedApp'teki adres çözücüyle aynı kalmalı.
+  const aracAdresi = (tool: ToolId) => (hedefKlasorId ? `/project/${hedefKlasorId}/${tool}` : null);
+
   const handleToolClick = (tool: ToolId) => {
     setIsExpanded(false);
     // Menü kapanırken arama da sıfırlanıyor; yoksa bir dahaki açılışta
     // filtrelenmiş liste karşılıyor ve araçların yarısı yok sanılıyor.
     setArama('');
 
-    if (currentProjectId && projects.some(p => p.id === currentProjectId)) {
-      setActiveTool(tool);
+    if (!hedefKlasorId) {
+      setKlasorBekleyenArac(tool);
       return;
     }
 
-    if (projects.length > 0) {
-      const sonKlasor = [...projects].sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0))[0];
-      loadProject(sonKlasor.id);
-      setActiveTool(tool);
-      return;
-    }
-
-    setKlasorBekleyenArac(tool);
+    if (hedefKlasorId !== currentProjectId) loadProject(hedefKlasorId);
+    setActiveTool(tool);
   };
 
   const klasoruOlustur = (ad: string) => {
@@ -190,9 +240,15 @@ export default function Navbar() {
       {/* Logo kare kutuda değil, kendi geniş oranında: "klarsti" yazısı
           56 piksellik karede okunmuyordu. Logonun kendi zemini ve yuvarlak
           köşeleri olduğu için etrafına ayrıca çerçeve çizilmiyor. */}
+      {/* Düğme değil link. Düğmeyken sağ tık menüsünde "yeni sekmede aç"
+          yoktu; tarayıcı içeride yalnızca bir resim gördüğü için "resmi
+          farklı kaydet" çıkıyordu. */}
       <div className="flex p-4 items-center justify-center shrink-0">
-        <button
-          onClick={() => {
+        <Link
+          to="/"
+          onClick={(e) => {
+            if (tarayiciyaBirak(e)) return;
+            e.preventDefault();
             setActiveTool(null);
             setIsExpanded(false);
           }}
@@ -206,7 +262,7 @@ export default function Navbar() {
             height={120}
             className="h-11 w-auto"
           />
-        </button>
+        </Link>
       </div>
 
       <div className="flex-1 flex flex-col py-2 px-3 gap-1 overflow-y-auto custom-scrollbar">
@@ -239,7 +295,7 @@ export default function Navbar() {
 
         {aramaSonucu ? (
           aramaSonucu.length > 0 ? (
-            aramaSonucu.map((tool) => <AracDugmesi key={tool.id} tool={tool} aktif={activeTool === tool.id} etiket={t(tool.labelKey)} onClick={() => handleToolClick(tool.id)} />)
+            aramaSonucu.map((tool) => <AracDugmesi key={tool.id} tool={tool} aktif={activeTool === tool.id} etiket={t(tool.labelKey)} adres={aracAdresi(tool.id)} onClick={() => handleToolClick(tool.id)} />)
           ) : (
             <p className="px-3 py-6 text-center text-sm text-slate-500 dark:text-slate-400">{t('nav_search_empty')}</p>
           )
@@ -252,7 +308,7 @@ export default function Navbar() {
                 <div className="mb-1 mt-2 px-3 shrink-0">
                   <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">{t('nav_recent_tools')}</h3>
                 </div>
-                {sonAraclar.map((tool) => <AracDugmesi key={'son-' + tool.id} tool={tool} aktif={activeTool === tool.id} etiket={t(tool.labelKey)} onClick={() => handleToolClick(tool.id)} />)}
+                {sonAraclar.map((tool) => <AracDugmesi key={'son-' + tool.id} tool={tool} aktif={activeTool === tool.id} etiket={t(tool.labelKey)} adres={aracAdresi(tool.id)} onClick={() => handleToolClick(tool.id)} />)}
               </>
             )}
 
@@ -270,7 +326,7 @@ export default function Navbar() {
                     <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">{t(cat)}</h3>
                   </div>
 
-                  {catTools.map((tool) => <AracDugmesi key={tool.id} tool={tool} aktif={activeTool === tool.id} etiket={t(tool.labelKey)} onClick={() => handleToolClick(tool.id)} />)}
+                  {catTools.map((tool) => <AracDugmesi key={tool.id} tool={tool} aktif={activeTool === tool.id} etiket={t(tool.labelKey)} adres={aracAdresi(tool.id)} onClick={() => handleToolClick(tool.id)} />)}
                 </div>
               );
             })}

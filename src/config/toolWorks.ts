@@ -123,7 +123,15 @@ export function calismayiSil(
   else eylem(calismaId);
 }
 
-/** Menüde gösterilecek çalışmalar: kullanılmamış olanlar elenir. */
+/**
+ * Menüde gösterilecek çalışmalar: kullanılmamış olanlar elenir.
+ *
+ * İki ölçüt birlikte: kutu sayısı ve "varsayılanına hiç dokunulmamış mı".
+ * Tek başına kutu sayısı yetmiyordu, çünkü değer akışının kutu ölçütü yok:
+ * proje açılır açılmaz kurulan boş "Mevcut Durum" haritası gerçek bir çalışma
+ * gibi görünüyor, hesapsız denemeye ilk giren ziyaretçi bile karşılama
+ * ekranında "Kaldığın Yer" başlığı altında onu buluyordu.
+ */
 export function aracCalismalari(
   toolData: Record<string, any> | undefined,
   tool: ToolId
@@ -132,6 +140,7 @@ export function aracCalismalari(
   if (!tanim) return [];
   return hamCalismalar(toolData, tool)
     .filter((c) => (tanim.enAzKutu ? (c?.nodes?.length ?? 0) >= tanim.enAzKutu : true))
+    .filter((c) => !calismaDokunulmamis(c, tool))
     .map((c) => ({ id: c.id as string, ad: calismaAdi(c, tool) }));
 }
 

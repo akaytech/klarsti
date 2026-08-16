@@ -1,7 +1,7 @@
 {
   "name": "klarsti",
   "private": true,
-  "version": "0.8.25-6",
+  "version": "0.8.25-7",
   "type": "module",
   "scripts": {
     "dev": "vite",

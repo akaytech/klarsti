@@ -192,7 +192,7 @@ const guides: ToolGuideBundle = {
   },
 
   ishikawa: {
-    title: 'Ishikawa (espinha de peixe)',
+    title: 'Diagrama de Espinha de Peixe',
     summary:
       'Reúne as causas possíveis de um problema sob seis títulos: Mão de obra, Máquina, Material, Método, Medição e Meio ambiente. A cabeça do peixe é o problema e as espinhas são grupos de causas. A ideia é varrer todas as áreas em vez de procurar em uma só.',
     whenToUse: [

@@ -192,7 +192,7 @@ const guides: ToolGuideBundle = {
   },
 
   ishikawa: {
-    title: 'Ishikawa (espina de pescado)',
+    title: 'Diagrama de Espina de Pescado',
     summary:
       'Reúne las causas posibles de un problema bajo seis encabezados: Personas, Máquina, Material, Método, Medición y Medio. La cabeza del pez es el problema y las espinas son grupos de causas. La idea es barrer todas las áreas en vez de buscar en una sola.',
     whenToUse: [

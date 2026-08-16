@@ -192,7 +192,7 @@ const guides: ToolGuideBundle = {
   },
 
   ishikawa: {
-    title: 'Ishikawa (Fishbone)',
+    title: 'Fishbone Diagram',
     summary:
       'Collects the possible causes of a problem under six headings: Manpower, Machine, Material, Method, Measurement and Milieu. The fish head is the problem, the bones are cause groups. The point is to sweep every area rather than look for the cause in one place.',
     whenToUse: [
@@ -438,7 +438,7 @@ const guides: ToolGuideBundle = {
     ]
   },
   gantt: {
-    title: "Gantt Timeline",
+    title: "Gantt Chart",
     summary: "A planning tool that lays work out as horizontal bars on a calendar. What starts when, how long it takes and what waits for what — all on one screen.",
     whenToUse: [
       "To tie work to dates and make start times explicit.",
@@ -446,7 +446,7 @@ const guides: ToolGuideBundle = {
       "To spot work falling behind while there is still time."
     ],
     steps: [
-      "A project can hold several timelines. Use the menu at the top left to add one or switch between them.",
+      "A project can hold several charts. Use the menu at the top left to add one or switch between them.",
       "Add rows with \"Add task\". Double-click a row name to change it.",
       "Selecting a row opens the detail bar below: start, end, progress and status live there.",
       "Drag a bar to shift its dates; drag either edge to make it longer or shorter.",

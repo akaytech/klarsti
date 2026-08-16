@@ -192,7 +192,7 @@ const guides: ToolGuideBundle = {
   },
 
   ishikawa: {
-    title: 'Ishikawa (Fischgräte)',
+    title: 'Fischgrätendiagramm',
     summary:
       'Sammelt mögliche Ursachen eines Problems unter sechs Überschriften: Mensch, Maschine, Material, Methode, Messung und Umfeld. Der Fischkopf ist das Problem, die Gräten sind Ursachengruppen. Ziel ist, alle Bereiche abzusuchen statt nur einen.',
     whenToUse: [
@@ -438,7 +438,7 @@ const guides: ToolGuideBundle = {
     ]
   },
   gantt: {
-    title: "Gantt-Zeitplan",
+    title: "Gantt-Diagramm",
     summary: "Ein Planungswerkzeug, das die Arbeit als waagerechte Balken auf einem Kalender zeigt. Was wann beginnt, wie lange dauert und worauf wartet — alles auf einem Bildschirm.",
     whenToUse: [
       "Um Arbeit an Termine zu binden und Startzeitpunkte festzulegen.",
@@ -446,7 +446,7 @@ const guides: ToolGuideBundle = {
       "Um Verzug früh zu erkennen."
     ],
     steps: [
-      "Ein Projekt kann mehrere Zeitpläne enthalten. Über das Menü oben links legst du einen an oder wechselst.",
+      "Ein Projekt kann mehrere Diagramme enthalten. Über das Menü oben links legst du eines an oder wechselst.",
       "Mit \"Aufgabe hinzufügen\" entstehen Zeilen. Doppelklick auf den Namen ändert ihn.",
       "Beim Auswählen einer Zeile erscheint unten die Detailleiste: Start, Ende, Fortschritt und Status.",
       "Ziehe einen Balken, um die Termine zu verschieben; zieh an den Enden, um die Dauer zu ändern.",

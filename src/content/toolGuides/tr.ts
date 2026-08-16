@@ -192,7 +192,7 @@ const kilavuzlar: ToolGuideBundle = {
   },
 
   ishikawa: {
-    title: 'Ishikawa (Balık Kılçığı)',
+    title: 'Balık Kılçığı Diyagramı',
     summary:
       'Bir problemin olası nedenlerini altı başlık altında toplar: İnsan, Makine, Malzeme, Metot, Ölçüm ve Çevre. Balığın başı problem, kılçıklar neden gruplarıdır. Amaç nedeni tek bir yerde aramak yerine bütün alanları taramak.',
     whenToUse: [
@@ -438,7 +438,7 @@ const kilavuzlar: ToolGuideBundle = {
     ]
   },
   gantt: {
-    title: "Zaman Çizelgesi (Gantt)",
+    title: "Gantt Şeması",
     summary: "İşleri takvim üzerine yatay çubuklar halinde dizen plan aracı. Hangi iş ne zaman başlıyor, ne kadar sürüyor, hangisi hangisini bekliyor — hepsi tek ekranda görünür.",
     whenToUse: [
       "Bir işi tarihlere bağlamak, kimin ne zaman başlayacağını netleştirmek için.",
@@ -446,17 +446,17 @@ const kilavuzlar: ToolGuideBundle = {
       "Planın gerisinde kalan işleri erken görmek için."
     ],
     steps: [
-      "Bir projede birden çok çizelge tutabilirsin. Sol üstteki menüden yeni çizelge açar, aralarında geçersin.",
+      "Bir projede birden çok şema tutabilirsin. Sol üstteki menüden yeni şema açar, aralarında geçersin.",
       "\"Görev ekle\" ile satır açarsın. Satırın adına çift tıklayıp değiştirirsin.",
       "Bir satırı seçince altta ayrıntı şeridi çıkar: başlangıç, bitiş, ilerleme yüzdesi ve durum oradan verilir.",
       "Çubuğu sürükleyerek tarihi kaydırır, ucundan çekerek süresini uzatıp kısaltırsın.",
       "Girinti düğmesiyle bir satırı üsttekinin alt görevi yaparsın. Üst görevin çubuğu alt görevlerinden hesaplanır, elle değiştirilmez.",
-      "Bağımlılık düğmesinden \"şu bitmeden başlamaz\" bağı kurarsın; çizelgede aralarına ok çizilir."
+      "Bağımlılık düğmesinden \"şu bitmeden başlamaz\" bağı kurarsın; şemada aralarına ok çizilir."
     ],
     tips: [
       "Süresi olmayan işaretler için kilometre taşı seç: çubuk yerine baklava şeklinde görünür.",
       "Bugünü gösteren kırmızı çizgi hep ekranda; bitiş tarihi geçmiş ve bitmemiş işlerin çubuğu kırmızı çerçeveli çıkar.",
-      "Gün / hafta / ay düğmeleri çizelgeyi sıkıştırıp açar. Uzun planlarda ay görünümü bütünü tek ekrana sığdırır."
+      "Gün / hafta / ay düğmeleri şemayı sıkıştırıp açar. Uzun planlarda ay görünümü bütünü tek ekrana sığdırır."
     ]
   }
 };

@@ -192,7 +192,7 @@ const guides: ToolGuideBundle = {
   },
 
   ishikawa: {
-    title: 'Ishikawa (arête de poisson)',
+    title: 'Diagramme en Arête de Poisson',
     summary:
       'Rassemble les causes possibles d\'un problème sous six en-têtes : Main-d\'œuvre, Machine, Matière, Méthode, Mesure et Milieu. La tête du poisson est le problème, les arêtes sont des familles de causes. Le but est de balayer tous les domaines plutôt qu\'un seul.',
     whenToUse: [

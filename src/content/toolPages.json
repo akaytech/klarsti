@@ -10,8 +10,8 @@
   {
     "slug": "fishbone",
     "toolId": "ishikawa",
-    "name": "Fishbone (Ishikawa) Diagram",
-    "title": "Fishbone (Ishikawa) Diagram Maker | Klarsti",
+    "name": "Fishbone Diagram",
+    "title": "Fishbone Diagram Maker - Ishikawa Cause and Effect | Klarsti",
     "description": "Group the possible causes of a problem into categories on a fishbone diagram, then compare branches to see where the real cause is hiding.",
     "keywords": "fishbone diagram, ishikawa diagram, cause and effect diagram, 6M analysis, root cause"
   },
@@ -122,7 +122,7 @@
   {
     "slug": "gantt-chart",
     "toolId": "gantt",
-    "name": "Gantt Timeline",
+    "name": "Gantt Chart",
     "title": "Gantt Chart Tool — Plan Work on a Timeline | Klarsti",
     "description": "Lay your tasks out on a calendar, set start and end dates, link what waits for what and see progress and slippage at a glance.",
     "keywords": "gantt chart, project timeline, project schedule, task dependencies, milestone planning"

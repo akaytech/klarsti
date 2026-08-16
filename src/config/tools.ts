@@ -1,5 +1,5 @@
 import React from 'react';
-import { Activity, Fish, BarChart2, BarChart, Target, Scale, AlertOctagon, Network, RefreshCcw, Layers, GitMerge, CalendarDays, Map, Brain, UsersRound } from 'lucide-react';
+import { Activity, Fish, BarChart2, BarChart, Target, Scale, AlertOctagon, Network, RefreshCcw, Layers, GitMerge, CalendarDays, Map, Brain, UsersRound, CalendarRange } from 'lucide-react';
 import type { ToolId } from '../store/useRoadmapStore';
 
 export type CategoryId = 'cat_root_cause' | 'cat_data_stats' | 'cat_strategy_decision_risk' | 'cat_process_project' | 'cat_productivity_docs';
@@ -38,6 +38,7 @@ export const TOOLS: ToolDef[] = [
   { id: 'waterfall', icon: Layers, labelKey: 'tool_waterfall', descKey: 'wf_desc', category: 'cat_process_project' },
   { id: 'flowchart', icon: GitMerge, labelKey: 'tool_flowchart', descKey: 'flowchart_desc', category: 'cat_process_project' },
   { id: 'orgchart', icon: UsersRound, labelKey: 'org_title', descKey: 'org_desc', category: 'cat_process_project' },
+  { id: 'gantt', icon: CalendarRange, labelKey: 'gantt_title', descKey: 'gantt_desc', category: 'cat_process_project' },
   { id: 'vsm', icon: Map, labelKey: 'tool_vsm', descKey: 'vsm_desc', category: 'cat_process_project' },
   { id: 'notepad', icon: CalendarDays, labelKey: 'notepad_title', descKey: 'notepad_desc', category: 'cat_productivity_docs', personal: true },
 ];

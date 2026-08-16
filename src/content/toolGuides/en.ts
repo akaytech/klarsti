@@ -436,6 +436,28 @@ const guides: ToolGuideBundle = {
       'Undo and redo do not work in the agenda; it does not keep a history.',
       'The list under the calendar shows your upcoming entries; start there if you do not know which day to open.'
     ]
+  },
+  gantt: {
+    title: "Gantt Timeline",
+    summary: "A planning tool that lays work out as horizontal bars on a calendar. What starts when, how long it takes and what waits for what — all on one screen.",
+    whenToUse: [
+      "To tie work to dates and make start times explicit.",
+      "To show the order of the work and the steps that wait on each other.",
+      "To spot work falling behind while there is still time."
+    ],
+    steps: [
+      "A project can hold several timelines. Use the menu at the top left to add one or switch between them.",
+      "Add rows with \"Add task\". Double-click a row name to change it.",
+      "Selecting a row opens the detail bar below: start, end, progress and status live there.",
+      "Drag a bar to shift its dates; drag either edge to make it longer or shorter.",
+      "The indent button turns a row into a subtask of the one above. A parent bar is computed from its children and cannot be edited by hand.",
+      "The dependency button links \"cannot start before\"; an arrow is drawn between the two bars."
+    ],
+    tips: [
+      "For markers with no duration, switch a task to milestone: it becomes a diamond instead of a bar.",
+      "The red line marks today. Unfinished work whose end date has passed gets a red outline.",
+      "Day / week / month buttons squeeze or open the calendar. Month view fits a long plan on one screen."
+    ]
   }
 };
 

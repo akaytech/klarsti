@@ -436,6 +436,28 @@ const guides: ToolGuideBundle = {
       'Rückgängig und Wiederholen wirken in der Agenda nicht; sie führt keine Historie.',
       'Die Liste unter dem Kalender zeigt deine anstehenden Einträge; fang dort an, wenn du nicht weißt, welchen Tag du öffnen sollst.'
     ]
+  },
+  gantt: {
+    title: "Gantt-Zeitplan",
+    summary: "Ein Planungswerkzeug, das die Arbeit als waagerechte Balken auf einem Kalender zeigt. Was wann beginnt, wie lange dauert und worauf wartet — alles auf einem Bildschirm.",
+    whenToUse: [
+      "Um Arbeit an Termine zu binden und Startzeitpunkte festzulegen.",
+      "Um die Reihenfolge und die voneinander abhängigen Schritte zu zeigen.",
+      "Um Verzug früh zu erkennen."
+    ],
+    steps: [
+      "Ein Projekt kann mehrere Zeitpläne enthalten. Über das Menü oben links legst du einen an oder wechselst.",
+      "Mit \"Aufgabe hinzufügen\" entstehen Zeilen. Doppelklick auf den Namen ändert ihn.",
+      "Beim Auswählen einer Zeile erscheint unten die Detailleiste: Start, Ende, Fortschritt und Status.",
+      "Ziehe einen Balken, um die Termine zu verschieben; zieh an den Enden, um die Dauer zu ändern.",
+      "Die Einrücken-Schaltfläche macht eine Zeile zur Teilaufgabe der darüber. Der Balken einer Oberaufgabe wird berechnet.",
+      "Über die Abhängigkeit legst du \"beginnt nicht vor\" fest; zwischen den Balken wird ein Pfeil gezeichnet."
+    ],
+    tips: [
+      "Für Marken ohne Dauer wähle Meilenstein: statt eines Balkens erscheint eine Raute.",
+      "Die rote Linie zeigt heute. Unfertige Aufgaben mit abgelaufenem Enddatum bekommen einen roten Rahmen.",
+      "Tag / Woche / Monat stauchen oder dehnen den Kalender. Die Monatsansicht zeigt lange Pläne komplett."
+    ]
   }
 };
 

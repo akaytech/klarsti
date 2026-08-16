@@ -436,6 +436,28 @@ const guides: ToolGuideBundle = {
       'Annuler et rétablir ne fonctionnent pas dans l\'agenda ; elle ne garde pas d\'historique.',
       'La liste sous le calendrier montre vos prochaines entrées ; commencez par là si vous ne savez pas quel jour ouvrir.'
     ]
+  },
+  gantt: {
+    title: "Diagramme de Gantt",
+    summary: "Un outil de planification qui pose le travail en barres horizontales sur un calendrier. Ce qui commence quand, combien de temps ça dure et ce qui attend quoi — sur un seul écran.",
+    whenToUse: [
+      "Pour rattacher le travail à des dates et fixer les départs.",
+      "Pour montrer l'ordre des tâches et celles qui s'attendent.",
+      "Pour repérer tôt le retard."
+    ],
+    steps: [
+      "Un projet peut contenir plusieurs diagrammes. Le menu en haut à gauche sert à en créer et à passer de l'un à l'autre.",
+      "Ajoute des lignes avec \"Ajouter une tâche\". Double-clique sur le nom pour le changer.",
+      "Sélectionner une ligne ouvre la barre de détail en bas : début, fin, avancement et état.",
+      "Fais glisser une barre pour décaler les dates ; tire un bord pour allonger ou raccourcir.",
+      "Le bouton d'indentation transforme une ligne en sous-tâche de celle du dessus. La barre d'une tâche parente est calculée.",
+      "Le bouton de dépendance pose un lien \"ne commence pas avant\" ; une flèche relie les deux barres."
+    ],
+    tips: [
+      "Pour un repère sans durée, passe la tâche en jalon : elle devient un losange.",
+      "La ligne rouge marque aujourd'hui. Une tâche non terminée dont la fin est passée est encadrée en rouge.",
+      "Jour / semaine / mois resserrent ou étalent le calendrier. La vue mois fait tenir un long plan sur un écran."
+    ]
   }
 };
 

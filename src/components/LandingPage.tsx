@@ -34,6 +34,7 @@ export default function LandingPage() {
   const LANDING_BG_DARK: Record<ToolId, string> = {
     '5whys': 'bg-emerald-100 dark:bg-emerald-900/50',
     ishikawa: 'bg-cyan-100 dark:bg-cyan-900/50',
+    gantt: 'bg-orange-100 dark:bg-orange-900/50',
     pareto: 'bg-blue-100 dark:bg-blue-900/50',
     histogram: 'bg-indigo-100 dark:bg-indigo-900/50',
     swot: 'bg-rose-100 dark:bg-rose-900/50',

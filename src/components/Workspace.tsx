@@ -39,6 +39,7 @@ const ParetoCanvas = gecikmeliEkran(() => import('./ParetoCanvas'));
 const HistogramCanvas = gecikmeliEkran(() => import('./HistogramCanvas'));
 const NotepadCanvas = gecikmeliEkran(() => import('./NotepadCanvas'));
 const VsmCanvas = gecikmeliEkran(() => import('./VsmCanvas'));
+const GanttCanvas = gecikmeliEkran(() => import('./GanttCanvas'));
 
 function DecisionMatrixWrapper() {
   const { currentProjectId, projects, addDecisionProject } = useRoadmapStore(useShallow((state) => ({
@@ -80,6 +81,7 @@ const TOOL_COMPONENTS: Record<string, React.ElementType> = {
   vsm: VsmCanvas,
   pareto: ParetoCanvas,
   histogram: HistogramCanvas,
+  gantt: GanttCanvas,
   notepad: NotepadCanvas,
   decision: DecisionMatrixWrapper
 };

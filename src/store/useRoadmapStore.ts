@@ -134,7 +134,8 @@ export const TOOL_KEYS_MAP: Record<string, string[]> = {
   mindmap: ['mindmaps'],
   pareto: ['pareto'],
   histogram: ['histogram'],
-  vsm: ['vsmMaps']
+  vsm: ['vsmMaps'],
+  gantt: ['ganttPlans']
   // 'notepad' burada yok: ajanda kişisel, projeye ait değil.
 };
 
@@ -178,7 +179,7 @@ export const TOOL_STATE_KEYS = [
   'wbsTrees', 'fiveWhysAnalyses', 'swot', 'ishikawa',
   'pdca', 'waterfall', 'pareto', 'histogram', 'decision',
   'flowcharts', 'orgcharts', 'mindmaps', 'ftaAnalyses',
-  'vsmMaps'
+  'vsmMaps', 'ganttPlans'
 ] as const;
 
 
@@ -251,6 +252,8 @@ import type { HistogramSlice, HistogramProject, HistogramAyarlar, HistogramEskiK
 export type { HistogramProject, HistogramAyarlar, HistogramEskiKalem };
 
 import { createDecisionSlice } from './slices/createDecisionSlice';
+import { createGanttSlice } from './slices/createGanttSlice';
+import type { GanttSlice } from './slices/createGanttSlice';
 import type { DecisionSlice, DecisionCriteria, DecisionOption, DecisionMatrixProject } from './slices/createDecisionSlice';
 export type { DecisionCriteria, DecisionOption, DecisionMatrixProject };
 
@@ -261,7 +264,7 @@ export { getActiveVsmMap } from './slices/createVsmSlice';
 
 
 
-export type ToolId = 'mindmap' | 'wbs' | '5whys' | 'swot' | 'ishikawa' | 'pdca' | 'waterfall' | 'fta' | 'decision' | 'flowchart' | 'orgchart' | 'pareto' | 'histogram' | 'notepad' | 'vsm';
+export type ToolId = 'mindmap' | 'wbs' | '5whys' | 'gantt' | 'swot' | 'ishikawa' | 'pdca' | 'waterfall' | 'fta' | 'decision' | 'flowchart' | 'orgchart' | 'pareto' | 'histogram' | 'notepad' | 'vsm';
 
 /**
  * Katılanlar listesindeki bir satır. Paylaşım linkiyle projeye katılan kişi
@@ -334,7 +337,7 @@ export interface WorkRecord {
   updatedAt: number;
 }
 
-export interface RoadmapState extends NotepadSlice, JournalSlice, FiveWhysSlice, SwotSlice, IshikawaSlice, PdcaSlice, WaterfallSlice, FtaSlice, FlowchartSlice, OrgchartSlice, MindmapSlice, ParetoSlice, HistogramSlice, DecisionSlice, WbsSlice, VsmSlice {
+export interface RoadmapState extends NotepadSlice, JournalSlice, FiveWhysSlice, SwotSlice, IshikawaSlice, PdcaSlice, WaterfallSlice, FtaSlice, FlowchartSlice, OrgchartSlice, MindmapSlice, ParetoSlice, HistogramSlice, DecisionSlice, WbsSlice, VsmSlice, GanttSlice {
   projectUnsubscribe: (() => void) | null;
   // Kişisel veri (ajanda) users/{uid} dokümanından gelir, projelerden bağımsız dinlenir.
   personalUnsubscribe: (() => void) | null;
@@ -535,6 +538,7 @@ export const useRoadmapStore = create<RoadmapState>()(
         ...createParetoSlice(set, get, api),
         ...createHistogramSlice(set, get, api),
         ...createDecisionSlice(set, get, api),
+        ...createGanttSlice(set, get, api),
         ...createWbsSlice(set, get, api),
         ...createVsmSlice(set, get, api),
 
@@ -560,7 +564,7 @@ export const useRoadmapStore = create<RoadmapState>()(
           // flushPendingSaves() ile bekliyor (bkz. TopRightUserMenu.logout);
           // buradaki flush yalnızca duran ağ.
           set({ projectsLoaded: false, projects: [], currentProjectId: null, activeTool: null, wbsTrees: [], activeWbsTreeId: null, fiveWhysAnalyses: [], activeFiveWhysId: null, swot: [], ishikawa: [], pdca: [], waterfall: [], pareto: [], histogram: [],
-            decision: [], flowcharts: [], activeFlowchartId: null, orgcharts: [], activeOrgchartId: null, mindmaps: [], activeMindmapId: null, ftaAnalyses: [], activeFtaId: null, notepad: [], vsmMaps: [], activeVsmMapId: null, projectUnsubscribe: null,
+            decision: [], flowcharts: [], activeFlowchartId: null, orgcharts: [], activeOrgchartId: null, mindmaps: [], activeMindmapId: null, ftaAnalyses: [], activeFtaId: null, notepad: [], vsmMaps: [], activeVsmMapId: null, ganttPlans: [], activeGanttId: null, projectUnsubscribe: null,
             personalUnsubscribe: null, personalLoaded: false,
             works: [], worksLoaded: false, worksUnsubscribe: null,
             journal: {}, journalDates: [], journalLoadedDates: [], journalSavingDates: [], journalSavedDates: [], journalLoadError: null });

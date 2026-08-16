@@ -436,6 +436,28 @@ const guides: ToolGuideBundle = {
       'Deshacer y rehacer no funcionan en la agenda; no guarda historial.',
       'La lista bajo el calendario muestra tus próximas entradas; empieza por ahí si no sabes qué día abrir.'
     ]
+  },
+  gantt: {
+    title: "Diagrama de Gantt",
+    summary: "Una herramienta de planificación que coloca el trabajo como barras horizontales sobre un calendario. Qué empieza cuándo, cuánto dura y qué espera a qué, todo en una pantalla.",
+    whenToUse: [
+      "Para atar el trabajo a fechas y dejar claros los inicios.",
+      "Para mostrar el orden y las tareas que dependen unas de otras.",
+      "Para ver pronto lo que se está retrasando."
+    ],
+    steps: [
+      "Un proyecto puede tener varios diagramas. Con el menú de arriba a la izquierda creas uno o cambias de uno a otro.",
+      "Añade filas con \"Añadir tarea\". Doble clic en el nombre para cambiarlo.",
+      "Al seleccionar una fila se abre la barra de detalle abajo: inicio, fin, avance y estado.",
+      "Arrastra una barra para mover las fechas; tira de un extremo para alargarla o acortarla.",
+      "El botón de sangría convierte una fila en subtarea de la anterior. La barra de una tarea madre se calcula sola.",
+      "El botón de dependencia crea el vínculo \"no empieza antes de\"; se dibuja una flecha entre las barras."
+    ],
+    tips: [
+      "Para marcas sin duración usa hito: en lugar de barra aparece un rombo.",
+      "La línea roja marca hoy. Lo que no está terminado y ya pasó su fecha sale con borde rojo.",
+      "Día / semana / mes comprimen o abren el calendario. La vista de mes cabe un plan largo en una pantalla."
+    ]
   }
 };
 

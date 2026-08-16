@@ -390,3 +390,26 @@ button,
     transition-duration: 0s !important;
   }
 }
+
+/* Zaman çizelgesinin (Gantt) sol sütun genişliği. Değişken olarak duruyor
+   çünkü hem satırlar hem başlık hem de bağımlılık okları aynı ölçüyü kullanıyor;
+   üç yerde ayrı yazılsaydı biri değişince hizalar kayardı. Telefonda yalnız
+   görev adı sığıyor, geniş ekranda tarihler ve yüzde de görünüyor. */
+:root {
+  --gantt-sol: 200px;
+}
+@media (min-width: 768px) {
+  :root {
+    --gantt-sol: 400px;
+  }
+}
+@media (min-width: 1024px) {
+  :root {
+    --gantt-sol: 450px;
+  }
+}
+.gantt-sol {
+  width: var(--gantt-sol);
+  min-width: var(--gantt-sol);
+  max-width: var(--gantt-sol);
+}

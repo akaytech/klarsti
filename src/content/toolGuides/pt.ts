@@ -436,6 +436,28 @@ const guides: ToolGuideBundle = {
       'Desfazer e refazer não funcionam na agenda; ela não guarda histórico.',
       'A lista abaixo do calendário mostra os seus próximos registros; comece por ali se não souber qual dia abrir.'
     ]
+  },
+  gantt: {
+    title: "Gráfico de Gantt",
+    summary: "Uma ferramenta de planeamento que coloca o trabalho como barras horizontais num calendário. O que começa quando, quanto dura e o que espera pelo quê, tudo num ecrã.",
+    whenToUse: [
+      "Para prender o trabalho a datas e deixar os inícios claros.",
+      "Para mostrar a ordem e as tarefas que dependem umas das outras.",
+      "Para ver cedo o que está a atrasar."
+    ],
+    steps: [
+      "Um projeto pode ter vários gráficos. No menu do canto superior esquerdo cria um novo ou muda entre eles.",
+      "Adicione linhas com \"Adicionar tarefa\". Duplo clique no nome para o mudar.",
+      "Ao selecionar uma linha abre-se a barra de detalhe em baixo: início, fim, progresso e estado.",
+      "Arraste uma barra para deslocar as datas; puxe uma ponta para a alongar ou encurtar.",
+      "O botão de avanço torna uma linha subtarefa da anterior. A barra de uma tarefa-mãe é calculada.",
+      "O botão de dependência cria o laço \"não começa antes de\"; é desenhada uma seta entre as barras."
+    ],
+    tips: [
+      "Para marcos sem duração escolha marco: em vez de barra aparece um losango.",
+      "A linha vermelha marca hoje. Tarefas por concluir com data passada ficam com contorno vermelho.",
+      "Dia / semana / mês apertam ou abrem o calendário. A vista de mês cabe um plano longo num ecrã."
+    ]
   }
 };
 

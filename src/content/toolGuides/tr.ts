@@ -436,6 +436,28 @@ const kilavuzlar: ToolGuideBundle = {
       'Geri alma ve ileri alma düğmeleri ajandada çalışmaz; ajanda geçmiş kaydı tutmuyor.',
       'Takvimin altındaki liste yaklaşan kayıtlarını gösterir; hangi güne bakacağını bilmiyorsan oradan başla.'
     ]
+  },
+  gantt: {
+    title: "Zaman Çizelgesi (Gantt)",
+    summary: "İşleri takvim üzerine yatay çubuklar halinde dizen plan aracı. Hangi iş ne zaman başlıyor, ne kadar sürüyor, hangisi hangisini bekliyor — hepsi tek ekranda görünür.",
+    whenToUse: [
+      "Bir işi tarihlere bağlamak, kimin ne zaman başlayacağını netleştirmek için.",
+      "İşlerin sırasını ve birbirini bekleyen adımları göstermek için.",
+      "Planın gerisinde kalan işleri erken görmek için."
+    ],
+    steps: [
+      "Bir projede birden çok çizelge tutabilirsin. Sol üstteki menüden yeni çizelge açar, aralarında geçersin.",
+      "\"Görev ekle\" ile satır açarsın. Satırın adına çift tıklayıp değiştirirsin.",
+      "Bir satırı seçince altta ayrıntı şeridi çıkar: başlangıç, bitiş, ilerleme yüzdesi ve durum oradan verilir.",
+      "Çubuğu sürükleyerek tarihi kaydırır, ucundan çekerek süresini uzatıp kısaltırsın.",
+      "Girinti düğmesiyle bir satırı üsttekinin alt görevi yaparsın. Üst görevin çubuğu alt görevlerinden hesaplanır, elle değiştirilmez.",
+      "Bağımlılık düğmesinden \"şu bitmeden başlamaz\" bağı kurarsın; çizelgede aralarına ok çizilir."
+    ],
+    tips: [
+      "Süresi olmayan işaretler için kilometre taşı seç: çubuk yerine baklava şeklinde görünür.",
+      "Bugünü gösteren kırmızı çizgi hep ekranda; bitiş tarihi geçmiş ve bitmemiş işlerin çubuğu kırmızı çerçeveli çıkar.",
+      "Gün / hafta / ay düğmeleri çizelgeyi sıkıştırıp açar. Uzun planlarda ay görünümü bütünü tek ekrana sığdırır."
+    ]
   }
 };
 

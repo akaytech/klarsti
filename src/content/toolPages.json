@@ -118,5 +118,13 @@
     "title": "Daily Planner and Agenda — Plan Your Day | Klarsti",
     "description": "A private daily agenda beside your project tools. Schedule tasks straight from your work breakdown and close the day with a short review.",
     "keywords": "daily planner, daily agenda, day planner, task scheduling, end of day review"
+  },
+  {
+    "slug": "gantt-chart",
+    "toolId": "gantt",
+    "name": "Gantt Timeline",
+    "title": "Gantt Chart Tool — Plan Work on a Timeline | Klarsti",
+    "description": "Lay your tasks out on a calendar, set start and end dates, link what waits for what and see progress and slippage at a glance.",
+    "keywords": "gantt chart, project timeline, project schedule, task dependencies, milestone planning"
   }
 ]

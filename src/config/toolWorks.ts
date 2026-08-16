@@ -25,7 +25,8 @@ export type CalismaSecimEylemi =
   | 'setActiveMindmap'
   | 'setActiveFlowchart'
   | 'setActiveOrgchart'
-  | 'setActiveVsmMap';
+  | 'setActiveVsmMap'
+  | 'setActiveGantt';
 
 interface AracTanimi {
   /** toolData içindeki dizi. */
@@ -73,6 +74,7 @@ const TANIMLAR: Record<ToolId, AracTanimi | null> = {
   mindmap: { anahtar: 'mindmaps', adAlani: 'name', enAzKutu: 2, secim: 'setActiveMindmap', aktifAlan: 'activeMindmapId', yenidenAdlandir: 'renameMindmap', sil: 'deleteMindmap' },
   flowchart: { anahtar: 'flowcharts', adAlani: 'name', secim: 'setActiveFlowchart', aktifAlan: 'activeFlowchartId', yenidenAdlandir: 'renameFlowchart', sil: 'deleteFlowchart' },
   orgchart: { anahtar: 'orgcharts', adAlani: 'name', secim: 'setActiveOrgchart', aktifAlan: 'activeOrgchartId', yenidenAdlandir: 'renameOrgchart', sil: 'deleteOrgchart' },
+  gantt: { anahtar: 'ganttPlans', adAlani: 'name', secim: 'setActiveGantt', aktifAlan: 'activeGanttId', yenidenAdlandir: 'renameGanttPlan', sil: 'deleteGanttPlan' },
   vsm: { anahtar: 'vsmMaps', adAlani: 'name', secim: 'setActiveVsmMap', aktifAlan: 'activeVsmMapId', yenidenAdlandir: 'renameVsmMap', sil: 'deleteVsmMap' },
   swot: { anahtar: 'swot', adAlani: 'title', yenidenAdlandir: 'updateSwotTitle', sil: 'deleteSwot' },
   ishikawa: { anahtar: 'ishikawa', adAlani: 'problemStatement', yenidenAdlandir: 'updateIshikawaProblem', sil: 'deleteIshikawa' },

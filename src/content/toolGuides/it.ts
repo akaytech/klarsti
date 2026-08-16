@@ -441,6 +441,28 @@ const guides: ToolGuideBundle = {
       "Annulla e ripeti non funzionano nell'agenda: non conserva una cronologia.",
       "L'elenco sotto il calendario mostra le tue voci in arrivo; parti da lì se non sai quale giorno aprire."
     ]
+  },
+  gantt: {
+    title: "Diagramma di Gantt",
+    summary: "Uno strumento di pianificazione che dispone il lavoro come barre orizzontali su un calendario. Cosa inizia quando, quanto dura e cosa aspetta cosa, tutto in una schermata.",
+    whenToUse: [
+      "Per legare il lavoro alle date e fissare le partenze.",
+      "Per mostrare l'ordine e le attività che si aspettano a vicenda.",
+      "Per accorgersi presto dei ritardi."
+    ],
+    steps: [
+      "Un progetto può contenere più diagrammi. Dal menu in alto a sinistra ne crei uno o passi da uno all'altro.",
+      "Aggiungi righe con \"Aggiungi attività\". Doppio clic sul nome per cambiarlo.",
+      "Selezionando una riga si apre la barra dei dettagli in basso: inizio, fine, avanzamento e stato.",
+      "Trascina una barra per spostare le date; tira un bordo per allungarla o accorciarla.",
+      "Il pulsante di rientro rende una riga sotto-attività di quella sopra. La barra di un'attività madre viene calcolata.",
+      "Il pulsante di dipendenza crea il legame \"non inizia prima di\"; tra le barre compare una freccia."
+    ],
+    tips: [
+      "Per i segnaposto senza durata usa il traguardo: al posto della barra appare un rombo.",
+      "La linea rossa segna oggi. Le attività non concluse con data superata hanno un bordo rosso.",
+      "Giorno / settimana / mese stringono o allargano il calendario. La vista mese fa stare un piano lungo in una schermata."
+    ]
   }
 };
 

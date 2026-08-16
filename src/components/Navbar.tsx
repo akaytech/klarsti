@@ -15,6 +15,7 @@ const NAVBAR_THEME: Record<ToolId, { activeBtn: string; iconBg: string }> = {
   wbs: { activeBtn: "bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400", iconBg: "bg-indigo-100 text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-400" },
   '5whys': { activeBtn: "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400", iconBg: "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-400" },
   swot: { activeBtn: "bg-rose-50 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400", iconBg: "bg-rose-100 text-rose-600 dark:bg-rose-900/50 dark:text-rose-400" },
+  gantt: { activeBtn: "bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400", iconBg: "bg-orange-100 text-orange-600 dark:bg-orange-900/50 dark:text-orange-400" },
   ishikawa: { activeBtn: "bg-cyan-50 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400", iconBg: "bg-cyan-100 text-cyan-600 dark:bg-cyan-900/50 dark:text-cyan-400" },
   pdca: { activeBtn: "bg-teal-50 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400", iconBg: "bg-teal-100 text-teal-600 dark:bg-teal-900/50 dark:text-teal-400" },
   waterfall: { activeBtn: "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400", iconBg: "bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400" },

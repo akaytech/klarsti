@@ -39,18 +39,19 @@ const SATIR_YUKSEKLIK = 38;
 const BASLIK_YUKSEKLIK = 52;
 
 /**
- * Çubuğun zemini ile dolgusu.
+ * Çubuğun zemini, dolgusu ve çerçevesi.
  *
- * Koyu temada zemin için rengin 900 tonu kullanılıyordu; amber 900 ekranda
- * kahverengi okunuyor ve çubuk kirli duruyordu. Artık zemin, dolgunun kendi
- * renginin soluk hali (aynı renk, düşük opaklık) — iki temada da çubuk tek
- * renkten oluşuyor, dolan kısmı koyu, kalanı açık.
+ * Koyu temada zemin için önce rengin 900 tonu, sonra soluk hali denendi;
+ * ikisi de turuncuda kahverengi çıkıyor ve çubuk kirli duruyordu. Zemin artık
+ * nötr gri: "bu kadarı daha yapılmadı" demek. Durum bilgisi çerçevede duruyor,
+ * böylece ilerlemesi sıfır olan bir işin de bekliyor mu riskli mi olduğu
+ * çubuğa bakınca anlaşılıyor.
  */
-const DURUM_STILI: Record<GanttDurum, { cubuk: string; ilerleme: string; nokta: string }> = {
-  bekliyor: { cubuk: 'bg-slate-200 dark:bg-slate-400/25', ilerleme: 'bg-slate-400 dark:bg-slate-400', nokta: 'bg-slate-400' },
-  devam: { cubuk: 'bg-amber-100 dark:bg-amber-500/25', ilerleme: 'bg-amber-500', nokta: 'bg-amber-500' },
-  bitti: { cubuk: 'bg-emerald-100 dark:bg-emerald-500/25', ilerleme: 'bg-emerald-500', nokta: 'bg-emerald-500' },
-  riskli: { cubuk: 'bg-rose-100 dark:bg-rose-500/25', ilerleme: 'bg-rose-500', nokta: 'bg-rose-500' }
+const DURUM_STILI: Record<GanttDurum, { cubuk: string; cerceve: string; ilerleme: string; nokta: string }> = {
+  bekliyor: { cubuk: 'bg-slate-200 dark:bg-slate-700', cerceve: 'ring-slate-400/60', ilerleme: 'bg-slate-400', nokta: 'bg-slate-400' },
+  devam: { cubuk: 'bg-slate-200 dark:bg-slate-700', cerceve: 'ring-amber-500/70', ilerleme: 'bg-amber-500', nokta: 'bg-amber-500' },
+  bitti: { cubuk: 'bg-slate-200 dark:bg-slate-700', cerceve: 'ring-emerald-500/70', ilerleme: 'bg-emerald-500', nokta: 'bg-emerald-500' },
+  riskli: { cubuk: 'bg-slate-200 dark:bg-slate-700', cerceve: 'ring-rose-500/80', ilerleme: 'bg-rose-500', nokta: 'bg-rose-500' }
 };
 
 const DURUMLAR: GanttDurum[] = ['bekliyor', 'devam', 'bitti', 'riskli'];
@@ -423,10 +424,11 @@ export default function GanttCanvas() {
                         onPointerDown={(e) => !ust && surukleBaslat(e, gorev, 'tasi')}
                         title={`${gorev.ad} · %${ozet.ilerleme}`}
                         className={clsx(
-                          'group absolute top-1/2 -translate-y-1/2 touch-none rounded-md',
+                          'group absolute top-1/2 -translate-y-1/2 touch-none overflow-hidden rounded-md ring-1 ring-inset',
                           ust ? 'h-3 cursor-default' : 'h-5 cursor-grab',
                           stil.cubuk,
-                          gecikti && 'ring-2 ring-rose-400'
+                          // Geciken iş kalın kırmızı çerçeveyle ayrılıyor.
+                          gecikti ? 'ring-2 ring-rose-500' : stil.cerceve
                         )}
                         style={{ insetInlineStart: sol, width: Math.max(genislik, 6) }}
                       >

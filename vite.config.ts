@@ -31,7 +31,12 @@ export default defineConfig({
       // her ilk ziyarete boşuna yük bindiriyordu.
       includeManifestIcons: false,
       workbox: {
-        navigateFallbackDenylist: [/^\/__\//],
+        // Sayfa açılışlarını servis çalışanı artık önbellekten karşılamıyor;
+        // aşağıdaki "klarsti-sayfa" kuralı internetten alıp önbelleği yedek
+        // olarak kullanıyor. Bu yüzden hazır index.html yönlendirmesi kapalı:
+        // açık kalsaydı o kural önce denenir ve yeni sürüm görünmezdi (kurallar
+        // yazılış sırasına göre deneniyor, yönlendirme hepsinden önce geliyor).
+        navigateFallback: null as unknown as undefined,
         // Servis çalışanının harita dosyası hiç üretilmesin. Bu dosyalar
         // Sentry eklentisinin temizliğinden sonra yazıldığı için silinemiyor
         // ve yayına çıkıyorlardı. İçerikleri workbox'ın kendi kodu, bizim
@@ -44,6 +49,30 @@ export default defineConfig({
         globPatterns: ['**/*.{css,html,webmanifest}'],
         cleanupOutdatedCaches: true,
         runtimeCaching: [
+          {
+            // Sayfa açılışları (yeni sekme, yenileme, adres çubuğu) önce
+            // internetten alınıyor. Eskiden servis çalışanı elindeki index.html
+            // kopyasını anında veriyordu: yeni sürüm yayınlansa bile kullanıcı
+            // sekmeyi yeniden açtığında eski uygulamayı görüyor, ancak
+            // Ctrl+Shift+R ile kurtuluyordu.
+            //
+            // İki saniye içinde cevap gelmezse önbellekteki kopya veriliyor:
+            // internetsizken ya da çok yavaş bağlantıda site yine anında
+            // açılıyor. Bu kural aşağıdakilerden önce yazılı; servis çalışanı
+            // kuralları yazılış sırasına göre deniyor.
+            // /__/ altı Firebase'in kendi sayfaları (Google ile giriş buradan
+            // dönüyor); onlar hiç önbelleğe girmemeli, eskiden de yönlendirme
+            // dışında tutuluyorlardı.
+            urlPattern: ({ request, url }: { request: Request; url: URL }) =>
+              request.mode === 'navigate' && !url.pathname.startsWith('/__/'),
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'klarsti-sayfa',
+              networkTimeoutSeconds: 2,
+              expiration: { maxEntries: 30, maxAgeSeconds: 60 * 60 * 24 * 30 },
+              cacheableResponse: { statuses: [0, 200] }
+            }
+          },
           {
             // Bütün JS parçalarının adında içerik hash'i var: aynı isim her
             // zaman aynı içerik demek. Bu yüzden CacheFirst güvenli; parça

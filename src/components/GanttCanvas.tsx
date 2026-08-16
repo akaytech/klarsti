@@ -167,7 +167,9 @@ export default function GanttCanvas() {
 
   if (!plan) {
     return (
-      <div className="flex h-full w-full items-center justify-center bg-slate-50 p-6 dark:bg-slate-900">
+      <div className="flex h-full w-full flex-col bg-slate-50 dark:bg-slate-900">
+        <div className="h-16 w-full flex-none border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900" />
+        <div className="flex flex-1 items-center justify-center p-6">
         <div className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
           <h2 className="flex items-center gap-2 text-lg font-black text-slate-800 dark:text-slate-100">
             <CalendarRange size={20} className="text-orange-500" />
@@ -197,6 +199,7 @@ export default function GanttCanvas() {
             </button>
           </form>
         </div>
+        </div>
       </div>
     );
   }
@@ -205,6 +208,14 @@ export default function GanttCanvas() {
 
   return (
     <div className="flex h-full w-full flex-col bg-slate-50 dark:bg-slate-900">
+      {/* Üstteki gezinme düğmeleri (geri al, kılavuz, paylaş, dışa aktar,
+          çalışmalarım, hesap) tuvalin ÜSTÜNDE, havada duruyor. Çizelgenin ilk
+          satırları onların altında kalıyordu. Bu boşluk onlara yer açıyor,
+          alt kenarındaki çizgi de düğmelerle aracı birbirinden ayırıyor.
+          Diğer tablo tabanlı araçlarda da aynı ölçü var (bkz. ToolHeader,
+          dividerOnTop). */}
+      <div className="h-16 w-full flex-none border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900" />
+
       {/* Üst şerit: plan seçimi, yakınlık ve görev ekleme. */}
       <div className="flex flex-none flex-wrap items-center gap-2 border-b border-slate-200 bg-white px-3 py-2 dark:border-slate-800 dark:bg-slate-900 sm:px-4">
         <AnalysisMenu

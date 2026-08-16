@@ -227,6 +227,10 @@ export default function GoalNode({ data, selected }: { data: GoalNodeData; selec
           {isEditing ? (
             <input
               ref={inputRef}
+              // İsim kutusu da başlık sayılıyor: işaret olmayınca içine
+              // tıklamak "kutuya tıklandı" oluyor, alt kutular açılıp kapanıyor
+              // ve kamera kutuya yaklaşıyordu (bkz. RoadmapCanvas onNodeClick).
+              data-kutu-basligi
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
               onBlur={handleSave}
@@ -234,7 +238,8 @@ export default function GoalNode({ data, selected }: { data: GoalNodeData; selec
                 if (e.key === 'Enter') handleSave();
                 if (e.key === 'Escape') setIsEditing(false);
               }}
-              className="w-full bg-slate-100 dark:bg-slate-900/60 text-[13px] font-semibold leading-snug outline-none ring-1 ring-slate-300 dark:ring-slate-600 px-2 py-1 rounded-lg text-inherit"
+              // nodrag/nopan: yazıyı fareyle seçerken kutu sürükleniyordu.
+              className="nodrag nopan w-full bg-slate-100 dark:bg-slate-900/60 text-[13px] font-semibold leading-snug outline-none ring-1 ring-slate-300 dark:ring-slate-600 px-2 py-1 rounded-lg text-inherit"
               placeholder={t('double_click_edit')}
               aria-label={t('double_click_edit')}
             />

@@ -42,6 +42,15 @@ export default function BlogPostPage({ slug }: { slug: string }) {
     return () => sayfaMetaSifirla();
   }, [yazi]);
 
+  // Build sırasında üretilmiş hazır sayfa (bkz. scripts/staticPages.mjs)
+  // uygulamanın önünde duran ayrı bir katman. Yazı gelince kaldırılıyor;
+  // erken kaldırsak sayfa bir an boşalırdı.
+  useEffect(() => {
+    const kaldir = () => document.getElementById('statik-onizleme')?.remove();
+    if (yazi !== null) kaldir();
+    return kaldir;
+  }, [yazi]);
+
   const govde = useMemo(
     () => (yazi && yazi !== 'yok' ? blogMetniCiz(yazi.govde) : null),
     [yazi]

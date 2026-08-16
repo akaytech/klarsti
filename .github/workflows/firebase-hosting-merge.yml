@@ -6,6 +6,15 @@ on:
   push:
     branches:
       - main
+  # Günlük yeniden yayın. Blog yazıları veritabanında duruyor ve sitede anında
+  # görünüyor, ama arama motorunun okuduğu gerçek HTML sayfalar derleme
+  # sırasında üretiliyor. Bu olmadan yeni bir yazı, biri kod gönderene kadar
+  # Google için görünmez kalırdı.
+  schedule:
+    - cron: '0 3 * * *'
+  # Elle tetikleme: yazı yayınlandıktan hemen sonra beklemek istemezsen
+  # GitHub'da Actions sekmesinden "Run workflow" diyebilirsin.
+  workflow_dispatch:
 
 concurrency:
   group: firebase-hosting-deploy-${{ github.ref }}
@@ -29,6 +38,11 @@ jobs:
       - run: npm ci && npm run build:firebase
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          # Blog yazılarını Firestore'dan okumak için (bkz. scripts/blogCek.mjs).
+          # Aynı hesap zaten aşağıda yayın için kullanılıyor. Yetkisi yoksa
+          # derleme durmaz, yalnızca blog sayfaları üretilmez ve kayıtta uyarı
+          # görünür.
+          FIREBASE_SERVICE_ACCOUNT_KLARSTI: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KLARSTI }}
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}

@@ -1,218 +1,104 @@
 import type { ReactNode } from 'react';
+import { blogAyristir, type Parca } from './blogAyristir';
 
 /**
- * Blog yazısının metnini ekrana çizer.
+ * Blog yazısını ekrana çizer.
  *
- * Neden hazır bir kütüphane değil: iki sebep.
+ * Metnin ayrıştırılması burada DEĞİL, blogAyristir.ts içinde: aynı ayrıştırma
+ * build tarafında da kullanılıyor ve arama motoru için gerçek HTML üretiyor
+ * (bkz. scripts/staticPages.mjs). Tek ayrıştırıcı, iki çizici.
  *
- * 1. GÜVENLİK. Hazır markdown kütüphanelerinin çoğu HTML üretiyor ve o HTML
- *    sayfaya `dangerouslySetInnerHTML` ile basılıyor. Burada hiç HTML metni
- *    üretilmiyor; doğrudan React öğeleri kuruluyor, yani metnin içine
- *    yazılmış bir `<script>` yazı olarak görünür, çalışmaz.
- * 2. BOYUT. Blog sayfası herkese açık; tam bir markdown kütüphanesi bu iş
- *    için gereğinden ağır.
- *
- * Desteklenen yazım (panelde de aynısı yazıyor):
- *
- *   # Başlık            → büyük başlık
- *   ## Alt başlık       → orta başlık
- *   ### Küçük başlık    → küçük başlık
- *   - madde             → liste
- *   > alıntı            → alıntı bloğu
- *   **kalın**  *eğik*
- *   [yazı](adres)       → bağlantı
- *   ![açıklama](adres)  → resim
- *   Tek başına bir YouTube/Vimeo adresi → gömülü oynatıcı
- *
- * Boş satır paragrafları ayırır.
+ * Neden hazır bir markdown kütüphanesi değil: hazır kütüphanelerin çoğu HTML
+ * metni üretiyor ve o metin sayfaya `dangerouslySetInnerHTML` ile basılıyor.
+ * Burada hiç HTML metni üretilmiyor; doğrudan React öğeleri kuruluyor, yani
+ * yazının içine yazılmış bir `<script>` yazı olarak görünür, çalışmaz.
  */
 
-/** Satırın tamamı bir video adresi mi? Öyleyse gömme adresini döner. */
-export function videoGomme(satir: string): string | null {
-  const adres = satir.trim();
-  if (!/^https?:\/\/\S+$/.test(adres)) return null;
-
-  const yt = adres.match(
-    /^https?:\/\/(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/
-  );
-  if (yt) return `https://www.youtube-nocookie.com/embed/${yt[1]}`;
-
-  const vimeo = adres.match(/^https?:\/\/(?:www\.)?vimeo\.com\/(\d+)/);
-  if (vimeo) return `https://player.vimeo.com/video/${vimeo[1]}`;
-
-  return null;
-}
-
-/**
- * Adres güvenli mi? Yalnızca http(s) geçiyor.
- *
- * `javascript:` ile başlayan bir bağlantı, tıklandığında sayfada kod
- * çalıştırır. Yazan tek kişi yönetici olsa da adresler dışarıdan kopyalanıp
- * yapıştırılıyor; filtre burada duruyor.
- */
-function guvenliAdres(adres: string): string | null {
-  const temiz = adres.trim();
-  return /^https?:\/\//i.test(temiz) ? temiz : null;
-}
-
-/** Satır içi işaretleme: kalın, eğik, bağlantı, resim. */
-function satirIci(metin: string, anahtar: string): ReactNode[] {
-  const parcalar: ReactNode[] = [];
-  // Sıra önemli: resim (`![]()`) bağlantıdan (`[]()`) önce denenmeli.
-  const kalip = /(!?)\[([^\]]*)\]\(([^)\s]+)\)|\*\*([^*]+)\*\*|\*([^*]+)\*/g;
-  let son = 0;
-  let eslesme: RegExpExecArray | null;
-  let sayac = 0;
-
-  while ((eslesme = kalip.exec(metin)) !== null) {
-    if (eslesme.index > son) parcalar.push(metin.slice(son, eslesme.index));
-    const k = `${anahtar}-i${sayac++}`;
-
-    const [tam, unlem, etiket, adres, kalin, egik] = eslesme;
-    if (adres !== undefined) {
-      const guvenli = guvenliAdres(adres);
-      if (!guvenli) {
-        // Tanınmayan adres olduğu gibi yazı olarak kalıyor: sessizce
-        // yutulursa yazar neyin gitmediğini anlamıyor.
-        parcalar.push(tam);
-      } else if (unlem === '!') {
-        parcalar.push(
-          <img
-            key={k}
-            src={guvenli}
-            alt={etiket}
-            loading="lazy"
-            className="my-6 w-full rounded-2xl border border-slate-200 dark:border-slate-700"
-          />
-        );
-      } else {
-        parcalar.push(
+function parcalariCiz(parcalar: Parca[], anahtar: string): ReactNode[] {
+  return parcalar.map((p, i) => {
+    const k = `${anahtar}-${i}`;
+    switch (p.tur) {
+      case 'kalin':
+        return <strong key={k} className="font-bold">{p.metin}</strong>;
+      case 'egik':
+        return <em key={k}>{p.metin}</em>;
+      case 'baglanti':
+        return (
           <a
             key={k}
-            href={guvenli}
+            href={p.adres}
             target="_blank"
             rel="noopener noreferrer"
             className="text-indigo-600 dark:text-indigo-400 underline underline-offset-2 hover:text-indigo-700 dark:hover:text-indigo-300"
           >
-            {etiket || guvenli}
+            {p.metin}
           </a>
         );
-      }
-    } else if (kalin !== undefined) {
-      parcalar.push(<strong key={k} className="font-bold">{kalin}</strong>);
-    } else if (egik !== undefined) {
-      parcalar.push(<em key={k}>{egik}</em>);
+      case 'resim':
+        return (
+          <img
+            key={k}
+            src={p.adres}
+            alt={p.aciklama}
+            loading="lazy"
+            className="my-6 w-full rounded-2xl border border-slate-200 dark:border-slate-700"
+          />
+        );
+      default:
+        return p.metin;
     }
-    son = eslesme.index + tam.length;
-  }
-
-  if (son < metin.length) parcalar.push(metin.slice(son));
-  return parcalar;
+  });
 }
 
 export function blogMetniCiz(govde: string): ReactNode[] {
-  const satirlar = (govde || '').replace(/\r\n/g, '\n').split('\n');
-  const cikti: ReactNode[] = [];
-  let paragraf: string[] = [];
-  let liste: string[] = [];
-  let sayac = 0;
-
-  const paragrafiBitir = () => {
-    if (paragraf.length === 0) return;
-    const k = `p${sayac++}`;
-    cikti.push(
-      <p key={k} className="my-4 leading-relaxed text-slate-700 dark:text-slate-300">
-        {satirIci(paragraf.join(' '), k)}
-      </p>
-    );
-    paragraf = [];
-  };
-
-  const listeyiBitir = () => {
-    if (liste.length === 0) return;
-    const k = `l${sayac++}`;
-    cikti.push(
-      <ul key={k} className="my-4 list-disc space-y-2 ps-6 leading-relaxed text-slate-700 dark:text-slate-300">
-        {liste.map((madde, i) => (
-          <li key={`${k}-${i}`}>{satirIci(madde, `${k}-${i}`)}</li>
-        ))}
-      </ul>
-    );
-    liste = [];
-  };
-
-  const hepsiniBitir = () => {
-    paragrafiBitir();
-    listeyiBitir();
-  };
-
-  for (const ham of satirlar) {
-    const satir = ham.trimEnd();
-
-    if (satir.trim() === '') {
-      hepsiniBitir();
-      continue;
-    }
-
-    const video = videoGomme(satir);
-    if (video) {
-      hepsiniBitir();
-      const k = `v${sayac++}`;
-      cikti.push(
-        // aspect-video: oynatıcı sabit yükseklikle konsaydı telefonda ya
-        // kenarlarda siyah bant kalırdı ya da taşardı.
-        <div key={k} className="my-6 aspect-video w-full overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700">
-          <iframe
-            src={video}
-            title={video}
-            loading="lazy"
-            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            className="h-full w-full"
-          />
-        </div>
-      );
-      continue;
-    }
-
-    const baslik = satir.match(/^(#{1,3})\s+(.*)$/);
-    if (baslik) {
-      hepsiniBitir();
-      const k = `h${sayac++}`;
-      const yazi = satirIci(baslik[2], k);
-      if (baslik[1].length === 1) {
-        cikti.push(<h2 key={k} className="mt-10 mb-4 text-2xl md:text-3xl font-black tracking-tight text-slate-900 dark:text-white">{yazi}</h2>);
-      } else if (baslik[1].length === 2) {
-        cikti.push(<h3 key={k} className="mt-8 mb-3 text-xl md:text-2xl font-bold text-slate-900 dark:text-white">{yazi}</h3>);
-      } else {
-        cikti.push(<h4 key={k} className="mt-6 mb-2 text-lg font-bold text-slate-900 dark:text-white">{yazi}</h4>);
+  return blogAyristir(govde).map((blok, i) => {
+    const k = `b${i}`;
+    switch (blok.tur) {
+      case 'baslik': {
+        const icerik = parcalariCiz(blok.parcalar, k);
+        if (blok.seviye === 1) {
+          return <h2 key={k} className="mt-10 mb-4 text-2xl md:text-3xl font-black tracking-tight text-slate-900 dark:text-white">{icerik}</h2>;
+        }
+        if (blok.seviye === 2) {
+          return <h3 key={k} className="mt-8 mb-3 text-xl md:text-2xl font-bold text-slate-900 dark:text-white">{icerik}</h3>;
+        }
+        return <h4 key={k} className="mt-6 mb-2 text-lg font-bold text-slate-900 dark:text-white">{icerik}</h4>;
       }
-      continue;
+      case 'liste':
+        return (
+          <ul key={k} className="my-4 list-disc space-y-2 ps-6 leading-relaxed text-slate-700 dark:text-slate-300">
+            {blok.maddeler.map((madde, j) => (
+              <li key={`${k}-${j}`}>{parcalariCiz(madde, `${k}-${j}`)}</li>
+            ))}
+          </ul>
+        );
+      case 'alinti':
+        return (
+          <blockquote key={k} className="my-6 border-s-4 border-indigo-400 bg-slate-50 dark:bg-slate-800/60 py-3 pe-4 ps-5 italic text-slate-600 dark:text-slate-300">
+            {parcalariCiz(blok.parcalar, k)}
+          </blockquote>
+        );
+      case 'video':
+        return (
+          // aspect-video: oynatıcı sabit yükseklikle konsaydı telefonda ya
+          // kenarlarda siyah bant kalırdı ya da taşardı.
+          <div key={k} className="my-6 aspect-video w-full overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700">
+            <iframe
+              src={blok.adres}
+              title={blok.adres}
+              loading="lazy"
+              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="h-full w-full"
+            />
+          </div>
+        );
+      default:
+        return (
+          <p key={k} className="my-4 leading-relaxed text-slate-700 dark:text-slate-300">
+            {parcalariCiz(blok.parcalar, k)}
+          </p>
+        );
     }
-
-    const alinti = satir.match(/^>\s?(.*)$/);
-    if (alinti) {
-      hepsiniBitir();
-      const k = `a${sayac++}`;
-      cikti.push(
-        <blockquote key={k} className="my-6 border-s-4 border-indigo-400 bg-slate-50 dark:bg-slate-800/60 py-3 pe-4 ps-5 italic text-slate-600 dark:text-slate-300">
-          {satirIci(alinti[1], k)}
-        </blockquote>
-      );
-      continue;
-    }
-
-    const madde = satir.match(/^[-*]\s+(.*)$/);
-    if (madde) {
-      paragrafiBitir();
-      liste.push(madde[1]);
-      continue;
-    }
-
-    listeyiBitir();
-    paragraf.push(satir.trim());
-  }
-
-  hepsiniBitir();
-  return cikti;
+  });
 }

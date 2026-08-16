@@ -22,6 +22,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ts from 'typescript';
+import { yayinlananYazilariCek } from './blogCek.mjs';
 
 const KOK = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = path.join(KOK, 'dist');
@@ -50,15 +51,18 @@ const iletisim = oku('contactPage.json');
 // Hakkımızda: hem ziyaretçinin hem arama motorunun "bu sitenin arkasında kim
 // var" sorusunun karşılığı. İletişim sayfasıyla aynı öncelikte.
 const hakkimizda = oku('aboutPage.json');
+// Blog liste sayfası. Yazıların kendisi Firestore'dan geliyor (aşağıda).
+const blogListesi = oku('blogPage.json');
 
-const TUR = { ARAC: 'arac', YASAL: 'yasal', GIRIS: 'giris', ILETISIM: 'iletisim', HAKKIMIZDA: 'hakkimizda' };
-const ONCELIK = { [TUR.ARAC]: '0.8', [TUR.ILETISIM]: '0.6', [TUR.HAKKIMIZDA]: '0.6', [TUR.GIRIS]: '0.5', [TUR.YASAL]: '0.3' };
+const TUR = { ARAC: 'arac', YASAL: 'yasal', GIRIS: 'giris', ILETISIM: 'iletisim', HAKKIMIZDA: 'hakkimizda', BLOG: 'blog' };
+const ONCELIK = { [TUR.ARAC]: '0.8', [TUR.BLOG]: '0.7', [TUR.ILETISIM]: '0.6', [TUR.HAKKIMIZDA]: '0.6', [TUR.GIRIS]: '0.5', [TUR.YASAL]: '0.3' };
 const sayfalar = [
   ...araclar.map((s) => ({ ...s, tur: TUR.ARAC })),
   ...yasal.map((s) => ({ ...s, tur: TUR.YASAL })),
   ...girisler.map((s) => ({ ...s, tur: TUR.GIRIS })),
   ...iletisim.map((s) => ({ ...s, tur: TUR.ILETISIM })),
-  ...hakkimizda.map((s) => ({ ...s, tur: TUR.HAKKIMIZDA }))
+  ...hakkimizda.map((s) => ({ ...s, tur: TUR.HAKKIMIZDA })),
+  ...blogListesi.map((s) => ({ ...s, tur: TUR.BLOG }))
 ];
 
 const kabukYolu = path.join(DIST, 'index.html');
@@ -288,7 +292,133 @@ function govde(sayfa, kilavuz, digerleri) {
 </div>`;
 }
 
+/**
+ * Blog yazısının gövdesini HTML'e çevirir.
+ *
+ * Ayrıştırma burada YAPILMIYOR: uygulamanın kullandığı ayrıştırıcının ta
+ * kendisi okunuyor (src/utils/blogAyristir.ts). İki ayrı ayrıştırıcı olsaydı
+ * kullanıcının ekranda gördüğü yazı ile Google'ın okuduğu yazı zamanla
+ * birbirinden saparadı. Kılavuzlarda da aynı yöntem kullanılıyor.
+ */
+async function blogAyristirici() {
+  const kaynak = fs.readFileSync(path.join(KOK, 'src/utils/blogAyristir.ts'), 'utf8');
+  const js = ts.transpileModule(kaynak, {
+    compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 }
+  }).outputText;
+  return import(`data:text/javascript;base64,${Buffer.from(js, 'utf8').toString('base64')}`);
+}
+
+function parcalarHtml(parcalar) {
+  return parcalar
+    .map((p) => {
+      switch (p.tur) {
+        case 'kalin': return `<strong>${kacir(p.metin)}</strong>`;
+        case 'egik': return `<em>${kacir(p.metin)}</em>`;
+        case 'baglanti':
+          return `<a href="${kacir(p.adres)}" target="_blank" rel="noopener noreferrer" class="text-indigo-600 dark:text-indigo-400 underline underline-offset-2">${kacir(p.metin)}</a>`;
+        case 'resim':
+          return `<img src="${kacir(p.adres)}" alt="${kacir(p.aciklama)}" loading="lazy" class="my-6 w-full rounded-2xl border border-slate-200 dark:border-slate-700" />`;
+        default: return kacir(p.metin);
+      }
+    })
+    .join('');
+}
+
+function bloklarHtml(bloklar) {
+  return bloklar
+    .map((b) => {
+      switch (b.tur) {
+        case 'baslik': {
+          const etiket = b.seviye === 1 ? 'h2' : b.seviye === 2 ? 'h3' : 'h4';
+          const sinif = b.seviye === 1
+            ? 'mt-10 mb-4 text-2xl md:text-3xl font-black tracking-tight text-slate-900 dark:text-white'
+            : b.seviye === 2
+              ? 'mt-8 mb-3 text-xl md:text-2xl font-bold text-slate-900 dark:text-white'
+              : 'mt-6 mb-2 text-lg font-bold text-slate-900 dark:text-white';
+          return `<${etiket} class="${sinif}">${parcalarHtml(b.parcalar)}</${etiket}>`;
+        }
+        case 'liste':
+          return `<ul class="my-4 list-disc space-y-2 ps-6 leading-relaxed text-slate-700 dark:text-slate-300">${b.maddeler.map((m) => `<li>${parcalarHtml(m)}</li>`).join('')}</ul>`;
+        case 'alinti':
+          return `<blockquote class="my-6 border-s-4 border-indigo-400 bg-slate-50 dark:bg-slate-800/60 py-3 pe-4 ps-5 italic text-slate-600 dark:text-slate-300">${parcalarHtml(b.parcalar)}</blockquote>`;
+        case 'video':
+          return `<div class="my-6 aspect-video w-full overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700"><iframe src="${kacir(b.adres)}" title="video" loading="lazy" allowfullscreen class="h-full w-full"></iframe></div>`;
+        default:
+          return `<p class="my-4 leading-relaxed text-slate-700 dark:text-slate-300">${parcalarHtml(b.parcalar)}</p>`;
+      }
+    })
+    .join('\n        ');
+}
+
+const blogTarihi = (ms, dil) => {
+  if (!ms) return '';
+  try {
+    return new Date(ms).toLocaleDateString(dil || 'tr', { day: 'numeric', month: 'long', year: 'numeric' });
+  } catch {
+    return new Date(ms).toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+};
+
+/** Tek yazının hazır gövdesi. Araç sayfalarındakiyle aynı mantık. */
+function blogYaziGovdesi(yazi, bloklar) {
+  const tarih = blogTarihi(yazi.yayinTarihi, yazi.dil);
+  const kapak = yazi.kapak
+    ? `<img src="${kacir(yazi.kapak)}" alt="" class="mt-8 w-full rounded-3xl border border-slate-200 dark:border-slate-700" />`
+    : '';
+  return `<div class="flex min-h-screen w-full flex-col bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100">
+  <main class="flex-1">
+    <div class="container mx-auto px-6 py-14"><div class="max-w-3xl">
+      <nav aria-label="breadcrumb" class="mb-8 flex items-center gap-1.5 text-sm font-medium text-slate-500 dark:text-slate-400">
+        <a href="${KOKADRES}">Klarsti</a><span aria-hidden="true">›</span><a href="${KOKADRES}blog">Blog</a>
+      </nav>
+      <h1 class="mb-3 text-3xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white">${kacir(yazi.baslik)}</h1>
+      ${tarih ? `<p class="text-sm font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">${kacir(tarih)}</p>` : ''}
+      ${yazi.ozet ? `<p class="mt-5 text-lg leading-relaxed text-slate-600 dark:text-slate-300">${kacir(yazi.ozet)}</p>` : ''}
+      ${kapak}
+      <article class="mt-8 text-base md:text-lg">
+        ${bloklarHtml(bloklar)}
+      </article>
+      <div class="mt-14 border-t border-slate-200 dark:border-slate-800 pt-6">
+        <a href="${KOKADRES}blog" class="font-bold text-indigo-600 dark:text-indigo-400">← Blog</a>
+      </div>
+    </div></div>
+  </main>
+</div>`;
+}
+
+/** Liste sayfasının hazır gövdesi: yazıların başlıkları gerçek link. */
+function blogListeGovdesi(yazilar) {
+  const satirlar = yazilar
+    .map((y) => {
+      const tarih = blogTarihi(y.yayinTarihi, y.dil);
+      return `<a href="${KOKADRES}blog/${kacir(y.slug)}" class="flex flex-col gap-2 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-6">
+            ${tarih ? `<span class="text-xs font-semibold uppercase tracking-wide text-slate-400">${kacir(tarih)}</span>` : ''}
+            <h2 class="text-xl font-bold text-slate-900 dark:text-white">${kacir(y.baslik)}</h2>
+            ${y.ozet ? `<p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400">${kacir(y.ozet)}</p>` : ''}
+          </a>`;
+    })
+    .join('\n          ');
+
+  return `<div class="flex min-h-screen w-full flex-col bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100">
+  <main class="flex-1">
+    <div class="container mx-auto px-6 py-14"><div class="max-w-3xl">
+      <nav aria-label="breadcrumb" class="mb-8 flex items-center gap-1.5 text-sm font-medium text-slate-500 dark:text-slate-400">
+        <a href="${KOKADRES}">Klarsti</a><span aria-hidden="true">›</span><span class="text-slate-800 dark:text-slate-200">Blog</span>
+      </nav>
+      <h1 class="mb-4 text-3xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white">Blog</h1>
+      <div class="mt-10 flex flex-col gap-5">
+          ${satirlar}
+      </div>
+    </div></div>
+  </main>
+</div>`;
+}
+
 const kilavuzlar = await ingilizceKilavuzlar();
+// Yayımlanmış yazılar. Kimlik yoksa boş liste döner ve blog sayfaları
+// üretilmez; yerel derleme bu yüzden durmuyor (bkz. blogCek.mjs).
+const blogYazilari = await yayinlananYazilariCek('klarsti');
+const { blogAyristir, blogDuzMetin } = await blogAyristirici();
 
 let uretilen = 0;
 for (const sayfa of sayfalar) {
@@ -311,6 +441,17 @@ for (const sayfa of sayfalar) {
   );
 
   html = degistir(html, /<\/head>/i, `${yapilandirilmisVeri(sayfa, adres)}</head>`, '</head>');
+
+  // Blog liste sayfasının gövdesi de dolduruluyor: yazı başlıkları gerçek
+  // link olmalı, arama motorunun tek tek yazılara giden yolu burası.
+  if (sayfa.tur === TUR.BLOG && blogYazilari.length > 0) {
+    html = degistirDuz(
+      html,
+      /<div id="root">\s*<\/div>/i,
+      `<div id="statik-onizleme" class="fixed inset-0 z-[1] overflow-y-auto bg-slate-50 dark:bg-slate-900">${blogListeGovdesi(blogYazilari)}</div>\n    <div id="root"></div>`,
+      'root kutusu'
+    );
+  }
 
   // Araç sayfalarının gövdesi dolduruluyor; yasal/giriş/iletişim/hakkımızda
   // arama sonucunda öne çıkmak için değil bulunabilir olmak için var, onlarda
@@ -339,6 +480,85 @@ for (const sayfa of sayfalar) {
   uretilen++;
 }
 
+/**
+ * Her blog yazısı için gerçek bir HTML dosyası: dist/blog/<slug>.html
+ *
+ * Neden klasörün içinde, diğerleri gibi düz değil: adres iki katmanlı
+ * (/blog/yazi-adi). `cleanUrls` açık olduğu için Firebase bu isteği doğrudan
+ * bu dosyaya bağlıyor. Araç sayfalarındaki eğik çizgi sorunu burada yok; o
+ * sorun `klasor/index.html` biçiminden çıkıyordu, burada dosyanın kendi adı
+ * var.
+ */
+const blogKlasoru = path.join(DIST, 'blog');
+if (blogYazilari.length > 0) fs.mkdirSync(blogKlasoru, { recursive: true });
+
+for (const yazi of blogYazilari) {
+  const adres = `${SITE}/blog/${yazi.slug}`;
+  const bloklar = blogAyristir(yazi.govde);
+  // Açıklama yoksa yazının kendisinden kırpılıyor: arama sonucundaki iki
+  // satır boş kalmasın.
+  const aciklama = yazi.ozet || `${blogDuzMetin(yazi.govde).slice(0, 155)}…`;
+  const baslik = `${yazi.baslik} | Klarsti`;
+  let html = kabuk;
+
+  html = degistir(html, /<title>[^<]*<\/title>/i, `<title>${kacir(baslik)}</title>`, '<title>');
+  html = icerikDegistir(html, 'name', 'description', aciklama);
+  html = icerikDegistir(html, 'property', 'og:title', baslik);
+  html = icerikDegistir(html, 'property', 'og:description', aciklama);
+  html = icerikDegistir(html, 'property', 'og:url', adres);
+  html = icerikDegistir(html, 'name', 'twitter:title', baslik);
+  html = icerikDegistir(html, 'name', 'twitter:description', aciklama);
+  // Kapak resmi varsa link önizlemesi onu göstersin; yoksa sitenin kendi
+  // paylaşım görseli kalıyor.
+  if (yazi.kapak) {
+    html = icerikDegistir(html, 'property', 'og:image', yazi.kapak);
+    html = icerikDegistir(html, 'name', 'twitter:image', yazi.kapak);
+  }
+  html = degistir(
+    html,
+    /<link\s+rel="canonical"\s+href="[^"]*"\s*\/?>/i,
+    `<link rel="canonical" href="${adres}" />`,
+    'canonical'
+  );
+
+  const yapilandirilmis = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'BlogPosting',
+        headline: yazi.baslik,
+        description: aciklama,
+        url: adres,
+        inLanguage: yazi.dil,
+        ...(yazi.yayinTarihi ? { datePublished: new Date(yazi.yayinTarihi).toISOString() } : {}),
+        ...(yazi.kapak ? { image: yazi.kapak } : {}),
+        author: { '@type': 'Organization', name: 'Klarsti', url: `${SITE}/` },
+        publisher: { '@type': 'Organization', name: 'Klarsti', url: `${SITE}/` }
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Klarsti', item: `${SITE}/` },
+          { '@type': 'ListItem', position: 2, name: 'Blog', item: `${SITE}/blog` },
+          { '@type': 'ListItem', position: 3, name: yazi.baslik, item: adres }
+        ]
+      }
+    ]
+  };
+  const json = JSON.stringify(yapilandirilmis, null, 2).replace(/<\//g, '<\\/');
+  html = degistir(html, /<\/head>/i, `<script type="application/ld+json">\n${json}\n</script>\n</head>`, '</head>');
+
+  html = degistirDuz(
+    html,
+    /<div id="root">\s*<\/div>/i,
+    `<div id="statik-onizleme" class="fixed inset-0 z-[1] overflow-y-auto bg-slate-50 dark:bg-slate-900">${blogYaziGovdesi(yazi, bloklar)}</div>\n    <div id="root"></div>`,
+    'root kutusu'
+  );
+
+  fs.writeFileSync(path.join(blogKlasoru, `${yazi.slug}.html`), html, 'utf8');
+  uretilen++;
+}
+
 // Sitemap elle tutulmuyordu ve tek adres içeriyordu; artık listeden üretiliyor,
 // yani yeni bir araç sayfası eklendiğinde kendiliğinden içine giriyor.
 const bugun = new Date().toISOString().slice(0, 10);
@@ -350,7 +570,15 @@ const girdiler = [
   ...sayfalar.map(
     (s) =>
       `  <url>\n    <loc>${SITE}/${s.slug}</loc>\n    <lastmod>${bugun}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>${ONCELIK[s.tur]}</priority>\n  </url>`
-  )
+  ),
+  // Blog yazıları. lastmod olarak yazının kendi yayın tarihi veriliyor:
+  // her derlemede bugünü yazmak, değişmemiş bir yazıyı her gün "güncellendi"
+  // diye göstermek olurdu ve arama motoru bir süre sonra bu bilgiye
+  // güvenmeyi bırakıyor.
+  ...blogYazilari.map((y) => {
+    const tarih = y.yayinTarihi ? new Date(y.yayinTarihi).toISOString().slice(0, 10) : bugun;
+    return `  <url>\n    <loc>${SITE}/blog/${y.slug}</loc>\n    <lastmod>${tarih}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>`;
+  })
 ];
 fs.writeFileSync(
   path.join(DIST, 'sitemap.xml'),
@@ -359,5 +587,5 @@ fs.writeFileSync(
 );
 
 console.log(
-  `staticPages: ${uretilen} sayfa (${araclar.length} arac + ${yasal.length} yasal + ${girisler.length} giris + ${iletisim.length} iletisim + ${hakkimizda.length} hakkimizda) + sitemap uretildi`
+  `staticPages: ${uretilen} sayfa (${araclar.length} arac + ${yasal.length} yasal + ${girisler.length} giris + ${iletisim.length} iletisim + ${hakkimizda.length} hakkimizda + ${blogListesi.length} blog listesi + ${blogYazilari.length} blog yazisi) + sitemap uretildi`
 );

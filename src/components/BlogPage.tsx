@@ -41,6 +41,16 @@ export default function BlogPage() {
     return () => { iptal = true; };
   }, []);
 
+  // Build sırasında üretilmiş hazır sayfa (bkz. scripts/staticPages.mjs)
+  // uygulamanın önünde duran ayrı bir katman. Yazılar gelince kaldırılıyor;
+  // erken kaldırsak sayfa bir an boşalırdı. Araç sayfalarındaki mantığın
+  // aynısı (bkz. ToolLandingPage).
+  useEffect(() => {
+    const kaldir = () => document.getElementById('statik-onizleme')?.remove();
+    if (yazilar !== null) kaldir();
+    return kaldir;
+  }, [yazilar]);
+
   // Okuyucu kendi dilindeki yazıları görüyor. O dilde hiç yazı yoksa hepsi
   // gösteriliyor: boş bir sayfa, yabancı dilde bir yazıdan daha kötü.
   const gosterilecek = useMemo(() => {

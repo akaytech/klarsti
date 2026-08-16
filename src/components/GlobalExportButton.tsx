@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useRoadmapStore } from '../store/useRoadmapStore';
 import { getNodesBounds, getViewportForBounds, useReactFlow } from '@xyflow/react';
 import { useTheme } from '../theme';
+import { denemeKipindeMi } from '../utils/denemeKipi';
 
 const GlobalExportButton: React.FC = () => {
   const { t } = useTranslation();
@@ -116,6 +117,9 @@ const GlobalExportButton: React.FC = () => {
 
   // Ajanda görsel olarak dışa aktarılmıyor: kişisel bir günlük, kanvas değil.
   if (!activeTool || activeTool === 'notepad') return null;
+  // Hesapsız denemede dışa aktarma yok. Ziyaretçi tuvali görsün diye deneme
+  // açık; işini bitirip çıktısını alıp gitmesi için değil. Çıktı hesaba bağlı.
+  if (denemeKipindeMi()) return null;
 
 
   return (

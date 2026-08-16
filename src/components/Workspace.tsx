@@ -16,6 +16,7 @@ import WelcomeScreen from './WelcomeScreen';
 import { gecikmeliEkran } from '../utils/surumTazeleme';
 import { GUIDE_TOOLS } from '../content/toolGuides/available';
 import { kilavuzGosterildiMi, kilavuzuGosterildiIsaretle } from '../utils/kilavuzGosterimi';
+import { denemeKipindeMi } from '../utils/denemeKipi';
 
 // Kılavuz metinleri ve paneli ayrı bir parçada: kullanıcı kılavuzu
 // açmadıkça indirilmiyor.
@@ -95,8 +96,19 @@ export default function Workspace() {
   // aç. Kılavuz ürünün en iyi parçası ama sağ üstteki düğmeyi ilk kez giren
   // kullanıcı aramıyordu. İkinci açılışta çıkmıyor; kapatıldığında da bir daha
   // gelmiyor (işaret açılışta konuyor).
+  //
+  // Denemede kural farklı: kılavuz araca her girişte açılıyor, aynı tarayıcıda
+  // aynı araç bile olsa. Ziyaretçi aracı tanımadan geliyor ve dar ekranda
+  // kılavuzu elle açacak düğme yok (ToolGuideButton yalnız geniş ekranda,
+  // üç nokta menüsü de yalnız hesaplı ekranda). Kapatınca o girişte geri
+  // gelmiyor. Denemede işaret hiç konmuyor: hesap açan kullanıcı kılavuzu
+  // kendi hesabında bir kez daha görsün.
   React.useEffect(() => {
     if (!activeTool || !GUIDE_TOOLS.includes(activeTool)) return;
+    if (denemeKipindeMi()) {
+      setGuideOpen(true);
+      return;
+    }
     if (kilavuzGosterildiMi(activeTool)) return;
     kilavuzuGosterildiIsaretle(activeTool);
     setGuideOpen(true);
@@ -116,10 +128,19 @@ export default function Workspace() {
         {activeTool && (
           <div
             className={clsx(
-              "absolute top-4 end-36 z-[100] flex items-center gap-2 transition-transform duration-300 ease-out",
-              // Ajanda düğmesi göründüğünde "Çalışmalarım" bir sıra sola kayıyor;
-              // bu küme de kaymazsa ajandada kılavuz düğmesi onun üstüne biniyor.
-              ajandaDugmesiGorunurMu(activeTool) ? "sm:end-56" : "sm:end-40",
+              "absolute top-4 z-[100] flex items-center gap-2 transition-transform duration-300 ease-out",
+              // Denemede sağ üstte hesaba bağlı hiçbir düğme yok (bkz. DenemeApp)
+              // ve kümede tek başına kılavuz kalıyor; boşluk bırakmaya gerek yok,
+              // düğme sağ kenara yaslanıyor.
+              denemeKipindeMi()
+                ? "end-4"
+                : [
+                    "end-36",
+                    // Ajanda düğmesi göründüğünde "Çalışmalarım" bir sıra sola
+                    // kayıyor; bu küme de kaymazsa ajandada kılavuz düğmesi
+                    // onun üstüne biniyor.
+                    ajandaDugmesiGorunurMu(activeTool) ? "sm:end-56" : "sm:end-40"
+                  ],
               // Kılavuz paneli açıkken bu küme panelin altında kalırdı; paylaş
               // ve dışa aktar düğmelerine erişilemesin diye küme sola kayıyor.
               guideOpen && "max-sm:opacity-0 sm:-translate-x-[400px] sm:rtl:translate-x-[400px]"

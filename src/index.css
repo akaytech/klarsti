@@ -314,6 +314,27 @@ select:disabled {
 .react-flow__edge-path {
   transition: d 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
+/*
+ * Sürüklerken çizgilerin geçişi de kapanmalı — kutununki kapanıyordu ama
+ * çizgininki unutulmuştu, ve görünen sonuç şuydu: kutu parmağın peşinden
+ * anında geliyor, ipler eski yerinde ÇAKILI kalıyor, kutu bırakılınca
+ * yerine oturuyordu.
+ *
+ * Sebebi ince: sürükleme boyunca `d` her karede değişiyor, tarayıcı da her
+ * seferinde 240 ms'lik geçişi baştan başlatıyor. Yumuşama eğrisinin başı
+ * çok yavaş olduğu için çizgi hiç yol alamıyor; hareketsiz görünüyor.
+ * Bırakınca son değişim kesintiye uğramadan tamamlanıyor ve ip "yeniden
+ * bağlanıyor" gibi duruyor.
+ *
+ * `:has` ile: sürüklenen kutu kanvasın herhangi bir yerindeyken o kanvastaki
+ * bütün çizgiler anında çiziliyor. Bütün tuvaller (kırılım ağacı, akış ve
+ * organizasyon şemaları, zihin haritası, hata ağacı, değer akışı) tek
+ * kuraldan yararlanıyor.
+ */
+.react-flow:has(.react-flow__node.dragging) .react-flow__edge-path,
+.react-flow:has(.react-flow__node:active) .react-flow__edge-path {
+  transition: none;
+}
 
 /* --- Basma geri bildirimi ---
  * 260 düğmenin yalnız 26'sında basınca küçülme vardı, kalanı parmağın

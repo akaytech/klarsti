@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { CATEGORY_ORDER, PROJECT_TOOLS } from '../config/tools';
 import { useDisariTiklama } from '../utils/menuKapatma';
 import { aracAdresiBul, hedefKlasorBul } from '../utils/aracAdresi';
+import { denemeKipindeMi } from '../utils/denemeKipi';
 
 const NAVBAR_THEME: Record<ToolId, { activeBtn: string; iconBg: string }> = {
   wbs: { activeBtn: "bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400", iconBg: "bg-indigo-100 text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-400" },
@@ -159,6 +160,15 @@ export default function Navbar() {
     [currentProjectId, projects]
   );
 
+  // Denemede adres /dene/{arac} olmalı. Oradaki sahte "deneme" klasörünün
+  // /project/... adresi giriş yapmamış ziyaretçide çalışmıyor; sağ tıkla yeni
+  // sekmede açan kişi tanıtım sayfasına düşüyordu.
+  //
+  // Bayrak render'dan önce konuyor ve oturum boyunca değişmiyor (bkz.
+  // denemeKipi.ts); bu yüzden aboneliğe gerek yok.
+  const denemede = denemeKipindeMi();
+  const aracAdresi = (tool: ToolId) => aracAdresiBul(tool, hedefKlasorId, denemede);
+
   const handleToolClick = (tool: ToolId) => {
     setIsExpanded(false);
     // Menü kapanırken arama da sıfırlanıyor; yoksa bir dahaki açılışta
@@ -277,7 +287,7 @@ export default function Navbar() {
 
         {aramaSonucu ? (
           aramaSonucu.length > 0 ? (
-            aramaSonucu.map((tool) => <AracDugmesi key={tool.id} tool={tool} aktif={activeTool === tool.id} etiket={t(tool.labelKey)} adres={aracAdresiBul(tool.id, hedefKlasorId)} onClick={() => handleToolClick(tool.id)} />)
+            aramaSonucu.map((tool) => <AracDugmesi key={tool.id} tool={tool} aktif={activeTool === tool.id} etiket={t(tool.labelKey)} adres={aracAdresi(tool.id)} onClick={() => handleToolClick(tool.id)} />)
           ) : (
             <p className="px-3 py-6 text-center text-sm text-slate-500 dark:text-slate-400">{t('nav_search_empty')}</p>
           )
@@ -290,7 +300,7 @@ export default function Navbar() {
                 <div className="mb-1 mt-2 px-3 shrink-0">
                   <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">{t('nav_recent_tools')}</h3>
                 </div>
-                {sonAraclar.map((tool) => <AracDugmesi key={'son-' + tool.id} tool={tool} aktif={activeTool === tool.id} etiket={t(tool.labelKey)} adres={aracAdresiBul(tool.id, hedefKlasorId)} onClick={() => handleToolClick(tool.id)} />)}
+                {sonAraclar.map((tool) => <AracDugmesi key={'son-' + tool.id} tool={tool} aktif={activeTool === tool.id} etiket={t(tool.labelKey)} adres={aracAdresi(tool.id)} onClick={() => handleToolClick(tool.id)} />)}
               </>
             )}
 
@@ -308,7 +318,7 @@ export default function Navbar() {
                     <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">{t(cat)}</h3>
                   </div>
 
-                  {catTools.map((tool) => <AracDugmesi key={tool.id} tool={tool} aktif={activeTool === tool.id} etiket={t(tool.labelKey)} adres={aracAdresiBul(tool.id, hedefKlasorId)} onClick={() => handleToolClick(tool.id)} />)}
+                  {catTools.map((tool) => <AracDugmesi key={tool.id} tool={tool} aktif={activeTool === tool.id} etiket={t(tool.labelKey)} adres={aracAdresi(tool.id)} onClick={() => handleToolClick(tool.id)} />)}
                 </div>
               );
             })}

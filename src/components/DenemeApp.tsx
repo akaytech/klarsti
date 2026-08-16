@@ -4,6 +4,7 @@ import { denemeKipiniAc, denemeKipiKapat } from '../utils/denemeKipi';
 import { denemeyiKaydetmeyeBasla, denemeyiYukle } from '../store/denemeDeposu';
 import { gecikmeliEkran } from '../utils/surumTazeleme';
 import { logAppEvent } from '../firebase';
+import { PROJECT_TOOLS } from '../config/tools';
 
 const Workspace = gecikmeliEkran(() => import('./Workspace'));
 
@@ -23,12 +24,19 @@ const Workspace = gecikmeliEkran(() => import('./Workspace'));
  * açan ziyaretçi tuval kodunu ve depoyu indirmiyor; yalnızca "dene" diyen
  * indiriyor.
  */
-export default function DenemeApp() {
+/**
+ * `arac`: /dene/{arac} adresiyle gelindiyse açılacak araç. Doğrudan /dene ile
+ * gelindiğinde null ve karşılama ekranı açılır. Tanınmayan bir ad (elle
+ * yazılmış adres) da karşılama ekranına düşer.
+ */
+export default function DenemeApp({ arac }: { arac?: string | null }) {
   const [hazir, setHazir] = useState(false);
 
   useEffect(() => {
     denemeKipiniAc();
-    denemeyiYukle();
+    // Araç, deneme yüklenirken tek seferde konuyor: sonradan koysaydık ekran
+    // önce karşılama ekranını çizip sonra araca atlardı.
+    denemeyiYukle(PROJECT_TOOLS.some((x) => x.id === arac) ? arac : null);
     setHazir(true);
     logAppEvent('trial_opened');
     const kaydetmeyiBirak = denemeyiKaydetmeyeBasla();
@@ -36,6 +44,10 @@ export default function DenemeApp() {
       kaydetmeyiBirak();
       denemeKipiKapat();
     };
+    // Bilerek yalnızca ilk açılışta: `arac` sonradan değişse bile deneme
+    // yeniden yüklenmemeli, yoksa kullanıcının o an çizdiği tarayıcıdaki
+    // son kayda geri döner.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!hazir) {

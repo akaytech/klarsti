@@ -24,6 +24,17 @@
  */
 export const KLASORSUZ_ONEK = '/new/';
 
+/**
+ * Hesapsız denemede aracın adresi: /dene/{arac}
+ *
+ * Denemede klasör kavramı yok; sahte bir "deneme" klasörü var ama onun
+ * /project/... adresi giriş yapmamış ziyaretçide çalışmıyor, tanıtım
+ * sayfasına düşüyordu. Deneme verisi tarayıcıda durduğu için (bkz.
+ * denemeDeposu) yeni sekmede açılan bu adres aynı denemeyi, istenen araçla
+ * açıyor.
+ */
+export const DENEME_ONEK = '/dene/';
+
 /** Sıralamada kullanılan en az bilgi; store'un Project tipinin alt kümesi. */
 export interface KlasorOzeti {
   id: string;
@@ -46,13 +57,24 @@ export function hedefKlasorBul(klasorler: KlasorOzeti[], acikKlasorId: string | 
 }
 
 /** Araç satırının/linkinin gideceği adres. Klasör yoksa /new/{arac}. */
-export function aracAdresiBul(arac: string, hedefKlasorId: string | null): string {
+export function aracAdresiBul(arac: string, hedefKlasorId: string | null, denemede = false): string {
+  if (denemede) return `${DENEME_ONEK}${arac}`;
   return hedefKlasorId ? `/project/${hedefKlasorId}/${arac}` : `${KLASORSUZ_ONEK}${arac}`;
+}
+
+/** Verilen önekten sonraki tek parçayı döner; yoksa ya da iç içeyse null. */
+function onekSonrasi(pathname: string, onek: string): string | null {
+  if (!pathname.startsWith(onek)) return null;
+  const parca = pathname.slice(onek.length).replace(/\/+$/, '');
+  return parca && !parca.includes('/') ? parca : null;
 }
 
 /** Adres /new/{arac} ise aracın kimliği, değilse null. */
 export function klasorsuzAracAdi(pathname: string): string | null {
-  if (!pathname.startsWith(KLASORSUZ_ONEK)) return null;
-  const arac = pathname.slice(KLASORSUZ_ONEK.length).replace(/\/+$/, '');
-  return arac && !arac.includes('/') ? arac : null;
+  return onekSonrasi(pathname, KLASORSUZ_ONEK);
+}
+
+/** Adres /dene/{arac} ise aracın kimliği, değilse null. (Düz /dene de null.) */
+export function denemeAracAdi(pathname: string): string | null {
+  return onekSonrasi(pathname, DENEME_ONEK);
 }

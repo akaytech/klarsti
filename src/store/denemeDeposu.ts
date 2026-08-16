@@ -65,8 +65,12 @@ function depodanTopla(): Record<string, unknown> {
  * Depoyu deneme kaydından kurar. Kayıt yoksa araçlar boş başlar.
  * Sahte bir klasör de açılıyor: tuvaller ve menüler açık bir klasör bekliyor,
  * yoksa araç seçimi "yeni klasör aç" akışına düşer.
+ *
+ * `baslangicAraci` verilirse o araçla açılır (/dene/{arac} adresinden gelir);
+ * verilmezse karşılama ekranı. Araç adının geçerliliği çağıran tarafta
+ * doğrulanıyor.
  */
-export function denemeyiYukle() {
+export function denemeyiYukle(baslangicAraci?: string | null) {
   const kayit = denemeyiOku();
   const toolData: Record<string, unknown> = {};
   TOOL_STATE_KEYS.forEach((k) => {
@@ -83,7 +87,7 @@ export function denemeyiYukle() {
     projectsLoaded: true,
     worksLoaded: true,
     works: [],
-    activeTool: null,
+    activeTool: baslangicAraci ?? null,
     ...toolData,
   } as never);
 }

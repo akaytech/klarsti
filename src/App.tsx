@@ -7,6 +7,7 @@ import { toolPageBul } from './config/toolPages';
 import { legalPageBul } from './config/legalPages';
 import { contactPageBul } from './config/contactPage';
 import { aboutPageBul } from './config/aboutPage';
+import { DENEME_ONEK, denemeAracAdi } from './utils/aracAdresi';
 // Çerez şeridi gecikmeli DEĞİL: her sayfada, giriş yapılmamışken de
 // görünmesi gerekiyor ve içinde ağır hiçbir şey yok (bkz. CookieConsent).
 import CookieConsent from './components/CookieConsent';
@@ -94,11 +95,15 @@ function App() {
         </Suspense>
       ) : isAuthLoading ? (
         <LoadingScreen />
-      ) : !user && location.pathname === '/dene' ? (
+      ) : !user && (location.pathname === '/dene' || location.pathname.startsWith(DENEME_ONEK)) ? (
         // Hesapsız deneme. Oturum açmış kullanıcı buraya düşmüyor: onun için
         // uygulamanın kendisi zaten açık, denemeye gerek yok.
+        //
+        // /dene/{arac} da aynı ekran, yalnızca o araç açık gelir. Sol menüdeki
+        // araç satırları denemede bu adresi taşıyor; sağ tıkla yeni sekmede
+        // açıldığında deneme o araçla, önceki çizilenler yerinde açılıyor.
         <Suspense fallback={<LoadingScreen />}>
-          <DenemeApp />
+          <DenemeApp arac={denemeAracAdi(location.pathname)} />
         </Suspense>
       ) : !user ? (
         isAuthRoute ? (

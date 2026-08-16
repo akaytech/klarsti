@@ -1,14 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Geomini:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
+/* Yazı tipi burada @import ile İNDİRİLMİYOR, index.html'deki <link> ile
+   iniyor. CSS içinden @import etmek tarayıcıyı sıraya sokuyor: önce bu dosyayı
+   indirip okuyor, ancak ondan sonra yazı tipini istemeye başlıyor. Geomini tam
+   olarak öyle duruyordu ve sayfadaki ilk yazının görünmesini geciktiriyordu. */
 @theme {
-  --font-sans: 'Geomini', 'Geist', 'Inter', system-ui, sans-serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
 }
 
 @variant dark (&:where(.dark, .dark *));
 
 body {
   font-family: var(--font-sans);
+  /* Inter değişken bir yazı tipi: harflerin biçimi punto büyüdükçe hafifçe
+     değişiyor. `auto` bu ayarı tarayıcıya bırakıyor, yoksa büyük başlıklar
+     küçük punto için tasarlanmış halleriyle çiziliyor. */
+  font-optical-sizing: auto;
 }
 
 /* ---------------------------------------------------------------------------

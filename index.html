@@ -96,7 +96,19 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Sitenin tek yazı tipi: Inter. Burada duruyor, index.css'te değil;
+         CSS içinden @import etmek yazı tipi isteğini CSS inene kadar
+         bekletiyor.
+
+         Adres tek tek kalınlıkları değil `wght@100..900` aralığını istiyor:
+         bu, Google'ın değişken (variable) sürümünü döndürüyor. Onu istemek
+         şart, çünkü sitede `font-black` (900) ve `font-extrabold` (800) çok
+         yerde kullanılıyor. Sabit kalınlıklar istendiğinde 900 listede yoktu
+         ve tarayıcı 700'ü şişirerek sahte bir kalın çiziyordu.
+
+         Italik ekli değil: sitede italik yazı hiç kullanılmıyor, eklemek
+         indirilecek dosya sayısını ikiye katlardı. -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap" rel="stylesheet">
     <!-- Tema, React yüklenmeden önce uygulanmalı. Aksi halde sayfa önce
          aydınlık açılıp sonra koyuya dönüyor (beyaz parlama). theme.ts'teki
          id listesi ve eski 'dark' kaydının eşlemesi burayla aynı kalmalı. -->

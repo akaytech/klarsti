@@ -1,5 +1,5 @@
 import { useMemo, useState, useRef, type MouseEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { useRoadmapStore, type ToolId } from '../store/useRoadmapStore';
 import { useShallow } from 'zustand/react/shallow';
@@ -9,8 +9,8 @@ import clsx from 'clsx';
 import packageJson from '../../package.json';
 import { useTranslation } from 'react-i18next';
 import { CATEGORY_ORDER, PROJECT_TOOLS } from '../config/tools';
-import NewFolderModal from './NewFolderModal';
 import { useDisariTiklama } from '../utils/menuKapatma';
+import { aracAdresiBul, hedefKlasorBul } from '../utils/aracAdresi';
 
 const NAVBAR_THEME: Record<ToolId, { activeBtn: string; iconBg: string }> = {
   wbs: { activeBtn: "bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400", iconBg: "bg-indigo-100 text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-400" },
@@ -51,8 +51,8 @@ function tarayiciyaBirak(e: MouseEvent) {
  * son kullandıkların ve kategoriler.
  *
  * Düğme değil link: düğmenin adresi olmadığı için tarayıcı "yeni sekmede aç"
- * diyemiyordu. Adres yalnızca kullanıcının hiç klasörü yoksa boş kalıyor;
- * o durumda açılacak bir sayfa da yok, önce klasörün adı soruluyor.
+ * diyemiyordu. Kullanıcının hiç klasörü olmadığı durumun da artık bir adresi
+ * var (bkz. aracAdresi.ts), yani istisnasız hepsi link.
  *
  * Navbar'ın İÇİNDE tanımlanmamalı: aramaya her harf yazıldığında bileşen
  * yeniden üretilir, React de bütün satırları söküp yeniden kurardı.
@@ -61,7 +61,7 @@ function AracDugmesi({ tool, aktif, etiket, adres, onClick }: {
   tool: (typeof PROJECT_TOOLS)[number];
   aktif: boolean;
   etiket: string;
-  adres: string | null;
+  adres: string;
   onClick: () => void;
 }) {
   const Icon = tool.icon;
@@ -84,14 +84,6 @@ function AracDugmesi({ tool, aktif, etiket, adres, onClick }: {
     </>
   );
 
-  if (!adres) {
-    return (
-      <button onClick={onClick} className={sinif}>
-        {icerik}
-      </button>
-    );
-  }
-
   return (
     <Link
       to={adres}
@@ -113,15 +105,15 @@ function AracDugmesi({ tool, aktif, etiket, adres, onClick }: {
 export default function Navbar() {
   const { t, i18n } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
-  const {  activeTool, setActiveTool, projects, works, createProject, loadProject, currentProjectId  } = useRoadmapStore(useShallow((state) => ({
+  const {  activeTool, setActiveTool, projects, works, loadProject, currentProjectId  } = useRoadmapStore(useShallow((state) => ({
       activeTool: state.activeTool,
       setActiveTool: state.setActiveTool,
       projects: state.projects,
       works: state.works,
-      createProject: state.createProject,
       loadProject: state.loadProject,
       currentProjectId: state.currentProjectId
     })));
+  const navigate = useNavigate();
   const menuRef = useRef<HTMLDivElement>(null);
   const [arama, setArama] = useState('');
 
@@ -155,25 +147,17 @@ export default function Navbar() {
 
 
 
-  const [klasorBekleyenArac, setKlasorBekleyenArac] = useState<ToolId | null>(null);
-
   // Aracın açılacağı klasör: açık klasör varsa o, yoksa en son dokunulan.
-  // Karşılama ekranındaki mantığın aynısı (bkz. WelcomeScreen.handleToolClick).
-  // Hiç klasör yoksa null; o durumda önce klasörün adı soruluyor. (Eskiden
-  // burada yeni klasör açılıyordu ve kullanıcı her oturumda bir "Yeni Çalışma"
-  // daha biriktiriyordu.)
+  // Hiç klasör yoksa null ve adres /new/{arac} oluyor; klasörün adını soran
+  // pencereyi AuthenticatedApp o adresi görünce açıyor.
   //
   // Hem linkin adresi hem de tıklama bu tek değerden besleniyor: ikisi ayrı
   // hesaplansaydı sağ tıkla açılan sekme, sol tıkla açılandan başka bir
   // klasöre gidebilirdi.
-  const hedefKlasorId = useMemo(() => {
-    if (currentProjectId && projects.some((p) => p.id === currentProjectId)) return currentProjectId;
-    if (projects.length === 0) return null;
-    return [...projects].sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0))[0].id;
-  }, [currentProjectId, projects]);
-
-  // Adres biçimi AuthenticatedApp'teki adres çözücüyle aynı kalmalı.
-  const aracAdresi = (tool: ToolId) => (hedefKlasorId ? `/project/${hedefKlasorId}/${tool}` : null);
+  const hedefKlasorId = useMemo(
+    () => hedefKlasorBul(projects, currentProjectId),
+    [currentProjectId, projects]
+  );
 
   const handleToolClick = (tool: ToolId) => {
     setIsExpanded(false);
@@ -182,19 +166,13 @@ export default function Navbar() {
     setArama('');
 
     if (!hedefKlasorId) {
-      setKlasorBekleyenArac(tool);
+      // Klasör yok: adrese gidiliyor, gerisini adres çözücü hallediyor.
+      navigate(aracAdresiBul(tool, null));
       return;
     }
 
     if (hedefKlasorId !== currentProjectId) loadProject(hedefKlasorId);
     setActiveTool(tool);
-  };
-
-  const klasoruOlustur = (ad: string) => {
-    if (!klasorBekleyenArac) return;
-    createProject(ad, klasorBekleyenArac);
-    setActiveTool(klasorBekleyenArac);
-    setKlasorBekleyenArac(null);
   };
 
   // Kanvasın "hepsini kapat" yayını bilerek dinlenmiyor: kanvas o yayını
@@ -299,7 +277,7 @@ export default function Navbar() {
 
         {aramaSonucu ? (
           aramaSonucu.length > 0 ? (
-            aramaSonucu.map((tool) => <AracDugmesi key={tool.id} tool={tool} aktif={activeTool === tool.id} etiket={t(tool.labelKey)} adres={aracAdresi(tool.id)} onClick={() => handleToolClick(tool.id)} />)
+            aramaSonucu.map((tool) => <AracDugmesi key={tool.id} tool={tool} aktif={activeTool === tool.id} etiket={t(tool.labelKey)} adres={aracAdresiBul(tool.id, hedefKlasorId)} onClick={() => handleToolClick(tool.id)} />)
           ) : (
             <p className="px-3 py-6 text-center text-sm text-slate-500 dark:text-slate-400">{t('nav_search_empty')}</p>
           )
@@ -312,7 +290,7 @@ export default function Navbar() {
                 <div className="mb-1 mt-2 px-3 shrink-0">
                   <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">{t('nav_recent_tools')}</h3>
                 </div>
-                {sonAraclar.map((tool) => <AracDugmesi key={'son-' + tool.id} tool={tool} aktif={activeTool === tool.id} etiket={t(tool.labelKey)} adres={aracAdresi(tool.id)} onClick={() => handleToolClick(tool.id)} />)}
+                {sonAraclar.map((tool) => <AracDugmesi key={'son-' + tool.id} tool={tool} aktif={activeTool === tool.id} etiket={t(tool.labelKey)} adres={aracAdresiBul(tool.id, hedefKlasorId)} onClick={() => handleToolClick(tool.id)} />)}
               </>
             )}
 
@@ -330,7 +308,7 @@ export default function Navbar() {
                     <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">{t(cat)}</h3>
                   </div>
 
-                  {catTools.map((tool) => <AracDugmesi key={tool.id} tool={tool} aktif={activeTool === tool.id} etiket={t(tool.labelKey)} adres={aracAdresi(tool.id)} onClick={() => handleToolClick(tool.id)} />)}
+                  {catTools.map((tool) => <AracDugmesi key={tool.id} tool={tool} aktif={activeTool === tool.id} etiket={t(tool.labelKey)} adres={aracAdresiBul(tool.id, hedefKlasorId)} onClick={() => handleToolClick(tool.id)} />)}
                 </div>
               );
             })}
@@ -350,12 +328,6 @@ export default function Navbar() {
       </div>
       </div>
     </div>
-
-    <NewFolderModal
-      acik={klasorBekleyenArac !== null}
-      onKapat={() => setKlasorBekleyenArac(null)}
-      onOlustur={klasoruOlustur}
-    />
     </>
   );
 }

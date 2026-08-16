@@ -31,8 +31,8 @@ export const TOOL_PAGES = sayfalar as ToolPage[];
 
 // DİKKAT: Adresler dilsiz ve tek parça, yani araç sayfaları uygulamanın kendi
 // yollarıyla aynı isim havuzunu paylaşıyor. Yeni bir slug eklerken şunlarla
-// çakışmamalı: login, register, agenda, works, project, work, admin,
-// __ (Firebase Auth).
+// çakışmamalı: login, register, agenda, works, project, work, new, admin,
+// dene, about, contact, terms, privacy, cookies, __ (Firebase Auth).
 
 const SLUG_ILE = new Map(TOOL_PAGES.map((s) => [s.slug, s]));
 const ARAC_ILE = new Map(TOOL_PAGES.map((s) => [s.toolId, s]));

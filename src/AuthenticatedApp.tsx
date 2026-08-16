@@ -1,4 +1,4 @@
-import { useEffect, Suspense, useRef, useCallback } from 'react';
+import { useEffect, Suspense, useRef, useCallback, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -8,8 +8,11 @@ import TopRightUserMenu from './components/TopRightUserMenu';
 import TopRightProjectsMenu from './components/TopRightProjectsMenu';
 import TopRightMobileMoreMenu from './components/TopRightMobileMoreMenu';
 import TopRightAgendaButton from './components/TopRightAgendaButton';
+import NewFolderModal from './components/NewFolderModal';
 import { useRoadmapStore, type ToolId } from './store/useRoadmapStore';
 import { aracSecimEylemi, aracAktifAlan, aracAnahtari } from './config/toolWorks';
+import { PROJECT_TOOLS } from './config/tools';
+import { hedefKlasorBul, klasorsuzAracAdi } from './utils/aracAdresi';
 import { useAuthStore } from './store/useAuthStore';
 import { useShallow } from 'zustand/react/shallow';
 import { gecikmeliEkran } from './utils/surumTazeleme';
@@ -87,6 +90,16 @@ export default function AuthenticatedApp() {
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Adres /new/{arac} mi, ve oradaki araç gerçekten var mı?
+  //
+  // Tek yerden hesaplanıyor: adres çözücü, adresi koruyan kural ve klasör adını
+  // soran pencere üçü de buna bakıyor. Tanınmayan bir araç adı (elle yazılmış
+  // adres) null dönüyor; o zaman adres korunmuyor ve '/' ile temizleniyor.
+  const klasorsuzArac = useMemo(() => {
+    const ad = klasorsuzAracAdi(location.pathname);
+    return ad && PROJECT_TOOLS.some((x) => x.id === ad) ? (ad as ToolId) : null;
+  }, [location.pathname]);
 
   useEffect(() => {
     // Clear undo/redo history when active tool or project changes
@@ -258,6 +271,26 @@ export default function AuthenticatedApp() {
           setActiveTool('notepad');
           isUrlSyncRunning = true;
         }
+      } else if (klasorsuzArac) {
+        // /new/{arac} — araç seçildi ama tıklandığı anda hiç klasör yoktu.
+        // Adresi açan kişinin bu arada klasörü olmuş olabilir (başka sekmede
+        // açmış, ya da linki başka bir hesapta açıyor); o zaman soru sormaya
+        // gerek yok, doğrudan klasöre giriliyor ve adres aşağıdaki adımda
+        // /project/... olarak yeniden yazılıyor.
+        bekleyenProjeRef.current = null;
+        const hedef = hedefKlasorBul(projects, currentProjectId);
+        if (hedef) {
+          if (hedef !== currentProjectId) loadProject(hedef);
+          setActiveTool(klasorsuzArac);
+        } else if (activeTool !== null) {
+          // Klasör gerçekten yok: karşılama ekranı kalıyor, aşağıdaki pencere
+          // klasörün adını soruyor.
+          setActiveTool(null);
+        }
+        // Her iki durumda da adres çubuğuna bu turda dokunulmuyor: aşağıdaki
+        // adım henüz eski değerleri görüyor ve "araç yok" sanıp adresi '/'
+        // ile ezerdi. Depo güncellenince etki yeniden çalışıp doğrusunu yazar.
+        isUrlSyncRunning = true;
       } else if (path.startsWith('/project/')) {
         // /project/{klasorId}/{arac}[/{calismaId}]
         const parts = path.split('/');
@@ -335,7 +368,10 @@ export default function AuthenticatedApp() {
       } else if (!activeTool) {
         // '/works' de araçsız bir durum; burada '/' ile ezilirse kullanıcı
         // listeye girer girmez karşılama ekranına atılırdı.
-        if (path !== '/' && path !== '/works') navigate('/');
+        // '/new/...' da öyle: klasörü olmayan kullanıcıya klasörün adı
+        // sorulurken ekranda araç yok, ama adres silinirse hangi araç için
+        // sorduğumuz da kaybolurdu.
+        if (path !== '/' && path !== '/works' && !klasorsuzArac) navigate('/');
       } else if (currentProjectId && activeTool) {
         // Çalışma kimliği yalnızca seçilmişse ekleniyor. Kullanıcı aracı henüz
         // açtıysa hangi çalışmada olduğu belli değil (ilki gösteriliyor);
@@ -347,7 +383,15 @@ export default function AuthenticatedApp() {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname, user, currentProjectId, activeTool, acikCalisma, projects, loadProject, joinSharedProject, projectsLoaded, navigate, setActiveTool, cozBekleyenProjeyi, cozBekleyenCalismayi]);
+  }, [location.pathname, klasorsuzArac, user, currentProjectId, activeTool, acikCalisma, projects, loadProject, joinSharedProject, projectsLoaded, navigate, setActiveTool, cozBekleyenProjeyi, cozBekleyenCalismayi]);
+
+  // Klasörün adını soran pencere buradan çiziliyor, sol menüden değil: sorunun
+  // kaynağı artık adres (/new/{arac}), yani yeni bir sekmede açılan link de
+  // aynı pencereyi getiriyor.
+  //
+  // Klasör listesi gelmeden sorulmuyor: liste bir an boş görünüyor ve klasörü
+  // olan kullanıcıya da "klasör aç" penceresi açılırdı.
+  const klasorSoruluyor = klasorsuzArac !== null && projectsLoaded && projects.length === 0;
 
   return (
     <>
@@ -366,6 +410,19 @@ export default function AuthenticatedApp() {
           <Workspace />
         </Suspense>
       </div>
+
+      <NewFolderModal
+        acik={klasorSoruluyor}
+        // Vazgeçildiğinde adres de temizleniyor; yoksa /new/... adreste asılı
+        // kalır ve sayfa yenilenince pencere yeniden açılırdı.
+        onKapat={() => navigate('/')}
+        onOlustur={(ad) => {
+          if (!klasorsuzArac) return;
+          // createProject klasörü açıp aracı da seçiyor; adres çubuğunu
+          // yukarıdaki eşitleme /project/{yeniKlasor}/{arac} olarak yazıyor.
+          useRoadmapStore.getState().createProject(ad, klasorsuzArac);
+        }}
+      />
     </>
   );
 }

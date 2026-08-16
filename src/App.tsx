@@ -7,6 +7,7 @@ import { toolPageBul } from './config/toolPages';
 import { legalPageBul } from './config/legalPages';
 import { contactPageBul } from './config/contactPage';
 import { aboutPageBul } from './config/aboutPage';
+import { blogYoluBul } from './config/blogSayfasi';
 import { DENEME_ONEK, denemeAracAdi } from './utils/aracAdresi';
 // Çerez şeridi gecikmeli DEĞİL: her sayfada, giriş yapılmamışken de
 // görünmesi gerekiyor ve içinde ağır hiçbir şey yok (bkz. CookieConsent).
@@ -20,6 +21,10 @@ const ToolLandingPage = gecikmeliEkran(() => import('./components/ToolLandingPag
 const LegalPage = gecikmeliEkran(() => import('./components/LegalPage'));
 const ContactPage = gecikmeliEkran(() => import('./components/ContactPage'));
 const AboutPage = gecikmeliEkran(() => import('./components/AboutPage'));
+// Blog. Gecikmeli olması burada ayrıca önemli: bu iki ekran Firestore
+// okuyor, yani tanıtım sayfasını açan ziyaretçiye inmemeli.
+const BlogPage = gecikmeliEkran(() => import('./components/BlogPage'));
+const BlogPostPage = gecikmeliEkran(() => import('./components/BlogPostPage'));
 // Yönetim ekranı gecikmeli ve AuthenticatedApp'in DIŞINDA: oradaki adres
 // eşitleme mantığı tanımadığı her yolu '/' ile eziyor, /admin açılır açılmaz
 // ana ekrana atılırdı. Ayrıca o ekran projelerin ağır deposunu kuruyor;
@@ -65,6 +70,10 @@ function App() {
   // Hakkımızda da oturumdan bağımsız: sitenin arkasında kimin olduğunu merak
   // eden ziyaretçi henüz hesap açmamış oluyor.
   const hakkimizdaSayfasi = aboutPageBul(location.pathname);
+  // Blog da oturumdan bağımsız: yazılar herkese açık, okumak için hesap
+  // gerekmiyor. Giriş yapmış kullanıcı da okuyabilmeli, yoksa alt bilgideki
+  // link onun için çalışmazdı.
+  const blogYolu = blogYoluBul(location.pathname);
 
   const theme = useTheme();
 
@@ -92,6 +101,10 @@ function App() {
       ) : hakkimizdaSayfasi ? (
         <Suspense fallback={<LoadingScreen />}>
           <AboutPage sayfa={hakkimizdaSayfasi} />
+        </Suspense>
+      ) : blogYolu ? (
+        <Suspense fallback={<LoadingScreen />}>
+          {blogYolu.tur === 'liste' ? <BlogPage /> : <BlogPostPage slug={blogYolu.slug} />}
         </Suspense>
       ) : isAuthLoading ? (
         <LoadingScreen />

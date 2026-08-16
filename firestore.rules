@@ -67,6 +67,24 @@ service cloud.firestore {
       }
     }
 
+    // Blog yazıları: klarsti.com/blog
+    //
+    // Burası kullanıcı verisi değil, sitenin kendi içeriği. Bu yüzden diğer
+    // koleksiyonların "yalnızca sahibi" kuralı geçerli değil: okuma herkese
+    // açık, yazma yalnızca yöneticide.
+    //
+    // Okumada `durum` şartı var: taslaklar dışarı çıkmamalı. Yarım bir yazının
+    // adresini tahmin eden birine açılırsa, yayınlanmamış metin yayınlanmış
+    // olur. Yönetici kendi taslaklarını görebiliyor.
+    //
+    // DİKKAT: Liste sorgusu da bu kurala uymak zorunda, yani yazıları çeken
+    // sorgu `where('durum','==','yayinda')` içermeli; içermezse Firestore
+    // sorgunun tamamını reddeder (tek tek belgeleri elemez).
+    match /blog/{slug} {
+      allow read: if resource.data.durum == 'yayinda' || yonetici();
+      allow write: if yonetici();
+    }
+
     // Sadece 'projects' koleksiyonuna belirli kurallarla erişime izin ver.
     match /projects/{projectId} {
 

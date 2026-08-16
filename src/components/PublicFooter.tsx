@@ -29,9 +29,12 @@ export default function PublicFooter() {
             bölünüyordu. Dokuz boşluğun her birinden 4 piksel almak sığdırmaya
             yetiyor. Buraya yeni bir öğe eklenecekse o genişlikte ölç. */}
         <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-3 text-sm text-slate-500 dark:text-slate-400">
-          {/* Hakkımızda listenin başında: sitenin arkasında kimin olduğu
-              yasal metinlerden önce gelir, ve alt bilgi iki satıra kırıldığında
-              ilk satırda kalması istenen link bu. */}
+          {/* Blog ve Hakkımızda listenin başında: ikisi de sitenin kendi
+              içeriği ve yasal metinlerden önce gelir. Alt bilgi iki satıra
+              kırıldığında ilk satırda kalması istenen linkler bunlar. */}
+          <Link to="/blog" className="hover:text-slate-700 dark:hover:text-slate-300 hover:underline transition-colors">
+            {t('blog_title', { defaultValue: 'Blog' })}
+          </Link>
           <Link to="/about" className="hover:text-slate-700 dark:hover:text-slate-300 hover:underline transition-colors">
             {/* `about_title` DEĞİL: o anahtar uygulama içindeki "Hakkında"
                 penceresine ait (bkz. TopRightUserMenu), burası ayrı sayfa. */}

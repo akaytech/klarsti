@@ -7,6 +7,7 @@ import { db } from '../firebase';
 import { TOOLS } from '../config/tools';
 import { useAuthStore } from '../store/useAuthStore';
 import { yoneticiMi } from '../config/yonetici';
+import AdminBlogPanel from './AdminBlogPanel';
 import { Loader2, RefreshCw, Search, Users, FolderOpen, PenLine, Activity } from 'lucide-react';
 
 // Yönetim ekranı: klarsti.com/admin. Yalnızca yoneticiMi() geçen hesap açar.
@@ -351,6 +352,10 @@ export default function AdminPage() {
             </table>
           </div>
         </section>
+
+        {/* Blog yazma paneli. Ayrı dosyada: bu ekranın geri kalanı yalnızca
+            okuyor, blog paneli ise yazıyor ve siliyor. */}
+        <AdminBlogPanel />
       </div>
     </div>
   );

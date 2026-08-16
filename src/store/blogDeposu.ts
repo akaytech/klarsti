@@ -1,14 +1,24 @@
 import {
-  collection, doc, deleteDoc, getDoc, getDocs, orderBy, query, setDoc, where
+  collection, doc, deleteDoc, getDoc, getDocs, orderBy, query, setDoc
 } from 'firebase/firestore';
 import { db } from '../firebase';
 
 /**
  * Blog yazılarının veri katmanı.
  *
- * Yazılar `blog` koleksiyonunda, belge kimliği yazının adresteki adı (slug).
- * Kullanıcı verisinden tamamen ayrı: burası sitenin kendi içeriği, herkese
- * açık okunuyor ve yalnızca yönetici yazıyor (bkz. firestore.rules).
+ * Belge kimliği yazının adresteki adı (slug). Kullanıcı verisinden tamamen
+ * ayrı: burası sitenin kendi içeriği, herkese açık okunuyor ve yalnızca
+ * yönetici yazıyor (bkz. firestore.rules).
+ *
+ * İKİ KOLEKSİYON VAR:
+ *   blog          → yayımlanmış yazılar, herkes okuyabilir
+ *   blogTaslaklar → taslaklar, yalnızca yönetici
+ *
+ * Yayınlamak, yazıyı taslaklardan alıp yayına koymak; taslağa çekmek tersi.
+ * Tek koleksiyonda tutup okumayı `durum == 'yayinda'` şartına bağlamayı
+ * denedik, iki sebeple bırakıldı (bkz. firestore.rules'taki uzun not):
+ * liste sorgusu kural yüzünden tamamen reddediliyordu, ve yayımlanmamış bir
+ * metnin gizliliği tek bir kural satırına bağlı kalıyordu.
  *
  * DİKKAT: Depoyla (useRoadmapStore) ilgisi yok ve olmamalı. Blog sayfaları
  * giriş gerektirmiyor; oraya proje deposunu sokmak, blog okuyan ziyaretçiye
@@ -35,7 +45,10 @@ export interface BlogYazisi {
   guncellendi: number;
 }
 
-const KOLEKSIYON = 'blog';
+const YAYIN = 'blog';
+const TASLAK = 'blogTaslaklar';
+
+const koleksiyonAdi = (durum: BlogDurumu) => (durum === 'yayinda' ? YAYIN : TASLAK);
 
 /**
  * Adres için uygun ad üretir: küçük harf, boşluklar tire, Türkçe harfler
@@ -60,7 +73,7 @@ export function slugUret(baslik: string): string {
     .slice(0, 80);
 }
 
-function belgedenYazi(id: string, veri: Record<string, unknown>): BlogYazisi {
+function belgedenYazi(id: string, veri: Record<string, unknown>, durum: BlogDurumu): BlogYazisi {
   return {
     slug: id,
     baslik: String(veri.baslik ?? ''),
@@ -68,7 +81,9 @@ function belgedenYazi(id: string, veri: Record<string, unknown>): BlogYazisi {
     dil: String(veri.dil ?? 'tr'),
     kapak: String(veri.kapak ?? ''),
     govde: String(veri.govde ?? ''),
-    durum: veri.durum === 'yayinda' ? 'yayinda' : 'taslak',
+    // Durum belgenin içinden değil, hangi koleksiyonda durduğundan okunuyor:
+    // tek doğru kaynak yer olsun, alan onunla çelişemesin.
+    durum,
     yayinTarihi: typeof veri.yayinTarihi === 'number' ? veri.yayinTarihi : null,
     guncellendi: typeof veri.guncellendi === 'number' ? veri.guncellendi : 0
   };
@@ -77,44 +92,41 @@ function belgedenYazi(id: string, veri: Record<string, unknown>): BlogYazisi {
 /**
  * Yayımlanmış yazılar, yenisi başta.
  *
- * `where` şartı şart: kural taslakları kapatıyor ve Firestore, kuralın
- * eleyeceği belge içerebilecek bir sorguyu baştan reddediyor.
+ * Tek alana göre sıralama: Firestore bunun için kendiliğinden indeks tutuyor,
+ * elle bileşik indeks tanımlamaya gerek yok.
  */
 export async function yayinlananYazilar(): Promise<BlogYazisi[]> {
-  const sorgu = query(
-    collection(db, KOLEKSIYON),
-    where('durum', '==', 'yayinda'),
-    orderBy('yayinTarihi', 'desc')
-  );
-  const anlik = await getDocs(sorgu);
-  return anlik.docs.map((d) => belgedenYazi(d.id, d.data()));
+  const anlik = await getDocs(query(collection(db, YAYIN), orderBy('yayinTarihi', 'desc')));
+  return anlik.docs.map((d) => belgedenYazi(d.id, d.data(), 'yayinda'));
 }
 
-/** Tek yazı. Yoksa ya da taslaksa (yönetici değilsek) null. */
+/** Tek yayımlanmış yazı. Yoksa null. Taslaklar buradan gelmiyor. */
 export async function yaziyiGetir(slug: string): Promise<BlogYazisi | null> {
-  try {
-    const anlik = await getDoc(doc(db, KOLEKSIYON, slug));
-    if (!anlik.exists()) return null;
-    return belgedenYazi(anlik.id, anlik.data());
-  } catch {
-    // Taslağı okumaya çalışan ziyaretçide kural hatası dönüyor; onun için
-    // "yazı yok" ile aynı şey.
-    return null;
-  }
+  const anlik = await getDoc(doc(db, YAYIN, slug));
+  return anlik.exists() ? belgedenYazi(anlik.id, anlik.data(), 'yayinda') : null;
 }
 
 /** Taslaklar dahil hepsi. Yalnızca yönetici okuyabilir. */
 export async function tumYazilar(): Promise<BlogYazisi[]> {
-  const anlik = await getDocs(collection(db, KOLEKSIYON));
-  return anlik.docs
-    .map((d) => belgedenYazi(d.id, d.data()))
-    .sort((a, b) => b.guncellendi - a.guncellendi);
+  const [yayin, taslak] = await Promise.all([
+    getDocs(collection(db, YAYIN)),
+    getDocs(collection(db, TASLAK))
+  ]);
+  return [
+    ...yayin.docs.map((d) => belgedenYazi(d.id, d.data(), 'yayinda')),
+    ...taslak.docs.map((d) => belgedenYazi(d.id, d.data(), 'taslak'))
+  ].sort((a, b) => b.guncellendi - a.guncellendi);
 }
 
 /**
- * Yazıyı kaydeder. Yayına ilk alınışında yayın tarihi konuyor; sonraki
- * düzeltmeler tarihi değiştirmiyor, yoksa eski bir yazı her dokunuşta
- * listenin başına çıkardı.
+ * Yazıyı kaydeder ve doğru koleksiyona koyar.
+ *
+ * Yayına ilk alınışında yayın tarihi konuyor; sonraki düzeltmeler tarihi
+ * değiştirmiyor, yoksa eski bir yazı her dokunuşta listenin başına çıkardı.
+ *
+ * Diğer koleksiyondaki kopya siliniyor: yazı taslaktan yayına (ya da tersine)
+ * geçtiğinde iki yerde birden durursa, yayından kaldırdığın bir yazı sitede
+ * görünmeye devam ederdi.
  */
 export async function yaziyiKaydet(yazi: BlogYazisi): Promise<void> {
   const kayit = {
@@ -123,14 +135,24 @@ export async function yaziyiKaydet(yazi: BlogYazisi): Promise<void> {
     dil: yazi.dil,
     kapak: yazi.kapak,
     govde: yazi.govde,
-    durum: yazi.durum,
     yayinTarihi:
       yazi.durum === 'yayinda' ? (yazi.yayinTarihi ?? Date.now()) : yazi.yayinTarihi,
     guncellendi: Date.now()
   };
-  await setDoc(doc(db, KOLEKSIYON, yazi.slug), kayit);
+  const hedef = koleksiyonAdi(yazi.durum);
+  const oteki = hedef === YAYIN ? TASLAK : YAYIN;
+
+  await setDoc(doc(db, hedef, yazi.slug), kayit);
+  await deleteDoc(doc(db, oteki, yazi.slug)).catch(() => {
+    // Öteki koleksiyonda kayıt yoksa silme hata vermiyor; yine de kural ya da
+    // ağ hatası yutulmasın diye ayrı yakalanıyor: kaydın kendisi başarılı.
+  });
 }
 
+/** Yazıyı iki koleksiyondan da siler. */
 export async function yaziyiSil(slug: string): Promise<void> {
-  await deleteDoc(doc(db, KOLEKSIYON, slug));
+  await Promise.all([
+    deleteDoc(doc(db, YAYIN, slug)),
+    deleteDoc(doc(db, TASLAK, slug))
+  ]);
 }

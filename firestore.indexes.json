@@ -1,13 +1,4 @@
 {
-  "indexes": [
-    {
-      "collectionGroup": "blog",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "durum", "order": "ASCENDING" },
-        { "fieldPath": "yayinTarihi", "order": "DESCENDING" }
-      ]
-    }
-  ],
+  "indexes": [],
   "fieldOverrides": []
 }

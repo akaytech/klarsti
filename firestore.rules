@@ -73,16 +73,22 @@ service cloud.firestore {
     // koleksiyonların "yalnızca sahibi" kuralı geçerli değil: okuma herkese
     // açık, yazma yalnızca yöneticide.
     //
-    // Okumada `durum` şartı var: taslaklar dışarı çıkmamalı. Yarım bir yazının
-    // adresini tahmin eden birine açılırsa, yayınlanmamış metin yayınlanmış
-    // olur. Yönetici kendi taslaklarını görebiliyor.
-    //
-    // DİKKAT: Liste sorgusu da bu kurala uymak zorunda, yani yazıları çeken
-    // sorgu `where('durum','==','yayinda')` içermeli; içermezse Firestore
-    // sorgunun tamamını reddeder (tek tek belgeleri elemez).
+    // TASLAKLAR NEDEN AYRI KOLEKSİYONDA: ilk kurgu ikisini tek koleksiyonda
+    // tutuyor ve okumayı `resource.data.durum == 'yayinda'` şartına
+    // bağlıyordu. İki sorunu vardı. Birincisi işe yaramadı: liste sorgusu
+    // kuralın eleyebileceği bir belge içerebildiği sürece Firestore sorgunun
+    // tamamını reddediyor ve blog sayfası boş bile olsa hata veriyordu.
+    // İkincisi daha önemli: yayınlanmamış bir metnin gizliliği tek bir kural
+    // satırının doğruluğuna bağlıydı. Şimdi taslaklar herkese kapalı ayrı bir
+    // koleksiyonda; yanlışlıkla dışarı çıkmaları için kuralın değil, yerin
+    // değişmesi gerekir.
     match /blog/{slug} {
-      allow read: if resource.data.durum == 'yayinda' || yonetici();
+      allow read: if true;
       allow write: if yonetici();
+    }
+
+    match /blogTaslaklar/{slug} {
+      allow read, write: if yonetici();
     }
 
     // Sadece 'projects' koleksiyonuna belirli kurallarla erişime izin ver.

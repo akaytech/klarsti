@@ -1,6 +1,5 @@
 import { Suspense, useEffect, useState } from 'react';
 import Navbar from './Navbar';
-import DenemeSeridi from './DenemeSeridi';
 import { denemeKipiniAc, denemeKipiKapat } from '../utils/denemeKipi';
 import { denemeyiKaydetmeyeBasla, denemeyiYukle } from '../store/denemeDeposu';
 import { gecikmeliEkran } from '../utils/surumTazeleme';
@@ -15,7 +14,8 @@ const Workspace = gecikmeliEkran(() => import('./Workspace'));
  * aynı bileşenler çiziliyor (Navbar + Workspace); fark üç yerde:
  *
  *   - SyncManager takılmıyor → hiçbir şey buluta yazılmıyor.
- *   - Üst sağdaki hesap/ajanda/çalışmalar düğmeleri yok; hepsi hesaba bağlı.
+ *   - Üst sağdaki ajanda/çalışmalar düğmeleri yok; hepsi hesaba bağlı. Onların
+ *     yerinde "Hesap Aç" duruyor (bkz. DenemeHesapDugmesi).
  *   - Çizilen tarayıcıda saklanıyor (bkz. denemeDeposu), hesap açılınca
  *     hesaba taşınıyor (bkz. denemeDevri).
  *
@@ -59,7 +59,6 @@ export default function DenemeApp() {
         >
           <Workspace />
         </Suspense>
-        <DenemeSeridi />
       </div>
     </>
   );

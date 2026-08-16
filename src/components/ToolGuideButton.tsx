@@ -38,9 +38,9 @@ export default function ToolGuideButton() {
       aria-label={t('guide_button')}
     >
       <BookOpen size={18} />
-      {/* Denemede sağ üstte başka düğme yok; yazı da sığıyor ve tek başına
-          duran kitap simgesinden anlaşılır oluyor. */}
-      <span className={denemeKipindeMi() ? 'inline' : 'hidden sm:inline'}>{t('guide_button')}</span>
+      {/* Dar ekranda yalnız simge: denemede yanında "Hesap Aç" da duruyor ve
+          ikisi yazılı olunca küme üstteki logonun üzerine biniyordu. */}
+      <span className="hidden sm:inline">{t('guide_button')}</span>
     </button>
   );
 }

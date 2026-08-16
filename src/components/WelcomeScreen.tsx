@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { CATEGORY_ORDER, PROJECT_TOOLS, TOOLS } from '../config/tools';
 import { AMACLAR } from '../config/amaclar';
@@ -10,6 +10,7 @@ import { logAppEvent } from '../firebase';
 import { toolTheme } from '../config/toolTheme';
 import { tumCalismalar, calismayiAc, tarihEtiketi } from '../utils/calismaListesi';
 import NewFolderModal from './NewFolderModal';
+import { denemeKipindeMi } from '../utils/denemeKipi';
 
 /** "Kaldığın yer" şeridinde kaç çalışma gösterilecek. */
 const SON_CALISMA_SAYISI = 4;
@@ -123,6 +124,15 @@ export default function WelcomeScreen() {
           <p className="mt-1 max-w-2xl text-sm text-slate-600 dark:text-slate-400">
             {t('ws_subtitle')}
           </p>
+          {/* Hesapsız denemede verinin kalıcı olmadığını söyleyen tek yer.
+              Eskiden tuvalin altındaki şeritte duruyordu; şerit kalkınca
+              (bkz. DenemeHesapDugmesi) uyarı buraya taşındı. */}
+          {denemeKipindeMi() && (
+            <p className="mt-2 inline-flex max-w-2xl items-start gap-2 rounded-xl border border-indigo-200 bg-indigo-50/70 px-3 py-2 text-xs leading-snug text-indigo-800 dark:border-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-200">
+              <Info size={14} className="mt-0.5 shrink-0" aria-hidden />
+              {t('trial_bar_text')}
+            </p>
+          )}
         </header>
 
         {/* Kaldığın yer. Hiç çalışma yokken hiç çizilmiyor: yeni kullanıcıya

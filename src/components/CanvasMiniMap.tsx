@@ -3,19 +3,11 @@ import type { Node } from '@xyflow/react';
 import { Map as MapIcon, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useUIStore } from '../store/useUIStore';
-import { denemeKipindeMi } from '../utils/denemeKipi';
 
 /** Küçük haritanın ölçüsü. Panel konumu buna göre hesaplanıyor. */
 const GENISLIK = 160;
 const YUKSEKLIK = 112;
 const KENAR = 15;
-/**
- * Denemede tuvalin sağ alt köşesinde "Hesap Aç" şeridi duruyor ve harita tam
- * onun altında kalıyordu. Şerit kapladığı yüksekliği `--deneme-seridi`
- * değişkenine yazıyor (bkz. DenemeSeridi); harita o kadar yukarı çıkıyor.
- * Sabit bir sayı yazılmadı: şerit dile göre iki ya da üç satır oluyor.
- */
-const SERIT_PAYI = 'var(--deneme-seridi, 0px) + 8px';
 
 /**
  * Tuvalin sağ alt köşesindeki küçük harita.
@@ -38,9 +30,6 @@ export default function CanvasMiniMap({
   const { t } = useTranslation();
   const acik = useUIStore((s) => s.minimapOpen);
   const setAcik = useUIStore((s) => s.setMinimapOpen);
-  // Denemede şeridin payı ekleniyor; hesaplı ekranda böyle bir şerit yok.
-  const altKenar = (piksel: number) =>
-    denemeKipindeMi() ? `calc(${piksel}px + ${SERIT_PAYI})` : piksel;
 
   return (
     <>
@@ -52,7 +41,7 @@ export default function CanvasMiniMap({
           nodeColor={nodeColor as any}
           maskColor={maskColor}
           className="!hidden !rounded-xl border-2 border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800 sm:!block"
-          style={{ width: GENISLIK, height: YUKSEKLIK, marginBottom: altKenar(KENAR) }}
+          style={{ width: GENISLIK, height: YUKSEKLIK, marginBottom: KENAR }}
         />
       )}
 
@@ -60,7 +49,7 @@ export default function CanvasMiniMap({
         position="bottom-right"
         className="hidden sm:block"
         // Harita açıkken düğme onun üstüne çıkıyor; kapalıyken köşeye iniyor.
-        style={{ marginBottom: acik ? altKenar(KENAR + YUKSEKLIK + 8) : altKenar(KENAR) }}
+        style={{ marginBottom: acik ? KENAR + YUKSEKLIK + 8 : KENAR }}
       >
         <button
           type="button"

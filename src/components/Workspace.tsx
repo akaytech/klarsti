@@ -12,6 +12,7 @@ import UndoRedoControls from './UndoRedoControls';
 import GlobalExportButton from './GlobalExportButton';
 import GlobalShareButton from './GlobalShareButton';
 import ToolGuideButton from './ToolGuideButton';
+import DenemeHesapDugmesi from './DenemeHesapDugmesi';
 import WelcomeScreen from './WelcomeScreen';
 import { gecikmeliEkran } from '../utils/surumTazeleme';
 import { GUIDE_TOOLS } from '../content/toolGuides/available';
@@ -125,13 +126,16 @@ export default function Workspace() {
         {/* Ajandada geri alma yok: notepad zaten temporal partialize dışında, yani
             ajanda değişiklikleri geçmişe hiç yazılmıyor, düğmeler orada işlevsizdi. */}
         {activeTool && activeTool !== 'notepad' && <UndoRedoControls />}
-        {activeTool && (
+        {/* Denemede küme araç seçilmeden de çiziliyor: "Hesap Aç" düğmesi
+            karşılama ekranında da duruyor, kılavuz düğmesi orada kendini zaten
+            gizliyor. */}
+        {(activeTool || denemeKipindeMi()) && (
           <div
             className={clsx(
               "absolute top-4 z-[100] flex items-center gap-2 transition-transform duration-300 ease-out",
               // Denemede sağ üstte hesaba bağlı hiçbir düğme yok (bkz. DenemeApp)
-              // ve kümede tek başına kılavuz kalıyor; boşluk bırakmaya gerek yok,
-              // düğme sağ kenara yaslanıyor.
+              // ve kümede "Hesap Aç" ile kılavuz kalıyor; boşluk bırakmaya gerek
+              // yok, küme sağ kenara yaslanıyor.
               denemeKipindeMi()
                 ? "end-4"
                 : [
@@ -146,6 +150,7 @@ export default function Workspace() {
               guideOpen && "max-sm:opacity-0 sm:-translate-x-[400px] sm:rtl:translate-x-[400px]"
             )}
           >
+            <DenemeHesapDugmesi />
             <ToolGuideButton />
             <GlobalShareButton />
             <GlobalExportButton />

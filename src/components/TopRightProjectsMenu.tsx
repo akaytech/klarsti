@@ -7,7 +7,7 @@ import { useShallow } from 'zustand/react/shallow';
 import clsx from 'clsx';
 import ConfirmModal from './ConfirmModal';
 import { ajandaDugmesiGorunurMu } from '../utils/ajandaDugmesi';
-import { Folder, Plus, Trash2, ChevronDown, ChevronRight, Fish, RefreshCcw, Layers, Pencil, AlertOctagon, Scale, GitMerge, BarChart2, BarChart, Activity, Network, Target, Check, Brain, UsersRound, Link2, Map, ArrowRight } from 'lucide-react';
+import { Folder, Plus, Trash2, ChevronDown, ChevronRight, Fish, RefreshCcw, Layers, Pencil, AlertOctagon, Scale, GitMerge, BarChart2, BarChart, Activity, Network, Target, Check, Brain, UsersRound, Link2, Map, ArrowRight, CalendarRange } from 'lucide-react';
 import type { Project } from '../store/useRoadmapStore';
 import { toolTheme } from '../config/toolTheme';
 import { aracCalismalari, aracSecimEylemi, calismayiYenidenAdlandir, calismayiSil } from '../config/toolWorks';
@@ -27,8 +27,10 @@ const TOOL_OPTIONS: { id: ToolId; icon: typeof Network; label: string; color: st
   { id: 'flowchart', icon: GitMerge, label: 'tool_flowchart', color: 'text-amber-500', bg: 'bg-amber-100 dark:bg-amber-900/40' },
   { id: 'orgchart', icon: UsersRound, label: 'org_title', color: 'text-sky-500', bg: 'bg-sky-100 dark:bg-sky-900/40' },
   // Değer Akışı bu listede yoktu; o araçtaki çalışmalar "Çalışmalarım"
-  // ağacında hiç görünmüyordu.
+  // ağacında hiç görünmüyordu. Aynı şey zaman çizelgesinde de yaşandı: bu
+  // liste elle yazılıyor, yeni bir araç eklenince buraya da eklenmeli.
   { id: 'vsm', icon: Map, label: 'tool_vsm', color: 'text-indigo-500', bg: 'bg-indigo-100 dark:bg-indigo-900/40' },
+  { id: 'gantt', icon: CalendarRange, label: 'gantt_title', color: 'text-orange-500', bg: 'bg-orange-100 dark:bg-orange-900/40' },
   { id: 'pareto', icon: BarChart2, label: 'tool_pareto', color: 'text-blue-500', bg: 'bg-blue-100 dark:bg-blue-900/40' },
   { id: 'histogram', icon: BarChart, label: 'tool_histogram', color: 'text-indigo-500', bg: 'bg-indigo-100 dark:bg-indigo-900/40' }
   // Ajanda burada yok: projeye ait değil, kişisel. Üst bardaki kendi düğmesinden açılır.

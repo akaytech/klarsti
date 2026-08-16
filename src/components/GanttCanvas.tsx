@@ -227,10 +227,13 @@ export default function GanttCanvas() {
 
       {/* Üst şerit: plan seçimi, yakınlık ve görev ekleme.
 
-          z-50 şart: çizelgenin sol sütunu ve başlık şeridi `sticky` ve kendi
-          z değerleri var. Bu şerit onlardan önce çizildiği için çizelge menüsü
-          açıldığında sütunların ALTINDA kalıyor, kullanıcı listeyi göremiyordu. */}
-      <div className="relative z-50 flex flex-none flex-wrap items-center gap-2 border-b border-slate-200 bg-white px-3 py-2 dark:border-slate-800 dark:bg-slate-900 sm:px-4">
+          Katman düzeni: çizelgenin sol sütunu ve başlık şeridi `sticky` ve
+          kendi z değerleri var; bu şerit onlardan önce çizildiği için çizelge
+          menüsü sütunların ALTINDA kalıyordu. Şerit z-10'a alındı, çizelge
+          alanı da kendi katmanına kapatıldı (aşağıdaki z-0). Şeride doğrudan
+          yüksek bir z verilmedi: o zaman da uygulamanın kendi menüleri
+          (çalışmalarım, hesap) bu şeridin altında kalıyordu. */}
+      <div className="relative z-10 flex flex-none flex-wrap items-center gap-2 border-b border-slate-200 bg-white px-3 py-2 dark:border-slate-800 dark:bg-slate-900 sm:px-4">
         <AnalysisMenu
           Simge={CalendarRange}
           aktifId={plan.id}
@@ -291,8 +294,10 @@ export default function GanttCanvas() {
         </div>
       )}
 
+      {/* relative z-0: içerideki sticky sütunların z değerleri bu kutunun
+          içinde kalıyor, dışarıdaki menülerle yarışmıyor. */}
       {(!bosPlan || karsilamaKapandi) && (
-        <div ref={kaydirmaRef} className="flex-1 overflow-auto custom-scrollbar">
+        <div ref={kaydirmaRef} className="relative z-0 flex-1 overflow-auto custom-scrollbar">
           <div className="relative" style={{ width: `calc(var(--gantt-sol) + ${takvimGenislik}px)` }}>
             {/* Başlık şeridi: üstte ay, altında gün/hafta. */}
             <div

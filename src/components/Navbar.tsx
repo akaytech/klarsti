@@ -197,7 +197,11 @@ export default function Navbar() {
     setKlasorBekleyenArac(null);
   };
 
-  useDisariTiklama(menuRef, () => setIsExpanded(false));
+  // Kanvasın "hepsini kapat" yayını bilerek dinlenmiyor: kanvas o yayını
+  // tekerlekle yakınlaştırma/kaydırma başlar başlamaz da gönderiyor ve menü
+  // kullanıcı daha hiçbir şey seçmeden kapanıyordu. Kanvasa tıklamak yine
+  // kapatıyor, o dışarı tıklama olarak yakalanıyor.
+  useDisariTiklama(menuRef, () => setIsExpanded(false), { kanvasYayini: false });
 
 
 

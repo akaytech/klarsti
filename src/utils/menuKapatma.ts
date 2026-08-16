@@ -80,10 +80,18 @@ export function useKapatmaYayini(kapat: () => void) {
  * Yakalama aşamasında dinleniyor (`capture: true`): menünün içindeki bir düğme
  * tıklamayı durdurabiliyor, normal aşamada beklesek dışarı tıklamayı hiç
  * göremezdik.
+ *
+ * `kanvasYayini: false` ile "hepsini kapat" yayını dinlenmez. Kanvas bu yayını
+ * kaydırma/yakınlaştırma başlar başlamaz da gönderiyor (bkz. onMoveStart) ve
+ * bunun sebebi kutuya yapışık menülerin kanvasla birlikte sürüklenip ekran
+ * dışına çıkması. Ekranın kenarında sabit duran bir panelin böyle bir derdi
+ * yok; tekerlek her döndüğünde kapanması kullanıcının işini bölüyordu.
+ * Kanvasa TIKLAMA yine kapatıyor, o dışarı tıklama olarak zaten yakalanıyor.
  */
 export function useDisariTiklama(
   ref: RefObject<HTMLElement | null>,
-  kapat: () => void
+  kapat: () => void,
+  { kanvasYayini = true }: { kanvasYayini?: boolean } = {}
 ) {
   const kapatRef = useGuncelGeriCagirma(kapat);
 
@@ -98,11 +106,11 @@ export function useDisariTiklama(
 
     document.addEventListener('mousedown', disaTiklama, { capture: true });
     document.addEventListener('keydown', tus);
-    document.addEventListener('close-menus', yayin);
+    if (kanvasYayini) document.addEventListener('close-menus', yayin);
     return () => {
       document.removeEventListener('mousedown', disaTiklama, { capture: true });
       document.removeEventListener('keydown', tus);
       document.removeEventListener('close-menus', yayin);
     };
-  }, [ref, kapatRef]);
+  }, [ref, kapatRef, kanvasYayini]);
 }

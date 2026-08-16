@@ -23,12 +23,49 @@ export default function InlineDescriptionMenu({
   const sarmalayiciRef = useRef<HTMLDivElement>(null);
   const { sarmalayiciStil, enFazlaBoy } = useKenardanIceriAl(sarmalayiciRef);
 
+  // En son kaydedilen değer. Aynı metni iki kez yazmayı önlüyor: hem alandan
+  // çıkarken hem de pencere kapanırken kaydediliyor.
+  const sonKaydedilen = useRef(description || '');
+  // Kapanış temizliğinde okunacak güncel değerler. Temizlik yalnızca bir kez
+  // bağlandığı için ilk render'ın kopyalarını görürdü.
+  const metinRef = useRef(text);
+  metinRef.current = text;
+  const kaydetRef = useRef(onSave);
+  kaydetRef.current = onSave;
+
+  const kaydet = (deger: string) => {
+    if (deger === sonKaydedilen.current) return;
+    sonKaydedilen.current = deger;
+    kaydetRef.current(deger);
+  };
+
   useEffect(() => {
     textareaRef.current?.focus({ preventScroll: true });
   }, []);
 
+  /**
+   * Pencere hangi yolla kapanırsa kapansın yazılan kaydediliyor.
+   *
+   * Neden gerekli: yazı alanının `onBlur`u kanvasa tıklandığında çalışmıyor.
+   * Kanvasın kaydırma mekanizması fare basışında `preventDefault` çağırıyor,
+   * yani odak hiç değişmiyor; hemen ardından pencere kapatıldığı için alan
+   * sökülüyor ve "çıkarken kaydet" adımı hiç gerçekleşmiyordu. Kullanıcının
+   * yazdığı açıklama, sağ üstteki tike basmadıkça kayboluyordu.
+   *
+   * Escape de artık kaydediyor. Eskiden sessizce atıyordu; ekranda "vazgeç"
+   * diye bir düğme olmadığı için bunu kimse bilerek kullanmıyordu ve iki
+   * çıkış yolunun zıt anlama gelmesi tuzaktı.
+   */
+  useEffect(() => {
+    return () => {
+      if (metinRef.current === sonKaydedilen.current) return;
+      sonKaydedilen.current = metinRef.current;
+      kaydetRef.current(metinRef.current);
+    };
+  }, []);
+
   const handleSaveAndClose = () => {
-    onSave(text);
+    kaydet(text);
     onClose();
   };
 
@@ -61,7 +98,7 @@ export default function InlineDescriptionMenu({
         ref={textareaRef}
         value={text}
         onChange={(e) => setText(e.target.value)}
-        onBlur={() => onSave(text)}
+        onBlur={() => kaydet(text)}
         onKeyDown={(e) => {
           if (e.key === 'Escape') {
             onClose();

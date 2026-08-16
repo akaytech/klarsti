@@ -223,7 +223,10 @@ export default function GoalNode({ data, selected }: { data: GoalNodeData; selec
         <div className={clsx('flex h-9 w-9 shrink-0 items-center justify-center rounded-xl', durumStili.simge)}>
           {isFailed ? <XCircle size={18} /> : isDone ? <CheckCircle2 size={18} /> : isInProgress ? <PlayCircle size={18} /> : <CircleDashed size={18} />}
         </div>
-        <div className="flex-1" onDoubleClick={() => setIsEditing(true)}>
+        {/* Çift tıklama artık bu blokta değil, ismin kendisinde: blok kutunun
+            kalan genişliğinin tamamını kaplıyor ve yazının sağındaki boşluğa
+            çift tıklamak da isim düzenlemeyi açıyordu. */}
+        <div className="flex-1 min-w-0">
           {isEditing ? (
             <input
               ref={inputRef}
@@ -248,8 +251,22 @@ export default function GoalNode({ data, selected }: { data: GoalNodeData; selec
               {/* data-kutu-basligi: kanvas, tıklamanın buraya gelip gelmediğine
                   bakıp alt kutuları açıp kapamayı atlıyor (bkz. RoadmapCanvas
                   onNodeClick). İsim değiştirmek için çift tıklarken alt kutular
-                  açılıp kapanıyordu. */}
-              <h3 data-kutu-basligi className="text-[13px] font-semibold leading-snug line-clamp-2 cursor-text select-none" title={t('double_click_edit')}>{data.label}</h3>
+                  açılıp kapanıyordu.
+
+                  w-fit şart: blok öğe olarak kutunun kalan genişliğini baştan
+                  sona kaplıyordu, yani kısa isimli bir kutuda "isme tıklama"
+                  kapsamı kutunun neredeyse tamamıydı ve alt kutuları açıp
+                  kapatacak yer kalmıyordu. Artık kapsam yazının kendisi kadar.
+                  min-w: ismi bir şekilde boş kalan kutuda çift tıklanacak bir
+                  hedef kalsın. */}
+              <h3
+                data-kutu-basligi
+                onDoubleClick={() => setIsEditing(true)}
+                className="w-fit min-w-8 max-w-full text-[13px] font-semibold leading-snug line-clamp-2 cursor-text select-none"
+                title={t('double_click_edit')}
+              >
+                {data.label}
+              </h3>
               {(data.targetDate || data.targetTime) && (
                 <div className="text-[10px] font-medium bg-slate-100 dark:bg-slate-700/70 text-slate-600 dark:text-slate-300 w-fit px-1.5 py-0.5 rounded-md">
                   {data.targetDate} {data.targetTime}{data.targetEndTime ? ` - ${data.targetEndTime}` : ''}

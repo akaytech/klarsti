@@ -12,7 +12,7 @@ import NewFolderModal from './components/NewFolderModal';
 import { useRoadmapStore, type ToolId } from './store/useRoadmapStore';
 import { aracSecimEylemi, aracAktifAlan, aracAnahtari } from './config/toolWorks';
 import { PROJECT_TOOLS } from './config/tools';
-import { hedefKlasorBul, klasorsuzAracAdi } from './utils/aracAdresi';
+import { KLASORSUZ_ONEK, hedefKlasorBul, klasorsuzAracAdi } from './utils/aracAdresi';
 import { useAuthStore } from './store/useAuthStore';
 import { useShallow } from 'zustand/react/shallow';
 import { gecikmeliEkran } from './utils/surumTazeleme';
@@ -363,15 +363,21 @@ export default function AuthenticatedApp() {
     // Bekleyen proje varken adres çubuğuna dokunulmaz: proje henüz açılmadığı
     // için burası linki '/' ile ezer ve kullanıcının elinden tek tutamağı alırdı.
     if (!isUrlSyncRunning && bekleyenProjeRef.current === null) {
+      // '/new/...' bir yer değil, bir talimat: "şu aracı aç". Adres asıl
+      // haline dönerken geçmişe kayıt DÜŞMEMELİ, üzerine yazılmalı. Yoksa
+      // geri düğmesi kullanıcıyı /new/... adresine döndürüyor, orası da onu
+      // anında ileri fırlatıyor; yani geri düğmesi hiç çalışmıyor.
+      const gecmiseEkleme = path.startsWith(KLASORSUZ_ONEK);
+
       if (activeTool === 'notepad') {
-        if (path !== '/agenda') navigate('/agenda');
+        if (path !== '/agenda') navigate('/agenda', { replace: gecmiseEkleme });
       } else if (!activeTool) {
         // '/works' de araçsız bir durum; burada '/' ile ezilirse kullanıcı
         // listeye girer girmez karşılama ekranına atılırdı.
         // '/new/...' da öyle: klasörü olmayan kullanıcıya klasörün adı
         // sorulurken ekranda araç yok, ama adres silinirse hangi araç için
         // sorduğumuz da kaybolurdu.
-        if (path !== '/' && path !== '/works' && !klasorsuzArac) navigate('/');
+        if (path !== '/' && path !== '/works' && !klasorsuzArac) navigate('/', { replace: gecmiseEkleme });
       } else if (currentProjectId && activeTool) {
         // Çalışma kimliği yalnızca seçilmişse ekleniyor. Kullanıcı aracı henüz
         // açtıysa hangi çalışmada olduğu belli değil (ilki gösteriliyor);
@@ -379,7 +385,7 @@ export default function AuthenticatedApp() {
         const newPath = acikCalisma
           ? `/project/${currentProjectId}/${activeTool}/${acikCalisma}`
           : `/project/${currentProjectId}/${activeTool}`;
-        if (path !== newPath) navigate(newPath);
+        if (path !== newPath) navigate(newPath, { replace: gecmiseEkleme });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

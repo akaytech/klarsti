@@ -82,6 +82,11 @@ export default function WelcomeScreen() {
   // Artık tek satır: simge ve ad. Açıklama silinmedi, üstüne gelince
   // görünüyor; aracın ne işe yaradığını asıl anlatan yer zaten kılavuzu ve
   // "Ne yapmak istiyorsun?" bölümü.
+  //
+  // Ama telefonda fare yok: üstüne gelince çıkan açıklama dokunmatik ekranda
+  // hiç görünmüyordu, kullanıcı yalnız ada bakıp tıklamak zorunda kalıyordu.
+  // O yüzden dar ekranda açıklama iki satıra kadar kartın içinde duruyor;
+  // geniş ekranda kart yine tek satır.
   const ToolCard = ({ id, icon: Icon, title, desc }: any) => {
     const theme = toolTheme[id] || toolTheme.wbs;
     return (
@@ -93,7 +98,12 @@ export default function WelcomeScreen() {
         <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${theme.bg}`}>
           <Icon size={18} className={theme.text} />
         </div>
-        <h3 className="min-w-0 truncate text-sm font-bold text-slate-800 dark:text-slate-100">{title}</h3>
+        <span className="min-w-0 flex-1">
+          <h3 className="truncate text-sm font-bold text-slate-800 dark:text-slate-100">{title}</h3>
+          <span className="mt-0.5 block text-xs leading-snug text-slate-500 dark:text-slate-400 line-clamp-2 md:hidden">
+            {desc}
+          </span>
+        </span>
       </button>
     );
   };

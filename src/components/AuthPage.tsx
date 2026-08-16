@@ -218,7 +218,11 @@ export default function AuthPage({ mode }: { mode: 'login' | 'register' }) {
             className="h-11 w-auto shrink-0 mx-auto mb-4 md:hidden"
           />
           <h2 className="hidden md:block text-3xl font-black text-slate-800 dark:text-slate-100">Klarsti</h2>
-          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{t('welcome_msg')}</p>
+          {/* Kayıt modunda "giriş yap" yazıyordu; hesabı olmayan birine
+              yanlış eylemi söylüyordu. İki mod için iki metin. */}
+          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+            {isLoginMode ? t('welcome_msg') : t('welcome_msg_register')}
+          </p>
         </div>
 
         {error && (

@@ -32,5 +32,11 @@ solvinger_code_dump.txt
 # Firebase CLI local cache (yerel ortamda otomatik oluşur, repo'ya ait değil)
 .firebase/
 
+# Servis hesabı anahtarı - bütün veritabanını açar, ASLA repoya girmemeli.
+# Firebase Console > Proje ayarları > Servis hesapları'ndan indiriliyor,
+# scripts/eskiKayitSay.mjs gibi yerel yönetim betikleri okuyor.
+klarsti-servis-hesabi.json
+*-firebase-adminsdk-*.json
+
 # Firebase Android config - hassas, cihaza özel, Firebase Console'dan indirilir
 android/app/google-services.json

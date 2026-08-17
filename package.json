@@ -1,7 +1,7 @@
 {
   "name": "klarsti",
   "private": true,
-  "version": "0.8.28-2",
+  "version": "0.8.28-3",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,7 +10,8 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "export-code": "node scripts/export_code.cjs",
-    "klip": "node scripts/klipCek.mjs"
+    "klip": "node scripts/klipCek.mjs",
+    "eski-kayit-say": "node scripts/eskiKayitSay.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

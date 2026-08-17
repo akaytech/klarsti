@@ -106,7 +106,12 @@ export default function WaterfallCanvas() {
 
               <div className="space-y-6 relative z-10 pb-10">
                 {PHASES.map((phase, index) => {
-                  const items = project.items.filter(i => i.phase === phase.id);
+                  // Array.isArray şart: 'items' alanı okuma sırasında bir
+                  // dönüştürücü tarafından hep diziye çevriliyordu, o kod
+                  // silindi (bkz. useRoadmapStore parseDoc). Bozuk tek bir
+                  // kayıt bütün ekranı çökertmesin.
+                  const items = (Array.isArray(project.items) ? project.items : [])
+                    .filter(i => i.phase === phase.id);
                   const inputKey = `${project.id}-${phase.id}`;
                   const isCompleted = index < (project.currentPhaseIndex ?? 0);
                   const isLocked = index > (project.currentPhaseIndex ?? 0);

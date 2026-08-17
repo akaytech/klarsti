@@ -48,78 +48,6 @@ const derinEsit = (a: any, b: any): boolean => {
 // tekrar tekrar yazma denememek için tutulur; bkz. fetchProjects.
 const legacyNotepadCleanupTried = new Set<string>();
 
-/**
- * Histogram eskiden {kategori, sıklık} kalemleri tutuyordu; yani sıralanmamış
- * bir Pareto'ydu ve dağılım hakkında hiçbir şey söyleyemiyordu. Artık ham ölçüm
- * alıyor. Sayısal etiketler sıklıkları kadar tekrarlanarak ölçüme çevriliyor;
- * sayıya çevrilemeyen etiketler (örn. "Hatalı kaynak") silinmiyor, kullanıcıya
- * gösterilmek üzere eskiKalemler'de bekletiliyor.
- */
-const EN_FAZLA_OLCUM = 10000;
-
-const tasiHistogram = (h: any) => {
-  if (!h || Array.isArray(h.olcumler)) return h;
-  const olcumler: number[] = [];
-  const kalanlar: any[] = [];
-
-  (Array.isArray(h.items) ? h.items : []).forEach((kalem: any) => {
-    const etiket = String(kalem?.category ?? '').trim();
-    const sayi = Number(etiket.replace(',', '.'));
-    const tekrar = Math.max(0, Math.round(Number(kalem?.frequency) || 0));
-    if (etiket !== '' && Number.isFinite(sayi) && tekrar > 0) {
-      for (let i = 0; i < tekrar && olcumler.length < EN_FAZLA_OLCUM; i += 1) olcumler.push(sayi);
-    } else if (etiket !== '' || tekrar > 0) {
-      kalanlar.push(kalem);
-    }
-  });
-
-  return {
-    ...h,
-    olcumler,
-    ayarlar: h.ayarlar ?? {},
-    createdAt: h.createdAt ?? Date.now(),
-    eskiKalemler: kalanlar.length > 0 ? kalanlar : undefined,
-    items: undefined,
-  };
-};
-
-/**
- * Eski VSM kutusunu yeni şemaya taşır. Süreler çıplak sayıydı ve hepsi aynı
- * `cycleTime` alanında duruyordu; stok kutusundaki sayı ise gün cinsinden bir
- * bekleme süresiydi (kutudaki yer tutucu "gün" yazıyordu).
- */
-const tasiVsmKutusu = (n: any) => {
-  const birim = n?.data?.timeUnit || 'sec';
-  const sayi = (v: any) => (Number.isFinite(Number(v)) ? Number(v) : 0);
-  const eski = n?.data ?? {};
-
-  if (n?.type === 'vsmInventory') {
-    return {
-      ...n,
-      data: {
-        ...eski,
-        beklemeSuresi: eski.cycleTime !== undefined ? { deger: sayi(eski.cycleTime), birim: 'day' } : undefined,
-        cycleTime: undefined,
-        timeUnit: undefined,
-      },
-    };
-  }
-
-  if (n?.type === 'vsmProcess') {
-    return {
-      ...n,
-      data: {
-        ...eski,
-        cycleTime: { deger: sayi(eski.cycleTime), birim },
-        changeoverTime: eski.changeoverTime !== undefined ? { deger: sayi(eski.changeoverTime), birim } : undefined,
-        timeUnit: undefined,
-      },
-    };
-  }
-
-  return { ...n, data: { ...eski, timeUnit: undefined } };
-};
-
 export const TOOL_KEYS_MAP: Record<string, string[]> = {
   wbs: ['wbsTrees'],
   '5whys': ['fiveWhysAnalyses'],
@@ -140,7 +68,7 @@ export const TOOL_KEYS_MAP: Record<string, string[]> = {
 };
 
 import { getDefaultWbsTrees } from './slices/createWbsSlice';
-import { yeniVsmHarita, VSM_VARSAYILAN_AYARLAR } from './slices/createVsmSlice';
+import { yeniVsmHarita } from './slices/createVsmSlice';
 import { yeniFiveWhysAnalizi } from './slices/createFiveWhysSlice';
 import { yeniFtaAnalizi } from './slices/createFtaSlice';
 
@@ -686,166 +614,32 @@ export const useRoadmapStore = create<RoadmapState>()(
                 if (data[key] !== undefined) toolData[key] = data[key];
               });
 
-              // Kırılım ağacı da eskiden proje başına tekti (nodes / edges).
-              // Akış şeması ve zihin haritasındaki gibi tek ağaçlık listeye
-              // çevriliyor; eski alanlar dokümanda kalıyor, okunmuyor.
-              if (!Array.isArray(toolData.wbsTrees)) {
-                ['nodes', 'edges'].forEach((k) => {
-                  if (data[k] !== undefined && toolData[k] === undefined) toolData[k] = data[k];
-                });
-                const eskiKutular = toolData.nodes || [];
-                if (eskiKutular.length > 0) {
-                  toolData.wbsTrees = [{
-                    id: 'migrated-wbs',
-                    name: i18n.t('wbs_default_tree_name'),
-                    // Kutular eskiden mutlak konumda donduruluyordu
-                    // (isManuallyPositioned). Artık sapma ebeveyne göre
-                    // tutuluyor; eski işaret okunmuyor, taşınırken düşürülüyor.
-                    nodes: eskiKutular.map((n: any) => {
-                      if (n?.data?.isManuallyPositioned === undefined) return n;
-                      const { isManuallyPositioned: _atilan, ...kalanVeri } = n.data;
-                      return { ...n, data: kalanVeri };
-                    }),
-                    edges: toolData.edges || [],
-                    createdAt: Date.now()
-                  }];
-                }
-                // Eski veri yoksa alan hiç yazılmıyor: aracı ilk kez açan
-                // projede varsayılan ağacı getInitialValue kuruyor.
-              }
-
-              let safeSwot = toolData.swot || [];
-              if (safeSwot.length > 0 && typeof safeSwot[0] === 'object' && safeSwot[0] !== null && 'type' in safeSwot[0]) {
-                toolData.swot = [{ id: 'migrated-swot', title: i18n.t('default_swot_title'), items: safeSwot, createdAt: Date.now() }];
-              }
+              // BURADA ESKİDEN ON DÖNÜŞTÜRÜCÜ VARDI (17 Ağustos 2026'da silindi).
+              //
+              // Araçların çoğu bir zamanlar proje başına TEKTİ: tek kırılım
+              // ağacı (nodes/edges), tek akış şeması, tek zihin haritası, tek
+              // değer akışı, tek 5 neden, tek hata ağacı. Hepsi listeye
+              // çevrildi. SWOT'un analiz sarmalayıcısı yoktu, histogram
+              // kategori/sıklık tutuyordu, VSM süreleri birimsiz sayıydı,
+              // şelalenin bir aşaması "Design" adını taşıyordu. Bu blok o eski
+              // kayıtları okuma anında yenisine çeviriyordu.
+              //
+              // NEDEN SİLİNDİ: taşıma bitmişti ama kod kalıcı hale gelmişti.
+              // Her kullanıcının her projesi, her açılışta ve sunucudan gelen
+              // HER güncellemede 166 satırlık bu kontrolden geçiyordu; yani
+              // uygulamanın en sık çalışan parçası çoktan bitmiş bir işin
+              // kalıntısıydı.
+              //
+              // Silmeden önce sunucu sayıldı (bkz. scripts/eskiKayitSay.mjs):
+              // 13 klasörün 7'si eski biçim taşıyordu, ama altısı ya boş
+              // başlangıç verisiydi ya da içeriği zaten 'works' kayıtlarına
+              // geçmişti. Geriye tek bir klasör kaldı (c86745eb, 12 kutuluk
+              // bir ağaç, sahibi aylardır girmemiş bir hesap); onun da
+              // gözden çıkarılmasına karar verildi. Veri sunucuda duruyor,
+              // yalnızca okunmuyor.
+              //
+              // Yeniden gerekirse: git log -- src/store/useRoadmapStore.ts
               
-              // Akış şeması eskiden proje başına tekti (flowchartNodes /
-              // flowchartEdges / flowchartType). Artık şema listesi var; eski
-              // kayıt varsa tek şemalık listeye çevriliyor. Eski alanlar
-              // dokümanda kalıyor, okunmuyor.
-              if (!Array.isArray(toolData.flowcharts)) {
-                ['flowchartNodes', 'flowchartEdges', 'flowchartType'].forEach((k) => {
-                  if (data[k] !== undefined && toolData[k] === undefined) toolData[k] = data[k];
-                });
-                const eskiKutular = toolData.flowchartNodes || [];
-                toolData.flowcharts = eskiKutular.length > 0 ? [{
-                  id: 'migrated-flowchart',
-                  name: i18n.t(`flowchart_type_${toolData.flowchartType || 'workflow'}`),
-                  type: toolData.flowchartType || 'workflow',
-                  nodes: eskiKutular,
-                  edges: toolData.flowchartEdges || [],
-                  createdAt: Date.now()
-                }] : [];
-              }
-
-              // Organizasyon şeması eskiden akış şemasının dördüncü türüydü
-              // (type: 'org'). Artık ayrı bir araç; eski kayıtlar hiyerarşik
-              // organizasyon şeması olarak yeni listeye taşınıyor. Kutu
-              // biçimleri (pozisyon, departman, kurmay, ekip, boş kadro) iki
-              // katalogda da aynı adla durduğu için dönüştürme gerekmiyor,
-              // yalnızca React Flow düğüm tipi değişiyor.
-              const eskiOrgSemalari = (toolData.flowcharts || []).filter((s: any) => s?.type === 'org');
-              if (eskiOrgSemalari.length > 0) {
-                toolData.flowcharts = toolData.flowcharts.filter((s: any) => s?.type !== 'org');
-                const tasinan = eskiOrgSemalari.map((s: any) => ({
-                  ...s,
-                  type: 'hierarchical',
-                  nodes: (s.nodes || []).map((n: any) => ({ ...n, type: 'orgchartNode' }))
-                }));
-                toolData.orgcharts = [...(Array.isArray(toolData.orgcharts) ? toolData.orgcharts : []), ...tasinan];
-              }
-
-              // Zihin haritası da eskiden proje başına tekti (mindmapNodes /
-              // mindmapEdges). Akış şemasındaki gibi tek haritalık listeye
-              // çevriliyor; eski alanlar dokümanda kalıyor, okunmuyor.
-              if (!Array.isArray(toolData.mindmaps)) {
-                ['mindmapNodes', 'mindmapEdges'].forEach((k) => {
-                  if (data[k] !== undefined && toolData[k] === undefined) toolData[k] = data[k];
-                });
-                const eskiDallar = toolData.mindmapNodes || [];
-                if (eskiDallar.length > 0) {
-                  toolData.mindmaps = [{
-                    id: 'migrated-mindmap',
-                    name: i18n.t('mindmap_default_map_name'),
-                    nodes: eskiDallar,
-                    edges: toolData.mindmapEdges || [],
-                    createdAt: Date.now()
-                  }];
-                }
-                // Eski veri yoksa alan hiç yazılmıyor: aracı ilk kez açan
-                // projede varsayılan haritayı getInitialValue kuruyor.
-              }
-
-              // Değer akışı da eskiden proje başına tekti (vsmNodes / vsmEdges)
-              // ve süreler çıplak sayıydı: işlem kutusunun saniyesiyle stok
-              // kutusunun günü aynı torbada toplanıyordu. Tek haritalık listeye
-              // çevrilirken süreler birimleriyle birlikte yazılıyor.
-              if (!Array.isArray(toolData.vsmMaps)) {
-                ['vsmNodes', 'vsmEdges'].forEach((k) => {
-                  if (data[k] !== undefined && toolData[k] === undefined) toolData[k] = data[k];
-                });
-                const eskiKutular = toolData.vsmNodes || [];
-                if (eskiKutular.length > 0) {
-                  toolData.vsmMaps = [{
-                    id: 'migrated-vsm',
-                    name: i18n.t('vsm_default_map_name'),
-                    tur: 'mevcut',
-                    ayarlar: { ...VSM_VARSAYILAN_AYARLAR },
-                    createdAt: Date.now(),
-                    nodes: eskiKutular.map((n: any) => tasiVsmKutusu(n)),
-                    // Eski varsayılan 'step' hiçbir VSM oku değildi; itme oku sayılıyor.
-                    edges: (toolData.vsmEdges || []).map((e: any) => ({
-                      ...e,
-                      type: e.type && e.type !== 'step' ? e.type : 'vsmPush',
-                    })),
-                  }];
-                }
-                // Eski veri yoksa alan hiç yazılmıyor: aracı ilk kez açan
-                // projede başlangıç haritasını getInitialValue kuruyor.
-              }
-
-              if (Array.isArray(toolData.histogram)) {
-                toolData.histogram = toolData.histogram.map(tasiHistogram);
-              }
-
-              // 5 Neden ve Hata Ağacı da proje başına tekti; diğer araçlar gibi
-              // tek analizlik listeye çevriliyor, eski alanlar dokümanda kalıyor.
-              if (!Array.isArray(toolData.fiveWhysAnalyses)) {
-                ['fiveWhysNodes', 'fiveWhysEdges'].forEach((k) => {
-                  if (data[k] !== undefined && toolData[k] === undefined) toolData[k] = data[k];
-                });
-                if ((toolData.fiveWhysNodes || []).length > 0) {
-                  toolData.fiveWhysAnalyses = [{
-                    id: 'migrated-5whys',
-                    name: i18n.t('whys_default_analysis_name'),
-                    nodes: toolData.fiveWhysNodes,
-                    edges: toolData.fiveWhysEdges || [],
-                    createdAt: Date.now(),
-                  }];
-                }
-              }
-
-              if (!Array.isArray(toolData.ftaAnalyses)) {
-                ['ftaNodes', 'ftaEdges'].forEach((k) => {
-                  if (data[k] !== undefined && toolData[k] === undefined) toolData[k] = data[k];
-                });
-                if ((toolData.ftaNodes || []).length > 0) {
-                  toolData.ftaAnalyses = [{
-                    id: 'migrated-fta',
-                    name: i18n.t('fta_default_analysis_name'),
-                    nodes: toolData.ftaNodes,
-                    edges: toolData.ftaEdges || [],
-                    createdAt: Date.now(),
-                  }];
-                }
-              }
-
-              let safeWaterfall = toolData.waterfall || [];
-              toolData.waterfall = safeWaterfall.map((proj: any) => ({
-                ...proj, currentPhaseIndex: proj.currentPhaseIndex ?? 0,
-                items: Array.isArray(proj.items) ? proj.items.map((item: any) => ({ ...item, phase: item.phase === 'Design' ? 'High-Level Design' : item.phase })) : []
-              }));
-
               const parsed: Project = { id: doc.id, name: data.name, updatedAt: data.updatedAt, userId: data.userId, toolData };
               if (data.isPublic !== undefined) parsed.isPublic = data.isPublic;
               if (data.sharedWith !== undefined) parsed.sharedWith = data.sharedWith;

@@ -14,6 +14,9 @@
     "noEmit": true,
 
     /* Linting */
+    // Uygulama tarafıyla aynı denetim; derleme ayarlarının kendisi de
+    // korumasız kalmasın (bkz. tsconfig.app.json).
+    "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,

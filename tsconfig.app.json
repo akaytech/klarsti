@@ -17,6 +17,10 @@
     "jsx": "react-jsx",
 
     /* Linting */
+    // Sıkı denetim: boş gelebilecek bir değer kontrol edilmeden kullanılırsa,
+    // ya da bir tip sessizce "her şey" olursa derleme durur. Açıldığı gün
+    // kaynakta tek bir hata çıkmadı; asıl işi bundan sonrasını korumak.
+    "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,

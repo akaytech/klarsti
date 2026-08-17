@@ -26,7 +26,8 @@ export type CalismaSecimEylemi =
   | 'setActiveFlowchart'
   | 'setActiveOrgchart'
   | 'setActiveVsmMap'
-  | 'setActiveGantt';
+  | 'setActiveGantt'
+  | 'setActiveRoadmap';
 
 interface AracTanimi {
   /** toolData içindeki dizi. */
@@ -76,6 +77,7 @@ const TANIMLAR: Record<ToolId, AracTanimi | null> = {
   orgchart: { anahtar: 'orgcharts', adAlani: 'name', secim: 'setActiveOrgchart', aktifAlan: 'activeOrgchartId', yenidenAdlandir: 'renameOrgchart', sil: 'deleteOrgchart' },
   gantt: { anahtar: 'ganttPlans', adAlani: 'name', secim: 'setActiveGantt', aktifAlan: 'activeGanttId', yenidenAdlandir: 'renameGanttPlan', sil: 'deleteGanttPlan' },
   vsm: { anahtar: 'vsmMaps', adAlani: 'name', secim: 'setActiveVsmMap', aktifAlan: 'activeVsmMapId', yenidenAdlandir: 'renameVsmMap', sil: 'deleteVsmMap' },
+  roadmap: { anahtar: 'roadmaps', adAlani: 'name', enAzKutu: 2, secim: 'setActiveRoadmap', aktifAlan: 'activeRoadmapId', yenidenAdlandir: 'renameRoadmap', sil: 'deleteRoadmap' },
   swot: { anahtar: 'swot', adAlani: 'title', yenidenAdlandir: 'updateSwotTitle', sil: 'deleteSwot' },
   ishikawa: { anahtar: 'ishikawa', adAlani: 'problemStatement', yenidenAdlandir: 'updateIshikawaProblem', sil: 'deleteIshikawa' },
   pdca: { anahtar: 'pdca', adAlani: 'goal', yenidenAdlandir: 'updatePdcaGoal', sil: 'deletePdcaCycle' },
@@ -195,6 +197,15 @@ export function calismaDokunulmamis(calisma: Record<string, any>, tool: ToolId):
     if (nodes.length > 1 || edges.length > 0) return false;
     const d = nodes[0]?.data ?? {};
     return d.label === i18n.t('whys_problem') && !d.description;
+  }
+
+  // Yol haritası tek bir durakla açılıyor (bkz. getInitialValue); adı hâlâ
+  // varsayılansa kullanıcı o haritaya hiç dokunmamış demektir.
+  if (tool === 'roadmap') {
+    if (nodes.length === 0) return true;
+    if (nodes.length > 1 || edges.length > 0) return false;
+    const d = nodes[0]?.data ?? {};
+    return d.label === i18n.t('roadmap_first_step') && !d.description;
   }
 
   if (tool === 'mindmap') {

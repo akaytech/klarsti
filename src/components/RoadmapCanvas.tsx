@@ -1,464 +1,380 @@
-import { useCallback, useRef, useState, useEffect } from 'react';
-import {
-  ReactFlow,
-  Panel,
-  useReactFlow,
-} from '@xyflow/react';
-import { Network, LayoutGrid } from 'lucide-react';
-import type { NodeMouseHandler, Edge } from '@xyflow/react';
-import type { GoalNode as GoalNodeType, GoalStatus } from '../store/useRoadmapStore';
-import '@xyflow/react/dist/style.css';
-import { useRoadmapStore, getDescendants, getActiveWbsTree, isPristineWbs, WBS_NODE_W, WBS_NODE_H } from '../store/useRoadmapStore';
-import { useShallow } from 'zustand/react/shallow';
-import { islem, islemBasla, islemBitir } from '../store/gecmis';
-import { getDepth } from '../utils/layout';
-import { altKutuAdi, altKutuEkleEtiketi } from '../utils/wbsSeviye';
-import { toast } from 'sonner';
-import { useTheme } from '../theme';
-import CanvasBackdrop from './CanvasBackdrop';
-import { metinAlaninda } from '../utils/metinAlaninda';
-import GoalNode from './GoalNode';
-import CanvasAddButton from './CanvasAddButton';
-import CanvasKarsilama from './CanvasKarsilama';
-import { useEkranaSigdir } from '../utils/ekranaSigdir';
-import PaneContextMenu from './PaneContextMenu';
-import SelectionContextMenu from './SelectionContextMenu';
-import WbsTreesMenu from './WbsTreesMenu';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import CanvasMiniMap from './CanvasMiniMap';
+import { ReactFlow, Panel, useReactFlow } from '@xyflow/react';
+import type { Edge, NodeMouseHandler } from '@xyflow/react';
+import '@xyflow/react/dist/style.css';
+import { Route } from 'lucide-react';
+import { useRoadmapStore } from '../store/useRoadmapStore';
+import { useShallow } from 'zustand/react/shallow';
+import {
+  getActiveRoadmap, hattaMi, roadmapHatti, roadmapAltKonular
+} from '../store/slices/createRoadmapSlice';
+import type { RoadmapNode as RoadmapNodeTipi, RoadmapYon } from '../store/slices/createRoadmapSlice';
+import { yolHaritasiYerlesimi } from '../utils/yolHaritasiYerlesimi';
+import { roadmapOrnegi } from '../utils/roadmapOrnek';
+import { metinAlaninda } from '../utils/metinAlaninda';
+import CanvasBackdrop from './CanvasBackdrop';
+import CanvasAddButton from './CanvasAddButton';
 import CanvasControls from './CanvasControls';
+import CanvasMiniMap from './CanvasMiniMap';
+import CanvasKarsilama from './CanvasKarsilama';
+import RoadmapNode from './RoadmapNode';
+import RoadmapMapsMenu from './RoadmapMapsMenu';
+import RoadmapContextMenu from './RoadmapContextMenu';
+import RoadmapDetayPaneli from './RoadmapDetayPaneli';
+import RoadmapIlerlemeSeridi from './RoadmapIlerlemeSeridi';
 
-const nodeTypes = {
-  goalNode: GoalNode,
-};
+const nodeTypes = { roadmapNode: RoadmapNode };
 
-// Sabit boş diziler: her boyamada yenisi üretilirse React Flow her seferinde
-// listeyi değişmiş sayar.
-const EMPTY_NODES: GoalNodeType[] = [];
-const EMPTY_EDGES: Edge[] = [];
+const BOS_DUGUMLER: RoadmapNodeTipi[] = [];
+const BOS_KENARLAR: Edge[] = [];
 
-export default function RoadmapCanvas({ onNodeSelect }: { onNodeSelect: (id: string | null) => void }) {
-  const themeColors = useTheme();
+const HAT_RENGI = '#84cc16';
+const KONU_RENGI = '#94a3b8';
+
+export default function RoadmapCanvas() {
   const { t } = useTranslation();
-  const {  aktifAgac, onNodesChange, onEdgesChange, onConnect, toggleExpand, addGoal, updateGoal, deleteGoal, loadWbsExample, nudgeGoals, realignAllGoals, normalizeWbsLayout  } = useRoadmapStore(useShallow((state) => ({
-      aktifAgac: getActiveWbsTree(state),
-      onNodesChange: state.onNodesChange,
-      onEdgesChange: state.onEdgesChange,
-      onConnect: state.onConnect,
-      toggleExpand: state.toggleExpand,
-      addGoal: state.addGoal,
-      updateGoal: state.updateGoal,
-      deleteGoal: state.deleteGoal,
-      loadWbsExample: state.loadWbsExample,
-      nudgeGoals: state.nudgeGoals,
-      realignAllGoals: state.realignAllGoals,
-      normalizeWbsLayout: state.normalizeWbsLayout
-    })));
+  const {
+    roadmaps, activeRoadmapId, roadmapSelectedId, roadmapDetayId,
+    onRoadmapNodesChange, onRoadmapEdgesChange, addRoadmap, addRoadmapStep, addRoadmapTopic,
+    deleteRoadmapNode, setRoadmapStatus, toggleRoadmapSecmeli, toggleRoadmapCollapse,
+    moveRoadmapStep, setRoadmapYon, replaceRoadmapContent, renameRoadmap,
+    setRoadmapSelected, setRoadmapEditingLabel, setRoadmapDetayId
+  } = useRoadmapStore(useShallow((s) => ({
+    roadmaps: s.roadmaps,
+    activeRoadmapId: s.activeRoadmapId,
+    roadmapSelectedId: s.roadmapSelectedId,
+    roadmapDetayId: s.roadmapDetayId,
+    onRoadmapNodesChange: s.onRoadmapNodesChange,
+    onRoadmapEdgesChange: s.onRoadmapEdgesChange,
+    addRoadmap: s.addRoadmap,
+    addRoadmapStep: s.addRoadmapStep,
+    addRoadmapTopic: s.addRoadmapTopic,
+    deleteRoadmapNode: s.deleteRoadmapNode,
+    setRoadmapStatus: s.setRoadmapStatus,
+    toggleRoadmapSecmeli: s.toggleRoadmapSecmeli,
+    toggleRoadmapCollapse: s.toggleRoadmapCollapse,
+    moveRoadmapStep: s.moveRoadmapStep,
+    setRoadmapYon: s.setRoadmapYon,
+    replaceRoadmapContent: s.replaceRoadmapContent,
+    renameRoadmap: s.renameRoadmap,
+    setRoadmapSelected: s.setRoadmapSelected,
+    setRoadmapEditingLabel: s.setRoadmapEditingLabel,
+    setRoadmapDetayId: s.setRoadmapDetayId
+  })));
 
-  // Ağaç henüz kurulmadıysa (proje yükleniyor) boş listelerle çalışılır;
-  // aşağıdaki kancalar koşulsuz çalışmak zorunda.
-  const nodes = aktifAgac?.nodes ?? EMPTY_NODES;
-  const edges = aktifAgac?.edges ?? EMPTY_EDGES;
+  const aktifHarita = getActiveRoadmap({ roadmaps, activeRoadmapId });
+  const nodes = aktifHarita?.nodes ?? BOS_DUGUMLER;
+  const edges = aktifHarita?.edges ?? BOS_KENARLAR;
+  const yon: RoadmapYon = aktifHarita?.yon ?? 'dikey';
 
-  const { setCenter, getZoom, screenToFlowPosition } = useReactFlow();
-  const [paneMenu, setPaneMenu] = useState<{ top: number; left: number; clientX: number; clientY: number } | null>(null);
-  // Seçili kimlikler menü açılırken dondurularak saklanıyor: menüdeki bir
-  // seçeneğe tıklamak seçimi bozarsa işlem yine doğru kutulara uygulanmalı.
-  const [secimMenusu, setSecimMenusu] = useState<{ top: number; left: number; idler: string[] } | null>(null);
-  // Kullanıcı "kendim oluşturacağım" derse panel bu oturum boyunca geri gelmez.
-  const [starterDismissed, setStarterDismissed] = useState(false);
-  const isEmptyCanvas = nodes.length === 0;
-  const showStarterPanel = !starterDismissed && isPristineWbs(nodes, edges);
-  const kaydirilmisVar = nodes.some((n) => n.data.offsetX || n.data.offsetY);
-  const setEditingDescriptionId = useRoadmapStore((s) => s.setEditingDescriptionId);
-  const setContextMenuNodeId = useRoadmapStore((s) => s.setContextMenuNodeId);
-  const reactFlowWrapper = useRef<HTMLDivElement>(null);
+  const { fitView } = useReactFlow();
+  const [menu, setMenu] = useState<{ id: string; top: number; left: number } | null>(null);
+  const [karsilamaKapandi, setKarsilamaKapandi] = useState(false);
 
-  const [isShiftPressed, setIsShiftPressed] = useState(false);
-  // Sürüklemenin başladığı yer; bitişte ne kadar taşındığını buradan çıkarıyoruz.
-  const surukleBaslangici = useRef<{ id: string; x: number; y: number } | null>(null);
-  // Geçmişte açık bir sürükleme işlemi var mı? (bkz. onNodeDragStart)
-  const surukleAcik = useRef(false);
-
-  // Dizilim kuralları değiştiğinde (kutu ölçüsü, aralıklar) eski projelerin
-  // kayıtlı konumları eskimiş oluyor. Dizilim yalnızca bir düzenleme yapılınca
-  // çalıştığı için, araç açılırken bir kez düzeltiyoruz. React Flow kutuları
-  // ölçtükten sonra çalışsın diye ilk boyanmayı bekliyoruz; yoksa uzun
-  // başlıklı kutuların gerçek yüksekliği hesaba katılmıyor.
+  // Harita ya da yön değişince yeni şekil ekrana sığsın; yoksa öncekinin
+  // kamera konumu kalıyor ve kullanıcı boş bir alana bakıyor. Yön değişimi
+  // özellikle önemli: dikeyden yataya geçen harita bambaşka bir yerde çıkıyor.
+  const aktifHaritaId = aktifHarita?.id;
   useEffect(() => {
-    const zamanlayici = setTimeout(() => normalizeWbsLayout(), 300);
-    return () => clearTimeout(zamanlayici);
-  }, [normalizeWbsLayout, aktifAgac?.id]);
+    if (!aktifHaritaId) return;
+    const zaman = setTimeout(() => fitView({ duration: 300, padding: 0.2 }), 60);
+    return () => clearTimeout(zaman);
+  }, [aktifHaritaId, yon, fitView]);
 
-  // Ağaç değişince ya da örnek şablon yüklenince kamera içeriğe sığdırılıyor.
-  // Gecikme yukarıdaki dizilim düzeltmesinden (300 ms) sonraya ayarlı; daha
-  // erken sığdırılırsa kutuların düzeltilmemiş konumlarına göre hesaplanıyor.
-  useEkranaSigdir(aktifAgac?.id, nodes.length, { padding: 0.18, duration: 500, gecikme: 380 });
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => { if (e.key === 'Shift') setIsShiftPressed(true); };
-    const handleKeyUp = (e: KeyboardEvent) => { if (e.key === 'Shift') setIsShiftPressed(false); };
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
+  // Kapalı durakların altındaki konular hiç çizilmiyor.
+  const gorunur = useMemo(() => {
+    const kapali = nodes.filter((n) => n.data.collapsed);
+    if (kapali.length === 0) return { nodes, edges };
+    const gizli = new Set<string>();
+    kapali.forEach((n) => roadmapAltKonular(n.id, nodes, edges).forEach((id) => gizli.add(id)));
+    return {
+      nodes: nodes.filter((n) => !gizli.has(n.id)),
+      edges: edges.filter((e) => !gizli.has(e.source) && !gizli.has(e.target))
     };
-  }, []);
+  }, [nodes, edges]);
 
-  const onNodeClick: NodeMouseHandler = useCallback((event, node) => {
-    document.dispatchEvent(new Event('close-menus'));
-    if (event.ctrlKey || event.metaKey) {
-       addGoal(node.id, altKutuAdi(t, getDepth(node.id, edges)));
-       return;
-    }
-    
-    onNodeSelect(node.id);
+  const yerlesim = useMemo(
+    () => yolHaritasiYerlesimi(gorunur.nodes, gorunur.edges, yon),
+    [gorunur, yon]
+  );
 
-    // Kutunun ismine tıklamak "kutuya tıklandı" sayılmıyor. İsim değiştirmek
-    // için çift tıklandığında araya iki tek tıklama giriyor; alt kutular
-    // açılıp hemen kapanıyor ve kamera her seferinde kutuya yaklaşıyordu.
-    // Yalnızca yazının kendisi kapsam dışı: ismin durduğu blok kutunun
-    // neredeyse tamamını kapladığı için kısa isimli kutularda tıklanacak yer
-    // kalmazdı.
-    if ((event.target as HTMLElement)?.closest?.('[data-kutu-basligi]')) return;
+  const cizilecekNodes = useMemo(() => gorunur.nodes.map((n) => {
+    const yer = yerlesim.get(n.id);
+    const cocukVar = edges.some((e) => e.source === n.id && nodes.find((k) => k.id === e.target)?.data.tur === 'konu');
+    return {
+      ...n,
+      position: yer ? { x: yer.x, y: yer.y } : { x: 0, y: 0 },
+      // Kutular elle taşınmıyor: harita her değişiklikten sonra kendini diziyor.
+      draggable: false,
+      selected: n.id === roadmapSelectedId,
+      data: { ...n.data, derinlik: yer?.derinlik ?? 0, hatTarafi: yer?.taraf ?? 1, cocukVar, yon }
+    };
+  }), [gorunur.nodes, yerlesim, edges, nodes, roadmapSelectedId, yon]);
 
-    toggleExpand(node.id);
+  const cizilecekEdges = useMemo(() => {
+    const kutular = new Map(gorunur.nodes.map((n) => [n.id, n]));
+    const dikey = yon === 'dikey';
 
-    // Kutunun ortasına yaklaş. Eskiden yarım kutu boyu sağa kaçıyordu: burada
-    // kutu genişliği 440 varsayılıyordu, gerçekte 220.
-    const genislik = node.measured?.width || WBS_NODE_W;
-    const yukseklik = node.measured?.height || WBS_NODE_H;
-    setCenter(node.position.x + genislik / 2, node.position.y + yukseklik / 2, { zoom: getZoom(), duration: 800 });
-  }, [addGoal, onNodeSelect, toggleExpand, setCenter, getZoom, t, edges]);
+    return gorunur.edges.map((e) => {
+      const hedef = kutular.get(e.target);
+      const kaynak = kutular.get(e.source);
+      if (!hedef || !kaynak) return { ...e, type: 'smoothstep' as const, selectable: false };
 
-  const onNodeDragStart = useCallback((_event: any, node: any) => {
-    // Sürükleme tek bir işlem: burada açılıyor, bırakılınca kapanıyor. Arada
-    // olup biten (seçim, her karede güncellenen konum) geçmişe ayrı ayrı
-    // girmiyor; geri alındığında kutu sürüklemeden ÖNCEKİ yerine dönüyor.
-    islemBasla();
-    surukleAcik.current = true;
-    surukleBaslangici.current = { id: node.id, x: node.position.x, y: node.position.y };
-    if (isShiftPressed) {
-      const descendants = getDescendants(node.id, edges);
-      const changes: any[] = descendants.map(id => ({ id, type: 'select', selected: true }));
-      // Also select the node itself just in case
-      changes.push({ id: node.id, type: 'select', selected: true });
-      onNodesChange(changes);
-    }
-  }, [edges, isShiftPressed, onNodesChange]);
+      const hatKenari = hattaMi(hedef) && hattaMi(kaynak);
+      const hedefYer = yerlesim.get(e.target);
+      const taraf = hedefYer?.taraf ?? 1;
+      const bitmis = hedef.data.durum === 'bitti' || hedef.data.durum === 'atlandi';
 
-  // Sapma sürükleme bitince tek seferde yazılır. Taşınan kutuların hepsi aynı
-  // mesafeyi kat ettiği için tek bir fark yetiyor.
-  const onNodeDragStop = useCallback((_event: any, node: any, tasinanlar?: any[]) => {
-    const baslangic = surukleBaslangici.current;
-    surukleBaslangici.current = null;
-    try {
-      if (!baslangic || baslangic.id !== node.id) return;
+      // Tutamak seçimi dizilimi izliyor (bkz. yolHaritasiYerlesimi):
+      // dikeyde konular hattın yanına, yatayda durağın altına asılıyor; alt
+      // konular ise iki yönde de yana doğru büyüyor.
+      let sourceHandle: string;
+      let targetHandle: string;
+      if (hatKenari) {
+        sourceHandle = dikey ? 'kaynak-alt' : 'kaynak-sag';
+        targetHandle = dikey ? 'hedef-ust' : 'hedef-sol';
+      } else if (dikey) {
+        sourceHandle = taraf === 1 ? 'kaynak-sag' : 'kaynak-sol';
+        targetHandle = taraf === 1 ? 'hedef-sol' : 'hedef-sag';
+      } else if ((hedefYer?.derinlik ?? 1) === 1) {
+        // Hattan aşağı (ya da yukarı) inen ilk bağlantı.
+        sourceHandle = taraf === 1 ? 'kaynak-alt' : 'kaynak-ust';
+        targetHandle = 'hedef-sol';
+      } else {
+        sourceHandle = 'kaynak-sag';
+        targetHandle = 'hedef-sol';
+      }
 
-      const dx = node.position.x - baslangic.x;
-      const dy = node.position.y - baslangic.y;
-      const idler = (tasinanlar && tasinanlar.length > 0 ? tasinanlar : [node]).map((n: any) => n.id);
-      nudgeGoals(idler, dx, dy);
-    } finally {
-      // Erken çıkışta da kapanmalı; açık kalan bir işlem sonraki bütün
-      // yazmaları kendine yutar ve geçmiş yine tek dev adıma döner.
-      surukleAcik.current = false;
-      islemBitir();
-    }
-  }, [nudgeGoals]);
+      return {
+        ...e,
+        type: 'smoothstep' as const,
+        sourceHandle,
+        targetHandle,
+        selectable: false,
+        style: {
+          stroke: hatKenari ? HAT_RENGI : KONU_RENGI,
+          strokeWidth: hatKenari ? 3 : 2,
+          // Seçmeli konu kesik çizgiyle bağlanıyor; roadmap.sh'teki ayrımın eşi.
+          strokeDasharray: hedef.data.secmeli ? '6 5' : undefined,
+          opacity: bitmis ? 0.45 : 1
+        }
+      };
+    });
+  }, [gorunur, yerlesim, yon]);
 
-  // Bırakma olayı hiç gelmeden bileşen sökülürse (araç değişimi, proje
-  // değişimi) açık işlem kapatılır.
-  useEffect(() => () => {
-    if (surukleAcik.current) {
-      surukleAcik.current = false;
-      islemBitir();
-    }
-  }, []);
+  const hat = useMemo(() => roadmapHatti(nodes, edges), [nodes, edges]);
+  const seciliKutu = nodes.find((n) => n.id === roadmapSelectedId);
+  const detayKutusu = nodes.find((n) => n.id === roadmapDetayId);
 
-  /**
-   * Toplu seçim menüsü mü açılmalı?
-   *
-   * Sağ tık şimdiye kadar iki duruma bakıyordu: kutuya mı geldi, boşluğa mı.
-   * Shift ile birden fazla kutu seçildiğinde ikisi de yanlış cevap veriyordu —
-   * seçimin içindeki boşluk "boş kanvas" sayılıyor ve kutu ekleme menüsü
-   * açılıyordu. İki kutudan itibaren üçüncü menü devreye giriyor.
-   */
-  const secilenler = useCallback(() => nodes.filter((n) => n.selected).map((n) => n.id), [nodes]);
+  /** Yeni kutu eklendikten sonra seçilip adı yazılmaya hazır hale gelsin. */
+  const yeniyeGec = useCallback((id: string | null) => {
+    if (!id) return;
+    setRoadmapSelected(id);
+    setRoadmapEditingLabel(id);
+    setTimeout(() => fitView({ duration: 300, padding: 0.2 }), 80);
+  }, [setRoadmapSelected, setRoadmapEditingLabel, fitView]);
 
-  const topluMenuAc = useCallback((event: React.MouseEvent | MouseEvent, idler: string[]) => {
+  /** Yeni durak: seçili kutu hattaysa onun ardına, değilse hattın sonuna. */
+  const durakEkle = useCallback((tur: 'adim' | 'bolum' = 'adim') => {
+    const hedef = seciliKutu && hattaMi(seciliKutu) ? seciliKutu.id : undefined;
+    yeniyeGec(addRoadmapStep(t(tur === 'bolum' ? 'roadmap_new_section' : 'roadmap_new_step'), tur, hedef));
+  }, [seciliKutu, addRoadmapStep, yeniyeGec, t]);
+
+  /** Yeni yan konu: seçili kutunun altına. */
+  const konuEkle = useCallback((parentId?: string) => {
+    const hedef = parentId || seciliKutu?.id || hat[hat.length - 1]?.id;
+    if (!hedef) return;
+    yeniyeGec(addRoadmapTopic(hedef, t('roadmap_new_topic')));
+  }, [seciliKutu, hat, addRoadmapTopic, yeniyeGec, t]);
+
+  const onNodeClick: NodeMouseHandler = useCallback((_e, node) => {
+    setRoadmapSelected(node.id);
+    setMenu(null);
+    // Panel bir kez açıldıysa tıklanan kutuyu izliyor: kullanıcı haritada
+    // gezinirken her kutu için paneli yeniden açmak zorunda kalmasın.
+    if (roadmapDetayId) setRoadmapDetayId(node.id);
+  }, [setRoadmapSelected, setRoadmapDetayId, roadmapDetayId]);
+
+  const onPaneClick = useCallback(() => {
+    setRoadmapSelected(null);
+    setMenu(null);
+    setRoadmapEditingLabel(null);
+    setRoadmapDetayId(null);
+  }, [setRoadmapSelected, setRoadmapEditingLabel, setRoadmapDetayId]);
+
+  const onNodeContextMenu = useCallback((event: React.MouseEvent, node: { id: string }) => {
+    // Yazı alanlarında sağ tık tarayıcının kendi menüsüne bırakılıyor.
+    if (metinAlaninda(event.target)) return;
     event.preventDefault();
     event.stopPropagation();
-    setSecimMenusu({ top: event.clientY, left: event.clientX, idler });
-    setPaneMenu(null);
-    setContextMenuNodeId(null);
-  }, [setContextMenuNodeId]);
+    setRoadmapSelected(node.id);
+    setMenu({ id: node.id, top: event.clientY, left: event.clientX });
+  }, [setRoadmapSelected]);
 
-  const onNodeContextMenu = useCallback(
-    (event: React.MouseEvent, node: any) => {
-      // Açıklama kutusu gibi yazı alanlarında sağ tık tarayıcının kendi
-      // menüsüne bırakılıyor: kullanıcı orada Kes/Kopyala/Yapıştır bekliyor.
-      if (metinAlaninda(event.target)) return;
+  // Klavyeyle büyüme: haritayı hızlı kuran yol bu.
+  useEffect(() => {
+    const tus = (e: KeyboardEvent) => {
+      const hedef = e.target as HTMLElement;
+      if (hedef.tagName === 'INPUT' || hedef.tagName === 'TEXTAREA' || hedef.isContentEditable) return;
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      if (hedef.closest('[data-tool-guide]')) return;
 
-      // Seçili kutulardan birine sağ tıklamak da "bu seçimle iş yapacağım"
-      // demek; tek kutu menüsü açılsaydı seçim yok sayılmış olurdu.
-      const secili = secilenler();
-      if (secili.length > 1 && secili.includes(node.id)) {
-        topluMenuAc(event, secili);
-        return;
+      const durum = useRoadmapStore.getState();
+      const harita = getActiveRoadmap(durum);
+      if (!harita) return;
+      const sira = roadmapHatti(harita.nodes, harita.edges);
+      const aktifId = durum.roadmapSelectedId || sira[sira.length - 1]?.id;
+      const aktif = harita.nodes.find((n) => n.id === aktifId);
+      if (!aktif) return;
+
+      const sec = (id: string | null) => {
+        if (!id) return;
+        durum.setRoadmapSelected(id);
+        durum.setRoadmapEditingLabel(id);
+      };
+
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        if (aktif.data.tur === 'bolum') return;
+        sec(durum.addRoadmapTopic(aktif.id, t('roadmap_new_topic')));
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (hattaMi(aktif)) {
+          sec(durum.addRoadmapStep(t('roadmap_new_step'), 'adim', aktif.id));
+        } else {
+          // Yan konuda Enter kardeş konu açar; üstü kim ise ona asılıyor.
+          const ustu = harita.edges.find((k) => k.target === aktif.id)?.source;
+          if (ustu) sec(durum.addRoadmapTopic(ustu, t('roadmap_new_topic')));
+        }
+      } else if (e.key === 'F2') {
+        e.preventDefault();
+        durum.setRoadmapEditingLabel(aktif.id);
+      } else if (e.key === 'Delete' || e.key === 'Backspace') {
+        // Hattaki tek kutu silinmiyor; harita tutunacak hiçbir kutusu
+        // olmadan boş kalırdı.
+        if (hattaMi(aktif) && sira.length <= 1) return;
+        e.preventDefault();
+        durum.deleteRoadmapNode(aktif.id);
       }
+    };
+    window.addEventListener('keydown', tus);
+    return () => window.removeEventListener('keydown', tus);
+  }, [t]);
 
-      event.preventDefault();
-      event.stopPropagation();
-      setContextMenuNodeId(node.id);
-      setPaneMenu(null);
-      setSecimMenusu(null);
-    },
-    [setContextMenuNodeId, secilenler, topluMenuAc]
-  );
+  const menuKutusu = menu ? nodes.find((n) => n.id === menu.id) : undefined;
+  const menuHatSirasi = menuKutusu && hattaMi(menuKutusu) ? hat.findIndex((n) => n.id === menuKutusu.id) : -1;
 
-  const onPaneContextMenu = useCallback(
-    (event: React.MouseEvent | MouseEvent) => {
-      if (metinAlaninda(event.target)) return;
-
-      const secili = secilenler();
-      if (secili.length > 1) {
-        topluMenuAc(event, secili);
-        return;
-      }
-
-      event.preventDefault();
-      event.stopPropagation();
-      // Boş alan menüsünün tek işi projeyi açmak. Proje zaten varsa menüyü
-      // açmıyoruz: bir ağaçta ikinci proje olmaz, yeni proje soldaki menüden
-      // yeni bir ağaç açılarak kuruluyor.
-      if (nodes.length > 0) {
-        setContextMenuNodeId(null);
-        setSecimMenusu(null);
-        return;
-      }
-      setPaneMenu({
-        top: event.clientY,
-        left: event.clientX,
-        clientX: event.clientX,
-        clientY: event.clientY,
-      });
-      setContextMenuNodeId(null);
-      setSecimMenusu(null);
-    },
-    [setContextMenuNodeId, secilenler, topluMenuAc, nodes.length]
-  );
-
-  /**
-   * Toplu işlemler. Hepsi tek `islem` sınırı içinde: yedi kutunun durumu
-   * değiştirilip geri alındığında yedisi birden dönüyor, yedi kez geri almak
-   * gerekmiyor. İç içe işlemleri gecmis.ts tek kayda indiriyor.
-   *
-   * Tek kutuluk eylemler olduğu gibi çağrılıyor; durum değişiminin ebeveyne
-   * yansıması, yeniden dizilim ve ajanda eşleşmesi orada zaten çözülmüş.
-   */
-  const topluDurum = useCallback((idler: string[], status: GoalStatus) => {
-    islem(() => idler.forEach((id) => updateGoal(id, { status })));
-  }, [updateGoal]);
-
-  const topluAcKapa = useCallback((idler: string[], acik: boolean) => {
-    // Karar tıklama anındaki duruma göre veriliyor: yalnızca istenen halde
-    // olmayanlar çevriliyor, böylece karışık seçimde hepsi aynı hale geliyor.
-    const cevrilecek = idler.filter((id) => {
-      const kutu = nodes.find((n) => n.id === id);
-      return kutu && !!kutu.data.isExpanded !== acik;
-    });
-    if (cevrilecek.length === 0) return;
-    islem(() => cevrilecek.forEach((id) => toggleExpand(id)));
-  }, [nodes, toggleExpand]);
-
-  const topluSil = useCallback((idler: string[]) => {
-    // Bir ebeveyn silinince altındakiler de gidiyor; sonradan gelen kimlik
-    // ağaçta bulunamıyor ve sessizce atlanıyor.
-    islem(() => idler.forEach((id) => deleteGoal(id)));
-  }, [deleteGoal]);
-
-  // Kanvas kaydırılınca/yakınlaştırılınca menü düğümle birlikte sürükleniyor ve
-  // ekran dışına çıkabiliyordu; hareket başlar başlamaz kapatıyoruz.
-  const onMoveStart = useCallback(() => {
-    document.dispatchEvent(new Event('close-menus'));
-    setContextMenuNodeId(null);
-    setPaneMenu(null);
-    setSecimMenusu(null);
-    setEditingDescriptionId(null);
-  }, [setContextMenuNodeId, setEditingDescriptionId]);
-
-  /**
-   * Alttaki ekleme düğmesi.
-   *
-   * Bir kırılım ağacında tek proje olur, o yüzden düğme asla ikinci bir proje
-   * açmıyor. Hedefi hep bellidir:
-   *   - ağaç boşsa → projenin kendisi
-   *   - bir kutu seçiliyse → onun altı (proje seçiliyse faz, gerisi iş paketi)
-   *   - seçim yoksa → projenin altına faz
-   * Yeni bir proje isteyen soldaki menüden yeni ağaç açıyor.
-   */
-  // Kök = kendisine gelen bir bağ olmayan kutu. Her kutu için getDepth
-  // çağırmak yerine hedefler bir kez kümeye alınıyor; yüz kutuluk bir ağaçta
-  // aradaki fark her boyamada hissediliyor.
-  const bagliHedefler = new Set(edges.map((e) => e.target));
-  const kokKutu = nodes.find((n) => !bagliHedefler.has(n.id)) ?? null;
-  const secililer = nodes.filter((n) => n.selected);
-  const hedefKutu = secililer.length === 1 ? secililer[0] : kokKutu;
-  const hedefDerinlik = hedefKutu ? getDepth(hedefKutu.id, edges) : -1;
-
-  const dugmeEtiketi = !hedefKutu ? t('wbs_add_project') : altKutuEkleEtiketi(t, hedefDerinlik);
-  const dugmeIpucu = !hedefKutu
-    ? t('wbs_hint_project')
-    : hedefDerinlik === 0
-      ? t('wbs_hint_phase')
-      : t('wbs_hint_package');
-
-  const dugmeIleEkle = useCallback(() => {
-    document.dispatchEvent(new Event('close-menus'));
-    if (!hedefKutu) {
-      addGoal(null, t('new_project_node'));
-      return;
-    }
-    addGoal(hedefKutu.id, altKutuAdi(t, hedefDerinlik));
-  }, [hedefKutu, hedefDerinlik, addGoal, t]);
-
-  const onPaneClick = useCallback((event: React.MouseEvent) => {
-    document.dispatchEvent(new Event('close-menus'));
-    if (event.ctrlKey || event.metaKey) {
-      // Ağaçta proje varsa Ctrl+tık ikinci bir proje AÇMIYOR; eskiden açıyordu
-      // ve kullanıcı farkında olmadan yan yana iki kök ağaç kuruyordu.
-      if (nodes.length > 0) {
-        toast.info(t('wbs_one_project'));
-      } else {
-        const pos = screenToFlowPosition({ x: event.clientX, y: event.clientY });
-        addGoal(null, t('new_project_node'), pos);
-      }
-    }
-    setContextMenuNodeId(null);
-    setPaneMenu(null);
-    setSecimMenusu(null);
-    setEditingDescriptionId(null);
-    onNodeSelect(null);
-  }, [onNodeSelect, screenToFlowPosition, addGoal, t, nodes.length, setEditingDescriptionId, setContextMenuNodeId]);
+  const ornegiYukle = () => {
+    const ornek = roadmapOrnegi();
+    replaceRoadmapContent(ornek.nodes, ornek.edges);
+    if (aktifHarita) renameRoadmap(aktifHarita.id, ornek.ad);
+    setKarsilamaKapandi(true);
+    setTimeout(() => fitView({ duration: 400, padding: 0.2 }), 80);
+  };
 
   return (
-    <div className="h-full w-full relative bg-slate-50 dark:bg-slate-900 transition-colors" ref={reactFlowWrapper} onContextMenu={onPaneContextMenu as any}>
+    <div className="relative h-full w-full flex-1 bg-slate-50 transition-colors dark:bg-slate-900">
       <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
+        nodes={cizilecekNodes}
+        edges={cizilecekEdges}
+        onNodesChange={onRoadmapNodesChange}
+        onEdgesChange={onRoadmapEdgesChange}
         nodeTypes={nodeTypes}
         nodesConnectable={false}
         onNodeClick={onNodeClick}
-        onNodeDragStart={onNodeDragStart}
-        onNodeDragStop={onNodeDragStop}
         onNodeContextMenu={onNodeContextMenu}
         onPaneClick={onPaneClick}
-        onMoveStart={onMoveStart}
+        onMoveStart={() => setMenu(null)}
         fitView
-        deleteKeyCode={['Delete']}
-        // maxZoom: tek kutulu bir ağaçta sığdırma varsayılan üst sınıra (2 kat)
-        // kadar yaklaşıyor ve sonradan gelen kutular o yakınlıkta kalıyordu.
-        fitViewOptions={{ duration: 1000, maxZoom: 1.2 }}
+        fitViewOptions={{ padding: 0.2 }}
         minZoom={0.1}
-        defaultEdgeOptions={{
-          type: 'smoothstep',
-          // Animasyon kapalı: yüzden fazla kutulu bir ağaçta yüzlerce çizgi
-          // sürekli yeniden çiziliyor, hem ekran huzursuz hem işlemci boşuna
-          // meşguldü. Çizgi de inceldi, kutular yaklaşınca 4px kalabalık yapıyordu.
-          animated: false,
-          style: { strokeWidth: 2, stroke: themeColors.canvasEdge },
-        }}
+        deleteKeyCode={null}
         proOptions={{ hideAttribution: true }}
       >
-        {/* React Flow'un kendi .react-flow__panel kuralı margin: 15px veriyor
-            ve Tailwind'in mt-* sınıfını eziyor; menü geri al/ileri al
-            düğmelerinin üstüne biniyordu. Satır içi stil ikisini de geçer. */}
-        <Panel position="top-left" className="flex flex-col items-start gap-2" style={{ marginTop: 72 }}>
-          {aktifAgac && <WbsTreesMenu aktif={aktifAgac} />}
-
-          {/* Elle kaydırılmış kutu varken çıkar; hepsini otomatik dizilime geri
-              döndürür. Eskiden bu düğme kaydırılan kutunun EBEVEYNİNİN üstünde
-              küçücük bir simge olarak duruyordu, kimse bulamıyordu. */}
-          {kaydirilmisVar && (
-            <button
-              onClick={() => realignAllGoals()}
-              className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md px-3 py-2 text-sm font-bold text-slate-700 dark:text-slate-200 shadow-sm hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-              title={t('goal_realign')}
-            >
-              <LayoutGrid size={16} className="text-indigo-500" />
-              <span>{t('goal_realign')}</span>
-            </button>
-          )}
-        </Panel>
-
-        <CanvasControls />
-        <CanvasMiniMap nodeColor={themeColors.minimapNode} maskColor={themeColors.minimapMask} />
         <CanvasBackdrop />
 
-        {/* Başlangıç paneli açıkken gizli: orada zaten iki büyük düğme var. */}
-        {!showStarterPanel && (
-          <CanvasAddButton
-            etiket={dugmeEtiketi}
-            ipucu={`${dugmeIpucu} ${t('canvas_add_shortcut_ctrl')}`}
-            onClick={dugmeIleEkle}
-          />
+        {/* Panellerin satır içi marginTop'u React Flow'un kendi kuralını
+            geçmek için: Tailwind'in mt-* sınıfını o kural eziyor. */}
+        {aktifHarita && (
+          <Panel position="top-left" style={{ marginTop: 68 }}>
+            <RoadmapMapsMenu aktif={aktifHarita} />
+          </Panel>
         )}
 
-        {showStarterPanel && (
-          <Panel position="top-center" className="mt-20">
-            <CanvasKarsilama
-              simge={<Network size={18} />}
-              baslik={t('wbs_empty')}
-              aciklama={t('wbs_empty_hint')}
-              birincil={{
-                etiket: isEmptyCanvas ? t('wbs_add_root') : t('start_from_scratch'),
-                onClick: () => {
-                  // Tuval boşsa kök düğüm gerekiyor; varsayılan kök zaten duruyorsa paneli kapatmak yeterli.
-                  if (isEmptyCanvas) addGoal(null, t('new_project_node'));
-                  setStarterDismissed(true);
-                }
-              }}
-              ikincil={{ etiket: t('load_example'), onClick: () => loadWbsExample() }}
-              onKapat={() => setStarterDismissed(true)}
+        {aktifHarita && (
+          <Panel position="top-left" style={{ marginTop: 120 }}>
+            <RoadmapIlerlemeSeridi
+              harita={aktifHarita}
+              onYonDegistir={() => setRoadmapYon(yon === 'dikey' ? 'yatay' : 'dikey')}
             />
           </Panel>
         )}
+
+        {/* Bütün haritalar silinmişse kanvas boş kalır; buradan yenisi kurulur. */}
+        {!aktifHarita && (
+          <Panel position="top-center" className="mt-24">
+            <CanvasKarsilama
+              simge={<Route size={18} />}
+              aciklama={t('roadmap_no_map_hint')}
+              birincil={{
+                etiket: t('roadmap_new_map'),
+                onClick: () => addRoadmap(t('roadmap_map_name_n', { sira: 1 }), t('roadmap_first_step'))
+              }}
+            />
+          </Panel>
+        )}
+
+        {aktifHarita && nodes.length <= 1 && !karsilamaKapandi && (
+          <Panel position="top-center" className="mt-24">
+            <CanvasKarsilama
+              simge={<Route size={18} />}
+              aciklama={t('roadmap_start_hint')}
+              birincil={{ etiket: t('roadmap_add_step'), onClick: () => durakEkle('adim') }}
+              ikincil={{ etiket: t('roadmap_load_example'), onClick: ornegiYukle }}
+              onKapat={() => setKarsilamaKapandi(true)}
+            />
+          </Panel>
+        )}
+
+        <CanvasControls />
+        <CanvasMiniMap nodeColor={(n) => ((n.data as { tur?: string })?.tur === 'konu' ? KONU_RENGI : HAT_RENGI)} />
+
+        {aktifHarita && nodes.length > 1 && (
+          <CanvasAddButton
+            etiket={t('roadmap_add_step')}
+            ipucu={t('canvas_add_shortcut_enter')}
+            onClick={() => durakEkle('adim')}
+          />
+        )}
       </ReactFlow>
 
-      {paneMenu && (
-        <PaneContextMenu
-          x={paneMenu.left}
-          y={paneMenu.top}
-          onClose={() => setPaneMenu(null)}
-          onAddRootGoal={() => {
-            const pos = screenToFlowPosition({
-              x: paneMenu.clientX,
-              y: paneMenu.clientY,
-            });
-            addGoal(null, t('new_project_node'), pos);
-            setPaneMenu(null);
-          }}
-        />
+      {detayKutusu && (
+        <RoadmapDetayPaneli node={detayKutusu} onClose={() => setRoadmapDetayId(null)} />
       )}
 
-      {secimMenusu && (
-        <SelectionContextMenu
-          x={secimMenusu.left}
-          y={secimMenusu.top}
-          sayi={secimMenusu.idler.length}
-          onClose={() => setSecimMenusu(null)}
-          onStatus={(status) => topluDurum(secimMenusu.idler, status)}
-          onExpand={() => topluAcKapa(secimMenusu.idler, true)}
-          onCollapse={() => topluAcKapa(secimMenusu.idler, false)}
-          onDelete={() => topluSil(secimMenusu.idler)}
+      {menu && menuKutusu && (
+        <RoadmapContextMenu
+          x={menu.left}
+          y={menu.top}
+          veri={menuKutusu.data}
+          yon={yon}
+          ilkHatKutusu={menuHatSirasi === 0}
+          sonHatKutusu={menuHatSirasi === hat.length - 1}
+          cocukVar={edges.some((e) => e.source === menu.id && nodes.find((k) => k.id === e.target)?.data.tur === 'konu')}
+          onClose={() => setMenu(null)}
+          onDurum={(durum) => { setRoadmapStatus(menu.id, durum); setMenu(null); }}
+          onSonrakiDurak={() => { yeniyeGec(addRoadmapStep(t('roadmap_new_step'), 'adim', menu.id)); setMenu(null); }}
+          onBolum={() => { yeniyeGec(addRoadmapStep(t('roadmap_new_section'), 'bolum', menu.id)); setMenu(null); }}
+          onYanKonu={() => { konuEkle(menu.id); setMenu(null); }}
+          onTasi={(taraf) => { moveRoadmapStep(menu.id, taraf); setMenu(null); }}
+          onDuzenle={() => { setRoadmapEditingLabel(menu.id); setMenu(null); }}
+          onDetay={() => { setRoadmapDetayId(menu.id); setMenu(null); }}
+          onSecmeli={() => { toggleRoadmapSecmeli(menu.id); setMenu(null); }}
+          onDaralt={() => { toggleRoadmapCollapse(menu.id); setMenu(null); }}
+          onSil={() => { deleteRoadmapNode(menu.id); setMenu(null); }}
         />
       )}
-
     </div>
   );
 }

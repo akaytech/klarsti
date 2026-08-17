@@ -7,7 +7,7 @@ import { useShallow } from 'zustand/react/shallow';
 import clsx from 'clsx';
 import ConfirmModal from './ConfirmModal';
 import { ajandaDugmesiGorunurMu } from '../utils/ajandaDugmesi';
-import { Folder, Plus, Trash2, ChevronDown, ChevronRight, Fish, RefreshCcw, Layers, Pencil, AlertOctagon, Scale, GitMerge, BarChart2, BarChart, Activity, Network, Target, Check, Brain, UsersRound, Link2, Map, ArrowRight, CalendarRange } from 'lucide-react';
+import { Folder, Plus, Trash2, ChevronDown, ChevronRight, Fish, RefreshCcw, Layers, Pencil, AlertOctagon, Scale, GitMerge, BarChart2, BarChart, Activity, Network, Target, Check, Brain, UsersRound, Link2, Map, ArrowRight, CalendarRange, Route } from 'lucide-react';
 import type { Project } from '../store/useRoadmapStore';
 import { toolTheme } from '../config/toolTheme';
 import { aracCalismalari, aracSecimEylemi, calismayiYenidenAdlandir, calismayiSil } from '../config/toolWorks';
@@ -16,6 +16,7 @@ import { useDisariTiklama } from '../utils/menuKapatma';
 
 const TOOL_OPTIONS: { id: ToolId; icon: typeof Network; label: string; color: string; bg: string }[] = [
   { id: 'mindmap', icon: Brain, label: 'tool_mindmap', color: 'text-purple-500', bg: 'bg-purple-100 dark:bg-purple-900/40' },
+  { id: 'roadmap', icon: Route, label: 'roadmap_title', color: 'text-lime-600', bg: 'bg-lime-100 dark:bg-lime-900/40' },
   { id: 'wbs', icon: Network, label: 'tool_wbs', color: 'text-indigo-500', bg: 'bg-indigo-100 dark:bg-indigo-900/40' },
   { id: 'swot', icon: Target, label: 'tool_swot', color: 'text-rose-500', bg: 'bg-rose-100 dark:bg-rose-900/40' },
   { id: '5whys', icon: Activity, label: 'tool_5whys', color: 'text-emerald-500', bg: 'bg-emerald-100 dark:bg-emerald-900/40' },

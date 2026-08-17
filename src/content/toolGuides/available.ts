@@ -4,5 +4,6 @@
 export const GUIDE_TOOLS = [
   'mindmap', 'wbs', '5whys', 'flowchart', 'orgchart',
   'swot', 'ishikawa', 'pdca', 'waterfall', 'fta',
-  'vsm', 'gantt', 'pareto', 'histogram', 'decision', 'notepad'
+  'vsm', 'gantt', 'pareto', 'histogram', 'decision', 'notepad',
+  'roadmap'
 ];

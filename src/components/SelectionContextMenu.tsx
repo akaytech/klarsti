@@ -13,7 +13,7 @@ import { useBaglamMenusuKapat } from '../utils/menuKapatma';
  * boşluğa mı" diye bakıyordu. Toplu seçimin içindeki boşluğa tıklamak boş
  * kanvasa tıklamak sayılıyor ve kutu ekleme menüsü açılıyordu.
  *
- * Buradaki her işlem tek adım olarak kaydediliyor (bkz. RoadmapCanvas):
+ * Buradaki her işlem tek adım olarak kaydediliyor (bkz. WbsCanvas):
  * yedi kutunun durumu değiştirilip geri alındığında yedisi birden dönüyor.
  */
 export default function SelectionContextMenu({

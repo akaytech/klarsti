@@ -126,5 +126,13 @@
     "title": "Gantt Chart Tool — Plan Work on a Timeline | Klarsti",
     "description": "Lay your tasks out on a calendar, set start and end dates, link what waits for what and see progress and slippage at a glance.",
     "keywords": "gantt chart, project timeline, project schedule, task dependencies, milestone planning"
+  },
+  {
+    "slug": "roadmap",
+    "toolId": "roadmap",
+    "name": "Roadmap",
+    "title": "Roadmap Maker — Build a Learning Path or Plan | Klarsti",
+    "description": "Lay a subject out as a track of steps with side topics, mark what is done, learning or skipped, attach links to each topic and watch your progress add up.",
+    "keywords": "roadmap maker, learning path, skill roadmap, onboarding plan, study plan, progress tracking"
   }
 ]

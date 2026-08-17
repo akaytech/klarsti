@@ -458,6 +458,44 @@ const guides: ToolGuideBundle = {
       "La línea roja marca hoy. Lo que no está terminado y ya pasó su fecha sale con borde rojo.",
       "Día / semana / mes comprimen o abren el calendario. La vista de mes cabe un plan largo en una pantalla."
     ]
+  },
+
+  roadmap: {
+    title: "Hoja de ruta",
+    summary: "Un mapa que divide un tema en pasos sucesivos, con los subtemas colgando de cada paso. Nunca arrastras las casillas: el mapa se ordena solo después de cada cambio. A diferencia de la estructura de desglose, aquí se sigue el avance: cada casilla tiene un estado y la franja superior dice cuánto llevas hecho.",
+    whenToUse: [
+      "Para ordenar un tema en secuencia de aprendizaje y saber dónde te quedaste.",
+      "Para planificar paso a paso los primeros meses de alguien que se incorpora.",
+      "Para enseñar en una sola pantalla por qué fases pasa un trabajo.",
+      "Para desglosar un programa de formación en temas y adjuntar el material."
+    ],
+    steps: [
+      "Una carpeta puede tener varias hojas de ruta. Desde el menú de arriba a la izquierda creas una nueva y cambias entre ellas.",
+      "El trazado principal va de principio a fin. Selecciona un paso y pulsa Intro para añadir el siguiente.",
+      "Con un paso seleccionado, Tab le cuelga un tema. Sobre un tema, Tab crea un subtema y Intro uno del mismo nivel.",
+      "El círculo del principio de la casilla cambia el estado: Sin empezar → En curso → Hecho → Omitido. El color va detrás.",
+      "Clic derecho en una casilla y «Detalles» abre el panel lateral: nota, tiempo estimado y enlaces.",
+      "Para dividir una hoja de ruta larga, añade un título de sección desde el menú contextual (Inicial / Medio / Avanzado, por ejemplo).",
+      "Si haces opcional un tema, se conecta con línea discontinua y queda fuera del porcentaje.",
+      "El botón de giro de la franja pasa el trazado de vertical a horizontal; así una hoja larga se lee bien en pantalla ancha."
+    ],
+    shortcuts: [
+      { keys: ["Enter"], desc: "Paso nuevo en el trazado" },
+      { keys: ["Tab"], desc: "Tema bajo la casilla seleccionada" },
+      { keys: ["F2"], desc: "Cambiar el nombre de la casilla" },
+      { keys: ["Delete"], desc: "Eliminar la casilla seleccionada" },
+      { keys: ["Shift", "Enter"], desc: "Salto de línea al escribir" },
+      { keys: ["Esc"], desc: "Cerrar el campo de texto" },
+      { keys: ["Mod", "Z"], desc: "Deshacer" },
+      { keys: ["Mod", "Y"], desc: "Rehacer" }
+    ],
+    tips: [
+      "Las casillas no se arrastran, la disposición es automática. Para cambiar el orden de un paso usa las opciones del menú contextual.",
+      "Los temas alternan de lado entre un paso y otro, para que el mapa no crezca hacia un solo lado.",
+      "Las casillas omitidas cuentan como terminadas: un tema que decides no hacer no debe frenar el porcentaje para siempre.",
+      "Las horas que anotas se suman; la franja muestra el total que queda en las casillas sin terminar.",
+      "La dirección debe empezar por http o https; en otro caso no se acepta."
+    ]
   }
 };
 

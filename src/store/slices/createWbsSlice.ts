@@ -641,7 +641,7 @@ export const createWbsSlice: StateCreator<
   }),
 
   // Sürükleme kanvasta islemBasla/islemBitir arasına alınıyor (bkz.
-  // RoadmapCanvas): geçmişe giren hal sürükleme ÖNCESİ hal olmalı, çünkü ara
+  // WbsCanvas): geçmişe giren hal sürükleme ÖNCESİ hal olmalı, çünkü ara
   // kareler kutunun konumunu çoktan değiştirmiş oluyor. Buradaki sarmalayıcı
   // yalnızca kanvas dışından gelen çağrılar için.
   nudgeGoals: (ids, dx, dy) => islem(() => {

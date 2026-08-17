@@ -232,7 +232,7 @@ export default function GoalNode({ data, selected }: { data: GoalNodeData; selec
               ref={inputRef}
               // İsim kutusu da başlık sayılıyor: işaret olmayınca içine
               // tıklamak "kutuya tıklandı" oluyor, alt kutular açılıp kapanıyor
-              // ve kamera kutuya yaklaşıyordu (bkz. RoadmapCanvas onNodeClick).
+              // ve kamera kutuya yaklaşıyordu (bkz. WbsCanvas onNodeClick).
               data-kutu-basligi
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
@@ -249,7 +249,7 @@ export default function GoalNode({ data, selected }: { data: GoalNodeData; selec
           ) : (
             <div className="flex flex-col gap-1">
               {/* data-kutu-basligi: kanvas, tıklamanın buraya gelip gelmediğine
-                  bakıp alt kutuları açıp kapamayı atlıyor (bkz. RoadmapCanvas
+                  bakıp alt kutuları açıp kapamayı atlıyor (bkz. WbsCanvas
                   onNodeClick). İsim değiştirmek için çift tıklarken alt kutular
                   açılıp kapanıyordu.
 

@@ -26,7 +26,7 @@ const GlobalExportButton: React.FC = () => {
       // ve değer akışı listede yoktu; aşağıdaki HTML dalına düşüyor, o dal da
       // bu kanvaslarda bulunmayan .flex-1.overflow-auto elemanını aradığı için
       // dışa aktarma "aktarılacak bir şey yok" diyerek sessizce başarısızdı.
-      const isReactFlowTool = ['wbs', '5whys', 'fta', 'flowchart', 'orgchart', 'mindmap', 'vsm'].includes(activeTool as string);
+      const isReactFlowTool = ['wbs', '5whys', 'fta', 'flowchart', 'orgchart', 'mindmap', 'vsm', 'roadmap'].includes(activeTool as string);
 
       if (isReactFlowTool) {
         const nodes = getNodes();

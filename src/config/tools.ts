@@ -1,5 +1,5 @@
 import React from 'react';
-import { Activity, Fish, BarChart2, BarChart, Target, Scale, AlertOctagon, Network, RefreshCcw, Layers, GitMerge, CalendarDays, Map, Brain, UsersRound, CalendarRange } from 'lucide-react';
+import { Activity, Fish, BarChart2, BarChart, Target, Scale, AlertOctagon, Network, RefreshCcw, Layers, GitMerge, CalendarDays, Map, Brain, UsersRound, CalendarRange, Route } from 'lucide-react';
 import type { ToolId } from '../store/useRoadmapStore';
 
 export type CategoryId = 'cat_root_cause' | 'cat_data_stats' | 'cat_strategy_decision_risk' | 'cat_process_project' | 'cat_productivity_docs';
@@ -33,6 +33,7 @@ export const TOOLS: ToolDef[] = [
   { id: 'decision', icon: Scale, labelKey: 'decision_title', descKey: 'decision_desc', category: 'cat_strategy_decision_risk' },
   { id: 'fta', icon: AlertOctagon, labelKey: 'fta_title', descKey: 'fta_desc', category: 'cat_strategy_decision_risk' },
   { id: 'mindmap', icon: Brain, labelKey: 'tool_mindmap', descKey: 'mindmap_desc', category: 'cat_productivity_docs' },
+  { id: 'roadmap', icon: Route, labelKey: 'roadmap_title', descKey: 'roadmap_desc', category: 'cat_process_project' },
   { id: 'wbs', icon: Network, labelKey: 'tool_wbs', descKey: 'wbs_desc', category: 'cat_process_project' },
   { id: 'pdca', icon: RefreshCcw, labelKey: 'tool_pdca', descKey: 'pdca_desc', category: 'cat_process_project' },
   { id: 'waterfall', icon: Layers, labelKey: 'tool_waterfall', descKey: 'wf_desc', category: 'cat_process_project' },

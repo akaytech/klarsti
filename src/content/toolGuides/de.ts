@@ -458,6 +458,44 @@ const guides: ToolGuideBundle = {
       "Die rote Linie zeigt heute. Unfertige Aufgaben mit abgelaufenem Enddatum bekommen einen roten Rahmen.",
       "Tag / Woche / Monat stauchen oder dehnen den Kalender. Die Monatsansicht zeigt lange Pläne komplett."
     ]
+  },
+
+  roadmap: {
+    title: "Roadmap",
+    summary: "Eine Karte, die ein Thema in aufeinanderfolgende Schritte zerlegt, an denen die Unterthemen hängen. Du schiebst keine Kästchen; die Karte ordnet sich nach jeder Änderung selbst. Anders als der Projektstrukturplan verfolgt sie den Fortschritt: jedes Kästchen hat einen Status, und die Leiste oben zeigt, wie viel schon geschafft ist.",
+    whenToUse: [
+      "Um ein Thema in Lernreihenfolge zu bringen und zu sehen, wo du stehst.",
+      "Um die ersten Monate neuer Mitarbeitender Schritt für Schritt zu planen.",
+      "Um auf einem Bildschirm zu zeigen, welche Phasen eine Arbeit durchläuft.",
+      "Um ein Schulungsprogramm in Themen zu zerlegen und Material daran zu hängen."
+    ],
+    steps: [
+      "Ein Ordner kann mehrere Roadmaps enthalten. Über das Menü oben links legst du eine neue an und wechselst zwischen ihnen.",
+      "Die Hauptlinie läuft von Anfang bis Ende. Wähle einen Schritt und drücke Enter, um dahinter einen neuen einzufügen.",
+      "Bei ausgewähltem Schritt hängt Tab ein Thema daran. Auf einem Thema erzeugt Tab ein Unterthema, Enter ein gleichrangiges.",
+      "Der Kreis am Anfang eines Kästchens ändert den Status: Nicht begonnen → In Arbeit → Erledigt → Übersprungen. Die Farbe ändert sich mit.",
+      "Rechtsklick auf ein Kästchen und „Details\" öffnet die Seitenleiste: Notiz, Zeitschätzung und Links stehen dort.",
+      "Um eine lange Roadmap zu gliedern, füge über das Rechtsklickmenü einen Abschnittstitel ein (etwa Grundlagen / Mittel / Fortgeschritten).",
+      "Ein optionales Thema wird gestrichelt angebunden und zählt nicht zum Fortschritt.",
+      "Die Drehtaste in der Fortschrittsleiste kippt die Linie von senkrecht auf waagerecht; so bleibt eine lange Karte auf breiten Bildschirmen lesbar."
+    ],
+    shortcuts: [
+      { keys: ["Enter"], desc: "Neuer Schritt auf der Linie" },
+      { keys: ["Tab"], desc: "Thema unter dem gewählten Kästchen" },
+      { keys: ["F2"], desc: "Gewähltes Kästchen umbenennen" },
+      { keys: ["Delete"], desc: "Gewähltes Kästchen löschen" },
+      { keys: ["Shift", "Enter"], desc: "Neue Zeile beim Schreiben" },
+      { keys: ["Esc"], desc: "Textfeld schließen" },
+      { keys: ["Mod", "Z"], desc: "Rückgängig" },
+      { keys: ["Mod", "Y"], desc: "Wiederherstellen" }
+    ],
+    tips: [
+      "Kästchen werden nicht verschoben, das Layout ist automatisch. Die Reihenfolge änderst du über die Verschiebebefehle im Rechtsklickmenü.",
+      "Die Themen wechseln von Schritt zu Schritt die Seite, damit die Karte nicht einseitig anwächst.",
+      "Übersprungene Kästchen zählen als erledigt: ein bewusst ausgelassenes Thema soll den Prozentwert nicht dauerhaft drücken.",
+      "Die eingetragenen Stunden werden summiert; die Leiste oben zeigt den Rest der offenen Kästchen.",
+      "Ein Link muss mit http oder https beginnen, sonst wird er nicht angenommen."
+    ]
   }
 };
 

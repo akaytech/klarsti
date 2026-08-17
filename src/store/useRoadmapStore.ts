@@ -63,7 +63,8 @@ export const TOOL_KEYS_MAP: Record<string, string[]> = {
   pareto: ['pareto'],
   histogram: ['histogram'],
   vsm: ['vsmMaps'],
-  gantt: ['ganttPlans']
+  gantt: ['ganttPlans'],
+  roadmap: ['roadmaps']
   // 'notepad' burada yok: ajanda kişisel, projeye ait değil.
 };
 
@@ -71,6 +72,7 @@ import { getDefaultWbsTrees } from './slices/createWbsSlice';
 import { yeniVsmHarita } from './slices/createVsmSlice';
 import { yeniFiveWhysAnalizi } from './slices/createFiveWhysSlice';
 import { yeniFtaAnalizi } from './slices/createFtaSlice';
+import { yeniRoadmap } from './slices/createRoadmapSlice';
 
 export const getInitialValue = (toolName: string, key: string) => {
   if (toolName === 'wbs' && key === 'wbsTrees') return getDefaultWbsTrees();
@@ -91,6 +93,9 @@ export const getInitialValue = (toolName: string, key: string) => {
   // başlangıç ekranı kurar; eskiden bir useEffect kanvas boşaldıkça tedarikçi
   // kutusunu geri koyuyordu ve haritayı boşaltmak imkânsızdı.
   if (toolName === 'vsm' && key === 'vsmMaps') return [yeniVsmHarita(i18n.t('vsm_default_map_name'), 'mevcut')];
+  // Yol haritası tek bir durakla açılır: hat boş başlarsa kullanıcının
+  // tutunacağı, üstüne basıp devam edeceği bir kutu olmuyor.
+  if (toolName === 'roadmap' && key === 'roadmaps') return [yeniRoadmap(i18n.t('roadmap_default_map_name'), i18n.t('roadmap_first_step'))];
   return [];
 };
 
@@ -107,7 +112,7 @@ export const TOOL_STATE_KEYS = [
   'wbsTrees', 'fiveWhysAnalyses', 'swot', 'ishikawa',
   'pdca', 'waterfall', 'pareto', 'histogram', 'decision',
   'flowcharts', 'orgcharts', 'mindmaps', 'ftaAnalyses',
-  'vsmMaps', 'ganttPlans'
+  'vsmMaps', 'ganttPlans', 'roadmaps'
 ] as const;
 
 
@@ -161,6 +166,17 @@ import type { MindmapSlice, MindmapNode, MindmapNodeData, Mindmap } from './slic
 export type { MindmapNode, MindmapNodeData, Mindmap };
 export { getActiveMindmap };
 
+import { createRoadmapSlice, getActiveRoadmap } from './slices/createRoadmapSlice';
+import type {
+  RoadmapSlice, Roadmap, RoadmapNode, RoadmapNodeData, RoadmapDurum,
+  RoadmapKutuTuru, RoadmapKaynak, RoadmapKaynakTuru, RoadmapYon
+} from './slices/createRoadmapSlice';
+export type {
+  Roadmap, RoadmapNode, RoadmapNodeData, RoadmapDurum,
+  RoadmapKutuTuru, RoadmapKaynak, RoadmapKaynakTuru, RoadmapYon
+};
+export { getActiveRoadmap };
+
 import { createFlowchartSlice } from './slices/createFlowchartSlice';
 import type { FlowchartSlice, FlowchartNodeType, FlowchartNodeData, FlowchartNode, Flowchart } from './slices/createFlowchartSlice';
 export type { FlowchartNodeType, FlowchartNodeData, FlowchartNode, Flowchart };
@@ -192,7 +208,7 @@ export { getActiveVsmMap } from './slices/createVsmSlice';
 
 
 
-export type ToolId = 'mindmap' | 'wbs' | '5whys' | 'gantt' | 'swot' | 'ishikawa' | 'pdca' | 'waterfall' | 'fta' | 'decision' | 'flowchart' | 'orgchart' | 'pareto' | 'histogram' | 'notepad' | 'vsm';
+export type ToolId = 'mindmap' | 'wbs' | '5whys' | 'gantt' | 'swot' | 'ishikawa' | 'pdca' | 'waterfall' | 'fta' | 'decision' | 'flowchart' | 'orgchart' | 'pareto' | 'histogram' | 'notepad' | 'vsm' | 'roadmap';
 
 /**
  * Katılanlar listesindeki bir satır. Paylaşım linkiyle projeye katılan kişi
@@ -265,7 +281,7 @@ export interface WorkRecord {
   updatedAt: number;
 }
 
-export interface RoadmapState extends NotepadSlice, JournalSlice, FiveWhysSlice, SwotSlice, IshikawaSlice, PdcaSlice, WaterfallSlice, FtaSlice, FlowchartSlice, OrgchartSlice, MindmapSlice, ParetoSlice, HistogramSlice, DecisionSlice, WbsSlice, VsmSlice, GanttSlice {
+export interface RoadmapState extends NotepadSlice, JournalSlice, FiveWhysSlice, SwotSlice, IshikawaSlice, PdcaSlice, WaterfallSlice, FtaSlice, FlowchartSlice, OrgchartSlice, MindmapSlice, ParetoSlice, HistogramSlice, DecisionSlice, WbsSlice, VsmSlice, GanttSlice, RoadmapSlice {
   projectUnsubscribe: (() => void) | null;
   // Kişisel veri (ajanda) users/{uid} dokümanından gelir, projelerden bağımsız dinlenir.
   personalUnsubscribe: (() => void) | null;
@@ -335,6 +351,7 @@ const gecmiseGirenler = (state: RoadmapState) => ({
   mindmaps: state.mindmaps,
   ftaAnalyses: state.ftaAnalyses,
   vsmMaps: state.vsmMaps,
+  roadmaps: state.roadmaps,
 });
 
 // zundo'nun geçmişe yazma fonksiyonu; middleware kurulurken doluyor.
@@ -469,6 +486,7 @@ export const useRoadmapStore = create<RoadmapState>()(
         ...createGanttSlice(set, get, api),
         ...createWbsSlice(set, get, api),
         ...createVsmSlice(set, get, api),
+        ...createRoadmapSlice(set, get, api),
 
         projectUnsubscribe: null,
         personalUnsubscribe: null,
@@ -492,7 +510,8 @@ export const useRoadmapStore = create<RoadmapState>()(
           // flushPendingSaves() ile bekliyor (bkz. TopRightUserMenu.logout);
           // buradaki flush yalnızca duran ağ.
           set({ projectsLoaded: false, projects: [], currentProjectId: null, activeTool: null, wbsTrees: [], activeWbsTreeId: null, fiveWhysAnalyses: [], activeFiveWhysId: null, swot: [], ishikawa: [], pdca: [], waterfall: [], pareto: [], histogram: [],
-            decision: [], flowcharts: [], activeFlowchartId: null, orgcharts: [], activeOrgchartId: null, mindmaps: [], activeMindmapId: null, ftaAnalyses: [], activeFtaId: null, notepad: [], vsmMaps: [], activeVsmMapId: null, ganttPlans: [], activeGanttId: null, projectUnsubscribe: null,
+            decision: [], flowcharts: [], activeFlowchartId: null, orgcharts: [], activeOrgchartId: null, mindmaps: [], activeMindmapId: null, ftaAnalyses: [], activeFtaId: null, notepad: [], vsmMaps: [], activeVsmMapId: null, ganttPlans: [], activeGanttId: null,
+            roadmaps: [], activeRoadmapId: null, roadmapSelectedId: null, roadmapEditingLabelId: null, roadmapDetayId: null, projectUnsubscribe: null,
             personalUnsubscribe: null, personalLoaded: false,
             works: [], worksLoaded: false, worksUnsubscribe: null,
             journal: {}, journalDates: [], journalLoadedDates: [], journalSavingDates: [], journalSavedDates: [], journalLoadError: null });

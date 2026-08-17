@@ -30,6 +30,7 @@ const NAVBAR_THEME: Record<ToolId, { activeBtn: string; iconBg: string }> = {
   mindmap: { activeBtn: "bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400", iconBg: "bg-purple-100 text-purple-600 dark:bg-purple-900/50 dark:text-purple-400" },
   notepad: { activeBtn: "bg-fuchsia-50 text-fuchsia-700 dark:bg-fuchsia-900/30 dark:text-fuchsia-400", iconBg: "bg-fuchsia-100 text-fuchsia-600 dark:bg-fuchsia-900/50 dark:text-fuchsia-400" },
   vsm: { activeBtn: "bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400", iconBg: "bg-indigo-100 text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-400" },
+  roadmap: { activeBtn: "bg-lime-50 text-lime-700 dark:bg-lime-900/30 dark:text-lime-400", iconBg: "bg-lime-100 text-lime-600 dark:bg-lime-900/50 dark:text-lime-400" },
 };
 
 /** Menünün üstünde kaç tane "son kullandığın" araç gösterilecek. */

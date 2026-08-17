@@ -458,6 +458,44 @@ const guides: ToolGuideBundle = {
       "A linha vermelha marca hoje. Tarefas por concluir com data passada ficam com contorno vermelho.",
       "Dia / semana / mês apertam ou abrem o calendário. A vista de mês cabe um plano longo num ecrã."
     ]
+  },
+
+  roadmap: {
+    title: "Roteiro",
+    summary: "Um mapa que divide um assunto em etapas sucessivas, com os temas pendurados em cada etapa. Nunca arrastas as caixas: o mapa organiza-se sozinho a cada alteração. Ao contrário da estrutura de decomposição, aqui segue-se o progresso: cada caixa tem um estado e a faixa de cima diz quanto já está feito.",
+    whenToUse: [
+      "Para pôr um assunto por ordem de aprendizagem e saber onde ficaste.",
+      "Para planear passo a passo os primeiros meses de quem chega.",
+      "Para mostrar num só ecrã as fases por que passa um trabalho.",
+      "Para dividir um programa de formação em temas e anexar-lhes os materiais."
+    ],
+    steps: [
+      "Uma pasta pode ter vários roteiros. No menu do canto superior esquerdo crias um novo e alternas entre eles.",
+      "O traçado principal vai do início ao fim. Seleciona uma etapa e carrega em Enter para acrescentar a seguinte.",
+      "Com uma etapa selecionada, o Tab pendura-lhe um tema. Num tema, o Tab cria um subtema e o Enter um do mesmo nível.",
+      "O círculo no início da caixa muda o estado: Por começar → Em curso → Concluído → Ignorado. A cor acompanha.",
+      "Botão direito numa caixa e «Detalhes» abre o painel lateral: nota, tempo estimado e ligações.",
+      "Para dividir um roteiro longo, acrescenta um título de secção pelo menu de contexto (Inicial / Intermédio / Avançado, por exemplo).",
+      "Um tema tornado opcional é ligado a tracejado e fica de fora da percentagem.",
+      "O botão de rodar na faixa passa o traçado de vertical a horizontal; assim um roteiro longo lê-se bem num ecrã largo."
+    ],
+    shortcuts: [
+      { keys: ["Enter"], desc: "Nova etapa no traçado" },
+      { keys: ["Tab"], desc: "Tema sob a caixa selecionada" },
+      { keys: ["F2"], desc: "Mudar o nome da caixa selecionada" },
+      { keys: ["Delete"], desc: "Eliminar a caixa selecionada" },
+      { keys: ["Shift", "Enter"], desc: "Mudar de linha ao escrever" },
+      { keys: ["Esc"], desc: "Fechar o campo de texto" },
+      { keys: ["Mod", "Z"], desc: "Anular" },
+      { keys: ["Mod", "Y"], desc: "Refazer" }
+    ],
+    tips: [
+      "As caixas não se arrastam, a disposição é automática. Para mudar a ordem de uma etapa usa os comandos do menu de contexto.",
+      "Os temas alternam de lado de etapa para etapa, para o mapa não crescer só para um lado.",
+      "As caixas ignoradas contam como terminadas: um tema que decidiste não fazer não deve travar a percentagem para sempre.",
+      "As horas que escreves somam-se; a faixa mostra o total que falta nas caixas por terminar.",
+      "O endereço tem de começar por http ou https, caso contrário não é aceite."
+    ]
   }
 };
 

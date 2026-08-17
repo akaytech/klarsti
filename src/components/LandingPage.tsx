@@ -49,6 +49,7 @@ export default function LandingPage() {
     orgchart: 'bg-sky-100 dark:bg-sky-900/50',
     vsm: 'bg-indigo-100 dark:bg-indigo-900/50',
     mindmap: 'bg-purple-100 dark:bg-purple-900/50',
+    roadmap: 'bg-lime-100 dark:bg-lime-900/50',
     notepad: 'bg-fuchsia-100 dark:bg-fuchsia-900/50',
   };
 

@@ -24,6 +24,7 @@ import { denemeKipindeMi } from '../utils/denemeKipi';
 const ToolGuidePanel = gecikmeliEkran(() => import('./ToolGuidePanel'));
 const WorksPage = gecikmeliEkran(() => import('./WorksPage'));
 
+const WbsCanvas = gecikmeliEkran(() => import('./WbsCanvas'));
 const RoadmapCanvas = gecikmeliEkran(() => import('./RoadmapCanvas'));
 const FiveWhysCanvas = gecikmeliEkran(() => import('./FiveWhysCanvas'));
 const SwotCanvas = gecikmeliEkran(() => import('./SwotCanvas'));
@@ -68,7 +69,8 @@ function DecisionMatrixWrapper() {
 }
 
 const TOOL_COMPONENTS: Record<string, React.ElementType> = {
-  wbs: () => <RoadmapCanvas onNodeSelect={() => {}} />,
+  wbs: () => <WbsCanvas onNodeSelect={() => {}} />,
+  roadmap: RoadmapCanvas,
   '5whys': FiveWhysCanvas,
   swot: SwotCanvas,
   ishikawa: IshikawaCanvas,

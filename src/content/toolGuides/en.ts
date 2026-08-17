@@ -458,6 +458,44 @@ const guides: ToolGuideBundle = {
       "The red line marks today. Unfinished work whose end date has passed gets a red outline.",
       "Day / week / month buttons squeeze or open the calendar. Month view fits a long plan on one screen."
     ]
+  },
+
+  roadmap: {
+    title: "Roadmap",
+    summary: "A map that breaks a subject into a track of steps, with topics hanging off each step. You never drag the boxes; the map lays itself out after every change. What sets it apart from a work breakdown is that it tracks progress: every box has a status and the strip at the top tells you how much of the map is done.",
+    whenToUse: [
+      "To lay a subject out in learning order and keep track of where you left off.",
+      "To plan a new hire’s first months step by step.",
+      "To show on one screen which stages a piece of work goes through.",
+      "To break a training programme into topics and attach the material to each."
+    ],
+    steps: [
+      "A folder can hold several roadmaps. Open a new one from the menu at the top left and switch between them there.",
+      "The main track runs from start to finish. Select a step and press Enter to add the next one after it.",
+      "With a step selected, Tab hangs a topic off it. On a topic, Tab adds a sub-topic and Enter adds a sibling.",
+      "The circle at the start of a box changes its status: Not started → In progress → Done → Skipped. The box changes colour with it.",
+      "Right-click a box and choose \"Details\" to open the side panel: notes, an estimated time and links go there.",
+      "To break a long roadmap up, add a section heading from the right-click menu (Beginner / Intermediate / Advanced, say).",
+      "Make a topic optional and it is joined with a dashed line and left out of the progress percentage.",
+      "The turn button on the progress strip flips the track from vertical to horizontal; that is how a long roadmap stays readable on a wide screen."
+    ],
+    shortcuts: [
+      { keys: ["Enter"], desc: "New step on the track" },
+      { keys: ["Tab"], desc: "Topic under the selected box" },
+      { keys: ["F2"], desc: "Rename the selected box" },
+      { keys: ["Delete"], desc: "Delete the selected box" },
+      { keys: ["Shift", "Enter"], desc: "New line while typing" },
+      { keys: ["Esc"], desc: "Close the text field" },
+      { keys: ["Mod", "Z"], desc: "Undo" },
+      { keys: ["Mod", "Y"], desc: "Redo" }
+    ],
+    tips: [
+      "Boxes are never dragged; the layout is automatic. To reorder a step, use the move commands in the right-click menu.",
+      "Topics alternate sides from one step to the next, so the map does not pile up on one side.",
+      "Skipped boxes count as finished in the progress bar, so a topic you decided against does not hold the percentage down forever.",
+      "The hours you enter add up; the strip at the top shows the total left on unfinished boxes.",
+      "A link has to start with http or https; anything else is rejected."
+    ]
   }
 };
 

@@ -458,6 +458,44 @@ const kilavuzlar: ToolGuideBundle = {
       "Bugünü gösteren kırmızı çizgi hep ekranda; bitiş tarihi geçmiş ve bitmemiş işlerin çubuğu kırmızı çerçeveli çıkar.",
       "Gün / hafta / ay düğmeleri şemayı sıkıştırıp açar. Uzun planlarda ay görünümü bütünü tek ekrana sığdırır."
     ]
+  },
+
+  roadmap: {
+    title: "Yol Haritası",
+    summary: "Bir konuyu baştan sona sıralı duraklara bölen, her durağın yanına konuların asıldığı harita. Kutuları sen taşımazsın; her eklemeden sonra harita kendini dizer. Kırılım ağacından farkı ilerleme tutması: her kutunun bir durumu var ve üstteki şerit haritanın yüzde kaçının bittiğini söyler.",
+    whenToUse: [
+      "Bir konuyu öğrenme sırasına dizmek ve nerede kaldığını takip etmek için.",
+      "Yeni bir çalışanın ilk aylarını adım adım planlamak için.",
+      "Bir işin hangi aşamalardan geçeceğini tek ekranda göstermek için.",
+      "Bir eğitim programını konu konu çıkarıp kaynaklarını iliştirmek için."
+    ],
+    steps: [
+      "Bir klasörde birden çok harita tutabilirsin. Sol üstteki menüden yeni harita açar, aralarında geçersin.",
+      "Ana hat baştan sona akar. Bir durağı seçip Enter’a basınca ardına yeni durak eklenir.",
+      "Seçili duraktayken Tab, o durağın yanına bir konu asar. Konudayken Tab alt konu, Enter kardeş konu açar.",
+      "Kutunun başındaki daire durumu değiştirir: Başlamadım → Devam ediyor → Bitti → Atlandı. Kutunun rengi de buna göre değişir.",
+      "Kutuya sağ tıklayıp \"Ayrıntılar\" dersen sağda panel açılır: not, süre tahmini ve bağlantı buradan eklenir.",
+      "Uzun haritaları bölmek için sağ tık menüsünden bölüm başlığı ekle (Başlangıç / Orta / İleri gibi).",
+      "Bir konuyu seçmeli yaparsan kesik çizgiyle bağlanır ve ilerleme yüzdesine katılmaz.",
+      "Sol üstteki ilerleme şeridindeki döndürme düğmesi hattı dikeyden yataya çevirir; uzun haritalar geniş ekranda böyle okunur."
+    ],
+    shortcuts: [
+      { keys: ["Enter"], desc: "Hatta yeni durak" },
+      { keys: ["Tab"], desc: "Seçili kutuya yan konu" },
+      { keys: ["F2"], desc: "Seçili kutunun adını değiştir" },
+      { keys: ["Delete"], desc: "Seçili kutuyu sil" },
+      { keys: ["Shift", "Enter"], desc: "Yazarken alt satıra geç" },
+      { keys: ["Esc"], desc: "Yazma alanını kapat" },
+      { keys: ["Mod", "Z"], desc: "Geri al" },
+      { keys: ["Mod", "Y"], desc: "İleri al" }
+    ],
+    tips: [
+      "Kutular elle taşınmaz, dizilim otomatiktir. Bir durağın sırasını değiştirmek istersen sağ tık menüsündeki taşıma düğmelerini kullan.",
+      "Yan konular duraktan durağa yön değiştirir; böylece harita tek yana şişmez.",
+      "Atlanan kutular ilerlemede bitmiş sayılır: \"yapmayacağım\" dediğin bir konu yüzdeyi sonsuza kadar eksik bırakmasın.",
+      "Süre alanına yazdığın saatler toplanır; üstteki şerit bitmemiş kutuların toplamını gösterir.",
+      "Bağlantı eklerken adres http ya da https ile başlamalı; başka bir şey yazarsan kabul edilmez."
+    ]
   }
 };
 

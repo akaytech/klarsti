@@ -463,6 +463,44 @@ const guides: ToolGuideBundle = {
       "La linea rossa segna oggi. Le attività non concluse con data superata hanno un bordo rosso.",
       "Giorno / settimana / mese stringono o allargano il calendario. La vista mese fa stare un piano lungo in una schermata."
     ]
+  },
+
+  roadmap: {
+    title: "Roadmap",
+    summary: "Una mappa che divide un argomento in tappe successive, con i temi appesi a ogni tappa. Non trascini mai i riquadri: la mappa si riordina da sola dopo ogni modifica. A differenza della struttura di scomposizione, qui si segue l’avanzamento: ogni riquadro ha uno stato e la fascia in alto dice quanto hai completato.",
+    whenToUse: [
+      "Per mettere un argomento in ordine di apprendimento e sapere a che punto sei.",
+      "Per pianificare passo passo i primi mesi di chi entra in azienda.",
+      "Per mostrare in una schermata sola le fasi che un lavoro attraversa.",
+      "Per scomporre un programma di formazione in temi e allegarci i materiali."
+    ],
+    steps: [
+      "Una cartella può contenere più roadmap. Dal menu in alto a sinistra ne apri una nuova e passi da una all’altra.",
+      "Il tracciato principale va dall’inizio alla fine. Seleziona una tappa e premi Invio per aggiungerne una dopo.",
+      "Con una tappa selezionata, Tab le appende un tema. Su un tema, Tab crea un sottotema e Invio uno allo stesso livello.",
+      "Il cerchio all’inizio del riquadro cambia lo stato: Non iniziato → In corso → Fatto → Saltato. Il colore segue.",
+      "Tasto destro su un riquadro e «Dettagli» apre il pannello laterale: nota, tempo stimato e link.",
+      "Per spezzare una roadmap lunga, aggiungi un titolo di sezione dal menu contestuale (Base / Intermedio / Avanzato, per esempio).",
+      "Un tema reso facoltativo viene collegato con linea tratteggiata e resta fuori dalla percentuale.",
+      "Il pulsante di rotazione sulla fascia porta il tracciato da verticale a orizzontale: così una mappa lunga resta leggibile su schermi larghi."
+    ],
+    shortcuts: [
+      { keys: ["Enter"], desc: "Nuova tappa sul tracciato" },
+      { keys: ["Tab"], desc: "Tema sotto il riquadro selezionato" },
+      { keys: ["F2"], desc: "Rinomina il riquadro selezionato" },
+      { keys: ["Delete"], desc: "Elimina il riquadro selezionato" },
+      { keys: ["Shift", "Enter"], desc: "A capo mentre scrivi" },
+      { keys: ["Esc"], desc: "Chiudi il campo di testo" },
+      { keys: ["Mod", "Z"], desc: "Annulla" },
+      { keys: ["Mod", "Y"], desc: "Ripristina" }
+    ],
+    tips: [
+      "I riquadri non si trascinano, la disposizione è automatica. Per cambiare l’ordine di una tappa usa i comandi del menu contestuale.",
+      "I temi si alternano di lato da una tappa all’altra, così la mappa non cresce tutta da una parte.",
+      "I riquadri saltati contano come finiti: un tema che hai deciso di non fare non deve bloccare la percentuale per sempre.",
+      "Le ore inserite si sommano; la fascia mostra il totale che resta sui riquadri non finiti.",
+      "L’indirizzo deve iniziare con http o https, altrimenti non viene accettato."
+    ]
   }
 };
 

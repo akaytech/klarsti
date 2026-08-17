@@ -458,6 +458,44 @@ const guides: ToolGuideBundle = {
       "La ligne rouge marque aujourd'hui. Une tâche non terminée dont la fin est passée est encadrée en rouge.",
       "Jour / semaine / mois resserrent ou étalent le calendrier. La vue mois fait tenir un long plan sur un écran."
     ]
+  },
+
+  roadmap: {
+    title: "Feuille de route",
+    summary: "Une carte qui découpe un sujet en étapes successives, avec des thèmes accrochés à chacune. Tu ne déplaces jamais les cases : la carte se réorganise après chaque changement. À la différence de l’organigramme des tâches, elle suit l’avancement : chaque case a un statut et le bandeau du haut indique la part déjà faite.",
+    whenToUse: [
+      "Pour ordonner un sujet dans un ordre d’apprentissage et savoir où tu en es.",
+      "Pour planifier étape par étape les premiers mois d’un nouvel arrivant.",
+      "Pour montrer sur un seul écran les phases que traverse un travail.",
+      "Pour découper un programme de formation en thèmes et y accrocher les ressources."
+    ],
+    steps: [
+      "Un dossier peut contenir plusieurs feuilles de route. Le menu en haut à gauche sert à en créer une et à passer de l’une à l’autre.",
+      "Le tracé principal va du début à la fin. Sélectionne une étape et appuie sur Entrée pour en ajouter une après.",
+      "Sur une étape sélectionnée, Tab accroche un thème. Sur un thème, Tab crée un sous-thème et Entrée un thème voisin.",
+      "Le cercle au début d’une case change son statut : Pas commencé → En cours → Terminé → Ignoré. La couleur suit.",
+      "Clic droit sur une case puis « Détails » ouvre le panneau latéral : note, durée estimée et liens.",
+      "Pour aérer une longue feuille de route, ajoute un titre de section depuis le menu contextuel (Débutant / Intermédiaire / Avancé, par exemple).",
+      "Un thème rendu facultatif est relié en pointillés et sort du pourcentage d’avancement.",
+      "Le bouton de rotation du bandeau bascule le tracé de la verticale à l’horizontale ; c’est ainsi qu’une longue carte reste lisible sur un écran large."
+    ],
+    shortcuts: [
+      { keys: ["Enter"], desc: "Nouvelle étape sur le tracé" },
+      { keys: ["Tab"], desc: "Thème sous la case sélectionnée" },
+      { keys: ["F2"], desc: "Renommer la case sélectionnée" },
+      { keys: ["Delete"], desc: "Supprimer la case sélectionnée" },
+      { keys: ["Shift", "Enter"], desc: "Aller à la ligne en écrivant" },
+      { keys: ["Esc"], desc: "Fermer le champ de saisie" },
+      { keys: ["Mod", "Z"], desc: "Annuler" },
+      { keys: ["Mod", "Y"], desc: "Rétablir" }
+    ],
+    tips: [
+      "Les cases ne se déplacent pas à la main, la disposition est automatique. Pour changer l’ordre d’une étape, utilise les commandes du menu contextuel.",
+      "Les thèmes changent de côté d’une étape à l’autre, pour que la carte ne penche pas d’un seul côté.",
+      "Les cases ignorées comptent comme terminées : un thème écarté volontairement ne doit pas bloquer le pourcentage.",
+      "Les heures saisies s’additionnent ; le bandeau affiche le total restant sur les cases non terminées.",
+      "Une adresse doit commencer par http ou https, sinon elle est refusée."
+    ]
   }
 };
 

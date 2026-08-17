@@ -7,7 +7,7 @@ import { sigdirKaydet } from './demoAltyapi';
 import DemoImlec from './DemoImlec';
 import { sahneBul } from './demoSahneleri';
 
-import RoadmapCanvas from '../components/RoadmapCanvas';
+import WbsCanvas from '../components/WbsCanvas';
 import FiveWhysCanvas from '../components/FiveWhysCanvas';
 import ParetoCanvas from '../components/ParetoCanvas';
 import MindmapCanvas from '../components/MindmapCanvas';
@@ -25,7 +25,7 @@ import WelcomeScreen from '../components/WelcomeScreen';
  */
 
 const TUVALLER = {
-  wbs: () => <RoadmapCanvas onNodeSelect={() => {}} />,
+  wbs: () => <WbsCanvas onNodeSelect={() => {}} />,
   '5whys': FiveWhysCanvas,
   pareto: ParetoCanvas,
   mindmap: MindmapCanvas,

@@ -7,7 +7,7 @@ import i18n from '../i18n';
 import { useAuthStore } from './useAuthStore';
 import { bekleyenAraclar, kisiselBekliyorMu } from './bekleyenYazmalar';
 import { projeninCalismalariniSil, calismalarinKlasorAdiniGuncelle, calismalardanAyril, calismaDokumanId } from './calismaYazma';
-import { projeyeCalismalariUygula, calismaSirasiKur } from './calismaOkuma';
+import { projeyeCalismalariUygula } from './calismaOkuma';
 import { gecmisiBagla, yazmayiIsle, gecmisiTemizle } from './gecmis';
 import { stripUndefined } from '../utils/firestoreSafe';
 import { toast } from 'sonner';
@@ -243,21 +243,6 @@ export interface Project {
    * yalnızca bir başlık; adı çalışma kaydındaki kopyadan geliyor.
    */
   klasorYok?: boolean;
-  /**
-   * Araç -> o araçtaki çalışmaların kimlikleri, kullanıcının gördüğü sırayla.
-   *
-   * İçeriğin kendisi burada DEĞİL; o çalışma kayıtlarında (bkz. works).
-   * Burada duran tek şey "hangi çalışmalar var ve hangi sırayla". İki iş için
-   * gerekiyor: sıralama, ve silme. Silme için şart, çünkü bir çalışma kaydını
-   * yalnızca klasörün sahibi silebiliyor (bkz. firestore.rules); ortak çalışan
-   * bir çalışmayı sildiğinde kaydı sunucuda kalıyor ve listeye onun değil,
-   * bu listenin karar vermesi gerekiyor. Yoksa silinen çalışma geri gelirdi.
-   *
-   * Anahtarın HİÇ olmaması ile BOŞ dizi olması farklı şeyler: ilki "bu araç
-   * hiç kullanılmadı" (başlangıç çalışması kurulur), ikincisi "kullanıcı
-   * hepsini sildi" (boş kalır).
-   */
-  calismaSirasi?: Record<string, string[]>;
 }
 
 /**
@@ -678,7 +663,6 @@ export const useRoadmapStore = create<RoadmapState>()(
               if (data.isPublic !== undefined) parsed.isPublic = data.isPublic;
               if (data.sharedWith !== undefined) parsed.sharedWith = data.sharedWith;
               if (data.members !== undefined) parsed.members = data.members;
-              if (data.calismaSirasi !== undefined) parsed.calismaSirasi = data.calismaSirasi;
               return parsed;            } catch (error) {
               console.error("Parse doc error for project ID", doc.id, error);
               toast.error(i18n.t('error_parse_doc', { defaultValue: 'Error parsing document' }), { id: 'error-parse-doc' });
@@ -756,14 +740,7 @@ export const useRoadmapStore = create<RoadmapState>()(
         // Save immediately. stripUndefined şart: aşağıdaki .catch() bu hatayı
         // yakalayamaz, çünkü Firestore değeri olmayan bir alan görünce sözü
         // dönmeden senkron olarak fırlatıyor (bkz. firestoreSafe.ts).
-        // Araç içeriği klasör dokümanına YAZILMAZ; çalışma kayıtlarına gidiyor
-        // (bkz. SyncManager). Klasöre yalnızca sıra listesi yazılıyor. Yeni
-        // projede o liste boş: başlangıç çalışmaları henüz kayıt hak etmiyor.
-        setDoc(doc(db, 'projects', newProject.id), stripUndefined({
-          ...newProject,
-          toolData: undefined,
-          calismaSirasi: calismaSirasiKur(newProject)
-        })).catch((err) => {
+        setDoc(doc(db, 'projects', newProject.id), stripUndefined(newProject)).catch((err) => {
           console.error(err);
           toast.error(i18n.t('save_failed', { defaultValue: 'Failed to save to cloud' }), { id: 'save-failed' });
         });
@@ -1058,11 +1035,7 @@ export const useRoadmapStore = create<RoadmapState>()(
             const keys = TOOL_KEYS_MAP[toolName] || [];
             keys.forEach(k => nextP.toolData[k] = getInitialValue(toolName, k));
             if (useAuthStore.getState().user) {
-              setDoc(doc(db, 'projects', p.id), stripUndefined({
-                ...nextP,
-                toolData: undefined,
-                calismaSirasi: calismaSirasiKur(nextP)
-              }), { merge: true }).catch((err) => {
+              setDoc(doc(db, 'projects', p.id), stripUndefined(nextP), { merge: true }).catch((err) => {
                 console.error(err);
                 toast.error(i18n.t('save_failed', { defaultValue: 'Failed to save to cloud' }), { id: 'save-failed' });
               });

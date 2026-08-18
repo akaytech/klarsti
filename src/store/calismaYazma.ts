@@ -1,7 +1,7 @@
 import { doc, setDoc, deleteDoc, arrayRemove, arrayUnion } from 'firebase/firestore';
 import { db } from '../firebase';
 import { stripUndefined } from '../utils/firestoreSafe';
-import { hamCalismalar, calismaAdi, calismaKayitHakEdiyor, aracAnahtari, TUM_ARACLAR } from '../config/toolWorks';
+import { hamCalismalar, calismaAdi, calismaDokunulmamis, aracAnahtari, TUM_ARACLAR } from '../config/toolWorks';
 import type { ToolId, Project } from './useRoadmapStore';
 
 /**
@@ -105,13 +105,9 @@ export function projeCalismalariniEsitle(
   TUM_ARACLAR.forEach((tool) => {
     if (sadeceAraclar && !sadeceAraclar.has(tool)) return;
 
-    const aractakiler = hamCalismalar(project.toolData, tool);
-    aractakiler.forEach((calisma) => {
-      // Hiç başlanmamış başlangıç çalışması kendi kaydını hak etmiyor —
-      // yalnızca araçtaki tek çalışma oysa (bkz. calismaKayitHakEdiyor).
-      // Sıra listesi de aynı ölçütü kullanıyor; ayrışırlarsa listede olup
-      // kaydı olmayan çalışmalar çıkardı.
-      if (!calismaKayitHakEdiyor(calisma, tool, aractakiler.length)) return;
+    hamCalismalar(project.toolData, tool).forEach((calisma) => {
+      // Hiç başlanmamış çalışma kendi kaydını hak etmiyor (bkz. calismaDokunulmamis).
+      if (calismaDokunulmamis(calisma, tool)) return;
 
       const dokumanId = calismaDokumanId(project.id, calisma.id);
       olmasiGerekenler.add(dokumanId);
@@ -184,10 +180,9 @@ export function calismalaraKendiniEkle(
   const islemler: Promise<unknown>[] = [];
 
   TUM_ARACLAR.forEach((tool) => {
-    const aractakiler = hamCalismalar(project.toolData, tool);
-    aractakiler.forEach((calisma) => {
-      // Kaydı olmayan (ve olmayacak) çalışmaya erişim istenmez.
-      if (!calismaKayitHakEdiyor(calisma, tool, aractakiler.length)) return;
+    hamCalismalar(project.toolData, tool).forEach((calisma) => {
+      // Hiç başlanmamış çalışmanın kaydı yok, olmayacak da.
+      if (calismaDokunulmamis(calisma, tool)) return;
 
       const dokumanId = calismaDokumanId(project.id, calisma.id);
       if (elimizdekiler.has(dokumanId)) return;

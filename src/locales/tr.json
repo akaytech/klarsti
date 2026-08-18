@@ -1000,5 +1000,7 @@
   "roadmap_ex_process_quality": "Kalite ölçütleri",
   "roadmap_ex_solo": "Kendi başına çalış",
   "roadmap_ex_solo_plan": "Kendi işini planla",
-  "roadmap_ex_solo_improve": "Bir iyileştirme öner"
+  "roadmap_ex_solo_improve": "Bir iyileştirme öner",
+  "menu_move_up": "Yukarı taşı",
+  "menu_move_down": "Aşağı taşı"
 }

@@ -1000,5 +1000,7 @@
   "roadmap_ex_process_quality": "Критерии качества",
   "roadmap_ex_solo": "Работать самостоятельно",
   "roadmap_ex_solo_plan": "Планировать свою работу",
-  "roadmap_ex_solo_improve": "Предложить улучшение"
+  "roadmap_ex_solo_improve": "Предложить улучшение",
+  "menu_move_up": "Выше",
+  "menu_move_down": "Ниже"
 }

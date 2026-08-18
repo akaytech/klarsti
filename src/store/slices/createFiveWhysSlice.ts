@@ -18,6 +18,7 @@ import {
 
 import type { RoadmapState } from '../useRoadmapStore';
 import { islem, gecmisiTemizle } from '../gecmis';
+import { siraDegistir } from './siralama';
 
 export type FiveWhysNodeType = 'problem' | 'why' | 'solution';
 
@@ -50,6 +51,8 @@ export interface FiveWhysSlice {
   setActiveFiveWhys: (id: string) => void;
   addFiveWhysAnalysis: (name: string, problemLabel?: string) => string;
   renameFiveWhysAnalysis: (id: string, name: string) => void;
+  /** Çalışmayı listede başka bir sıraya taşır (bkz. siralama.ts). */
+  moveFiveWhysTo: (id: string, hedefIndex: number) => void;
   deleteFiveWhysAnalysis: (id: string) => void;
   /**
    * Kırılım ağacındaki bir işten kök neden analizi başlatır. Açık analize
@@ -140,6 +143,13 @@ export const createFiveWhysSlice: StateCreator<RoadmapState, [], [], FiveWhysSli
       set((state) => ({ ...state, fiveWhysAnalyses: [...state.fiveWhysAnalyses, analiz], activeFiveWhysId: analiz.id }));
       return analiz.id;
     },
+
+    moveFiveWhysTo: (id, hedefIndex) => islem(() => {
+      set((state) => {
+        const yeni = siraDegistir(state.fiveWhysAnalyses, id, hedefIndex);
+        return yeni ? { ...state, fiveWhysAnalyses: yeni } : state;
+      });
+    }),
 
     renameFiveWhysAnalysis: (id, name) => {
       set((state) => ({ ...state, fiveWhysAnalyses: state.fiveWhysAnalyses.map((a) => (a.id === id ? { ...a, name } : a)) }));

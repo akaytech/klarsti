@@ -1000,5 +1000,7 @@
   "roadmap_ex_process_quality": "معايير الجودة",
   "roadmap_ex_solo": "اعمل بمفردك",
   "roadmap_ex_solo_plan": "خطّط لعملك بنفسك",
-  "roadmap_ex_solo_improve": "اقترح تحسينًا"
+  "roadmap_ex_solo_improve": "اقترح تحسينًا",
+  "menu_move_up": "تحريك لأعلى",
+  "menu_move_down": "تحريك لأسفل"
 }

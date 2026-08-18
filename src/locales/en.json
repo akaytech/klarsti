@@ -1000,5 +1000,7 @@
   "roadmap_ex_process_quality": "Quality standards",
   "roadmap_ex_solo": "Work on your own",
   "roadmap_ex_solo_plan": "Plan your own work",
-  "roadmap_ex_solo_improve": "Propose one improvement"
+  "roadmap_ex_solo_improve": "Propose one improvement",
+  "menu_move_up": "Move up",
+  "menu_move_down": "Move down"
 }

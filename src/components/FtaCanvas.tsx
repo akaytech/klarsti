@@ -19,7 +19,7 @@ import CanvasAddButton from './CanvasAddButton';
 import CanvasKarsilama from './CanvasKarsilama';
 import { useEkranaSigdir } from '../utils/ekranaSigdir';
 import { calculateProbability, FtaProbabilityContext } from '../utils/ftaProbability';
-import AnalysisMenu from './AnalysisMenu';
+import CalismaMenusu from './CalismaMenusu';
 import CanvasMiniMap from './CanvasMiniMap';
 import CanvasControls from './CanvasControls';
 
@@ -36,7 +36,7 @@ const BOS_EDGES: any[] = [];
 export default function FtaCanvas() {
   const themeColors = useTheme();
   const {  onFtaNodesChange, onFtaEdgesChange, onFtaConnect, addFtaNode, updateFtaNode, deleteFtaNode, addFtaRoot, loadFtaExample,
-    ftaAnalyses, setActiveFta, addFtaAnalysis, renameFtaAnalysis, deleteFtaAnalysis  } = useRoadmapStore(useShallow((state) => ({
+    ftaAnalyses, setActiveFta, addFtaAnalysis, renameFtaAnalysis, deleteFtaAnalysis, moveFtaTo  } = useRoadmapStore(useShallow((state) => ({
       onFtaNodesChange: state.onFtaNodesChange,
       onFtaEdgesChange: state.onFtaEdgesChange,
       onFtaConnect: state.onFtaConnect,
@@ -49,6 +49,7 @@ export default function FtaCanvas() {
       setActiveFta: state.setActiveFta,
       addFtaAnalysis: state.addFtaAnalysis,
       renameFtaAnalysis: state.renameFtaAnalysis,
+      moveFtaTo: state.moveFtaTo,
       deleteFtaAnalysis: state.deleteFtaAnalysis
     })));
 
@@ -145,14 +146,15 @@ export default function FtaCanvas() {
         <CanvasMiniMap nodeColor={themeColors.minimapNode} maskColor={themeColors.minimapMask} />
         {aktifAgac && (
           <Panel position="top-left" style={{ marginTop: 68 }}>
-            <AnalysisMenu
+            <CalismaMenusu
               Simge={GitBranch}
               aktifId={aktifAgac.id}
-              ogeler={ftaAnalyses.map((a) => ({ id: a.id, name: a.name, sayac: a.nodes.length }))}
+              ogeler={ftaAnalyses.map((a) => ({ id: a.id, name: a.name, rozet: a.nodes.length }))}
               onSec={setActiveFta}
               onEkle={() => addFtaAnalysis(t('fta_analysis_name_n', { sira: ftaAnalyses.length + 1 }))}
               onYenidenAdlandir={renameFtaAnalysis}
               onSil={deleteFtaAnalysis}
+              onSirala={moveFtaTo}
               metinler={{
                 baslik: t('fta_analyses'),
                 yeni: t('fta_new_analysis'),

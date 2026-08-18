@@ -9,6 +9,7 @@ import type { NodeChange, EdgeChange, Connection, Edge, Node } from '@xyflow/rea
 
 import type { RoadmapState } from '../useRoadmapStore';
 import { islem, gecmisiTemizle } from '../gecmis';
+import { siraDegistir } from './siralama';
 import i18n from '../../i18n';
 import { logAppEvent } from '../../firebase';
 
@@ -54,6 +55,8 @@ export interface FtaSlice {
   setActiveFta: (id: string) => void;
   addFtaAnalysis: (name: string, topLabel?: string) => string;
   renameFtaAnalysis: (id: string, name: string) => void;
+  /** Çalışmayı listede başka bir sıraya taşır (bkz. siralama.ts). */
+  moveFtaTo: (id: string, hedefIndex: number) => void;
   deleteFtaAnalysis: (id: string) => void;
 
   // Aşağıdakiler hep açık ağaç üzerinde çalışır.
@@ -180,6 +183,13 @@ export const createFtaSlice: StateCreator<RoadmapState, [], [], FtaSlice> = (set
       set((state) => ({ ...state, ftaAnalyses: [...state.ftaAnalyses, analiz], activeFtaId: analiz.id }));
       return analiz.id;
     },
+
+    moveFtaTo: (id, hedefIndex) => islem(() => {
+      set((state) => {
+        const yeni = siraDegistir(state.ftaAnalyses, id, hedefIndex);
+        return yeni ? { ...state, ftaAnalyses: yeni } : state;
+      });
+    }),
 
     renameFtaAnalysis: (id, name) => {
       set((state) => ({ ...state, ftaAnalyses: state.ftaAnalyses.map((a) => (a.id === id ? { ...a, name } : a)) }));

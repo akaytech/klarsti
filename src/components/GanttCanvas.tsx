@@ -13,7 +13,7 @@ import {
   araligiHesapla, ayEtiketi, ayinIlkiMi, bugununMetni, gunEkle, gunEtiketi,
   gunFarki, gunSayisi, haftaBasiMi, haftaSonuMu, tariheCevir
 } from '../utils/ganttTarih';
-import AnalysisMenu from './AnalysisMenu';
+import CalismaMenusu from './CalismaMenusu';
 import CanvasKarsilama from './CanvasKarsilama';
 import ConfirmModal from './ConfirmModal';
 
@@ -59,7 +59,7 @@ const DURUMLAR: GanttDurum[] = ['bekliyor', 'devam', 'bitti', 'riskli'];
 export default function GanttCanvas() {
   const { t, i18n } = useTranslation();
   const {
-    ganttPlans, activeGanttId, setActiveGantt, addGanttPlan, renameGanttPlan, deleteGanttPlan,
+    ganttPlans, activeGanttId, setActiveGantt, addGanttPlan, renameGanttPlan, deleteGanttPlan, moveGanttTo,
     addGanttGorev, updateGanttGorev, deleteGanttGorev, ganttGoreviIcerial, ganttGoreviDisarial,
     ganttGoreviTasi, ganttGoreviKapat, ganttBagimlilikDegistir, loadGanttExample
   } = useRoadmapStore(useShallow((s) => ({
@@ -68,6 +68,7 @@ export default function GanttCanvas() {
     setActiveGantt: s.setActiveGantt,
     addGanttPlan: s.addGanttPlan,
     renameGanttPlan: s.renameGanttPlan,
+    moveGanttTo: s.moveGanttTo,
     deleteGanttPlan: s.deleteGanttPlan,
     addGanttGorev: s.addGanttGorev,
     updateGanttGorev: s.updateGanttGorev,
@@ -259,14 +260,15 @@ export default function GanttCanvas() {
           yüksek bir z verilmedi: o zaman da uygulamanın kendi menüleri
           (çalışmalarım, hesap) bu şeridin altında kalıyordu. */}
       <div className="relative z-10 flex flex-none flex-wrap items-center gap-2 border-b border-slate-200 bg-white px-3 py-2 dark:border-slate-800 dark:bg-slate-900 sm:px-4">
-        <AnalysisMenu
+        <CalismaMenusu
           Simge={CalendarRange}
           aktifId={plan.id}
-          ogeler={planlar.map((p) => ({ id: p.id, name: p.name, sayac: p.gorevler.length }))}
+          ogeler={planlar.map((p) => ({ id: p.id, name: p.name, rozet: p.gorevler.length }))}
           onSec={setActiveGantt}
           onEkle={() => addGanttPlan(t('gantt_default_plan_name'))}
           onYenidenAdlandir={renameGanttPlan}
           onSil={deleteGanttPlan}
+          onSirala={moveGanttTo}
           metinler={{
             baslik: t('gantt_plans'),
             yeni: t('gantt_new_plan'),

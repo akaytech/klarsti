@@ -4,6 +4,7 @@ import { applyNodeChanges, applyEdgeChanges, addEdge } from '@xyflow/react';
 import type { Connection, EdgeChange, NodeChange } from '@xyflow/react';
 import type { RoadmapState } from '../useRoadmapStore';
 import { islem, gecmisiTemizle } from '../gecmis';
+import { siraDegistir } from './siralama';
 
 /** Süre alanlarının birimi. Veri eski kayıtlarla uyumlu kalsın diye İngilizce. */
 export type VsmBirim = 'sec' | 'min' | 'hr' | 'day';
@@ -147,6 +148,8 @@ export interface VsmSlice {
   setActiveVsmMap: (id: string) => void;
   addVsmMap: (name: string, tur: VsmHaritaTuru) => string;
   renameVsmMap: (id: string, name: string) => void;
+  /** Çalışmayı listede başka bir sıraya taşır (bkz. siralama.ts). */
+  moveVsmMapTo: (id: string, hedefIndex: number) => void;
   deleteVsmMap: (id: string) => void;
   /** Mevcut durumdan gelecek durum taslağı çıkarmanın kısa yolu. */
   copyVsmMap: (id: string, name: string, tur: VsmHaritaTuru) => string | null;
@@ -238,6 +241,13 @@ export const createVsmSlice: StateCreator<RoadmapState, [], [], VsmSlice> = (set
       set((state) => ({ ...state, vsmMaps: [...state.vsmMaps, harita], activeVsmMapId: harita.id }));
       return harita.id;
     },
+
+    moveVsmMapTo: (id, hedefIndex) => islem(() => {
+      set((state) => {
+        const yeni = siraDegistir(state.vsmMaps, id, hedefIndex);
+        return yeni ? { ...state, vsmMaps: yeni } : state;
+      });
+    }),
 
     renameVsmMap: (id, name) => {
       set((state) => ({

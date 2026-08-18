@@ -1000,5 +1000,7 @@
   "roadmap_ex_process_quality": "Criterios de calidad",
   "roadmap_ex_solo": "Trabajar por tu cuenta",
   "roadmap_ex_solo_plan": "Planificar tu propio trabajo",
-  "roadmap_ex_solo_improve": "Proponer una mejora"
+  "roadmap_ex_solo_improve": "Proponer una mejora",
+  "menu_move_up": "Subir",
+  "menu_move_down": "Bajar"
 }

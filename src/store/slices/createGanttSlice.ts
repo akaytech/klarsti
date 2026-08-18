@@ -4,6 +4,7 @@ import i18n from '../../i18n';
 import { logAppEvent } from '../../firebase';
 import type { RoadmapState } from '../useRoadmapStore';
 import { islem } from '../gecmis';
+import { siraDegistir } from './siralama';
 import { bugununMetni, buyukOlan, gunEkle, kucukOlan } from '../../utils/ganttTarih';
 
 /**
@@ -64,6 +65,8 @@ export interface GanttSlice {
   setActiveGantt: (id: string) => void;
   addGanttPlan: (name: string) => void;
   renameGanttPlan: (id: string, name: string) => void;
+  /** Çalışmayı listede başka bir sıraya taşır (bkz. siralama.ts). */
+  moveGanttTo: (id: string, hedefIndex: number) => void;
   deleteGanttPlan: (id: string) => void;
   /** Yeni görev; `ustId` verilirse alt görev olarak, kaynak satırın altına. */
   addGanttGorev: (planId: string, ustId?: string | null, komsuId?: string | null) => void;
@@ -156,6 +159,13 @@ export const createGanttSlice: StateCreator<RoadmapState, [], [], GanttSlice> = 
     const plan = yeniGanttPlani(name);
     set({ ganttPlans: [...(get().ganttPlans || []), plan], activeGanttId: plan.id });
     logAppEvent('gantt_plan_created');
+  }),
+
+  moveGanttTo: (id, hedefIndex) => islem(() => {
+    set((state) => {
+      const yeni = siraDegistir(state.ganttPlans, id, hedefIndex);
+      return yeni ? { ...state, ganttPlans: yeni } : state;
+    });
   }),
 
   renameGanttPlan: (id, name) => islem(() => {

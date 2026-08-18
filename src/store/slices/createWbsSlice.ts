@@ -11,6 +11,7 @@ import type { Edge, NodeChange, EdgeChange, Connection, Node } from '@xyflow/rea
 import i18n from '../../i18n';
 import type { RoadmapState } from '../useRoadmapStore';
 import { islem, gecmisiTemizle } from '../gecmis';
+import { siraDegistir } from './siralama';
 
 export type GoalStatus = 'To Do' | 'In Progress' | 'Done' | 'Failed';
 
@@ -66,6 +67,8 @@ export interface WbsSlice {
   setActiveWbsTree: (id: string) => void;
   addWbsTree: (name: string, rootLabel: string) => void;
   renameWbsTree: (id: string, name: string) => void;
+  /** Çalışmayı listede başka bir sıraya taşır (bkz. siralama.ts). */
+  moveWbsTreeTo: (id: string, hedefIndex: number) => void;
   deleteWbsTree: (id: string) => void;
 
   editingDescriptionId: string | null;
@@ -420,6 +423,13 @@ export const createWbsSlice: StateCreator<
       return { ...state, wbsTrees: [...state.wbsTrees, yeni], activeWbsTreeId: yeni.id, editingDescriptionId: null, contextMenuNodeId: null };
     });
   },
+
+  moveWbsTreeTo: (id, hedefIndex) => islem(() => {
+    set((state) => {
+      const yeni = siraDegistir(state.wbsTrees, id, hedefIndex);
+      return yeni ? { ...state, wbsTrees: yeni } : state;
+    });
+  }),
 
   renameWbsTree: (id, name) => {
     set((state) => ({ ...state, wbsTrees: state.wbsTrees.map((a) => (a.id === id ? { ...a, name } : a)) }));

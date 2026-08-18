@@ -4,6 +4,7 @@ import { applyNodeChanges, applyEdgeChanges } from '@xyflow/react';
 import type { NodeChange, EdgeChange, Edge, Node } from '@xyflow/react';
 import type { RoadmapState } from '../useRoadmapStore';
 import { islem, gecmisiTemizle } from '../gecmis';
+import { siraDegistir } from './siralama';
 import { DAL_RENKLERI } from '../../utils/mindmapLayout';
 
 export type MindmapNodeData = {
@@ -68,6 +69,8 @@ export interface MindmapSlice {
   setActiveMindmap: (id: string) => void;
   addMindmap: (name: string, rootLabel: string) => void;
   renameMindmap: (id: string, name: string) => void;
+  /** Çalışmayı listede başka bir sıraya taşır (bkz. siralama.ts). */
+  moveMindmapTo: (id: string, hedefIndex: number) => void;
   deleteMindmap: (id: string) => void;
 
   // Aşağıdakiler hep açık olan harita üzerinde çalışır.
@@ -198,6 +201,13 @@ export const createMindmapSlice: StateCreator<
         return { ...state, mindmaps: [...state.mindmaps, yeni], activeMindmapId: yeni.id, mindmapSelectedId: null, mindmapEditingLabelId: null, mindmapDescriptionId: null };
       });
     },
+
+    moveMindmapTo: (id, hedefIndex) => islem(() => {
+      set((state) => {
+        const yeni = siraDegistir(state.mindmaps, id, hedefIndex);
+        return yeni ? { ...state, mindmaps: yeni } : state;
+      });
+    }),
 
     renameMindmap: (id, name) => {
       set((state) => ({

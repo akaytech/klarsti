@@ -23,6 +23,8 @@ export interface OrgchartSlice {
   setActiveOrgchart: (id: string) => void;
   addOrgchart: (type: OrgchartTypeId, name: string, startLabel: string) => void;
   renameOrgchart: (id: string, name: string) => void;
+  /** Şemayı listede başka bir sıraya taşır (bkz. siralama.ts). */
+  moveOrgchartTo: (id: string, hedefIndex: number) => void;
   deleteOrgchart: (id: string) => void;
 
   onOrgchartNodesChange: (changes: NodeChange[]) => void;
@@ -58,6 +60,7 @@ export const createOrgchartSlice: StateCreator<
     setActiveOrgchart: ops.setActive,
     addOrgchart: ops.add as OrgchartSlice['addOrgchart'],
     renameOrgchart: ops.rename,
+    moveOrgchartTo: ops.moveTo,
     deleteOrgchart: ops.remove,
 
     onOrgchartNodesChange: ops.onNodesChange,

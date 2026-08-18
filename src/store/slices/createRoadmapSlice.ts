@@ -4,6 +4,7 @@ import { applyNodeChanges, applyEdgeChanges } from '@xyflow/react';
 import type { NodeChange, EdgeChange, Edge, Node } from '@xyflow/react';
 import type { RoadmapState } from '../useRoadmapStore';
 import { islem, gecmisiTemizle } from '../gecmis';
+import { siraDegistir } from './siralama';
 
 /**
  * Yol haritası: bir konuyu baştan sona sıralı duraklara bölen, her durağın
@@ -319,13 +320,8 @@ export const createRoadmapSlice: StateCreator<RoadmapState, [], [], RoadmapSlice
 
     moveRoadmapTo: (id, hedefIndex) => islem(() => {
       set((state) => {
-        const kaynak = state.roadmaps.findIndex((h) => h.id === id);
-        const hedef = Math.max(0, Math.min(state.roadmaps.length - 1, hedefIndex));
-        if (kaynak < 0 || kaynak === hedef) return state;
-        const liste = [...state.roadmaps];
-        const [tasinan] = liste.splice(kaynak, 1);
-        liste.splice(hedef, 0, tasinan);
-        return { ...state, roadmaps: liste };
+        const yeni = siraDegistir(state.roadmaps, id, hedefIndex);
+        return yeni ? { ...state, roadmaps: yeni } : state;
       });
     }),
 

@@ -17,7 +17,7 @@ import { metinAlaninda } from '../utils/metinAlaninda';
 import FiveWhysNode from './FiveWhysNode';
 import FiveWhysContextMenu from './FiveWhysContextMenu';
 import PaneContextMenu from './PaneContextMenu';
-import AnalysisMenu from './AnalysisMenu';
+import CalismaMenusu from './CalismaMenusu';
 import CanvasAddButton from './CanvasAddButton';
 import CanvasKarsilama from './CanvasKarsilama';
 import { useEkranaSigdir } from '../utils/ekranaSigdir';
@@ -57,6 +57,7 @@ function FiveWhysCanvasInner() {
     setActiveFiveWhys,
     addFiveWhysAnalysis,
     renameFiveWhysAnalysis,
+    moveFiveWhysTo,
     deleteFiveWhysAnalysis
   } = useRoadmapStore(useShallow((state) => ({
     onFiveWhysNodesChange: state.onFiveWhysNodesChange,
@@ -70,6 +71,7 @@ function FiveWhysCanvasInner() {
     setActiveFiveWhys: state.setActiveFiveWhys,
     addFiveWhysAnalysis: state.addFiveWhysAnalysis,
     renameFiveWhysAnalysis: state.renameFiveWhysAnalysis,
+    moveFiveWhysTo: state.moveFiveWhysTo,
     deleteFiveWhysAnalysis: state.deleteFiveWhysAnalysis
   })));
 
@@ -204,14 +206,15 @@ function FiveWhysCanvasInner() {
 
           {aktifAnaliz && (
             <Panel position="top-left" style={{ marginTop: 68 }}>
-              <AnalysisMenu
+              <CalismaMenusu
                 Simge={Activity}
                 aktifId={aktifAnaliz.id}
-                ogeler={fiveWhysAnalyses.map((a) => ({ id: a.id, name: a.name, sayac: a.nodes.length }))}
+                ogeler={fiveWhysAnalyses.map((a) => ({ id: a.id, name: a.name, rozet: a.nodes.length }))}
                 onSec={setActiveFiveWhys}
                 onEkle={() => addFiveWhysAnalysis(t('whys_analysis_name_n', { sira: fiveWhysAnalyses.length + 1 }))}
                 onYenidenAdlandir={renameFiveWhysAnalysis}
                 onSil={deleteFiveWhysAnalysis}
+                onSirala={moveFiveWhysTo}
                 metinler={{
                   baslik: t('whys_analyses'),
                   yeni: t('whys_new_analysis'),

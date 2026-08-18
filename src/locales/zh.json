@@ -1000,5 +1000,7 @@
   "roadmap_ex_process_quality": "质量标准",
   "roadmap_ex_solo": "独立开展工作",
   "roadmap_ex_solo_plan": "自己安排工作",
-  "roadmap_ex_solo_improve": "提出一项改进"
+  "roadmap_ex_solo_improve": "提出一项改进",
+  "menu_move_up": "上移",
+  "menu_move_down": "下移"
 }

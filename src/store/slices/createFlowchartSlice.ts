@@ -29,6 +29,8 @@ export interface FlowchartSlice {
   setActiveFlowchart: (id: string) => void;
   addFlowchart: (type: FlowchartTypeId, name: string, startLabel: string) => void;
   renameFlowchart: (id: string, name: string) => void;
+  /** Şemayı listede başka bir sıraya taşır (bkz. siralama.ts). */
+  moveFlowchartTo: (id: string, hedefIndex: number) => void;
   deleteFlowchart: (id: string) => void;
 
   // Aşağıdakiler hep açık olan şema üzerinde çalışır.
@@ -65,6 +67,7 @@ export const createFlowchartSlice: StateCreator<
     setActiveFlowchart: ops.setActive,
     addFlowchart: ops.add as FlowchartSlice['addFlowchart'],
     renameFlowchart: ops.rename,
+    moveFlowchartTo: ops.moveTo,
     deleteFlowchart: ops.remove,
 
     onFlowchartNodesChange: ops.onNodesChange,

@@ -5,6 +5,7 @@ import i18n from '../../i18n';
 import type { DiagramTypeDef } from '../../config/diagramShared';
 import { edgeStyle } from '../../config/diagramShared';
 import { islem, gecmisiTemizle } from '../gecmis';
+import { siraDegistir } from './siralama';
 
 // Akış diyagramları ve organizasyon şemaları aynı veri yapısını kullanıyor:
 // projede birden çok şema, her şemanın kendi türü, kutuları ve çizgileri.
@@ -140,6 +141,14 @@ export function createDiagramOps(cfg: DiagramOpsConfig, set: (fn: (state: any) =
         const { nodes, edges } = acilisIcerigi(cfg.getType(type), startLabel);
         const yeni: DiagramChart = { id: uuidv4(), name, type, nodes, edges, createdAt: Date.now() };
         return { ...state, [cfg.listKey]: [...listesi(state), yeni], [cfg.activeKey]: yeni.id };
+      });
+    },
+
+    /** Şemayı listede başka bir sıraya taşır (bkz. siralama.ts). */
+    moveTo: (id: string, hedefIndex: number) => {
+      set((state) => {
+        const yeni = siraDegistir(listesi(state), id, hedefIndex);
+        return yeni ? { ...state, [cfg.listKey]: yeni } : state;
       });
     },
 

@@ -73,6 +73,8 @@
   "edit": "Modifier",
   "email": "Adresse E-mail",
   "export_image": "Exporter en image",
+  "fullscreen_enter": "Plein écran",
+  "fullscreen_exit": "Quitter le plein écran",
   "failed_status": "Échoué",
   "flowchart_add_datastore": "Magasin de Données",
   "flowchart_add_decision": "Ajouter décision",

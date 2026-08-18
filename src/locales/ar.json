@@ -73,6 +73,8 @@
   "edit": "تعديل",
   "email": "البريد الإلكتروني",
   "export_image": "تصدير كصورة",
+  "fullscreen_enter": "ملء الشاشة",
+  "fullscreen_exit": "إنهاء ملء الشاشة",
   "failed_status": "فشل",
   "flowchart_add_datastore": "مخزن بيانات",
   "flowchart_add_decision": "إضافة قرار",

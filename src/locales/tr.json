@@ -73,6 +73,8 @@
   "edit": "Düzenle",
   "email": "E-posta Adresi",
   "export_image": "Görsel olarak dışa aktar",
+  "fullscreen_enter": "Tam ekran",
+  "fullscreen_exit": "Tam ekrandan çık",
   "failed_status": "Başarısız",
   "flowchart_add_datastore": "Veri Deposu Ekle",
   "flowchart_add_decision": "Karar Ekle",

@@ -73,6 +73,8 @@
   "edit": "编辑",
   "email": "电子邮件地址",
   "export_image": "导出为图片",
+  "fullscreen_enter": "全屏",
+  "fullscreen_exit": "退出全屏",
   "failed_status": "失败",
   "flowchart_add_datastore": "数据存储",
   "flowchart_add_decision": "添加决策",

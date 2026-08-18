@@ -73,6 +73,8 @@
   "edit": "Редактировать",
   "email": "Электронная почта",
   "export_image": "Экспортировать как изображение",
+  "fullscreen_enter": "Полный экран",
+  "fullscreen_exit": "Выйти из полноэкранного режима",
   "failed_status": "Провалено",
   "flowchart_add_datastore": "Хранилище данных",
   "flowchart_add_decision": "Добавить решение",

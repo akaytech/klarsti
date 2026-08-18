@@ -73,6 +73,8 @@
   "edit": "編集",
   "email": "メールアドレス",
   "export_image": "画像としてエクスポート",
+  "fullscreen_enter": "全画面表示",
+  "fullscreen_exit": "全画面表示を終了",
   "failed_status": "失敗",
   "flowchart_add_datastore": "データストア",
   "flowchart_add_decision": "意思決定を追加",

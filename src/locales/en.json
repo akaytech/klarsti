@@ -73,6 +73,8 @@
   "edit": "Edit",
   "email": "Email Address",
   "export_image": "Export as Image",
+  "fullscreen_enter": "Full screen",
+  "fullscreen_exit": "Exit full screen",
   "failed_status": "Failed",
   "flowchart_add_datastore": "Data Store",
   "flowchart_add_decision": "Add Decision",

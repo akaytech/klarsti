@@ -73,6 +73,8 @@
   "edit": "Editar",
   "email": "Endereço de E-mail",
   "export_image": "Exportar como imagem",
+  "fullscreen_enter": "Tela cheia",
+  "fullscreen_exit": "Sair da tela cheia",
   "failed_status": "Falhou",
   "flowchart_add_datastore": "Armazém de Dados",
   "flowchart_add_decision": "Adicionar decisão",

@@ -12,6 +12,7 @@ import UndoRedoControls from './UndoRedoControls';
 import GlobalExportButton from './GlobalExportButton';
 import GlobalShareButton from './GlobalShareButton';
 import ToolGuideButton from './ToolGuideButton';
+import TamEkranDugmesi from './TamEkranDugmesi';
 import DenemeHesapDugmesi from './DenemeHesapDugmesi';
 import WelcomeScreen from './WelcomeScreen';
 import { gecikmeliEkran } from '../utils/surumTazeleme';
@@ -158,6 +159,7 @@ export default function Workspace() {
             <ToolGuideButton />
             <GlobalShareButton />
             <GlobalExportButton />
+            <TamEkranDugmesi />
           </div>
         )}
 

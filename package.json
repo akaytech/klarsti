@@ -1,7 +1,7 @@
 {
   "name": "klarsti",
   "private": true,
-  "version": "0.8.30-5",
+  "version": "0.8.30-6",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,6 +12,7 @@
     "export-code": "node scripts/export_code.cjs",
     "klip": "node scripts/klipCek.mjs",
     "eski-kayit-say": "node scripts/eskiKayitSay.mjs",
+    "olu-ceviri": "node scripts/oluCeviriler.mjs",
     "test": "vitest run",
     "test:izle": "vitest",
     "test:kurallar": "firebase emulators:exec --only firestore --project klarsti-rules-test \"node scripts/kuralDenemesi.mjs\""

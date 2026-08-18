@@ -1,16 +1,16 @@
-import { useState } from 'react';
 import { useRoadmapStore } from '../store/useRoadmapStore';
 import { useShallow } from 'zustand/react/shallow';
 import type { IshikawaCategory } from '../store/useRoadmapStore';
-import { Plus, Trash2, Fish, ArrowRight } from 'lucide-react';
+import { Fish, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import ToolHeader from './ToolHeader';
 import ConfirmModal from './ConfirmModal';
-import DebouncedField from './DebouncedField';
+import { useAnalizFormu } from '../utils/analizFormu';
+import { OlusturSatiri, BosDurum, KayitBasligi, KalemKarti, KalemEkleSatiri } from './AnalizParcalari';
 
 export default function IshikawaCanvas() {
   const { t } = useTranslation();
-  
+
   const CATEGORIES: { id: IshikawaCategory; title: string; color: string; bg: string; border: string; buttonBg: string }[] = [
     { id: 'Manpower', title: t('manpower'), color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-900/20', border: 'border-blue-200 dark:border-blue-900/50', buttonBg: 'bg-blue-500 hover:bg-blue-600' },
     { id: 'Machine', title: t('machine'), color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-50 dark:bg-orange-900/20', border: 'border-orange-200 dark:border-orange-900/50', buttonBg: 'bg-orange-500 hover:bg-orange-600' },
@@ -29,25 +29,7 @@ export default function IshikawaCanvas() {
       updateIshikawaItem: state.updateIshikawaItem,
       deleteIshikawaItem: state.deleteIshikawaItem
     })));
-  const [newProblem, setNewProblem] = useState('');
-  const [inputs, setInputs] = useState<Record<string, string>>({});
-  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
-
-  const handleCreate = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newProblem.trim()) return;
-    addIshikawa(newProblem);
-    setNewProblem('');
-  };
-
-  const handleAddItem = (e: React.FormEvent, analysisId: string, category: IshikawaCategory) => {
-    e.preventDefault();
-    const key = `${analysisId}-${category}`;
-    const text = inputs[key];
-    if (!text?.trim()) return;
-    addIshikawaItem(analysisId, category, text);
-    setInputs(prev => ({ ...prev, [key]: '' }));
-  };
+  const form = useAnalizFormu<IshikawaCategory>(addIshikawa, addIshikawaItem);
 
   return (
     <div className="flex h-full w-full flex-col bg-slate-50 dark:bg-slate-900 transition-colors overflow-hidden">
@@ -56,111 +38,74 @@ export default function IshikawaCanvas() {
       <div className="flex-1 overflow-auto p-6 md:p-8 space-y-12">
         {/* Create Form */}
         <div className="mx-auto max-w-3xl">
-          {/* Dar ekranda alt alta: yan yanayken metin kutusu küçülmüyor ve
-              düğme ekranın dışında kalıyordu, telefonda ilk analiz açılamıyordu. */}
-          <form onSubmit={handleCreate} className="flex flex-col gap-3 sm:flex-row">
-            <input
-              type="text"
-              value={newProblem}
-              onChange={(e) => setNewProblem(e.target.value)}
-              placeholder={t('ishi_placeholder')}
-              className="min-w-0 flex-1 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-6 py-4 text-lg outline-none focus:border-cyan-500 dark:focus:border-cyan-500 shadow-sm text-slate-800 dark:text-slate-100"
-            />
-            <button
-              type="submit"
-              disabled={!newProblem.trim()}
-              className="flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-cyan-600 px-8 py-4 text-white shadow-sm transition-all hover:bg-cyan-700 active:scale-95 disabled:opacity-50"
-            >
-              <Plus size={24} />
-              <span className="font-bold">{t('start')}</span>
-            </button>
-          </form>
+          <OlusturSatiri
+            deger={form.yeniAd}
+            onDegisti={form.setYeniAd}
+            onGonder={form.kayitGonder}
+            ipucu={t('ishi_placeholder')}
+            dugmeYazisi={t('start')}
+            renk="cyan"
+          />
         </div>
 
         {/* Analyses List */}
         <div className="mx-auto max-w-7xl space-y-16">
           {ishikawa.map((analysis) => (
             <div key={analysis.id} className="relative rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 p-6 md:p-10 shadow-xl">
-              
+
               {/* Problem Head (The Fish Head) */}
-              <div className="mb-12 flex items-center justify-between gap-6 border-b border-slate-200 dark:border-slate-800 pb-8">
-                <div className="flex-1 flex items-center gap-4">
-                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 shadow-inner">
-                    <Fish size={32} />
-                  </div>
-                  <DebouncedField
-                    initialValue={analysis.problemStatement}
-                    onCommit={(value) => updateIshikawaProblem(analysis.id, value)}
-                    className="flex-1 bg-transparent text-3xl font-black text-slate-800 dark:text-slate-100 outline-none placeholder:text-slate-300"
-                    ariaLabel={t('ishi_problem_statement_label')}
-                  />
-                </div>
-                <button
-                  onClick={() => setDeleteTargetId(analysis.id)}
-                  className="flex shrink-0 items-center gap-2 rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-900/20 px-4 py-2 text-sm font-bold text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors"
-                >
-                  <Trash2 size={18} />
-                  {t('delete')}
-                </button>
-              </div>
+              <KayitBasligi
+                disSinif="mb-12 pb-8"
+                simgeKutusu="h-16 w-16 rounded-2xl bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400"
+                simge={<Fish size={32} />}
+                ad={analysis.problemStatement}
+                onAdKaydet={(value) => updateIshikawaProblem(analysis.id, value)}
+                adSinifi="text-3xl font-black"
+                adEtiketi={t('ishi_problem_statement_label')}
+                onSil={() => form.setSilinecekId(analysis.id)}
+              />
 
               {/* 6M Grid (The Bones) */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative">
-                
+
                 {/* Central Spine visual element (visible on large screens) */}
                 <div className="hidden lg:block absolute top-1/2 start-0 w-full h-2 bg-slate-200 dark:bg-slate-700 -translate-y-1/2 rounded-full z-0 opacity-50"></div>
 
                 {CATEGORIES.map((cat) => {
                   const items = analysis.items.filter(i => i.category === cat.id);
-                  const inputKey = `${analysis.id}-${cat.id}`;
-                  
+
                   return (
                     <div key={cat.id} className={`relative z-10 flex flex-col rounded-2xl border-2 ${cat.border} ${cat.bg} bg-opacity-50 backdrop-blur-md overflow-hidden shadow-sm`}>
                       <div className="p-4 border-b border-white/20 dark:border-black/20 bg-white/40 dark:bg-black/20 flex justify-between items-center">
                         <h4 className={`font-bold ${cat.color}`}>{cat.title}</h4>
                       </div>
-                      
+
                       <div className="flex-1 p-4 space-y-3 min-h-[150px] max-h-[300px] overflow-y-auto">
                         {items.map(item => (
-                          <div key={item.id} className="group relative flex items-start gap-2 rounded-xl bg-white dark:bg-slate-800 p-3 shadow-sm border border-slate-100 dark:border-slate-700">
-                            <ArrowRight size={14} className={`mt-1 shrink-0 ${cat.color} opacity-50`} />
-                            <DebouncedField
-                              multiline
-                              initialValue={item.text}
-                              onCommit={(value) => updateIshikawaItem(analysis.id, item.id, value)}
-                              className="flex-1 resize-none bg-transparent outline-none text-slate-700 dark:text-slate-200 text-sm"
-                              rows={2}
-                              ariaLabel={t('item_text_label')}
-                            />
-                            <button
-                              onClick={() => deleteIshikawaItem(analysis.id, item.id)}
-                              aria-label={t('delete')}
-                              className="absolute end-2 top-2 p-2 text-slate-400 hover:text-red-500 rounded-lg opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
-                            >
-                              <Trash2 size={14} />
-                            </button>
-                          </div>
+                          <KalemKarti
+                            key={item.id}
+                            sinif="gap-2 bg-white dark:bg-slate-800 p-3 border-slate-100 dark:border-slate-700"
+                            basta={<ArrowRight size={14} className={`mt-1 shrink-0 ${cat.color} opacity-50`} />}
+                            metin={item.text}
+                            onKaydet={(value) => updateIshikawaItem(analysis.id, item.id, value)}
+                            alanSinifi="text-slate-700 dark:text-slate-200 text-sm"
+                            onSil={() => deleteIshikawaItem(analysis.id, item.id)}
+                            silSinifi="transition-opacity"
+                            silSimgesi={14}
+                          />
                         ))}
                       </div>
 
                       <div className="p-3 bg-white/40 dark:bg-black/20 border-t border-white/20 dark:border-black/20">
-                        <form onSubmit={(e) => handleAddItem(e, analysis.id, cat.id)} className="flex gap-2">
-                          <input
-                            type="text"
-                            value={inputs[inputKey] || ''}
-                            onChange={(e) => setInputs(prev => ({ ...prev, [inputKey]: e.target.value }))}
-                            placeholder={t('ishi_add_reason')}
-                            className="flex-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-sm outline-none focus:border-slate-400 text-slate-800 dark:text-slate-100"
-                          />
-                          <button
-                            type="submit"
-                            disabled={!inputs[inputKey]?.trim()}
-                            aria-label={t('ishi_add_reason')}
-                            className={`flex w-8 items-center justify-center rounded-lg text-white shadow-sm disabled:opacity-50 transition-colors ${cat.buttonBg}`}
-                          >
-                            <Plus size={16} />
-                          </button>
-                        </form>
+                        <KalemEkleSatiri
+                          deger={form.kalemMetni(analysis.id, cat.id)}
+                          onDegisti={(deger) => form.kalemYaz(analysis.id, cat.id, deger)}
+                          onGonder={(e) => form.kalemGonder(e, analysis.id, cat.id)}
+                          ipucu={t('ishi_add_reason')}
+                          girdiSinifi="rounded-lg bg-white dark:bg-slate-800 px-3 py-1.5"
+                          dugmeSinifi={`w-8 rounded-lg transition-colors ${cat.buttonBg}`}
+                          artiBoyutu={16}
+                        />
                       </div>
                     </div>
                   );
@@ -169,22 +114,17 @@ export default function IshikawaCanvas() {
 
             </div>
           ))}
-          
+
           {ishikawa.length === 0 && (
-            /* Tek satır: 64 piksellik simge ve 160 piksel boşluk ekranı
-               oluşturma satırından uzaklaştırıyordu. */
-            <div className="flex items-center justify-center gap-2.5 py-10 text-slate-400 dark:text-slate-500">
-              <Fish size={18} className="shrink-0 opacity-40" />
-              <p className="text-sm">{t('ishi_empty')}</p>
-            </div>
+            <BosDurum simge={<Fish size={18} className="shrink-0 opacity-40" />} metin={t('ishi_empty')} />
           )}
         </div>
       </div>
 
       <ConfirmModal
-        isOpen={deleteTargetId !== null}
-        onClose={() => setDeleteTargetId(null)}
-        onConfirm={() => { if (deleteTargetId) deleteIshikawa(deleteTargetId); }}
+        isOpen={form.silinecekId !== null}
+        onClose={() => form.setSilinecekId(null)}
+        onConfirm={() => { if (form.silinecekId) deleteIshikawa(form.silinecekId); }}
         title={t('delete_ishikawa_title')}
         message={t('delete_ishikawa_msg')}
       />

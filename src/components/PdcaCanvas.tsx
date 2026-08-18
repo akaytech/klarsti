@@ -1,13 +1,14 @@
-import { useState } from 'react';
 import { useRoadmapStore } from '../store/useRoadmapStore';
 import { useShallow } from 'zustand/react/shallow';
 import type { PdcaPhase } from '../store/useRoadmapStore';
-import { Plus, Trash2, RefreshCcw, CheckCircle2, Circle, Target, Activity, Search, Settings } from 'lucide-react';
+import { RefreshCcw, CheckCircle2, Circle, Target, Activity, Search, Settings } from 'lucide-react';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import ToolHeader from './ToolHeader';
 import ConfirmModal from './ConfirmModal';
-import DebouncedField from './DebouncedField';
+import { useAnalizFormu } from '../utils/analizFormu';
+import { OlusturSatiri, BosDurum, KayitBasligi, KalemKarti, KalemEkleSatiri, EKLE_DUGMESI } from './AnalizParcalari';
+
 export default function PdcaCanvas() {
   const { t } = useTranslation();
 
@@ -28,25 +29,7 @@ export default function PdcaCanvas() {
       deletePdcaItem: state.deletePdcaItem,
       togglePdcaItemStatus: state.togglePdcaItemStatus
     })));
-  const [newGoal, setNewGoal] = useState('');
-  const [inputs, setInputs] = useState<Record<string, string>>({});
-  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
-
-  const handleCreate = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newGoal.trim()) return;
-    addPdcaCycle(newGoal);
-    setNewGoal('');
-  };
-
-  const handleAddItem = (e: React.FormEvent, cycleId: string, phase: PdcaPhase) => {
-    e.preventDefault();
-    const key = `${cycleId}-${phase}`;
-    const text = inputs[key];
-    if (!text?.trim()) return;
-    addPdcaItem(cycleId, phase, text);
-    setInputs(prev => ({ ...prev, [key]: '' }));
-  };
+  const form = useAnalizFormu<PdcaPhase>(addPdcaCycle, addPdcaItem);
 
   return (
     <div className="flex h-full w-full flex-col bg-slate-50 dark:bg-slate-900 transition-colors overflow-hidden">
@@ -54,116 +37,80 @@ export default function PdcaCanvas() {
 
       <div className="flex-1 overflow-auto p-6 md:p-8 space-y-12">
         <div className="mx-auto max-w-3xl">
-          {/* Dar ekranda alt alta: yan yanayken metin kutusu küçülmüyor ve
-              düğme ekranın dışında kalıyordu, telefonda ilk döngü açılamıyordu. */}
-          <form onSubmit={handleCreate} className="flex flex-col gap-3 sm:flex-row">
-            <input
-              type="text"
-              value={newGoal}
-              onChange={(e) => setNewGoal(e.target.value)}
-              placeholder={t('pdca_placeholder')}
-              className="min-w-0 flex-1 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-6 py-4 text-lg outline-none focus:border-indigo-500 dark:focus:border-indigo-500 shadow-sm text-slate-800 dark:text-slate-100"
-            />
-            <button
-              type="submit"
-              disabled={!newGoal.trim()}
-              className="flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-8 py-4 text-white shadow-sm transition-all hover:bg-indigo-700 active:scale-95 disabled:opacity-50"
-            >
-              <Plus size={24} />
-              <span className="font-bold">{t('start')}</span>
-            </button>
-          </form>
+          <OlusturSatiri
+            deger={form.yeniAd}
+            onDegisti={form.setYeniAd}
+            onGonder={form.kayitGonder}
+            ipucu={t('pdca_placeholder')}
+            dugmeYazisi={t('start')}
+            renk="indigo"
+          />
         </div>
 
         <div className="mx-auto max-w-6xl space-y-16">
           {pdca.map((cycle) => (
             <div key={cycle.id} className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 p-6 md:p-8 shadow-xl">
-              
-              <div className="mb-8 flex items-center justify-between gap-6 border-b border-slate-200 dark:border-slate-800 pb-6">
-                <div className="flex-1 flex items-center gap-4">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 shadow-inner">
-                    <RefreshCcw size={24} />
-                  </div>
-                  <DebouncedField
-                    initialValue={cycle.goal}
-                    onCommit={(value) => updatePdcaGoal(cycle.id, value)}
-                    className="flex-1 bg-transparent text-2xl font-bold text-slate-800 dark:text-slate-100 outline-none placeholder:text-slate-300"
-                    ariaLabel={t('pdca_goal_label')}
-                  />
-                </div>
-                <button
-                  onClick={() => setDeleteTargetId(cycle.id)}
-                  className="flex shrink-0 items-center gap-2 rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-900/20 px-4 py-2 text-sm font-bold text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors"
-                >
-                  <Trash2 size={18} />
-                  {t('delete')}
-                </button>
-              </div>
+
+              <KayitBasligi
+                disSinif="mb-8 pb-6"
+                simgeKutusu="h-12 w-12 rounded-xl bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400"
+                simge={<RefreshCcw size={24} />}
+                ad={cycle.goal}
+                onAdKaydet={(value) => updatePdcaGoal(cycle.id, value)}
+                adSinifi="text-2xl font-bold"
+                adEtiketi={t('pdca_goal_label')}
+                onSil={() => form.setSilinecekId(cycle.id)}
+              />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
                 {PHASES.map((phase) => {
                   const items = cycle.items.filter(i => i.phase === phase.id);
-                  const inputKey = `${cycle.id}-${phase.id}`;
-                  
+
                   return (
                     <div key={phase.id} className={`flex flex-col rounded-2xl border-2 ${phase.border} ${phase.bg} shadow-sm overflow-hidden`}>
                       <div className="p-4 flex flex-col border-b border-white/20 dark:border-black/20 bg-white/50 dark:bg-black/20 backdrop-blur-sm">
                         <h4 className={`text-lg font-bold ${phase.color}`}>{phase.title}</h4>
                         <span className={`text-xs opacity-70 ${phase.color}`}>{phase.desc}</span>
                       </div>
-                      
+
                       <div className="flex-1 p-4 space-y-3 min-h-[200px] max-h-[350px] overflow-y-auto">
                         {items.map(item => (
-                          <div key={item.id} className="group relative flex items-start gap-3 rounded-xl bg-white dark:bg-slate-800 p-3 shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow">
-                            <button
-                              onClick={() => togglePdcaItemStatus(cycle.id, item.id)}
-                              className={clsx(
-                                "mt-1 shrink-0 transition-colors",
-                                item.status === 'completed' ? "text-emerald-500" : "text-slate-300 dark:text-slate-600 hover:text-slate-400"
-                              )}
-                            >
-                              {item.status === 'completed' ? <CheckCircle2 size={18} /> : <Circle size={18} />}
-                            </button>
-                            <DebouncedField
-                              multiline
-                              initialValue={item.text}
-                              onCommit={(value) => updatePdcaItem(cycle.id, item.id, value)}
-                              className={clsx(
-                                "flex-1 resize-none bg-transparent outline-none text-sm transition-all",
-                                item.status === 'completed' ? "text-slate-400 line-through" : "text-slate-700 dark:text-slate-200"
-                              )}
-                              rows={2}
-                              ariaLabel={t('item_text_label')}
-                            />
-                            <button
-                              onClick={() => deletePdcaItem(cycle.id, item.id)}
-                              aria-label={t('delete')}
-                              className="absolute end-2 top-2 p-2 text-slate-400 hover:text-red-500 rounded-lg opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity bg-white dark:bg-slate-800 shadow-sm"
-                            >
-                              <Trash2 size={14} />
-                            </button>
-                          </div>
+                          <KalemKarti
+                            key={item.id}
+                            sinif="gap-3 bg-white dark:bg-slate-800 p-3 border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow"
+                            basta={
+                              <button
+                                onClick={() => togglePdcaItemStatus(cycle.id, item.id)}
+                                className={clsx(
+                                  "mt-1 shrink-0 transition-colors",
+                                  item.status === 'completed' ? "text-emerald-500" : "text-slate-300 dark:text-slate-600 hover:text-slate-400"
+                                )}
+                              >
+                                {item.status === 'completed' ? <CheckCircle2 size={18} /> : <Circle size={18} />}
+                              </button>
+                            }
+                            metin={item.text}
+                            onKaydet={(value) => updatePdcaItem(cycle.id, item.id, value)}
+                            alanSinifi={clsx(
+                              "text-sm transition-all",
+                              item.status === 'completed' ? "text-slate-400 line-through" : "text-slate-700 dark:text-slate-200"
+                            )}
+                            onSil={() => deletePdcaItem(cycle.id, item.id)}
+                            silSinifi="transition-opacity bg-white dark:bg-slate-800 shadow-sm"
+                            silSimgesi={14}
+                          />
                         ))}
                       </div>
 
                       <div className="p-4 bg-white/50 dark:bg-black/20 backdrop-blur-sm border-t border-white/20 dark:border-black/20">
-                        <form onSubmit={(e) => handleAddItem(e, cycle.id, phase.id)} className="flex gap-2">
-                          <input
-                            type="text"
-                            value={inputs[inputKey] || ''}
-                            onChange={(e) => setInputs(prev => ({ ...prev, [inputKey]: e.target.value }))}
-                            placeholder={t('pdca_add_item')}
-                            className="flex-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2 text-sm outline-none focus:border-slate-400 text-slate-800 dark:text-slate-100"
-                          />
-                          <button
-                            type="submit"
-                            disabled={!inputs[inputKey]?.trim()}
-                            aria-label={t('pdca_add_item')}
-                            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white shadow-sm transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 ${phase.buttonBg}`}
-                          >
-                            <Plus size={20} />
-                          </button>
-                        </form>
+                        <KalemEkleSatiri
+                          deger={form.kalemMetni(cycle.id, phase.id)}
+                          onDegisti={(deger) => form.kalemYaz(cycle.id, phase.id, deger)}
+                          onGonder={(e) => form.kalemGonder(e, cycle.id, phase.id)}
+                          ipucu={t('pdca_add_item')}
+                          girdiSinifi="rounded-xl bg-white dark:bg-slate-800 px-4 py-2"
+                          dugmeSinifi={`${EKLE_DUGMESI} ${phase.buttonBg}`}
+                        />
                       </div>
                     </div>
                   );
@@ -172,20 +119,17 @@ export default function PdcaCanvas() {
 
             </div>
           ))}
-          
+
           {pdca.length === 0 && (
-            <div className="flex items-center justify-center gap-2.5 py-10 text-slate-400 dark:text-slate-500">
-              <RefreshCcw size={18} className="shrink-0 opacity-40" />
-              <p className="text-sm">{t('pdca_empty')}</p>
-            </div>
+            <BosDurum simge={<RefreshCcw size={18} className="shrink-0 opacity-40" />} metin={t('pdca_empty')} />
           )}
         </div>
       </div>
 
       <ConfirmModal
-        isOpen={deleteTargetId !== null}
-        onClose={() => setDeleteTargetId(null)}
-        onConfirm={() => { if (deleteTargetId) deletePdcaCycle(deleteTargetId); }}
+        isOpen={form.silinecekId !== null}
+        onClose={() => form.setSilinecekId(null)}
+        onConfirm={() => { if (form.silinecekId) deletePdcaCycle(form.silinecekId); }}
         title={t('delete_pdca_title')}
         message={t('delete_pdca_msg')}
       />

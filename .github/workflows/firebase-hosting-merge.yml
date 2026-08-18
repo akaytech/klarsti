@@ -35,7 +35,11 @@ jobs:
       # SENTRY_AUTH_TOKEN varsa derleme, hata izlerini okunur kılan harita
       # dosyalarını üretip Sentry'ye yükler ve sonra siler (bkz. vite.config.ts).
       # Secret tanımlı değilse adım aynen çalışır, sadece yükleme atlanır.
-      - run: npm ci && npm run build:firebase
+      - run: npm ci
+      # Testler derlemeden ONCE: bozuk bir kayit yolu yayina cikmasin.
+      # Derleme gecse bile testler kalirsa is burada durur.
+      - run: npm test
+      - run: npm run build:firebase
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           # Blog yazılarını Firestore'dan okumak için (bkz. scripts/blogCek.mjs).

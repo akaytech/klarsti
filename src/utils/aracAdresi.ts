@@ -144,6 +144,19 @@ export function adresiCoz(
 }
 
 /**
+ * Bu adresi çözmek için klasör listesinin gelmesini beklemek gerekir mi?
+ *
+ * Ajanda kişisel: users/{uid} altında duruyor, hiçbir klasöre ait değil.
+ * Beklerse sayfa yenilendiğinde ekranda önce karşılama ekranı duruyor ve
+ * ajanda ancak liste geldikten sonra açılıyor — gözle görülen bir zıplama.
+ *
+ * Ötekiler gerçekten bekliyor: hangi klasörün açılacağına, hatta klasörün
+ * var olup olmadığına liste gelmeden karar verilemiyor.
+ */
+export const klasorListesiGerekir = (niyet: AdresNiyeti): boolean =>
+  niyet.tur !== 'ajanda';
+
+/**
  * Bu duruma hangi adres düşer? Mevcut adres zaten uygunsa null.
  *
  * "Uygun" her zaman "birebir aynı" demek değil: araç seçili değilken hem '/'

@@ -12,7 +12,7 @@ import NewFolderModal from './components/NewFolderModal';
 import { useRoadmapStore, type ToolId } from './store/useRoadmapStore';
 import { aracSecimEylemi, aracAktifAlan, aracAnahtari } from './config/toolWorks';
 import { PROJECT_TOOLS } from './config/tools';
-import { KLASORSUZ_ONEK, hedefKlasorBul, klasorsuzAracAdi, adresiCoz, hedefAdres } from './utils/aracAdresi';
+import { KLASORSUZ_ONEK, hedefKlasorBul, klasorsuzAracAdi, adresiCoz, hedefAdres, klasorListesiGerekir } from './utils/aracAdresi';
 import { useAuthStore } from './store/useAuthStore';
 import { useShallow } from 'zustand/react/shallow';
 import { gecikmeliEkran } from './utils/surumTazeleme';
@@ -234,9 +234,16 @@ export default function AuthenticatedApp() {
 
   // Unified URL <-> State Synchronization
   useEffect(() => {
-    if (!user || !projectsLoaded) return;
+    if (!user) return;
 
     const path = location.pathname;
+    const niyet = adresiCoz(path, aracVarMi);
+
+    // Klasör listesi HER adres için beklenmiyor: ajandanın klasörle işi yok.
+    // Beklerse liste gelene kadar ekranda karşılama ekranı duruyor ve ajanda
+    // ancak ondan sonra açılıyor (bkz. klasorListesiGerekir).
+    if (!projectsLoaded && klasorListesiGerekir(niyet)) return;
+
     const urlChanged = path !== lastPathnameRef.current;
     lastPathnameRef.current = path;
 
@@ -255,8 +262,6 @@ export default function AuthenticatedApp() {
     // blok her liste güncellemesinde yeniden çalışır: tek atışta çözülemeyen
     // link eskiden kalıcı olarak kayboluyordu.
     if (urlChanged || isFirstSyncRef.current || bekleyenProjeRef.current !== null) {
-      const niyet = adresiCoz(path, aracVarMi);
-
       // Araçsız duraklar: karşılama, çalışma listesi, ajanda. Üçünde de
       // bekleyen bir link kalmıyor.
       const aracsizHedef =

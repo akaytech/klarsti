@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   adresiCoz, hedefAdres, hedefKlasorBul, aracAdresiBul,
-  klasorsuzAracAdi, denemeAracAdi
+  klasorsuzAracAdi, denemeAracAdi, klasorListesiGerekir
 } from '../aracAdresi';
 
 // Adres çubuğu ile ekranın birbirini takip etmesi. Buradaki hata kullanıcının
@@ -186,5 +186,36 @@ describe('onek cozumleyicileri', () => {
   it('duz /dene arac vermez', () => {
     expect(denemeAracAdi('/dene')).toBeNull();
     expect(denemeAracAdi('/dene/wbs')).toBe('wbs');
+  });
+});
+
+describe('klasorListesiGerekir', () => {
+  const coz = (yol: string) => adresiCoz(yol, gecerli);
+
+  // Ajanda kisisel: users/{uid} altinda, hicbir klasore ait degil. Klasor
+  // listesini beklerse sayfa yenilendiginde once karsilama ekrani goruluyor,
+  // ajanda ancak liste gelince aciliyor. Kullanicinin gordugu bir ziplama.
+  it('ajanda klasor listesini beklemez', () => {
+    expect(klasorListesiGerekir(coz('/agenda'))).toBe(false);
+  });
+
+  // Otekiler gercekten bekliyor: hangi klasorun acilacagina, hatta klasorun
+  // var olup olmadigina liste gelmeden karar verilemiyor.
+  it('klasor adresi klasor listesini bekler', () => {
+    expect(klasorListesiGerekir(coz('/project/p1/wbs'))).toBe(true);
+  });
+
+  it('paylasik calisma linki klasor listesini bekler', () => {
+    expect(klasorListesiGerekir(coz('/work/p1/wbs/c1'))).toBe(true);
+  });
+
+  it('klasorsuz arac adresi klasor listesini bekler', () => {
+    // Klasoru olup olmadigina ancak liste gelince bakilabilir.
+    expect(klasorListesiGerekir(coz('/new/wbs'))).toBe(true);
+  });
+
+  it('kok ve calisma listesi klasor listesini bekler', () => {
+    expect(klasorListesiGerekir(coz('/'))).toBe(true);
+    expect(klasorListesiGerekir(coz('/works'))).toBe(true);
   });
 });

@@ -197,7 +197,12 @@ export default function Workspace() {
               giriyordu. */}
           <div key={activeTool ?? location.pathname} className="icerik-gir flex min-h-0 w-full flex-1 flex-col">
           {!activeTool && (
-            (!projectsLoaded && location.pathname.startsWith('/project/')) ? (
+            // Ajanda da burada: adres /agenda ise araç birazdan 'notepad'
+            // olacak (bkz. AuthenticatedApp). Arada karşılama ekranını
+            // göstermek, kullanıcının sayfayı her yenileyişinde gördüğü bir
+            // zıplama demekti. Efekt boyamadan sonra çalıştığı için tek kare
+            // de olsa görünüyordu.
+            (!projectsLoaded && location.pathname.startsWith('/project/')) || location.pathname === '/agenda' ? (
               <div className="flex h-full w-full items-center justify-center">
                 <div className="gec-belir animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
               </div>

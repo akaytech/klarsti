@@ -1,7 +1,7 @@
 import type { StateCreator } from 'zustand';
-import { v4 as uuidv4 } from 'uuid';
 import type { RoadmapState } from '../useRoadmapStore';
 import { islem } from '../gecmis';
+import { kategoriliListeIslemleri } from './kategoriliListe';
 
 export type PdcaPhase = 'Plan' | 'Do' | 'Check' | 'Act';
 
@@ -36,63 +36,37 @@ export const createPdcaSlice: StateCreator<
   [],
   [],
   PdcaSlice
-> = (set, get) => ({
-  pdca: [],
-  addPdcaCycle: (goal) => islem(() => {
-    const newItem: PdcaCycle = {
-      id: uuidv4(),
-      goal,
-      items: [],
-      createdAt: Date.now(),
-    };
-    const newPdca = [newItem, ...get().pdca];
-    set({ pdca: newPdca });
-  }),
-  updatePdcaGoal: (id, goal) => islem(() => {
-    const newPdca = get().pdca.map(p => p.id === id ? { ...p, goal } : p);
-    set({ pdca: newPdca });
-  }),
-  deletePdcaCycle: (id) => islem(() => {
-    const newPdca = get().pdca.filter(p => p.id !== id);
-    set({ pdca: newPdca });
-  }),
-  addPdcaItem: (cycleId, phase, text) => islem(() => {
-    const newItem: PdcaItem = {
-      id: uuidv4(),
-      phase,
-      text,
-      status: 'pending',
-      createdAt: Date.now(),
-    };
-    const newPdca = get().pdca.map(cycle => 
-      cycle.id === cycleId 
-        ? { ...cycle, items: [...cycle.items, newItem] } 
-        : cycle
-    );
-    set({ pdca: newPdca });
-  }),
-  updatePdcaItem: (cycleId, itemId, text) => islem(() => {
-    const newPdca = get().pdca.map(cycle => 
-      cycle.id === cycleId 
-        ? { ...cycle, items: cycle.items.map(item => item.id === itemId ? { ...item, text } : item) } 
-        : cycle
-    );
-    set({ pdca: newPdca });
-  }),
-  deletePdcaItem: (cycleId, itemId) => islem(() => {
-    const newPdca = get().pdca.map(cycle => 
-      cycle.id === cycleId 
-        ? { ...cycle, items: cycle.items.filter(item => item.id !== itemId) } 
-        : cycle
-    );
-    set({ pdca: newPdca });
-  }),
-  togglePdcaItemStatus: (cycleId, itemId) => islem(() => {
-    const newPdca = get().pdca.map(cycle => 
-      cycle.id === cycleId 
-        ? { ...cycle, items: cycle.items.map(item => item.id === itemId ? { ...item, status: (item.status === 'pending' ? 'completed' : 'pending') as 'pending' | 'completed' } : item) } 
-        : cycle
-    );
-    set({ pdca: newPdca });
-  }),
-});
+> = (set, get) => {
+  const ortak = kategoriliListeIslemleri(
+    {
+      anahtar: 'pdca', adAlani: 'goal', kategoriAlani: 'phase', aracAdi: 'pdca',
+      // PUKÖ kalemleri yapıldı/yapılmadı taşıyor; ötekilerde böyle bir şey yok.
+      yeniKaleminEkleri: () => ({ status: 'pending' })
+    },
+    set, get
+  );
+
+  return {
+    pdca: [],
+    addPdcaCycle: ortak.ekle,
+    updatePdcaGoal: ortak.adiGuncelle,
+    deletePdcaCycle: ortak.sil,
+    addPdcaItem: ortak.kalemEkle,
+    updatePdcaItem: ortak.kalemGuncelle,
+    deletePdcaItem: ortak.kalemSil,
+
+    // Araca özgü: kalemi yapıldı/yapılmadı arasında çevirir.
+    togglePdcaItemStatus: (cycleId, itemId) => islem(() => {
+      set({
+        pdca: get().pdca.map((cycle) => cycle.id === cycleId
+          ? {
+              ...cycle,
+              items: cycle.items.map((item) => item.id === itemId
+                ? { ...item, status: (item.status === 'pending' ? 'completed' : 'pending') as 'pending' | 'completed' }
+                : item)
+            }
+          : cycle)
+      });
+    })
+  };
+};

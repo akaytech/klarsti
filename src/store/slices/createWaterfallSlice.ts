@@ -1,7 +1,7 @@
 import type { StateCreator } from 'zustand';
-import { v4 as uuidv4 } from 'uuid';
 import type { RoadmapState } from '../useRoadmapStore';
 import { islem } from '../gecmis';
+import { kategoriliListeIslemleri } from './kategoriliListe';
 
 export type WaterfallPhase = 'Requirements' | 'High-Level Design' | 'Low-Level Design' | 'Implementation' | 'Verification' | 'Maintenance';
 
@@ -36,63 +36,32 @@ export const createWaterfallSlice: StateCreator<
   [],
   [],
   WaterfallSlice
-> = (set, get) => ({
-  waterfall: [],
-  addWaterfallProject: (name) => islem(() => {
-    const newItem: WaterfallProject = {
-      id: uuidv4(),
-      name,
-      currentPhaseIndex: 0,
-      items: [],
-      createdAt: Date.now(),
-    };
-    const newWaterfall = [newItem, ...get().waterfall];
-    set({ waterfall: newWaterfall });
-  }),
-  updateWaterfallProjectName: (id, name) => islem(() => {
-    const newWaterfall = get().waterfall.map(p => p.id === id ? { ...p, name } : p);
-    set({ waterfall: newWaterfall });
-  }),
-  deleteWaterfallProject: (id) => islem(() => {
-    const newWaterfall = get().waterfall.filter(p => p.id !== id);
-    set({ waterfall: newWaterfall });
-  }),
-  addWaterfallItem: (projectId, phase, text) => islem(() => {
-    const newItem: WaterfallItem = {
-      id: uuidv4(),
-      phase,
-      text,
-      createdAt: Date.now(),
-    };
-    const newWaterfall = get().waterfall.map(project => 
-      project.id === projectId 
-        ? { ...project, items: [...project.items, newItem] } 
-        : project
-    );
-    set({ waterfall: newWaterfall });
-  }),
-  updateWaterfallItem: (projectId, itemId, text) => islem(() => {
-    const newWaterfall = get().waterfall.map(project => 
-      project.id === projectId 
-        ? { ...project, items: project.items.map(item => item.id === itemId ? { ...item, text } : item) } 
-        : project
-    );
-    set({ waterfall: newWaterfall });
-  }),
-  deleteWaterfallItem: (projectId, itemId) => islem(() => {
-    const newWaterfall = get().waterfall.map(project => 
-      project.id === projectId 
-        ? { ...project, items: project.items.filter(item => item.id !== itemId) } 
-        : project
-    );
-    set({ waterfall: newWaterfall });
-  }),
-  advanceWaterfallPhase: (projectId) => islem(() => {
-    const newWaterfall = get().waterfall.map(project => 
-      project.id === projectId 
-        ? { ...project, currentPhaseIndex: Math.min(5, project.currentPhaseIndex + 1) } 
-        : project
-    );
-    set({ waterfall: newWaterfall });
-  }),
-});
+> = (set, get) => {
+  const ortak = kategoriliListeIslemleri(
+    {
+      anahtar: 'waterfall', adAlani: 'name', kategoriAlani: 'phase', aracAdi: 'waterfall',
+      // Şelale sırayla yürüyor; hangi aşamada olduğunu kayıt kendi taşıyor.
+      yeniKaydinEkleri: () => ({ currentPhaseIndex: 0 })
+    },
+    set, get
+  );
+
+  return {
+    waterfall: [],
+    addWaterfallProject: ortak.ekle,
+    updateWaterfallProjectName: ortak.adiGuncelle,
+    deleteWaterfallProject: ortak.sil,
+    addWaterfallItem: ortak.kalemEkle,
+    updateWaterfallItem: ortak.kalemGuncelle,
+    deleteWaterfallItem: ortak.kalemSil,
+
+    // Araca özgü: bir sonraki aşamaya geçirir. Altı aşama var, sonuncuda durur.
+    advanceWaterfallPhase: (projectId) => islem(() => {
+      set({
+        waterfall: get().waterfall.map((project) => project.id === projectId
+          ? { ...project, currentPhaseIndex: Math.min(5, project.currentPhaseIndex + 1) }
+          : project)
+      });
+    })
+  };
+};

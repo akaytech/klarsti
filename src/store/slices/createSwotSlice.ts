@@ -1,8 +1,6 @@
 import type { StateCreator } from 'zustand';
-import { v4 as uuidv4 } from 'uuid';
 import type { RoadmapState } from '../useRoadmapStore';
-import { islem } from '../gecmis';
-import { logAppEvent } from '../../firebase';
+import { kategoriliListeIslemleri } from './kategoriliListe';
 
 export type SwotType = 'S' | 'W' | 'O' | 'T';
 
@@ -35,55 +33,19 @@ export const createSwotSlice: StateCreator<
   [],
   [],
   SwotSlice
-> = (set, get) => ({
-  swot: [],
-  addSwot: (title) => islem(() => {
-    const newItem: SwotAnalysis = {
-      id: uuidv4(),
-      title,
-      items: [],
-      createdAt: Date.now(),
-    };
-    const newSwot = [newItem, ...get().swot];
-    set({ swot: newSwot });
-  }),
-  updateSwotTitle: (id, title) => islem(() => {
-    const newSwot = get().swot.map(s => s.id === id ? { ...s, title } : s);
-    set({ swot: newSwot });
-  }),
-  deleteSwot: (id) => islem(() => {
-    const newSwot = get().swot.filter(s => s.id !== id);
-    set({ swot: newSwot });
-  }),
-  addSwotItem: (analysisId, type, text) => islem(() => {
-    logAppEvent('node_created', { tool: 'swot', type });
-    const newItem: SwotItem = {
-      id: uuidv4(),
-      type,
-      text,
-      createdAt: Date.now(),
-    };
-    const newSwot = get().swot.map(analysis => 
-      analysis.id === analysisId 
-        ? { ...analysis, items: [...analysis.items, newItem] } 
-        : analysis
-    );
-    set({ swot: newSwot });
-  }),
-  updateSwotItem: (analysisId, itemId, text) => islem(() => {
-    const newSwot = get().swot.map(analysis => 
-      analysis.id === analysisId 
-        ? { ...analysis, items: analysis.items.map(i => i.id === itemId ? { ...i, text } : i) } 
-        : analysis
-    );
-    set({ swot: newSwot });
-  }),
-  deleteSwotItem: (analysisId, itemId) => islem(() => {
-    const newSwot = get().swot.map(analysis => 
-      analysis.id === analysisId 
-        ? { ...analysis, items: analysis.items.filter(i => i.id !== itemId) } 
-        : analysis
-    );
-    set({ swot: newSwot });
-  }),
-});
+> = (set, get) => {
+  const ortak = kategoriliListeIslemleri(
+    { anahtar: 'swot', adAlani: 'title', kategoriAlani: 'type', aracAdi: 'swot' },
+    set, get
+  );
+
+  return {
+    swot: [],
+    addSwot: ortak.ekle,
+    updateSwotTitle: ortak.adiGuncelle,
+    deleteSwot: ortak.sil,
+    addSwotItem: ortak.kalemEkle,
+    updateSwotItem: ortak.kalemGuncelle,
+    deleteSwotItem: ortak.kalemSil
+  };
+};

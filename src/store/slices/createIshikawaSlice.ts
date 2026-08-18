@@ -1,7 +1,6 @@
 import type { StateCreator } from 'zustand';
-import { v4 as uuidv4 } from 'uuid';
 import type { RoadmapState } from '../useRoadmapStore';
-import { islem } from '../gecmis';
+import { kategoriliListeIslemleri } from './kategoriliListe';
 
 export type IshikawaCategory = 'Manpower' | 'Machine' | 'Material' | 'Method' | 'Measurement' | 'Milieu';
 
@@ -34,54 +33,19 @@ export const createIshikawaSlice: StateCreator<
   [],
   [],
   IshikawaSlice
-> = (set, get) => ({
-  ishikawa: [],
-  addIshikawa: (problemStatement) => islem(() => {
-    const newItem: IshikawaAnalysis = {
-      id: uuidv4(),
-      problemStatement,
-      items: [],
-      createdAt: Date.now(),
-    };
-    const newIshikawa = [newItem, ...get().ishikawa];
-    set({ ishikawa: newIshikawa });
-  }),
-  updateIshikawaProblem: (id, problemStatement) => islem(() => {
-    const newIshikawa = get().ishikawa.map(i => i.id === id ? { ...i, problemStatement } : i);
-    set({ ishikawa: newIshikawa });
-  }),
-  deleteIshikawa: (id) => islem(() => {
-    const newIshikawa = get().ishikawa.filter(i => i.id !== id);
-    set({ ishikawa: newIshikawa });
-  }),
-  addIshikawaItem: (analysisId, category, text) => islem(() => {
-    const newItem: IshikawaItem = {
-      id: uuidv4(),
-      category,
-      text,
-      createdAt: Date.now(),
-    };
-    const newIshikawa = get().ishikawa.map(analysis => 
-      analysis.id === analysisId 
-        ? { ...analysis, items: [...analysis.items, newItem] } 
-        : analysis
-    );
-    set({ ishikawa: newIshikawa });
-  }),
-  updateIshikawaItem: (analysisId, itemId, text) => islem(() => {
-    const newIshikawa = get().ishikawa.map(analysis => 
-      analysis.id === analysisId 
-        ? { ...analysis, items: analysis.items.map(item => item.id === itemId ? { ...item, text } : item) } 
-        : analysis
-    );
-    set({ ishikawa: newIshikawa });
-  }),
-  deleteIshikawaItem: (analysisId, itemId) => islem(() => {
-    const newIshikawa = get().ishikawa.map(analysis => 
-      analysis.id === analysisId 
-        ? { ...analysis, items: analysis.items.filter(item => item.id !== itemId) } 
-        : analysis
-    );
-    set({ ishikawa: newIshikawa });
-  }),
-});
+> = (set, get) => {
+  const ortak = kategoriliListeIslemleri(
+    { anahtar: 'ishikawa', adAlani: 'problemStatement', kategoriAlani: 'category', aracAdi: 'ishikawa' },
+    set, get
+  );
+
+  return {
+    ishikawa: [],
+    addIshikawa: ortak.ekle,
+    updateIshikawaProblem: ortak.adiGuncelle,
+    deleteIshikawa: ortak.sil,
+    addIshikawaItem: ortak.kalemEkle,
+    updateIshikawaItem: ortak.kalemGuncelle,
+    deleteIshikawaItem: ortak.kalemSil
+  };
+};

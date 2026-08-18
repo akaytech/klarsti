@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Maximize, Minimize } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { tamEkranAc, tamEkranDegisiminiDinle, tamEkranDestekliMi, tamEkranKapat, tamEkrandaMi } from '../utils/tamEkran';
 
 /**
  * Tam ekran düğmesi: tarayıcının kendi tam ekranını açıyor, yani masaüstünde
@@ -10,73 +11,26 @@ import { useTranslation } from 'react-i18next';
  * Uygulamanın kendi menüleri bilerek yerinde kalıyor: kullanıcı tam ekranda da
  * geri al, paylaş, hesap gibi her şeye erişebilmeli.
  */
-
-// Safari tam ekranı hâlâ webkit önekiyle veriyor; iPhone'daki Safari'de ise
-// özellik hiç yok. Bu yüzden hem önekli hem öneksiz ad deneniyor, ikisi de
-// yoksa düğme hiç çizilmiyor.
-type TamEkranBelgesi = Document & {
-  webkitFullscreenElement?: Element | null;
-  webkitFullscreenEnabled?: boolean;
-  webkitExitFullscreen?: () => Promise<void> | void;
-};
-
-type TamEkranEleman = HTMLElement & {
-  webkitRequestFullscreen?: () => Promise<void> | void;
-};
-
-function tamEkrandaMi() {
-  const belge = document as TamEkranBelgesi;
-  return Boolean(belge.fullscreenElement || belge.webkitFullscreenElement);
-}
-
-function desteklenirMi() {
-  const belge = document as TamEkranBelgesi;
-  return Boolean(belge.fullscreenEnabled || belge.webkitFullscreenEnabled);
-}
-
 export default function TamEkranDugmesi() {
   const { t } = useTranslation();
   const [acik, setAcik] = useState(tamEkrandaMi);
 
   // Destek kontrolü bir kez yapılıyor: tarayıcı oturum ortasında bu yeteneği
   // kazanmıyor, her çizimde sormanın anlamı yok.
-  const [destekli] = useState(desteklenirMi);
+  const [destekli] = useState(tamEkranDestekliMi);
 
   // Durum olaydan okunuyor, düğmeye basıldığında elle yazılmıyor: kullanıcı
-  // Esc'e basıp çıkabiliyor, o zaman düğme "çık" görünümünde kalırdı.
-  useEffect(() => {
-    const guncelle = () => setAcik(tamEkrandaMi());
-    document.addEventListener('fullscreenchange', guncelle);
-    document.addEventListener('webkitfullscreenchange', guncelle);
-    return () => {
-      document.removeEventListener('fullscreenchange', guncelle);
-      document.removeEventListener('webkitfullscreenchange', guncelle);
-    };
-  }, []);
+  // Esc'e basıp çıkabiliyor, araçtan çıkınca da kendiliğinden kapanıyor
+  // (bkz. Workspace); o durumlarda düğme "çık" görünümünde kalırdı.
+  useEffect(() => tamEkranDegisiminiDinle(() => setAcik(tamEkrandaMi())), []);
 
   if (!destekli) return null;
-
-  const degistir = async () => {
-    const belge = document as TamEkranBelgesi;
-    try {
-      if (tamEkrandaMi()) {
-        await (belge.exitFullscreen ? belge.exitFullscreen() : belge.webkitExitFullscreen?.());
-      } else {
-        const kok = document.documentElement as TamEkranEleman;
-        await (kok.requestFullscreen ? kok.requestFullscreen() : kok.webkitRequestFullscreen?.());
-      }
-    } catch {
-      // Tarayıcı isteği geri çevirebiliyor (izin, gömülü çerçeve). Ekrana hata
-      // basmaya değmez: kullanıcı zaten hiçbir şey olmadığını görüyor ve
-      // düğmenin görünümü olaydan besleniyor, yanlış duruma düşmüyor.
-    }
-  };
 
   const etiket = t(acik ? 'fullscreen_exit' : 'fullscreen_enter');
 
   return (
     <button
-      onClick={degistir}
+      onClick={() => void (tamEkrandaMi() ? tamEkranKapat() : tamEkranAc())}
       title={etiket}
       aria-label={etiket}
       aria-pressed={acik}

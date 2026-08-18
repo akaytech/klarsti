@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useRoadmapStore } from '../store/useRoadmapStore';
 import { useUIStore } from '../store/useUIStore';
 import { useAuthStore } from '../store/useAuthStore';
+import { tamEkranKapat } from '../utils/tamEkran';
 import { useShallow } from 'zustand/react/shallow';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebaseCore';
@@ -30,6 +31,10 @@ export default function TopRightUserMenu() {
   const logout = async () => {
     if (cikisYapiliyor) return;
     setCikisYapiliyor(true);
+    // Tam ekran burada elle kapatılıyor: çıkışta tanıtım sayfasına dönülüyor ve
+    // Workspace'in "araçtan çıkınca kapat" kuralı çalışamadan sökülüyor.
+    // Kapatılmazsa tanıtım sayfası tam ekran açılıyor.
+    void tamEkranKapat();
     try {
       // Bekleyen yazmalar oturum kapanmadan gönderilmeli: signOut'tan sonra
       // istekler kimliksiz gidiyor ve kurallar hepsini reddediyor. Yani son bir

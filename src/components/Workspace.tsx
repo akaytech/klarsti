@@ -19,6 +19,7 @@ import { gecikmeliEkran } from '../utils/surumTazeleme';
 import { GUIDE_TOOLS } from '../content/toolGuides/available';
 import { kilavuzGosterildiMi, kilavuzuGosterildiIsaretle } from '../utils/kilavuzGosterimi';
 import { denemeKipindeMi } from '../utils/denemeKipi';
+import { tamEkranKapat, tamEkrandaMi } from '../utils/tamEkran';
 
 // Kılavuz metinleri ve paneli ayrı bir parçada: kullanıcı kılavuzu
 // açmadıkça indirilmiyor.
@@ -119,6 +120,20 @@ export default function Workspace() {
     kilavuzuGosterildiIsaretle(activeTool);
     setGuideOpen(true);
   }, [activeTool, setGuideOpen]);
+
+  // Araçtan çıkınca tam ekran da kapanıyor. Tam ekran tuvale odaklanmak için
+  // açılıyor; ana ekranda ya da çalışmalar listesinde karşılığı yok ve
+  // kullanıcı oradan çıkmanın tek yolunun Esc olduğunu bilmiyor.
+  //
+  // Araçtan araca geçişte kapanmıyor: burada bakılan tek şey bir aracın açık
+  // olup olmadığı, hangisi olduğu değil. Ajanda da araç sayılıyor, ona geçerken
+  // ekranın bir açılıp bir kapanmasının anlamı yok.
+  React.useEffect(() => {
+    if (activeTool) return;
+    if (!tamEkrandaMi()) return;
+    void tamEkranKapat();
+  }, [activeTool]);
+
   // Panel bir kez açıldıktan sonra DOM'da kalıyor; kapanış animasyonu ancak
   // böyle görünüyor (anında unmount edilirse panel kayarak değil, yok olarak
   // gidiyordu).

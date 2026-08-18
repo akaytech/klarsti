@@ -17,12 +17,12 @@ export interface ParetoProject {
 
 export interface ParetoSlice {
   pareto: ParetoProject[];
-  addParetoProject: (projectId: string, paretoId: string, title: string) => void;
-  addParetoItem: (projectId: string, paretoId: string, category: string, frequency: number) => void;
-  updateParetoItem: (projectId: string, paretoId: string, itemId: string, data: Partial<ParetoItem>) => void;
-  deleteParetoItem: (projectId: string, paretoId: string, itemId: string) => void;
-  updateParetoTitle: (projectId: string, paretoId: string, title: string) => void;
-  deleteParetoProject: (projectId: string, paretoId: string) => void;
+  addParetoProject: (paretoId: string, title: string) => void;
+  addParetoItem: (paretoId: string, category: string, frequency: number) => void;
+  updateParetoItem: (paretoId: string, itemId: string, data: Partial<ParetoItem>) => void;
+  deleteParetoItem: (paretoId: string, itemId: string) => void;
+  updateParetoTitle: (paretoId: string, title: string) => void;
+  deleteParetoProject: (paretoId: string) => void;
 }
 
 export const createParetoSlice: StateCreator<
@@ -32,14 +32,14 @@ export const createParetoSlice: StateCreator<
   ParetoSlice
 > = (set) => ({
   pareto: [],
-  addParetoProject: (_projectId, paretoId, title) => islem(() => {
+  addParetoProject: (paretoId, title) => islem(() => {
     set((state) => {
       const newPareto: ParetoProject = { id: paretoId, title, items: [] };
       const next = { ...state, pareto: [...state.pareto, newPareto] };
       return { ...next };
     });
   }),
-  addParetoItem: (_projectId, paretoId, category, frequency) => islem(() => {
+  addParetoItem: (paretoId, category, frequency) => islem(() => {
     set((state) => {
       const newItem: ParetoItem = { id: uuidv4(), category, frequency };
       const next = {
@@ -49,7 +49,7 @@ export const createParetoSlice: StateCreator<
       return { ...next };
     });
   }),
-  updateParetoItem: (_projectId, paretoId, itemId, data) => islem(() => {
+  updateParetoItem: (paretoId, itemId, data) => islem(() => {
     set((state) => {
       const next = {
         ...state,
@@ -62,7 +62,7 @@ export const createParetoSlice: StateCreator<
       return { ...next };
     });
   }),
-  deleteParetoItem: (_projectId, paretoId, itemId) => islem(() => {
+  deleteParetoItem: (paretoId, itemId) => islem(() => {
     set((state) => {
       const next = {
         ...state,
@@ -71,7 +71,7 @@ export const createParetoSlice: StateCreator<
       return { ...next };
     });
   }),
-  updateParetoTitle: (_projectId, paretoId, title) => islem(() => {
+  updateParetoTitle: (paretoId, title) => islem(() => {
     set((state) => {
       const next = {
         ...state,
@@ -80,7 +80,7 @@ export const createParetoSlice: StateCreator<
       return { ...next };
     });
   }),
-  deleteParetoProject: (_projectId, paretoId) => islem(() => {
+  deleteParetoProject: (paretoId) => islem(() => {
     set((state) => {
       const next = { ...state, pareto: state.pareto.filter(p => p.id !== paretoId) };
       return { ...next };

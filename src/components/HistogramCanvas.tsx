@@ -88,7 +88,7 @@ export default function HistogramCanvas() {
   const yeniAnaliz = () => {
     if (!currentProjectId) return;
     const id = uuidv4();
-    addHistogramProject(currentProjectId, id, t('default_histogram_title'));
+    addHistogramProject(id, t('default_histogram_title'));
     setAktifId(id);
   };
 
@@ -154,7 +154,7 @@ export default function HistogramCanvas() {
             <DebouncedField
               autoFocus
               initialValue={aktif.title}
-              onCommit={(v) => updateHistogramTitle(currentProjectId, aktif.id, v)}
+              onCommit={(v) => updateHistogramTitle(aktif.id, v)}
               onBlur={() => setAdDuzenleniyor(false)}
               onKeyDown={(e) => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }}
               className="me-2 min-w-0 flex-1 border-b border-indigo-500 bg-transparent text-lg font-bold text-slate-800 focus:outline-none dark:text-slate-100"
@@ -199,7 +199,7 @@ export default function HistogramCanvas() {
                     {aktif.eskiKalemler.map((k) => <li key={k.id}>{k.category} — {k.frequency}</li>)}
                   </ul>
                 </div>
-                <button onClick={() => clearHistogramEskiKalemler(currentProjectId, aktif.id)} className="shrink-0 text-amber-600 hover:text-amber-800 dark:text-amber-400" title={t('close_modal', { defaultValue: 'Close' })} aria-label={t('close_modal', { defaultValue: 'Close' })}>
+                <button onClick={() => clearHistogramEskiKalemler(aktif.id)} className="shrink-0 text-amber-600 hover:text-amber-800 dark:text-amber-400" title={t('close_modal', { defaultValue: 'Close' })} aria-label={t('close_modal', { defaultValue: 'Close' })}>
                   <X size={14} />
                 </button>
               </div>
@@ -216,7 +216,7 @@ export default function HistogramCanvas() {
               multiline
               rows={12}
               initialValue={olcumleriMetneCevir(aktif.olcumler)}
-              onCommit={(v) => setHistogramOlcumler(currentProjectId, aktif.id, olcumleriAyristir(v))}
+              onCommit={(v) => setHistogramOlcumler(aktif.id, olcumleriAyristir(v))}
               className="custom-scrollbar w-full rounded-xl border border-slate-200 bg-slate-50 p-3 font-mono text-sm tabular-nums text-slate-700 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
               ariaLabel={t('histogram_measurements')}
               placeholder={'12,4\n12,8\n13,1'}
@@ -231,22 +231,22 @@ export default function HistogramCanvas() {
             <div className="grid grid-cols-2 gap-3">
               {aktif && (
                 <>
-                  <AyarAlani key={`${aktif.id}-alt`} etiket={t('histogram_lsl')} deger={aktif.ayarlar.altSinir} onCommit={(v) => updateHistogramAyarlar(currentProjectId, aktif.id, { altSinir: v })} />
-                  <AyarAlani key={`${aktif.id}-ust`} etiket={t('histogram_usl')} deger={aktif.ayarlar.ustSinir} onCommit={(v) => updateHistogramAyarlar(currentProjectId, aktif.id, { ustSinir: v })} />
-                  <AyarAlani key={`${aktif.id}-hedef`} etiket={t('histogram_target')} deger={aktif.ayarlar.hedef} onCommit={(v) => updateHistogramAyarlar(currentProjectId, aktif.id, { hedef: v })} />
+                  <AyarAlani key={`${aktif.id}-alt`} etiket={t('histogram_lsl')} deger={aktif.ayarlar.altSinir} onCommit={(v) => updateHistogramAyarlar(aktif.id, { altSinir: v })} />
+                  <AyarAlani key={`${aktif.id}-ust`} etiket={t('histogram_usl')} deger={aktif.ayarlar.ustSinir} onCommit={(v) => updateHistogramAyarlar(aktif.id, { ustSinir: v })} />
+                  <AyarAlani key={`${aktif.id}-hedef`} etiket={t('histogram_target')} deger={aktif.ayarlar.hedef} onCommit={(v) => updateHistogramAyarlar(aktif.id, { hedef: v })} />
                   <AyarAlani
                     key={`${aktif.id}-kutu`}
                     etiket={t('histogram_bins')}
                     deger={aktif.ayarlar.kutuSayisi}
                     ipucu={String(sturgesKutuSayisi(aktif.olcumler.length))}
-                    onCommit={(v) => updateHistogramAyarlar(currentProjectId, aktif.id, { kutuSayisi: v })}
+                    onCommit={(v) => updateHistogramAyarlar(aktif.id, { kutuSayisi: v })}
                   />
                   <label className="col-span-2 flex flex-col gap-1">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{t('histogram_unit')}</span>
                     <DebouncedField
                       key={`${aktif.id}-birim`}
                       initialValue={aktif.ayarlar.birim ?? ''}
-                      onCommit={(v) => updateHistogramAyarlar(currentProjectId, aktif.id, { birim: v.trim() || undefined })}
+                      onCommit={(v) => updateHistogramAyarlar(aktif.id, { birim: v.trim() || undefined })}
                       className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-sm font-semibold text-slate-800 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                       ariaLabel={t('histogram_unit')}
                       placeholder="mm"
@@ -379,7 +379,7 @@ export default function HistogramCanvas() {
         onClose={() => setSilmeOnayi(false)}
         onConfirm={() => {
           if (currentProjectId && aktif) {
-            deleteHistogramProject(currentProjectId, aktif.id);
+            deleteHistogramProject(aktif.id);
             setAktifId(null);
           }
         }}

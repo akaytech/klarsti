@@ -163,9 +163,9 @@ const pareto: Sahne = {
   ad: 'pareto',
   arac: 'pareto',
   kur: () => {
-    depo().addParetoProject('demo', PARETO_ID, 'Müşteri Şikâyetleri');
-    depo().addParetoItem('demo', PARETO_ID, 'Uzun bekleme süresi', 48);
-    depo().addParetoItem('demo', PARETO_ID, 'Sipariş yanlış hazırlandı', 21);
+    depo().addParetoProject(PARETO_ID, 'Müşteri Şikâyetleri');
+    depo().addParetoItem(PARETO_ID, 'Uzun bekleme süresi', 48);
+    depo().addParetoItem(PARETO_ID, 'Sipariş yanlış hazırlandı', 21);
     imlecBaslangic(window.innerWidth / 2, window.innerHeight + 40);
   },
   oyna: async () => {

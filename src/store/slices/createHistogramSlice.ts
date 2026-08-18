@@ -42,14 +42,14 @@ export interface HistogramProject {
 
 export interface HistogramSlice {
   histogram: HistogramProject[];
-  addHistogramProject: (projectId: string, histogramId: string, title: string) => void;
+  addHistogramProject: (histogramId: string, title: string) => void;
   /** Ölçümler toplu girilir; yüz ölçümü tek tek satıra yazdırmak işkence. */
-  setHistogramOlcumler: (projectId: string, histogramId: string, olcumler: number[]) => void;
-  updateHistogramAyarlar: (projectId: string, histogramId: string, patch: Partial<HistogramAyarlar>) => void;
-  updateHistogramTitle: (projectId: string, histogramId: string, title: string) => void;
-  deleteHistogramProject: (projectId: string, histogramId: string) => void;
+  setHistogramOlcumler: (histogramId: string, olcumler: number[]) => void;
+  updateHistogramAyarlar: (histogramId: string, patch: Partial<HistogramAyarlar>) => void;
+  updateHistogramTitle: (histogramId: string, title: string) => void;
+  deleteHistogramProject: (histogramId: string) => void;
   /** Taşınamamış eski kalemleri kullanıcı gördükten sonra temizler. */
-  clearHistogramEskiKalemler: (projectId: string, histogramId: string) => void;
+  clearHistogramEskiKalemler: (histogramId: string) => void;
 }
 
 export const createHistogramSlice: StateCreator<RoadmapState, [], [], HistogramSlice> = (set) => {
@@ -61,32 +61,32 @@ export const createHistogramSlice: StateCreator<RoadmapState, [], [], HistogramS
   return {
     histogram: [],
 
-    addHistogramProject: (_projectId, histogramId, title) => islem(() => {
+    addHistogramProject: (histogramId, title) => islem(() => {
       set((state) => ({
         ...state,
         histogram: [...state.histogram, { id: histogramId, title, olcumler: [], ayarlar: {}, createdAt: Date.now() }],
       }));
     }),
 
-    setHistogramOlcumler: (_projectId, histogramId, olcumler) => islem(() => {
+    setHistogramOlcumler: (histogramId, olcumler) => islem(() => {
       set((state) => guncelle(state, histogramId, (h) => ({ ...h, olcumler })));
     }),
 
-    updateHistogramAyarlar: (_projectId, histogramId, patch) => islem(() => {
+    updateHistogramAyarlar: (histogramId, patch) => islem(() => {
       set((state) => guncelle(state, histogramId, (h) => ({ ...h, ayarlar: { ...h.ayarlar, ...patch } })));
     }),
 
-    updateHistogramTitle: (_projectId, histogramId, title) => islem(() => {
+    updateHistogramTitle: (histogramId, title) => islem(() => {
       set((state) => guncelle(state, histogramId, (h) => ({ ...h, title })));
     }),
 
-    deleteHistogramProject: (_projectId, histogramId) => islem(() => {
+    deleteHistogramProject: (histogramId) => islem(() => {
       set((state) => ({ ...state, histogram: state.histogram.filter((h) => h.id !== histogramId) }));
     }),
 
     // Bilerek işlem sınırı yok: eski kayıt biçiminden kalan kalemleri temizleyen
     // bir göç adımı, kullanıcının yaptığı bir iş değil.
-    clearHistogramEskiKalemler: (_projectId, histogramId) => {
+    clearHistogramEskiKalemler: (histogramId) => {
       set((state) => guncelle(state, histogramId, (h) => ({ ...h, eskiKalemler: undefined })));
     },
   };

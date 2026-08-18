@@ -105,7 +105,7 @@ function WorkTreeItem({
   const adiKaydet = () => {
     const yeni = editName.trim();
     if (yeni && yeni !== calisma.ad) {
-      calismayiYenidenAdlandir(projeyiHazirla(), tool, project.id, calisma.id, yeni);
+      calismayiYenidenAdlandir(projeyiHazirla(), tool, calisma.id, yeni);
     } else {
       setEditName(calisma.ad);
     }
@@ -175,7 +175,7 @@ function WorkTreeItem({
                 requestDelete(
                   t('delete_work_title', { defaultValue: 'Delete work' }),
                   t('delete_work_msg', { ad: gorunenAd, defaultValue: '"{{ad}}" will be deleted.' }),
-                  () => calismayiSil(projeyiHazirla(), tool, project.id, calisma.id)
+                  () => calismayiSil(projeyiHazirla(), tool, calisma.id)
                 );
               }}
               className="p-1.5 text-slate-400 transition-colors hover:text-red-500"

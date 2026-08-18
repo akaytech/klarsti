@@ -69,13 +69,13 @@ export default function ParetoCanvas() {
 
   const handleAddItem = () => {
     if (!currentProjectId || !activePareto) return;
-    addParetoItem(currentProjectId, activePareto.id, t('pareto_category') + "...", 10);
+    addParetoItem(activePareto.id, t('pareto_category') + "...", 10);
   };
 
   const handleCreateAnalysis = () => {
     if (!currentProjectId) return;
     const pId = uuidv4();
-    addParetoProject(currentProjectId, pId, t('default_pareto_title'));
+    addParetoProject(pId, t('default_pareto_title'));
     setActiveParetoId(pId); // Wait, addParetoProject generates a random UUID if we don't pass it. Wait, the store method creates its own UUID. I'll need to select the last one after creation via a small timeout, or modify store. For now we will select it automatically if list was empty.
   };
 
@@ -124,7 +124,7 @@ export default function ParetoCanvas() {
              <DebouncedField
                autoFocus
                initialValue={activePareto.title}
-               onCommit={(value) => updateParetoTitle(currentProjectId, activePareto.id, value)}
+               onCommit={(value) => updateParetoTitle(activePareto.id, value)}
                onBlur={() => setIsEditingTitle(false)}
                onKeyDown={(e) => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }}
                className="bg-transparent text-lg font-bold text-slate-800 dark:text-slate-100 focus:outline-none flex-1 min-w-0 me-2 border-b border-indigo-500"
@@ -173,7 +173,7 @@ export default function ParetoCanvas() {
                   <td className="px-3 py-2">
                     <DebouncedField
                       initialValue={item.category}
-                      onCommit={(value) => updateParetoItem(currentProjectId, activePareto.id, item.id, { category: value })}
+                      onCommit={(value) => updateParetoItem(activePareto.id, item.id, { category: value })}
                       className="w-full bg-transparent border-none focus:ring-0 p-1 text-slate-700 dark:text-slate-300 font-medium"
                       ariaLabel={t('pareto_category')}
                     />
@@ -187,7 +187,7 @@ export default function ParetoCanvas() {
                       type="number"
                       min="0"
                       initialValue={String(item.frequency)}
-                      onCommit={(value) => updateParetoItem(currentProjectId, activePareto.id, item.id, { frequency: Number(value) || 0 })}
+                      onCommit={(value) => updateParetoItem(activePareto.id, item.id, { frequency: Number(value) || 0 })}
                       onKeyDown={(e) => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }}
                       className="w-full bg-transparent border-none focus:ring-0 p-1 text-slate-700 dark:text-slate-300 font-semibold text-end"
                       ariaLabel={t('pareto_frequency')}
@@ -195,7 +195,7 @@ export default function ParetoCanvas() {
                   </td>
                   <td className="px-2 py-2 text-end">
                     <button
-                      onClick={() => deleteParetoItem(currentProjectId, activePareto.id, item.id)}
+                      onClick={() => deleteParetoItem(activePareto.id, item.id)}
                       aria-label={t('delete')}
                       className="flex h-9 w-9 items-center justify-center text-slate-400 hover:text-red-500 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all rounded hover:bg-red-50 dark:hover:bg-red-900/30"
                     >
@@ -238,7 +238,7 @@ export default function ParetoCanvas() {
               {[0, 0.25, 0.5, 0.75, 1].map((tick) => {
                 const y = margin.top + chartHeight * (1 - tick);
                 return (
-                  <g key={`grid-\${tick}`}>
+                  <g key={`grid-${tick}`}>
                     <line
                       x1={margin.left}
                       y1={y}
@@ -352,7 +352,7 @@ export default function ParetoCanvas() {
         onClose={() => setConfirmDeleteOpen(false)}
         onConfirm={() => {
           if (currentProjectId && activePareto) {
-            deleteParetoProject(currentProjectId, activePareto.id);
+            deleteParetoProject(activePareto.id);
             setActiveParetoId(null);
           }
         }}

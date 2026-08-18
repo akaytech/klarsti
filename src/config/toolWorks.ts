@@ -37,12 +37,6 @@ interface AracTanimi {
   /** Çalışmayı silen store eylemi. */
   sil: string;
   /**
-   * Pareto ve histogramın eylemleri ilk argüman olarak proje kimliğini
-   * bekliyor, diğerleri beklemiyor. İmza farkı burada tutuluyor ki çağıran
-   * taraf on dört ayrı durumu tek tek bilmek zorunda kalmasın.
-   */
-  projeliImza?: boolean;
-  /**
    * Çalışmanın adını taşıyan alan. Araçtan araca değişiyor: kırılım ağacının
    * "name"i var, SWOT'un "title"ı, balık kılçığının problem cümlesi, PDCA'nın
    * hedefi. Hepsini "name" yapmak eski kayıtları bozardı.
@@ -82,8 +76,8 @@ const TANIMLAR: Record<ToolId, AracTanimi | null> = {
   ishikawa: { anahtar: 'ishikawa', adAlani: 'problemStatement', yenidenAdlandir: 'updateIshikawaProblem', sil: 'deleteIshikawa' },
   pdca: { anahtar: 'pdca', adAlani: 'goal', yenidenAdlandir: 'updatePdcaGoal', sil: 'deletePdcaCycle' },
   waterfall: { anahtar: 'waterfall', adAlani: 'name', yenidenAdlandir: 'updateWaterfallProjectName', sil: 'deleteWaterfallProject' },
-  pareto: { anahtar: 'pareto', adAlani: 'title', yenidenAdlandir: 'updateParetoTitle', sil: 'deleteParetoProject', projeliImza: true },
-  histogram: { anahtar: 'histogram', adAlani: 'title', yenidenAdlandir: 'updateHistogramTitle', sil: 'deleteHistogramProject', projeliImza: true },
+  pareto: { anahtar: 'pareto', adAlani: 'title', yenidenAdlandir: 'updateParetoTitle', sil: 'deleteParetoProject' },
+  histogram: { anahtar: 'histogram', adAlani: 'title', yenidenAdlandir: 'updateHistogramTitle', sil: 'deleteHistogramProject' },
   decision: { anahtar: 'decision', adAlani: 'name', yenidenAdlandir: 'updateDecisionProjectName', sil: 'deleteDecisionProject' },
   // Ajanda projeye ait değil, kişisel. Menüde hiç yer almıyor.
   notepad: null
@@ -101,30 +95,29 @@ export const aracAktifAlan = (tool: ToolId): string | undefined =>
  * bir yapılandırma dosyası, store'u içe aktarsa iki modül birbirini çağıran
  * bir halkaya girerdi.
  *
- * Eylem adları ve imzaları araçtan araca değiştiği için `any` kaçınılmaz;
- * on dört ayrı imzayı tek bir tipte toplamak, kazandırdığından fazlasını
- * okunaklılıktan götürürdü.
+ * Eylem adları araçtan araca değiştiği ve buradan adıyla arandığı için `any`
+ * kaçınılmaz. İmzalar ise artık on dört araçta da aynı: Pareto ile histogram
+ * eskiden ilk argüman olarak proje kimliğini bekliyordu ama hiç kullanmıyordu,
+ * o parametre kaldırıldı.
  */
 export function calismayiYenidenAdlandir(
-  store: Record<string, any>, tool: ToolId, projectId: string, calismaId: string, yeniAd: string
+  store: Record<string, any>, tool: ToolId, calismaId: string, yeniAd: string
 ) {
   const tanim = TANIMLAR[tool];
   if (!tanim) return;
   const eylem = store[tanim.yenidenAdlandir];
   if (typeof eylem !== 'function') return;
-  if (tanim.projeliImza) eylem(projectId, calismaId, yeniAd);
-  else eylem(calismaId, yeniAd);
+  eylem(calismaId, yeniAd);
 }
 
 export function calismayiSil(
-  store: Record<string, any>, tool: ToolId, projectId: string, calismaId: string
+  store: Record<string, any>, tool: ToolId, calismaId: string
 ) {
   const tanim = TANIMLAR[tool];
   if (!tanim) return;
   const eylem = store[tanim.sil];
   if (typeof eylem !== 'function') return;
-  if (tanim.projeliImza) eylem(projectId, calismaId);
-  else eylem(calismaId);
+  eylem(calismaId);
 }
 
 /**

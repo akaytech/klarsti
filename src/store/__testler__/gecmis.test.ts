@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import {
-  gecmisiBagla, yazmayiIsle, islem, islemBasla, islemBitir, gecmisiTemizle
+  gecmisiBagla, yazmayiIsle, islem, islemBasla, islemBitir, gecmisiTemizle, tiktaIslem
 } from '../gecmis';
 
 // Geri al / ileri al'ın işlem sınırları.
@@ -180,5 +180,87 @@ describe('bozulmaya karsi', () => {
     durum = { sayi: 1 };
     islem(() => yaz({ sayi: 2 }));
     expect(yazilanlar).toHaveLength(1);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Tek el hareketi, birden çok çağrı.
+//
+// React Flow bir kutu silindiğinde kutuyu ve çizgilerini AYRI bildiriyor,
+// üstelik önce çizgileri:
+//
+//   if (hasMatchingEdges) { ...triggerEdgeChanges(...) }   // önce
+//   if (hasMatchingNodes) { ...triggerNodeChanges(...) }   // sonra
+//
+// Bu iki çağrı ayrı işlem sayılırsa geçmişe "çizgi zaten silinmiş" hali
+// düşüyor ve geri alma kutuyu ebeveynsiz geri getiriyor.
+// ---------------------------------------------------------------------------
+
+const tikBitir = () => new Promise((r) => setTimeout(r, 0));
+
+describe('tiktaIslem', () => {
+  const dolu = { kutular: ['kok', 'cocuk'], cizgiler: ['kok->cocuk'] };
+  const cizgisiz = { kutular: ['kok', 'cocuk'], cizgiler: [] };
+  const bos = { kutular: ['kok'], cizgiler: [] };
+
+  it('kutu silme: tek kayit duser ve HEM kutu HEM cizgi geri gelir', async () => {
+    durum = dolu;
+
+    // React Flow'un sirasi: once cizgiler...
+    tiktaIslem(() => yaz(cizgisiz));
+    // ...sonra kutu.
+    islem(() => yaz(bos));
+
+    await tikBitir();
+
+    expect(yazilanlar).toHaveLength(1);
+    // Kritik: kaydedilen hal cizgiyi de TASIMALI. Tasimazsa kullanici geri
+    // aldiginda kutuyu ebeveynsiz, kok gibi duran bir kutu olarak bulur.
+    expect(yazilanlar[0]).toEqual(dolu);
+  });
+
+  it('tek basina cizgi silme geri alinabilir', async () => {
+    durum = dolu;
+    tiktaIslem(() => yaz(cizgisiz));
+    await tikBitir();
+
+    expect(yazilanlar).toHaveLength(1);
+    expect(yazilanlar[0]).toEqual(dolu);
+  });
+
+  it('ayri el hareketleri ayri kayit dusurur', async () => {
+    durum = dolu;
+    tiktaIslem(() => yaz(cizgisiz));
+    await tikBitir();
+
+    tiktaIslem(() => yaz(bos));
+    await tikBitir();
+
+    expect(yazilanlar).toHaveLength(2);
+    expect(yazilanlar[0]).toEqual(dolu);
+    expect(yazilanlar[1]).toEqual(cizgisiz);
+  });
+
+  it('gercek degisiklik yoksa yine kayit dusmez', async () => {
+    durum = dolu;
+    tiktaIslem(() => yaz({ kutular: ['kok', 'cocuk'], cizgiler: ['kok->cocuk'] }));
+    await tikBitir();
+    expect(yazilanlar).toHaveLength(0);
+  });
+
+  // Yarim kalmis bir tik siniri sonraki el hareketini yutmamali.
+  it('gecmisiTemizle bekleyen tik sinirini dusurur', async () => {
+    durum = dolu;
+    tiktaIslem(() => yaz(cizgisiz));
+    gecmisiTemizle();
+    await tikBitir();
+
+    yazilanlar.length = 0;
+    durum = cizgisiz;
+    tiktaIslem(() => yaz(bos));
+    await tikBitir();
+
+    expect(yazilanlar).toHaveLength(1);
+    expect(yazilanlar[0]).toEqual(cizgisiz);
   });
 });

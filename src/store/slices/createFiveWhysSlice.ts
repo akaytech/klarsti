@@ -17,7 +17,7 @@ import {
 } from '@xyflow/react';
 
 import type { RoadmapState } from '../useRoadmapStore';
-import { islem, gecmisiTemizle } from '../gecmis';
+import { islem, tiktaIslem, gecmisiTemizle } from '../gecmis';
 import { siraDegistir } from './siralama';
 
 export type FiveWhysNodeType = 'problem' | 'why' | 'solution';
@@ -200,7 +200,7 @@ export const createFiveWhysSlice: StateCreator<RoadmapState, [], [], FiveWhysSli
       // Kutu silinince ona bağlı çizgiler deleteFiveWhysNode içinde zaten
       // gitti; arkadan gelen bu çağrı bir şey değiştirmediği için kayıt düşmez.
       const uygula = () => set((state) => aktifiGuncelle(state, (a) => ({ ...a, edges: applyEdgeChanges(changes, a.edges) })));
-      if (changes.some((c) => c.type === 'remove')) islem(uygula);
+      if (changes.some((c) => c.type === 'remove')) tiktaIslem(uygula);
       else uygula();
     },
 

@@ -4,7 +4,7 @@ import type { NodeChange, EdgeChange, Connection, Edge, Node } from '@xyflow/rea
 import i18n from '../../i18n';
 import type { DiagramTypeDef } from '../../config/diagramShared';
 import { edgeStyle } from '../../config/diagramShared';
-import { islem, gecmisiTemizle } from '../gecmis';
+import { islem, tiktaIslem, gecmisiTemizle } from '../gecmis';
 import { siraDegistir } from './siralama';
 
 // Akış diyagramları ve organizasyon şemaları aynı veri yapısını kullanıyor:
@@ -195,7 +195,7 @@ export function createDiagramOps(cfg: DiagramOpsConfig, set: (fn: (state: any) =
         ...sema,
         edges: applyEdgeChanges(changes, sema.edges) as Edge[],
       })));
-      if (changes.some((c) => c.type === 'remove')) islem(uygula);
+      if (changes.some((c) => c.type === 'remove')) tiktaIslem(uygula);
       else uygula();
     },
 

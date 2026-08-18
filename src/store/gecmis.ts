@@ -24,6 +24,9 @@ type Anlik = Record<string, unknown>;
 // İç içe eylemler tek kayıt olsun diye sayaç: addGoal içinden toggleExpand
 // çağrılıyor, ikisi kullanıcı için tek bir "kutu ekledim" işlemi.
 let derinlik = 0;
+// Olay boyunca açık kalan sınır (bkz. tiktaIslem). Kapanışı mikro göreve
+// bırakıldığı için sayaçtan ayrı tutuluyor.
+let tikAcik = false;
 // İşlem başladıktan sonraki İLK yazmanın öncesindeki hal. Sonraki yazmalar
 // aynı işleme ait olduğu için üzerine yazılmaz.
 let ilkDurum: Anlik | null = null;
@@ -108,6 +111,44 @@ export const islemBitir = () => {
   if (derinlik === 0) islemiKapat();
 };
 
+/**
+ * Aynı olayda ard arda gelen yazmaları TEK işleme toplar.
+ *
+ * React Flow bir kutu silindiğinde kutuyu ve ona bağlı çizgileri ayrı ayrı
+ * bildiriyor — ve önce ÇİZGİLERİ:
+ *
+ *   if (hasMatchingEdges) { ...triggerEdgeChanges(...) }   // önce
+ *   if (hasMatchingNodes) { ...triggerNodeChanges(...) }   // sonra
+ *
+ * İkisi ayrı işlem sayılırsa geçmişe düşen fotoğraf "çizgi zaten silinmiş"
+ * halini taşıyor. Geri alma kutuyu geri getiriyor ama ebeveyniyle arasındaki
+ * çizgiyi getirmiyor; kutu tek başına, kökmüş gibi kalıyor.
+ *
+ * Bu sarmalayıcı ilk çağrıda işlemi açıyor ve kapanışı olayın sonuna
+ * (mikro göreve) bırakıyor. Böylece aynı el hareketindeki bütün yazmalar tek
+ * sınırın içinde kalıyor ve geçmişe HER ŞEYDEN ÖNCEKİ hal düşüyor.
+ *
+ * İç içe `islem` çağrıları zaten sayaçla tek kayda iniyor; bu, sınırı bir
+ * çağrının ötesine taşıyan hali.
+ */
+export const tiktaIslem = (calistir: () => void) => {
+  if (tikAcik) {
+    // Sınır zaten açık; bu yazma da aynı işleme ait.
+    calistir();
+    return;
+  }
+  tikAcik = true;
+  islemBasla();
+  try {
+    calistir();
+  } finally {
+    queueMicrotask(() => {
+      tikAcik = false;
+      islemBitir();
+    });
+  }
+};
+
 /** Tek seferde biten eylemler için sarmalayıcı. */
 export const islem = <T,>(calistir: () => T): T => {
   islemBasla();
@@ -128,5 +169,8 @@ export const gecmisiTemizle = () => {
   // her yazmayı kendine yutmasın diye sayaç da sıfırlanır.
   derinlik = 0;
   ilkDurum = null;
+  // Bekleyen bir tık sınırı varsa o da düşer; yoksa sonraki el hareketi
+  // "sınır zaten açık" sanıp kendi kaydını hiç düşürmezdi.
+  tikAcik = false;
   yiginiBosalt?.();
 };

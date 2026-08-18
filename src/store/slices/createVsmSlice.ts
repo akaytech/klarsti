@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { applyNodeChanges, applyEdgeChanges, addEdge } from '@xyflow/react';
 import type { Connection, EdgeChange, NodeChange } from '@xyflow/react';
 import type { RoadmapState } from '../useRoadmapStore';
-import { islem, gecmisiTemizle } from '../gecmis';
+import { islem, tiktaIslem, gecmisiTemizle } from '../gecmis';
 import { siraDegistir } from './siralama';
 
 /** Süre alanlarının birimi. Veri eski kayıtlarla uyumlu kalsın diye İngilizce. */
@@ -319,7 +319,7 @@ export const createVsmSlice: StateCreator<RoadmapState, [], [], VsmSlice> = (set
         ...h,
         edges: applyEdgeChanges(changes, h.edges as any) as unknown as VsmEdge[],
       })));
-      if (changes.some((c) => c.type === 'remove')) islem(uygula);
+      if (changes.some((c) => c.type === 'remove')) tiktaIslem(uygula);
       else uygula();
     },
 

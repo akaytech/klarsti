@@ -8,7 +8,7 @@ import {
 import type { NodeChange, EdgeChange, Connection, Edge, Node } from '@xyflow/react';
 
 import type { RoadmapState } from '../useRoadmapStore';
-import { islem, gecmisiTemizle } from '../gecmis';
+import { islem, tiktaIslem, gecmisiTemizle } from '../gecmis';
 import { siraDegistir } from './siralama';
 import i18n from '../../i18n';
 import { logAppEvent } from '../../firebase';
@@ -232,7 +232,7 @@ export const createFtaSlice: StateCreator<RoadmapState, [], [], FtaSlice> = (set
       // Kutu silinince ona bağlı çizgiler deleteFtaNode içinde zaten gitti;
       // arkadan gelen bu çağrı bir şey değiştirmediği için kayıt da düşmez.
       const uygula = () => set((state) => aktifiGuncelle(state, (a) => ({ ...a, edges: applyEdgeChanges(changes, a.edges) as Edge[] })));
-      if (changes.some((c) => c.type === 'remove')) islem(uygula);
+      if (changes.some((c) => c.type === 'remove')) tiktaIslem(uygula);
       else uygula();
     },
 

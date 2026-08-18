@@ -10,7 +10,7 @@ import type { Edge, NodeChange, EdgeChange, Connection, Node } from '@xyflow/rea
 
 import i18n from '../../i18n';
 import type { RoadmapState } from '../useRoadmapStore';
-import { islem, gecmisiTemizle } from '../gecmis';
+import { islem, tiktaIslem, gecmisiTemizle } from '../gecmis';
 import { siraDegistir } from './siralama';
 
 export type GoalStatus = 'To Do' | 'In Progress' | 'Done' | 'Failed';
@@ -488,10 +488,16 @@ export const createWbsSlice: StateCreator<
   },
 
   onEdgesChange: (changes: EdgeChange[]) => {
-    set((state) => aktifiGuncelle(state, (agac) => ({
+    // Silme geçmişe girmeli: hem tek başına silinen bir çizgi geri
+    // alınabilsin, hem de kutu silinirken önce gelen bu çağrı kutununkiyle
+    // AYNI işlemde kalsın. Ayrı kalırsa geçmişe "çizgi zaten yok" hali düşer
+    // ve geri alma kutuyu ebeveynsiz geri getirir (bkz. tiktaIslem).
+    const uygula = () => set((state) => aktifiGuncelle(state, (agac) => ({
       ...agac,
       edges: applyEdgeChanges(changes, agac.edges),
     })));
+    if (changes.some((c) => c.type === 'remove')) tiktaIslem(uygula);
+    else uygula();
   },
 
   onConnect: (connection: Connection) => {

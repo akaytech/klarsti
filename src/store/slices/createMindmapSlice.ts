@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { applyNodeChanges, applyEdgeChanges } from '@xyflow/react';
 import type { NodeChange, EdgeChange, Edge, Node } from '@xyflow/react';
 import type { RoadmapState } from '../useRoadmapStore';
-import { islem, gecmisiTemizle } from '../gecmis';
+import { islem, tiktaIslem, gecmisiTemizle } from '../gecmis';
 import { siraDegistir } from './siralama';
 import { DAL_RENKLERI } from '../../utils/mindmapLayout';
 
@@ -264,10 +264,15 @@ export const createMindmapSlice: StateCreator<
     },
 
     onMindmapEdgesChange: (changes) => {
-      set((state) => aktifiGuncelle(state, (harita) => ({
+      // Silme geçmişe girmeli ve kutu silmeyle AYNI işlemde kalmalı; ayrı
+      // kalırsa geçmişe "çizgi zaten yok" hali düşer ve geri alma kutuyu
+      // ebeveynsiz geri getirir (bkz. tiktaIslem).
+      const uygula = () => set((state) => aktifiGuncelle(state, (harita) => ({
         ...harita,
         edges: applyEdgeChanges(changes, harita.edges) as Edge[],
       })));
+      if (changes.some((c) => c.type === 'remove')) tiktaIslem(uygula);
+      else uygula();
     },
 
     addMindmapChild: (parentId, label) => islem(() => {

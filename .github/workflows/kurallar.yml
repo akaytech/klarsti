@@ -1,0 +1,40 @@
+# Firestore kurallarinin denemesi.
+#
+# Ayri bir is, cunku emulator icin firebase CLI indirmek gerekiyor ve bu her
+# derlemeye eklenecek kadar ucuz degil. Kurallar da nadiren degisiyor; o yuzden
+# yalnizca firestore.rules'a dokunuldugunda kosuyor.
+#
+# Buradaki testler paylasim kapilarini sinar: baskasinin adina proje acmak,
+# birini zorla paylasim listesine sokmak, ortak calisanin sahipligi devralmasi,
+# baskasinin ajandasini okumak. Kirmizi yanarsa kural degisikligi bir kapiyi
+# acmis demektir.
+name: Firestore kurallari
+
+on:
+  push:
+    paths:
+      - 'firestore.rules'
+      - 'scripts/kuralDenemesi.mjs'
+      - '.github/workflows/kurallar.yml'
+  pull_request:
+    paths:
+      - 'firestore.rules'
+      - 'scripts/kuralDenemesi.mjs'
+  workflow_dispatch:
+
+jobs:
+  kurallar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          cache: 'npm'
+      # Emulator JVM uzerinde kosuyor.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - run: npm ci
+      - run: npx --yes firebase-tools emulators:exec --only firestore --project klarsti-rules-test "node scripts/kuralDenemesi.mjs"

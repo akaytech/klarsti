@@ -1,7 +1,7 @@
 {
   "name": "klarsti",
   "private": true,
-  "version": "0.8.29-6",
+  "version": "0.8.29-7",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,7 +13,8 @@
     "klip": "node scripts/klipCek.mjs",
     "eski-kayit-say": "node scripts/eskiKayitSay.mjs",
     "test": "vitest run",
-    "test:izle": "vitest"
+    "test:izle": "vitest",
+    "test:kurallar": "firebase emulators:exec --only firestore --project klarsti-rules-test \"node scripts/kuralDenemesi.mjs\""
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

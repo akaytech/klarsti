@@ -78,3 +78,109 @@ export function klasorsuzAracAdi(pathname: string): string | null {
 export function denemeAracAdi(pathname: string): string | null {
   return onekSonrasi(pathname, DENEME_ONEK);
 }
+
+/* -------------------------------------------------------------------------
+ * Adres <-> durum kararları.
+ *
+ * Bunlar bilerek SAF: hiçbir şeyi değiştirmiyorlar, yalnızca "bu adres ne
+ * demek" ve "bu duruma hangi adres düşer" sorularını cevaplıyorlar. Karar
+ * verme ile yapma ayrıldığı için karar tek başına sınanabiliyor
+ * (bkz. aracAdresi.test.ts). Eskiden ikisi 160 satırlık tek bir blokta iç
+ * içeydi ve ancak canlıda tıklayarak denenebiliyordu.
+ * ---------------------------------------------------------------------- */
+
+/** Adres çubuğundaki yolun ne istediği. */
+export type AdresNiyeti =
+  /** Karşılama ekranı. */
+  | { tur: 'kok' }
+  /** Tam sayfa çalışma listesi (/works). */
+  | { tur: 'calismalar' }
+  /** Ajanda (/agenda). Kişisel, klasör gerektirmiyor. */
+  | { tur: 'ajanda' }
+  /** /new/{arac} — araç seçildi ama tıklandığında hiç klasör yoktu. */
+  | { tur: 'klasorsuz'; arac: string }
+  /** /project/{klasor}/{arac}/{calisma} */
+  | { tur: 'klasor'; klasorId: string; arac?: string; calismaId?: string }
+  /** /work/{klasor}/{arac}/{calisma} — paylaşılan çalışma linki. */
+  | { tur: 'paylasik'; klasorId: string; arac: string; calismaId?: string }
+  /** Elle yazılmış ya da artık geçersiz bir adres. */
+  | { tur: 'taninmaz' };
+
+/**
+ * Adresi niyete çevirir.
+ *
+ * @param aracGecerliMi Araç adının gerçekten var olan bir araç olup olmadığı.
+ *   Dışarıdan veriliyor: bu dosya bilerek bağımsız (bkz. dosya başı).
+ */
+export function adresiCoz(
+  pathname: string,
+  aracGecerliMi: (ad: string) => boolean
+): AdresNiyeti {
+  if (pathname === '/') return { tur: 'kok' };
+  if (pathname === '/works') return { tur: 'calismalar' };
+  if (pathname === '/agenda') return { tur: 'ajanda' };
+
+  const yeniArac = klasorsuzAracAdi(pathname);
+  if (yeniArac) {
+    // Tanınmayan araç adı (elle yazılmış adres) niyet sayılmıyor; adres
+    // korunmuyor ve '/' ile temizleniyor.
+    return aracGecerliMi(yeniArac) ? { tur: 'klasorsuz', arac: yeniArac } : { tur: 'taninmaz' };
+  }
+
+  if (pathname.startsWith('/project/')) {
+    const [, , klasorId, arac, calismaId] = pathname.split('/');
+    if (!klasorId) return { tur: 'taninmaz' };
+    return { tur: 'klasor', klasorId, arac: arac || undefined, calismaId: calismaId || undefined };
+  }
+
+  if (pathname.startsWith('/work/')) {
+    const [, , klasorId, arac, calismaId] = pathname.split('/');
+    // Araç olmadan paylaşılan çalışma linki bir şey ifade etmiyor.
+    if (!klasorId || !arac) return { tur: 'taninmaz' };
+    return { tur: 'paylasik', klasorId, arac, calismaId: calismaId || undefined };
+  }
+
+  return { tur: 'taninmaz' };
+}
+
+/**
+ * Bu duruma hangi adres düşer? Mevcut adres zaten uygunsa null.
+ *
+ * "Uygun" her zaman "birebir aynı" demek değil: araç seçili değilken hem '/'
+ * hem '/works' hem de klasör adının sorulduğu /new/{arac} kabul edilebilir
+ * adresler. Bunları ezseydik kullanıcı listeye girer girmez karşılama
+ * ekranına atılır, ya da hangi araç için klasör sorduğumuz kaybolurdu.
+ */
+export function hedefAdres(girdi: {
+  activeTool: string | null;
+  currentProjectId: string | null;
+  acikCalismaId: string | null;
+  mevcutAdres: string;
+  /** Adres /new/{arac} ve oradaki araç gerçekten var mı? */
+  klasorsuzAracGecerli: boolean;
+}): string | null {
+  const { activeTool, currentProjectId, acikCalismaId, mevcutAdres, klasorsuzAracGecerli } = girdi;
+
+  // Ajanda kişisel: klasör seçili olmasa da kendi adresi var.
+  if (activeTool === 'notepad') {
+    return mevcutAdres === '/agenda' ? null : '/agenda';
+  }
+
+  if (!activeTool) {
+    const uygun = mevcutAdres === '/' || mevcutAdres === '/works' || klasorsuzAracGecerli;
+    return uygun ? null : '/';
+  }
+
+  // Araç var ama klasör yok: adrese dokunulmaz. Bu geçici bir hal (klasör
+  // çözülmeyi bekliyor olabilir); '/' ile ezmek linki silmek olurdu.
+  if (!currentProjectId) return null;
+
+  // Çalışma kimliği yalnızca seçilmişse ekleniyor. Kullanıcı aracı henüz
+  // açtıysa hangi çalışmada olduğu belli değil (ilki gösteriliyor); uydurma
+  // bir kimlik yazmak, sonradan silinse bile adreste kalırdı.
+  const hedef = acikCalismaId
+    ? `/project/${currentProjectId}/${activeTool}/${acikCalismaId}`
+    : `/project/${currentProjectId}/${activeTool}`;
+
+  return mevcutAdres === hedef ? null : hedef;
+}

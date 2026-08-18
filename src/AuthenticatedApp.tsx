@@ -12,7 +12,7 @@ import NewFolderModal from './components/NewFolderModal';
 import { useRoadmapStore, type ToolId } from './store/useRoadmapStore';
 import { aracSecimEylemi, aracAktifAlan, aracAnahtari } from './config/toolWorks';
 import { PROJECT_TOOLS } from './config/tools';
-import { KLASORSUZ_ONEK, hedefKlasorBul, klasorsuzAracAdi } from './utils/aracAdresi';
+import { KLASORSUZ_ONEK, hedefKlasorBul, klasorsuzAracAdi, adresiCoz, hedefAdres } from './utils/aracAdresi';
 import { useAuthStore } from './store/useAuthStore';
 import { useShallow } from 'zustand/react/shallow';
 import { gecikmeliEkran } from './utils/surumTazeleme';
@@ -25,6 +25,9 @@ const Workspace = gecikmeliEkran(() => import('./components/Workspace'));
 // gerçekten paylaşılmış bir projeyi gösterir ve önce katılmak gerekir. Bu yüzden
 // tek denemeyle pes edilmiyor.
 const PROJE_COZUM_DENEME = 3;
+
+/** Bu ad gerçekten var olan bir araç mı? adresiCoz'a dışarıdan veriliyor. */
+const aracVarMi = (ad: string) => PROJECT_TOOLS.some((x) => x.id === ad);
 const PROJE_COZUM_ARALIK_MS = 1200;
 
 // Adresteki çalışma seçili gelsin. Bazı araçlar bütün çalışmalarını tek
@@ -98,7 +101,7 @@ export default function AuthenticatedApp() {
   // adres) null dönüyor; o zaman adres korunmuyor ve '/' ile temizleniyor.
   const klasorsuzArac = useMemo(() => {
     const ad = klasorsuzAracAdi(location.pathname);
-    return ad && PROJECT_TOOLS.some((x) => x.id === ad) ? (ad as ToolId) : null;
+    return ad && aracVarMi(ad) ? (ad as ToolId) : null;
   }, [location.pathname]);
 
   useEffect(() => {
@@ -245,43 +248,38 @@ export default function AuthenticatedApp() {
 
     let isUrlSyncRunning = false;
 
-    // 1. URL -> State (Priority 1: Sync state from URL if URL changed or initial load)
-    // Bekleyen bir proje varsa blok her liste güncellemesinde yeniden çalışır:
-    // tek atışta çözülemeyen link eskiden kalıcı olarak kayboluyordu.
+    // 1. ADRES -> EKRAN
+    //
+    // Adresin ne istediğine `adresiCoz` karar veriyor (saf, sınanabilir);
+    // burada yalnızca o kararın gereği yapılıyor. Bekleyen bir proje varsa
+    // blok her liste güncellemesinde yeniden çalışır: tek atışta çözülemeyen
+    // link eskiden kalıcı olarak kayboluyordu.
     if (urlChanged || isFirstSyncRef.current || bekleyenProjeRef.current !== null) {
-      if (path === '/') {
+      const niyet = adresiCoz(path, aracVarMi);
+
+      // Araçsız duraklar: karşılama, çalışma listesi, ajanda. Üçünde de
+      // bekleyen bir link kalmıyor.
+      const aracsizHedef =
+        niyet.tur === 'ajanda' ? 'notepad' :
+        niyet.tur === 'kok' || niyet.tur === 'calismalar' ? null :
+        undefined;
+
+      if (aracsizHedef !== undefined) {
         bekleyenProjeRef.current = null;
-        if (activeTool !== null) {
-          setActiveTool(null);
+        if (activeTool !== aracsizHedef) {
+          setActiveTool(aracsizHedef as ToolId | null);
           isUrlSyncRunning = true;
         }
-      } else if (path === '/works') {
-        // Tam sayfa çalışma listesi. Araç seçili olmaması dışında '/' ile aynı
-        // durum; ayrı bir yol olması linklenebilmesi ve geri düğmesinin
-        // çalışması için.
-        bekleyenProjeRef.current = null;
-        if (activeTool !== null) {
-          setActiveTool(null);
-          isUrlSyncRunning = true;
-        }
-      } else if (path === '/agenda') {
-        // Ajanda kişisel: proje seçili olmasa da açılır, kendi adresi vardır.
-        bekleyenProjeRef.current = null;
-        if (activeTool !== 'notepad') {
-          setActiveTool('notepad');
-          isUrlSyncRunning = true;
-        }
-      } else if (klasorsuzArac) {
+      } else if (niyet.tur === 'klasorsuz') {
         // /new/{arac} — araç seçildi ama tıklandığı anda hiç klasör yoktu.
         // Adresi açan kişinin bu arada klasörü olmuş olabilir (başka sekmede
         // açmış, ya da linki başka bir hesapta açıyor); o zaman soru sormaya
-        // gerek yok, doğrudan klasöre giriliyor ve adres aşağıdaki adımda
-        // /project/... olarak yeniden yazılıyor.
+        // gerek yok, doğrudan klasöre giriliyor.
         bekleyenProjeRef.current = null;
         const hedef = hedefKlasorBul(projects, currentProjectId);
         if (hedef) {
           if (hedef !== currentProjectId) loadProject(hedef);
-          setActiveTool(klasorsuzArac);
+          setActiveTool(niyet.arac as ToolId);
         } else if (activeTool !== null) {
           // Klasör gerçekten yok: karşılama ekranı kalıyor, aşağıdaki pencere
           // klasörün adını soruyor.
@@ -291,67 +289,63 @@ export default function AuthenticatedApp() {
         // adım henüz eski değerleri görüyor ve "araç yok" sanıp adresi '/'
         // ile ezerdi. Depo güncellenince etki yeniden çalışıp doğrusunu yazar.
         isUrlSyncRunning = true;
-      } else if (path.startsWith('/project/')) {
-        // /project/{klasorId}/{arac}[/{calismaId}]
-        const parts = path.split('/');
-        const pId = parts[2];
-        const tId = parts[3];
-        const wId = parts[4];
+      } else if (niyet.tur === 'klasor') {
+        const { klasorId, arac, calismaId } = niyet;
+        let durumDegisti = false;
 
-        let needsStateUpdate = false;
-        if (pId && pId !== currentProjectId) {
-           const exists = projects.find(p => p.id === pId);
-           if (exists) {
-             loadProject(pId);
-             bekleyenProjeRef.current = null;
-           } else {
-             bekleyenProjeRef.current = pId;
-             cozBekleyenProjeyi(pId, tId, wId);
-           }
-           needsStateUpdate = true;
-        } else if (pId) {
-           bekleyenProjeRef.current = null;
+        if (klasorId !== currentProjectId) {
+          if (projects.some((p) => p.id === klasorId)) {
+            loadProject(klasorId);
+            bekleyenProjeRef.current = null;
+          } else {
+            bekleyenProjeRef.current = klasorId;
+            cozBekleyenProjeyi(klasorId, arac, calismaId);
+          }
+          durumDegisti = true;
+        } else {
+          bekleyenProjeRef.current = null;
         }
-        if (tId && tId !== activeTool) {
-           setActiveTool(tId as any);
-           needsStateUpdate = true;
+
+        if (arac && arac !== activeTool) {
+          setActiveTool(arac as ToolId);
+          durumDegisti = true;
         }
+
         // Açık çalışma yalnızca hafızada duruyordu; sayfa yenilenince
         // unutuluyor ve listenin ilkine dönülüyordu. Artık adresten okunuyor.
-        // Klasör bu noktada yüklenmiş oluyor (ya yukarıda loadProject çalıştı
-        // ya da zaten açıktı), o yüzden listede arama güvenli.
-        if (tId && wId && wId !== acikCalismaId(tId) && calismaListedeVar(tId, wId)) {
-           calismayiAc(tId, wId);
-           needsStateUpdate = true;
+        // Klasör bu noktada yüklenmiş oluyor, o yüzden listede arama güvenli.
+        if (arac && calismaId && calismaId !== acikCalismaId(arac) && calismaListedeVar(arac, calismaId)) {
+          calismayiAc(arac, calismaId);
+          durumDegisti = true;
         }
 
-        if (needsStateUpdate) {
-           isUrlSyncRunning = true;
-        }
-      } else if (path.startsWith('/work/')) {
-        // /work/{klasorId}/{arac}[/{calismaId}] — paylaşılan çalışma linki.
-        const [, , pId, tId, wId] = path.split('/');
-        if (pId && tId) {
-          if (pId !== currentProjectId) {
-            const exists = projects.find((p) => p.id === pId);
-            if (exists) {
-              loadProject(pId);
-              bekleyenProjeRef.current = null;
-            } else {
-              bekleyenProjeRef.current = pId;
-              cozBekleyenCalismayi(pId, tId, wId);
-            }
-          } else {
+        if (durumDegisti) isUrlSyncRunning = true;
+      } else if (niyet.tur === 'paylasik') {
+        // Paylaşılan çalışma linki. Klasör linkinden ayrı bir yol: klasörün
+        // kaydı karşı tarafa hiç açılmıyor, yalnızca linki verilen çalışma.
+        const { klasorId, arac, calismaId } = niyet;
+
+        if (klasorId !== currentProjectId) {
+          if (projects.some((p) => p.id === klasorId)) {
+            loadProject(klasorId);
             bekleyenProjeRef.current = null;
+          } else {
+            bekleyenProjeRef.current = klasorId;
+            cozBekleyenCalismayi(klasorId, arac, calismaId);
           }
-          if (tId !== activeTool) setActiveTool(tId as any);
-          // Klasör zaten bizdeyken paylaşılan çalışma linki hedefi ıskalıyordu:
-          // yalnızca cozBekleyenCalismayi çalışmayı açıyordu, o da sadece klasör
-          // henüz bizde değilken devreye giriyor.
-          if (wId && wId !== acikCalismaId(tId)) calismayiAc(tId, wId);
-          isUrlSyncRunning = true;
+        } else {
+          bekleyenProjeRef.current = null;
         }
+
+        if (arac !== activeTool) setActiveTool(arac as ToolId);
+        // Klasör zaten bizdeyken link hedefi ıskalıyordu: yalnızca
+        // cozBekleyenCalismayi çalışmayı açıyordu, o da klasör bizde
+        // değilken devreye giriyor.
+        if (calismaId && calismaId !== acikCalismaId(arac)) calismayiAc(arac, calismaId);
+        isUrlSyncRunning = true;
       }
+      // 'taninmaz': elle yazılmış adres. Ekrana dokunulmuyor; aşağıdaki adım
+      // adresi duruma göre düzeltiyor.
     }
 
     if (isFirstSyncRef.current) {
@@ -369,24 +363,15 @@ export default function AuthenticatedApp() {
       // anında ileri fırlatıyor; yani geri düğmesi hiç çalışmıyor.
       const gecmiseEkleme = path.startsWith(KLASORSUZ_ONEK);
 
-      if (activeTool === 'notepad') {
-        if (path !== '/agenda') navigate('/agenda', { replace: gecmiseEkleme });
-      } else if (!activeTool) {
-        // '/works' de araçsız bir durum; burada '/' ile ezilirse kullanıcı
-        // listeye girer girmez karşılama ekranına atılırdı.
-        // '/new/...' da öyle: klasörü olmayan kullanıcıya klasörün adı
-        // sorulurken ekranda araç yok, ama adres silinirse hangi araç için
-        // sorduğumuz da kaybolurdu.
-        if (path !== '/' && path !== '/works' && !klasorsuzArac) navigate('/', { replace: gecmiseEkleme });
-      } else if (currentProjectId && activeTool) {
-        // Çalışma kimliği yalnızca seçilmişse ekleniyor. Kullanıcı aracı henüz
-        // açtıysa hangi çalışmada olduğu belli değil (ilki gösteriliyor);
-        // uydurma bir kimlik yazmak, sonradan silinse bile adreste kalırdı.
-        const newPath = acikCalisma
-          ? `/project/${currentProjectId}/${activeTool}/${acikCalisma}`
-          : `/project/${currentProjectId}/${activeTool}`;
-        if (path !== newPath) navigate(newPath, { replace: gecmiseEkleme });
-      }
+      const yeniAdres = hedefAdres({
+        activeTool,
+        currentProjectId,
+        acikCalismaId: acikCalisma,
+        mevcutAdres: path,
+        klasorsuzAracGecerli: klasorsuzArac !== null
+      });
+
+      if (yeniAdres) navigate(yeniAdres, { replace: gecmiseEkleme });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname, klasorsuzArac, user, currentProjectId, activeTool, acikCalisma, projects, loadProject, joinSharedProject, projectsLoaded, navigate, setActiveTool, cozBekleyenProjeyi, cozBekleyenCalismayi]);

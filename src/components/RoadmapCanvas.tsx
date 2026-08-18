@@ -218,7 +218,9 @@ export default function RoadmapCanvas() {
       const hedef = e.target as HTMLElement;
       if (hedef.tagName === 'INPUT' || hedef.tagName === 'TEXTAREA' || hedef.isContentEditable) return;
       if (e.ctrlKey || e.metaKey || e.altKey) return;
-      if (hedef.closest('[data-tool-guide]')) return;
+      // closest'a soru işaretiyle: olayın hedefi her zaman bir element olmuyor
+      // (odakta hiçbir şey yokken document'a düşebiliyor).
+      if (hedef?.closest?.('[data-tool-guide]')) return;
 
       const durum = useRoadmapStore.getState();
       const harita = getActiveRoadmap(durum);
@@ -294,20 +296,25 @@ export default function RoadmapCanvas() {
       >
         <CanvasBackdrop />
 
-        {/* Panellerin satır içi marginTop'u React Flow'un kendi kuralını
-            geçmek için: Tailwind'in mt-* sınıfını o kural eziyor. */}
+        {/* Harita menüsü ve ilerleme şeridi TEK panelde, alt alta.
+            İkisi ayrı Panel'ken şerit sonra çiziliyordu ve menünün açılır
+            listesi onun altında kalıyordu; katman sırası artık burada, kendi
+            aralarında belli. Satır içi marginTop, React Flow'un panele verdiği
+            kendi boşluk kuralını geçmek için (Tailwind'in mt-* sınıfını o kural
+            eziyor). */}
         {aktifHarita && (
           <Panel position="top-left" style={{ marginTop: 68 }}>
-            <RoadmapMapsMenu aktif={aktifHarita} />
-          </Panel>
-        )}
-
-        {aktifHarita && (
-          <Panel position="top-left" style={{ marginTop: 120 }}>
-            <RoadmapIlerlemeSeridi
-              harita={aktifHarita}
-              onYonDegistir={() => setRoadmapYon(yon === 'dikey' ? 'yatay' : 'dikey')}
-            />
+            <div className="flex flex-col items-start gap-2">
+              <div className="relative z-20">
+                <RoadmapMapsMenu aktif={aktifHarita} />
+              </div>
+              <div className="relative z-10">
+                <RoadmapIlerlemeSeridi
+                  harita={aktifHarita}
+                  onYonDegistir={() => setRoadmapYon(yon === 'dikey' ? 'yatay' : 'dikey')}
+                />
+              </div>
+            </div>
           </Panel>
         )}
 

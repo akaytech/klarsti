@@ -90,6 +90,14 @@ export interface RoadmapSlice {
   addRoadmap: (name: string, ilkAdim: string) => void;
   renameRoadmap: (id: string, name: string) => void;
   deleteRoadmap: (id: string) => void;
+  /**
+   * Haritayı listede başka bir sıraya taşır.
+   *
+   * Sıra dizinin kendi sırası; ayrı bir alanda tutulmuyor. Çalışma
+   * kayıtları birleştirilirken de sırayı projenin toolData'sı veriyor
+   * (bkz. calismaOkuma.ts), yani diziyi değiştirmek sırayı kalıcı kılıyor.
+   */
+  moveRoadmapTo: (id: string, hedefIndex: number) => void;
   setRoadmapYon: (yon: RoadmapYon) => void;
 
   onRoadmapNodesChange: (changes: NodeChange[]) => void;
@@ -308,6 +316,18 @@ export const createRoadmapSlice: StateCreator<RoadmapState, [], [], RoadmapSlice
         };
       });
     },
+
+    moveRoadmapTo: (id, hedefIndex) => islem(() => {
+      set((state) => {
+        const kaynak = state.roadmaps.findIndex((h) => h.id === id);
+        const hedef = Math.max(0, Math.min(state.roadmaps.length - 1, hedefIndex));
+        if (kaynak < 0 || kaynak === hedef) return state;
+        const liste = [...state.roadmaps];
+        const [tasinan] = liste.splice(kaynak, 1);
+        liste.splice(hedef, 0, tasinan);
+        return { ...state, roadmaps: liste };
+      });
+    }),
 
     // Yön haritanın kendi ayarı, kişisel bir görünüm tercihi değil: aynı
     // haritaya bakan iki kişi aynı şekli görmeli.

@@ -22,6 +22,19 @@ export type MindmapNodeData = {
   done?: boolean;
   /** Dala iliştirilen serbest not. */
   description?: string;
+  /**
+   * Elle taşındıysa, kendiliğinden hesaplanan yerine göre kayma payı.
+   * Konumun kendisi saklanmıyor: harita yeni dal eklendikçe yeniden diziliyor,
+   * mutlak konum ilk eklemede anlamsız kalırdı. Pay saklanınca dizilim yine
+   * çalışıyor ama kullanıcının verdiği yer korunuyor.
+   *
+   * Pay alt dallara da geçiyor: dal taşınınca altındakiler onunla gelsin diye
+   * (bkz. MindmapCanvas).
+   */
+  dx?: number;
+  dy?: number;
+  /** Bu dalın altındaki biten (tiklenmiş) dallar gizli mi. */
+  hideDone?: boolean;
 };
 
 export type MindmapNode = Node<MindmapNodeData>;
@@ -84,6 +97,18 @@ export interface MindmapSlice {
   /** Düğümü ve altındaki bütün dalları siler. Kök silinmez. */
   deleteMindmapNode: (id: string) => void;
   toggleMindmapCollapse: (id: string) => void;
+  /** Bu dalın altındaki biten dalları gizler / geri gösterir. */
+  toggleMindmapHideDone: (id: string) => void;
+  /**
+   * Elle taşıma. Pay mutlak veriliyor (eski payın üstüne değil), böylece
+   * çağıran tarafta toplama hatası birikmiyor.
+   *
+   * `yalnizKendisi` doğruysa alt dallar yerinde kalır: pay onlara da geçtiği
+   * için, farkı doğrudan çocuklardan düşüyoruz.
+   */
+  moveMindmapNode: (id: string, dx: number, dy: number, yalnizKendisi: boolean) => void;
+  /** Açık haritadaki bütün elle taşımaları geri alır. */
+  resetMindmapLayout: () => void;
 }
 
 /**
@@ -296,6 +321,44 @@ export const createMindmapSlice: StateCreator<
       set((state) => aktifiGuncelle(state, (harita) => ({
         ...harita,
         nodes: harita.nodes.map((n) => (n.id === id ? { ...n, data: { ...n.data, collapsed: !n.data.collapsed } } : n)),
+      })));
+    }),
+
+    toggleMindmapHideDone: (id) => islem(() => {
+      set((state) => aktifiGuncelle(state, (harita) => ({
+        ...harita,
+        nodes: harita.nodes.map((n) => (n.id === id ? { ...n, data: { ...n.data, hideDone: !n.data.hideDone } } : n)),
+      })));
+    }),
+
+    moveMindmapNode: (id, dx, dy, yalnizKendisi) => islem(() => {
+      set((state) => aktifiGuncelle(state, (harita) => {
+        const dugum = harita.nodes.find((n) => n.id === id);
+        if (!dugum) return harita;
+        const farkX = dx - (dugum.data.dx ?? 0);
+        const farkY = dy - (dugum.data.dy ?? 0);
+        const cocuklar = new Set(harita.edges.filter((e) => e.source === id).map((e) => e.target));
+        return {
+          ...harita,
+          nodes: harita.nodes.map((n) => {
+            if (n.id === id) return { ...n, data: { ...n.data, dx, dy } };
+            if (yalnizKendisi && cocuklar.has(n.id)) {
+              return { ...n, data: { ...n.data, dx: (n.data.dx ?? 0) - farkX, dy: (n.data.dy ?? 0) - farkY } };
+            }
+            return n;
+          }),
+        };
+      }));
+    }),
+
+    resetMindmapLayout: () => islem(() => {
+      set((state) => aktifiGuncelle(state, (harita) => ({
+        ...harita,
+        nodes: harita.nodes.map((n) => {
+          if (n.data.dx === undefined && n.data.dy === undefined) return n;
+          const { dx: _dx, dy: _dy, ...kalan } = n.data;
+          return { ...n, data: kalan };
+        }),
       })));
     }),
   };

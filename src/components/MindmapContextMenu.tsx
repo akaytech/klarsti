@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { CornerDownRight, Plus, Pencil, Trash2, Minus, AlignLeft, CheckSquare, Square } from 'lucide-react';
+import { CornerDownRight, Plus, Pencil, Trash2, Minus, AlignLeft, CheckSquare, Square, Eye, EyeOff, RotateCcw } from 'lucide-react';
 import { useClampedPosition } from '../utils/useClampedPosition';
 import { MenuPortal } from '../utils/MenuPortal';
 import { useBaglamMenusuKapat } from '../utils/menuKapatma';
@@ -12,6 +12,11 @@ interface Props {
   cocukVar: boolean;
   daraltilmis: boolean;
   bitti: boolean;
+  /** Doğrudan altında tiklenmiş bir dal var mı. */
+  bitmisCocukVar: boolean;
+  bitenGizli: boolean;
+  /** Haritada elle taşınmış kutu var mı; yoksa sıfırlama satırı çizilmiyor. */
+  elleTasinmisVar: boolean;
   onClose: () => void;
   onAltDal: () => void;
   onKardes: () => void;
@@ -19,10 +24,12 @@ interface Props {
   onAciklama: () => void;
   onTikle: () => void;
   onDaralt: () => void;
+  onBiteniGizle: () => void;
+  onYerlesimiSifirla: () => void;
   onSil: () => void;
 }
 
-export default function MindmapContextMenu({ x, y, kok, cocukVar, daraltilmis, bitti, onClose, onAltDal, onKardes, onDuzenle, onAciklama, onTikle, onDaralt, onSil }: Props) {
+export default function MindmapContextMenu({ x, y, kok, cocukVar, daraltilmis, bitti, bitmisCocukVar, bitenGizli, elleTasinmisVar, onClose, onAltDal, onKardes, onDuzenle, onAciklama, onTikle, onDaralt, onBiteniGizle, onYerlesimiSifirla, onSil }: Props) {
   const { t } = useTranslation();
   const { ref: menuRef, style: menuStyle } = useClampedPosition(x, y);
 
@@ -73,6 +80,20 @@ export default function MindmapContextMenu({ x, y, kok, cocukVar, daraltilmis, b
           <button onClick={onDaralt} className={`${satir} text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50`}>
             <Minus size={16} className="text-slate-400" />
             {daraltilmis ? t('mindmap_expand') : t('mindmap_collapse')}
+          </button>
+        )}
+
+        {bitmisCocukVar && (
+          <button onClick={onBiteniGizle} className={`${satir} text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50`}>
+            {bitenGizli ? <Eye size={16} className="text-slate-400" /> : <EyeOff size={16} className="text-slate-400" />}
+            <span className="flex-1">{bitenGizli ? t('mindmap_show_done') : t('mindmap_hide_done')}</span>
+          </button>
+        )}
+
+        {elleTasinmisVar && (
+          <button onClick={onYerlesimiSifirla} className={`${satir} text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50`}>
+            <RotateCcw size={16} className="text-slate-400" />
+            <span className="flex-1">{t('mindmap_reset_layout')}</span>
           </button>
         )}
 

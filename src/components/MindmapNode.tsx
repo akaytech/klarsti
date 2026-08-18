@@ -1,7 +1,7 @@
 import { memo, useEffect, useRef, useState } from 'react';
 import { Handle, NodeToolbar, Position, useNodeId } from '@xyflow/react';
 import { useTranslation } from 'react-i18next';
-import { Plus, Minus, Check, AlignLeft } from 'lucide-react';
+import { Plus, Minus, Check, AlignLeft, Eye, EyeOff } from 'lucide-react';
 import { useRoadmapStore } from '../store/useRoadmapStore';
 import type { MindmapNodeData } from '../store/slices/createMindmapSlice';
 import { DAL_RENKLERI } from '../utils/mindmapLayout';
@@ -12,6 +12,8 @@ type Ekstra = MindmapNodeData & {
   derinlik: number;
   taraf: 1 | -1;
   cocukVar: boolean;
+  /** Doğrudan altında tiklenmiş bir dal var mı; gizle düğmesi buna bakıyor. */
+  bitmisCocukVar: boolean;
 };
 
 export default memo(function MindmapNode({ data, selected }: { data: Ekstra; selected?: boolean }) {
@@ -20,6 +22,7 @@ export default memo(function MindmapNode({ data, selected }: { data: Ekstra; sel
   const updateMindmapNode = useRoadmapStore((s) => s.updateMindmapNode);
   const toggleMindmapCollapse = useRoadmapStore((s) => s.toggleMindmapCollapse);
   const toggleMindmapDone = useRoadmapStore((s) => s.toggleMindmapDone);
+  const toggleMindmapHideDone = useRoadmapStore((s) => s.toggleMindmapHideDone);
   const editingId = useRoadmapStore((s) => s.mindmapEditingLabelId);
   const setEditingId = useRoadmapStore((s) => s.setMindmapEditingLabel);
   const descriptionId = useRoadmapStore((s) => s.mindmapDescriptionId);
@@ -162,21 +165,53 @@ export default memo(function MindmapNode({ data, selected }: { data: Ekstra; sel
         </NodeToolbar>
       )}
 
-      {/* Daraltılmış dalın ucunda kaç dal gizlendiğini gösteren düğme */}
-      {data.cocukVar && (
-        <button
-          onClick={(e) => { e.stopPropagation(); toggleMindmapCollapse(nodeId); }}
-          className="absolute flex h-5 w-5 items-center justify-center rounded-full border-2 bg-white dark:bg-slate-800 shadow-sm"
+      {/* Kutunun dış kenarındaki küçük düğmeler: dalı daralt/genişlet ve
+          biten alt dalları gizle. İkisi aynı anda çıkabildiği için dikey
+          sıralanıyorlar, kutunun ortasına hizalı.
+
+          Gizle düğmesi yalnızca tiklenmiş bir alt dal varsa çiziliyor; yoksa
+          her kutunun yanında hiçbir şey yapmayan bir düğme dururdu. */}
+      {(data.cocukVar || data.bitmisCocukVar) && (
+        <div
+          className="nodrag nopan absolute flex flex-col items-center gap-1"
           style={{
-            borderColor: renk,
-            color: renk,
-            top: 'calc(50% - 10px)',
+            top: '50%',
+            transform: 'translateY(-50%)',
             ...(data.taraf === 1 ? { right: -10 } : { left: -10 })
           }}
-          aria-label={data.collapsed ? 'genislet' : 'daralt'}
         >
-          {data.collapsed ? <Plus size={12} /> : <Minus size={12} />}
-        </button>
+          {data.cocukVar && (
+            <button
+              onClick={(e) => { e.stopPropagation(); toggleMindmapCollapse(nodeId); }}
+              onDoubleClick={(e) => e.stopPropagation()}
+              className="flex h-5 w-5 items-center justify-center rounded-full border-2 bg-white dark:bg-slate-800 shadow-sm"
+              style={{ borderColor: renk, color: renk }}
+              aria-label={data.collapsed ? t('mindmap_expand') : t('mindmap_collapse')}
+              title={data.collapsed ? t('mindmap_expand') : t('mindmap_collapse')}
+            >
+              {data.collapsed ? <Plus size={12} /> : <Minus size={12} />}
+            </button>
+          )}
+
+          {data.bitmisCocukVar && (
+            <button
+              onClick={(e) => { e.stopPropagation(); toggleMindmapHideDone(nodeId); }}
+              onDoubleClick={(e) => e.stopPropagation()}
+              className="flex h-5 w-5 items-center justify-center rounded-full border-2 shadow-sm bg-white dark:bg-slate-800"
+              style={{
+                borderColor: renk,
+                // Gizliyken düğme dolu duruyor: kullanıcı ekranda eksik dal
+                // olduğunu buradan anlıyor.
+                background: data.hideDone ? renk : undefined,
+                color: data.hideDone ? '#ffffff' : renk
+              }}
+              aria-label={data.hideDone ? t('mindmap_show_done') : t('mindmap_hide_done')}
+              title={data.hideDone ? t('mindmap_show_done') : t('mindmap_hide_done')}
+            >
+              {data.hideDone ? <EyeOff size={11} /> : <Eye size={11} />}
+            </button>
+          )}
+        </div>
       )}
 
       {!kok && (

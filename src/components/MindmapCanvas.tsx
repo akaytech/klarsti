@@ -1,17 +1,17 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ReactFlow,
   Panel,
   useReactFlow
 } from '@xyflow/react';
-import type { Edge, NodeMouseHandler } from '@xyflow/react';
+import type { Edge, NodeChange, NodeMouseHandler } from '@xyflow/react';
 import type { MindmapNode as MindmapNodeTipi } from '../store/useRoadmapStore';
 import '@xyflow/react/dist/style.css';
 import { Brain } from 'lucide-react';
 import { useRoadmapStore } from '../store/useRoadmapStore';
 import { useShallow } from 'zustand/react/shallow';
-import { getActiveMindmap, getMindmapRoot } from '../store/slices/createMindmapSlice';
+import { getActiveMindmap, getMindmapDescendants, getMindmapRoot } from '../store/slices/createMindmapSlice';
 import CanvasBackdrop from './CanvasBackdrop';
 import { metinAlaninda } from '../utils/metinAlaninda';
 import MindmapNode from './MindmapNode';
@@ -35,7 +35,8 @@ export default function MindmapCanvas() {
   const {
     mindmaps, activeMindmapId, mindmapSelectedId, onMindmapNodesChange, onMindmapEdgesChange,
     addMindmap, addMindmapChild, addMindmapSibling, deleteMindmapNode, toggleMindmapCollapse,
-    setMindmapEditingLabel, setMindmapDescriptionId, toggleMindmapDone, setMindmapSelected
+    setMindmapEditingLabel, setMindmapDescriptionId, toggleMindmapDone, setMindmapSelected,
+    toggleMindmapHideDone, moveMindmapNode, resetMindmapLayout
   } = useRoadmapStore(useShallow((s) => ({
     mindmaps: s.mindmaps,
     activeMindmapId: s.activeMindmapId,
@@ -50,7 +51,10 @@ export default function MindmapCanvas() {
     setMindmapEditingLabel: s.setMindmapEditingLabel,
     setMindmapDescriptionId: s.setMindmapDescriptionId,
     toggleMindmapDone: s.toggleMindmapDone,
-    setMindmapSelected: s.setMindmapSelected
+    setMindmapSelected: s.setMindmapSelected,
+    toggleMindmapHideDone: s.toggleMindmapHideDone,
+    moveMindmapNode: s.moveMindmapNode,
+    resetMindmapLayout: s.resetMindmapLayout
   })));
 
   // Bir projede birden çok harita olabiliyor; kanvas hep açık olanı çiziyor.
@@ -75,7 +79,7 @@ export default function MindmapCanvas() {
     return () => clearTimeout(zaman);
   }, [aktifHaritaId, fitView]);
 
-  // Daraltılmış dalların altı hiç çizilmiyor.
+  // Daraltılmış dalların ve gizlenmiş biten dalların altı hiç çizilmiyor.
   const gorunur = useMemo(() => {
     const kok = getMindmapRoot(mindmapNodes, mindmapEdges);
     if (!kok) return { nodes: [], edges: [] };
@@ -84,9 +88,13 @@ export default function MindmapCanvas() {
     const sira = [kok.id];
     while (sira.length > 0) {
       const su = sira.pop()!;
-      if (kutular.get(su)?.data.collapsed) continue;
+      const kutu = kutular.get(su);
+      if (kutu?.data.collapsed) continue;
       mindmapEdges.filter((e) => e.source === su).forEach((e) => {
-        if (!kutular.has(e.target)) return;
+        const cocuk = kutular.get(e.target);
+        if (!cocuk) return;
+        // "Biteni gizle" açıksa tiklenmiş alt dal ve altındaki her şey çizilmiyor.
+        if (kutu?.data.hideDone && cocuk.data.done) return;
         acikKimlikler.add(e.target);
         sira.push(e.target);
       });
@@ -99,17 +107,132 @@ export default function MindmapCanvas() {
 
   const yerlesim = useMemo(() => mindmapYerlesimi(gorunur.nodes, gorunur.edges), [gorunur]);
 
+  const kutuHaritasi = useMemo(() => new Map(mindmapNodes.map((n) => [n.id, n])), [mindmapNodes]);
+
+  /**
+   * Elle taşıma payları. Pay kökten aşağı toplanarak iniyor: bir dal
+   * taşındığında altındaki her şey onunla birlikte kayıyor, dal bütün kalıyor.
+   */
+  const kaydirmalar = useMemo(() => {
+    const sonuc = new Map<string, { x: number; y: number }>();
+    const kokId = getMindmapRoot(gorunur.nodes, gorunur.edges)?.id;
+    if (!kokId) return sonuc;
+    const kutular = new Map(gorunur.nodes.map((n) => [n.id, n]));
+    const sira = [{ id: kokId, x: 0, y: 0 }];
+    while (sira.length > 0) {
+      const su = sira.pop()!;
+      const veri = kutular.get(su.id)?.data;
+      const x = su.x + (veri?.dx ?? 0);
+      const y = su.y + (veri?.dy ?? 0);
+      sonuc.set(su.id, { x, y });
+      gorunur.edges.filter((e) => e.source === su.id).forEach((e) => sira.push({ id: e.target, x, y }));
+    }
+    return sonuc;
+  }, [gorunur]);
+
+  /**
+   * Süren sürükleme. Kutuların yeri depodan değil yerleşimden geldiği için
+   * React Flow'un kendi konum değişimleri yok sayılıyor; sürüklenen kutu ile
+   * altındaki dallar bu geçici durumdan çiziliyor. Depoya ancak fare
+   * bırakıldığında tek bir kayıt yazılıyor, yoksa her fare kıpırtısı geçmişe
+   * ve buluta ayrı bir değişiklik olarak giderdi.
+   */
+  type Surukleme = {
+    id: string;
+    taban: { x: number; y: number };
+    su: { x: number; y: number };
+    yalnizKendisi: boolean;
+    altlar: Set<string>;
+  };
+  const [surukleme, setSurukleme] = useState<Surukleme | null>(null);
+  // Aynı değerin ref'i: sürükleme biterken güncel durum okunacak, state'in
+  // güncelleyicisi içinde depoya yazmak StrictMode'da iki kez çalışırdı.
+  const suruklemeRef = useRef<Surukleme | null>(null);
+  const suruklemeYaz = useCallback((yeni: Surukleme | null) => {
+    suruklemeRef.current = yeni;
+    setSurukleme(yeni);
+  }, []);
+
+  // Ctrl (Mac'te Cmd) basılıyken yalnızca tutulan kutu kayıyor, alt dalları
+  // yerinde kalıyor. Mac'te Ctrl+tık sağ tık sayıldığı için orada Cmd geçerli.
+  // Dokunmatikte değiştirici tuş yok; orada dal hep bütün taşınıyor.
+  const yalnizKendisiMi = (e: MouseEvent | TouchEvent) => 'ctrlKey' in e && (e.ctrlKey || e.metaKey);
+
+  // Sürükleme işleyicileri React Flow'un kendi düğüm tipini bekliyor; burada
+  // yalnız kimlik ve konum kullanıldığı için dar bir tip yeterli.
+  type SuruklenenKutu = { id: string; position: { x: number; y: number } };
+
+  const onNodeDragStart = useCallback((e: MouseEvent | TouchEvent, node: SuruklenenKutu) => {
+    setMenu(null);
+    suruklemeYaz({
+      id: node.id,
+      taban: { x: node.position.x, y: node.position.y },
+      su: { x: node.position.x, y: node.position.y },
+      yalnizKendisi: yalnizKendisiMi(e),
+      altlar: new Set(getMindmapDescendants(node.id, mindmapEdges))
+    });
+  }, [mindmapEdges, suruklemeYaz]);
+
+  const onNodeDrag = useCallback((e: MouseEvent | TouchEvent, node: SuruklenenKutu) => {
+    const su = suruklemeRef.current;
+    if (!su || su.id !== node.id) return;
+    suruklemeYaz({ ...su, su: { x: node.position.x, y: node.position.y }, yalnizKendisi: yalnizKendisiMi(e) });
+  }, [suruklemeYaz]);
+
+  const onNodeDragStop = useCallback((e: MouseEvent | TouchEvent, node: SuruklenenKutu) => {
+    const durum = suruklemeRef.current;
+    suruklemeYaz(null);
+    if (!durum || durum.id !== node.id) return;
+    const farkX = node.position.x - durum.taban.x;
+    const farkY = node.position.y - durum.taban.y;
+    // Sürüklemeden sayılmayacak kadar küçük oynamalar yazılmıyor: tıklamak
+    // isteyen kullanıcının eli titrediğinde harita kaymasın.
+    if (Math.abs(farkX) < 1 && Math.abs(farkY) < 1) return;
+    const veri = kutuHaritasi.get(node.id)?.data;
+    moveMindmapNode(node.id, (veri?.dx ?? 0) + farkX, (veri?.dy ?? 0) + farkY, yalnizKendisiMi(e) || durum.yalnizKendisi);
+  }, [kutuHaritasi, moveMindmapNode, suruklemeYaz]);
+
+  // Konum değişimleri depoya yazılmıyor: kutuların yeri yerleşimden geliyor,
+  // sürükleme ayrıca kaydırma payı olarak saklanıyor (yukarıda).
+  const nodesChange = useCallback((changes: NodeChange[]) => {
+    const kalan = changes.filter((c) => c.type !== 'position');
+    if (kalan.length > 0) onMindmapNodesChange(kalan);
+  }, [onMindmapNodesChange]);
+
   const cizilecekNodes = useMemo(() => gorunur.nodes.map((n) => {
     const yer = yerlesim.get(n.id);
-    const cocukVar = mindmapEdges.some((e) => e.source === n.id);
+    const kaydirma = kaydirmalar.get(n.id);
+    // Daralt düğmesi görünen çocuklara bakıyor: hepsi "biteni gizle" ile
+    // gizlendiyse daraltacak bir şey kalmıyor. Daraltılmışken görünen çocuk
+    // zaten olmadığı için orada bütün dallara bakılıyor, yoksa düğme kaybolur
+    // ve dal bir daha açılamazdı.
+    const cocukVar = n.data.collapsed
+      ? mindmapEdges.some((e) => e.source === n.id)
+      : gorunur.edges.some((e) => e.source === n.id);
+    // Gizle düğmesi yalnızca gizlenecek bir şey varsa çiziliyor; yoksa her
+    // kutunun yanında işlevsiz bir düğme dururdu.
+    const bitmisCocukVar = mindmapEdges.some((e) => e.source === n.id && kutuHaritasi.get(e.target)?.data.done);
+
+    let x = (yer?.x ?? 0) + (kaydirma?.x ?? 0);
+    let y = (yer?.y ?? 0) + (kaydirma?.y ?? 0);
+    if (surukleme) {
+      if (surukleme.id === n.id) {
+        // Sürüklenen kutu React Flow'un verdiği yerde duruyor; aynı değeri geri
+        // vermezsek kutu farenin altından kaçıyor.
+        x = surukleme.su.x;
+        y = surukleme.su.y;
+      } else if (!surukleme.yalnizKendisi && surukleme.altlar.has(n.id)) {
+        x += surukleme.su.x - surukleme.taban.x;
+        y += surukleme.su.y - surukleme.taban.y;
+      }
+    }
+
     return {
       ...n,
-      position: yer ? { x: yer.x, y: yer.y } : { x: 0, y: 0 },
-      // Kutular elle taşınmıyor: zihin haritası her zaman kendini diziyor.
-      draggable: false,
-      data: { ...n.data, derinlik: yer?.derinlik ?? 0, taraf: yer?.taraf ?? 1, cocukVar }
+      position: { x, y },
+      data: { ...n.data, derinlik: yer?.derinlik ?? 0, taraf: yer?.taraf ?? 1, cocukVar, bitmisCocukVar }
     };
-  }), [gorunur.nodes, yerlesim, mindmapEdges]);
+  }), [gorunur, yerlesim, kaydirmalar, mindmapEdges, kutuHaritasi, surukleme]);
 
   const cizilecekEdges = useMemo(() => gorunur.edges.map((e) => {
     const hedef = gorunur.nodes.find((n) => n.id === e.target);
@@ -207,18 +330,25 @@ export default function MindmapCanvas() {
       <ReactFlow
         nodes={cizilecekNodes}
         edges={cizilecekEdges}
-        onNodesChange={onMindmapNodesChange}
+        onNodesChange={nodesChange}
         onEdgesChange={onMindmapEdgesChange}
         nodeTypes={nodeTypes}
         nodesConnectable={false}
         onNodeClick={onNodeClick}
         onNodeContextMenu={onNodeContextMenu}
+        onNodeDragStart={onNodeDragStart}
+        onNodeDrag={onNodeDrag}
+        onNodeDragStop={onNodeDragStop}
         onPaneClick={onPaneClick}
         onMoveStart={() => setMenu(null)}
         fitView
         fitViewOptions={{ padding: 0.25 }}
         minZoom={0.1}
         deleteKeyCode={null}
+        // Ctrl/Cmd sürüklemede kullanılıyor, Shift'in de haritada bir işi yok:
+        // React Flow'un çoklu seçimi araya girmesin.
+        multiSelectionKeyCode={null}
+        selectionKeyCode={null}
         proOptions={{ hideAttribution: true }}
       >
         <CanvasBackdrop />
@@ -296,6 +426,9 @@ export default function MindmapCanvas() {
           cocukVar={mindmapEdges.some((e) => e.source === menu.id)}
           daraltilmis={!!mindmapNodes.find((n) => n.id === menu.id)?.data.collapsed}
           bitti={!!mindmapNodes.find((n) => n.id === menu.id)?.data.done}
+          bitmisCocukVar={mindmapEdges.some((e) => e.source === menu.id && kutuHaritasi.get(e.target)?.data.done)}
+          bitenGizli={!!mindmapNodes.find((n) => n.id === menu.id)?.data.hideDone}
+          elleTasinmisVar={mindmapNodes.some((n) => n.data.dx !== undefined || n.data.dy !== undefined)}
           onClose={() => setMenu(null)}
           onAltDal={() => {
             const yeni = addMindmapChild(menu.id, t('mindmap_new_node'));
@@ -311,6 +444,8 @@ export default function MindmapCanvas() {
           onAciklama={() => { setMindmapDescriptionId(menu.id); setMenu(null); }}
           onTikle={() => { toggleMindmapDone(menu.id); setMenu(null); }}
           onDaralt={() => { toggleMindmapCollapse(menu.id); setMenu(null); }}
+          onBiteniGizle={() => { toggleMindmapHideDone(menu.id); setMenu(null); }}
+          onYerlesimiSifirla={() => { resetMindmapLayout(); setMenu(null); }}
           onSil={() => { deleteMindmapNode(menu.id); setMenu(null); }}
         />
       )}

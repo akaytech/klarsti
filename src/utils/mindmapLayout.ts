@@ -1,13 +1,20 @@
 import type { Edge } from '@xyflow/react';
 import type { MindmapNode } from '../store/slices/createMindmapSlice';
 
-// Zihin haritası kutuları elle taşınmıyor, her zaman kendiliğinden diziliyor.
-// Kök ortada durur, dallar iki yana açılır. Dagre kullanılmıyor: dagre kolon
-// kolon hizalıyor, zihin haritasında ise her dal kendi genişliğince kayar ve
-// kardeşler dikeyde sırayla yığılır.
+// Zihin haritası kendiliğinden diziliyor: kök ortada durur, dallar iki yana
+// açılır. Dagre kullanılmıyor: dagre kolon kolon hizalıyor, zihin haritasında
+// ise her dal kendi genişliğince kayar ve kardeşler dikeyde sırayla yığılır.
+//
+// Burada hesaplanan yerler "kendiliğinden" olan yerler. Kullanıcının elle
+// taşıdığı kutuların kayma payı ayrı tutuluyor ve bunun üstüne ekleniyor
+// (bkz. MindmapCanvas), yani dizilim yeni dal eklendikçe çalışmaya devam
+// ediyor ama verilen yerler bozulmuyor.
 
-const DIKEY_BOSLUK = 16;
-const SEVIYE_BOSLUK = 64;
+// Kutular arası boşluk. Dar tutulunca harita küçük kalıyor ama kardeş dallar
+// birbirine yapışık okunuyordu; özellikle iki satıra taşan kutularda hangi
+// yazının hangi kutuya ait olduğu seçilmiyordu.
+const DIKEY_BOSLUK = 28;
+const SEVIYE_BOSLUK = 96;
 
 export const DAL_RENKLERI = ['#6366f1', '#ec4899', '#f59e0b', '#10b981', '#0ea5e9', '#8b5cf6', '#ef4444', '#14b8a6'];
 

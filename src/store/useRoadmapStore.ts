@@ -9,6 +9,7 @@ import { bekleyenAraclar, kisiselBekliyorMu } from './bekleyenYazmalar';
 import { projeninCalismalariniSil, calismalarinKlasorAdiniGuncelle, calismalardanAyril, calismaDokumanId } from './calismaYazma';
 import { projeyeCalismalariUygula } from './calismaOkuma';
 import { gecmisiBagla, yazmayiIsle, gecmisiTemizle } from './gecmis';
+import { izinTekrariPlanla, izinTekrariSifirla } from './izinTekrari';
 import { stripUndefined } from '../utils/firestoreSafe';
 import { toast } from 'sonner';
 
@@ -524,6 +525,7 @@ export const useRoadmapStore = create<RoadmapState>()(
           if (currentSub) currentSub();
 
           const unsubscribe = onSnapshot(doc(db, 'users', userId), (snap) => {
+            izinTekrariSifirla('kisisel');
             const data = snap.data();
             const gelenNotepad = Array.isArray(data?.notepad) ? data.notepad : [];
             const mevcutNotepad = get().notepad;
@@ -540,11 +542,14 @@ export const useRoadmapStore = create<RoadmapState>()(
             }));
           }, (error) => {
             console.error("Fetch personal data error:", error);
-            // Sert yenilemede Firestore auth token'ı geç bağlanabiliyor; projelerdeki
-            // ile aynı gerekçeyle dinleyiciyi kısa bir gecikmeyle tekrar kuruyoruz.
-            if (error.code === 'permission-denied' && useAuthStore.getState().user?.uid === userId) {
-              setTimeout(() => get().fetchPersonalData(userId), 1500);
-            }
+            // Sert yenilemede Firestore'un kimlik jetonu geç bağlanabiliyor;
+            // gerekçesi ve neden tek deneme yetmediği: store/izinTekrari.ts
+            izinTekrariPlanla(
+              error.code,
+              useAuthStore.getState().user?.uid === userId,
+              'kisisel',
+              () => get().fetchPersonalData(userId),
+            );
           });
 
           set({ personalUnsubscribe: unsubscribe });
@@ -599,6 +604,7 @@ export const useRoadmapStore = create<RoadmapState>()(
         const unsubscribe = onSnapshot(
           q,
           (snapshot) => {
+            izinTekrariSifirla('calismalar');
             const kayitlar = snapshot.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<WorkRecord, 'id'>) }));
             uzaktanGuncelle(() => set({ works: kayitlar, worksLoaded: true }));
             // Çalışmaların içeriği artık ekrana buradan gidiyor; liste her
@@ -610,9 +616,12 @@ export const useRoadmapStore = create<RoadmapState>()(
             // toolData'sıyla çalışmaya devam ediyor (bkz. projeleriTazele),
             // yani kullanıcının önünde duran bir sorun yok.
             console.error('Fetch works error:', error);
-            if (error.code === 'permission-denied' && useAuthStore.getState().user?.uid === userId) {
-              setTimeout(() => get().fetchWorks(userId), 1500);
-            }
+            izinTekrariPlanla(
+              error.code,
+              useAuthStore.getState().user?.uid === userId,
+              'calismalar',
+              () => get().fetchWorks(userId),
+            );
           }
         );
 
@@ -671,11 +680,12 @@ export const useRoadmapStore = create<RoadmapState>()(
           };
 
           // Sayfa sert yenilendiğinde, Firestore'un dahili auth token'ı bazen
-          // onAuthStateChanged'den bir tık geç bağlanır. İlk istek bu yüzden
-          // permission-denied alırsa, kısa bir gecikmeyle dinleyiciyi otomatik
-          // olarak yeniden kurarak kalıcı olarak boş kalmasını önlüyoruz.
+          // onAuthStateChanged'den bir tık geç bağlanır ve ilk istek
+          // permission-denied alır. Dinleyici arası açılan üç denemeyle
+          // yeniden kuruluyor; bkz. store/izinTekrari.ts.
           const q = query(collection(db, 'projects'), or(where('userId', '==', userId), where('sharedWith', 'array-contains', userId)));
           const unsubscribe = onSnapshot(q, (snapshot) => {
+            izinTekrariSifirla('projeler');
             // Ajanda eskiden proje dokümanının içinde tutuluyordu. Kişisel ajandaya
             // geçtikten sonra bu kayıtlar hem kullanılmıyor hem de paylaşılmış
             // projelerde okunabilir halde kalıyor; sahibi olduğumuz projelerden siliyoruz.
@@ -702,9 +712,17 @@ export const useRoadmapStore = create<RoadmapState>()(
             projeleriTazele(fetchedProjects);
           }, (error) => {
             console.error("Fetch projects error:", error);
-            toast.error(i18n.t('error_fetch_projects', { defaultValue: 'Error fetching projects' }), { id: 'error-fetch-projects' });
-            if (error.code === 'permission-denied' && useAuthStore.getState().user?.uid === userId) {
-              setTimeout(() => get().fetchProjects(userId), 1500);
+            // Uyarı ancak tekrar denemeler bittiğinde: sert yenilemedeki jeton
+            // gecikmesi kendiliğinden düzeliyordu ama kullanıcı yine de bir
+            // hata görüyordu (bkz. store/izinTekrari.ts).
+            const tekrarDeneniyor = izinTekrariPlanla(
+              error.code,
+              useAuthStore.getState().user?.uid === userId,
+              'projeler',
+              () => get().fetchProjects(userId),
+            );
+            if (!tekrarDeneniyor) {
+              toast.error(i18n.t('error_fetch_projects', { defaultValue: 'Error fetching projects' }), { id: 'error-fetch-projects' });
             }
           });
 

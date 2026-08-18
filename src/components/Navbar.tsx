@@ -258,11 +258,15 @@ export default function Navbar() {
         </Link>
       </div>
 
-      <div className="flex-1 flex flex-col py-2 px-3 gap-1 overflow-y-auto custom-scrollbar">
+      <div className="flex-1 flex flex-col pb-2 px-3 gap-1 overflow-y-auto custom-scrollbar">
         {/* Arama kutusu. 15 araç listeye sığmıyor, alttakileri görmek için
             kaydırmak gerekiyordu. Kutu kaydırırken de yerinde kalsın diye
-            yapışkan. */}
-        <div className="sticky top-0 z-10 -mx-3 mb-1 bg-white px-3 pb-2 dark:bg-slate-900">
+            yapışkan.
+
+            Üstteki boşluk kutunun kendi içinde (pt-2), kaydırma alanının
+            padding'inde değil: yapışkan kutu tarayıcıda padding kadar aşağıda
+            duruyor, aradaki şeritten alttaki araç satırları görünüyordu. */}
+        <div className="sticky top-0 z-10 -mx-3 mb-1 bg-white px-3 pt-2 pb-2 dark:bg-slate-900">
           <div className="relative">
             <Search size={15} className="pointer-events-none absolute start-3 top-1/2 -translate-y-1/2 text-slate-400" aria-hidden />
             <input

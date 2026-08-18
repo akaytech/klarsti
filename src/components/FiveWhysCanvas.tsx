@@ -23,6 +23,8 @@ import CanvasKarsilama from './CanvasKarsilama';
 import { useEkranaSigdir } from '../utils/ekranaSigdir';
 import CanvasMiniMap from './CanvasMiniMap';
 import CanvasControls from './CanvasControls';
+import { useSilTusu } from '../utils/useSilTusu';
+import { islem } from '../store/gecmis';
 
 const nodeTypes = {
   fiveWhysNode: FiveWhysNode,
@@ -39,6 +41,13 @@ function FiveWhysCanvasInner() {
   const themeColors = useTheme();
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const { screenToFlowPosition } = useReactFlow();
+
+  // Delete tuşu depo üzerinden siliyor; React Flow'un kendi silmesi kapalı,
+  // çünkü o kutuyu silmeden önce çizgileri kaldırıp alt nedenleri öksüz
+  // bırakıyordu (bkz. useSilTusu).
+  useSilTusu(useCallback((idler: string[]) => {
+    islem(() => idler.forEach((id) => useRoadmapStore.getState().deleteFiveWhysNode(id)));
+  }, []));
   const [menu, setMenu] = useState<{ id: string; top: number; left: number } | null>(null);
   const [paneMenu, setPaneMenu] = useState<{ top: number; left: number; clientX: number; clientY: number } | null>(null);
   // Karşılama şeridi kapatılabilsin diye: eskiden kaldırmanın tek yolu
@@ -182,7 +191,10 @@ function FiveWhysCanvasInner() {
           fitView
           fitViewOptions={{ padding: 0.2, maxZoom: 1.2 }}
           minZoom={0.1}
-          deleteKeyCode={['Delete']}
+          // Silme React Flow'a bırakılmıyor: o, kutuyu silmeden ÖNCE çizgileri
+        // kaldırıyor ve ağacı çizgilerden okuyan bu araçta çocuklar
+        // öksüz kalıyor (bkz. useSilTusu).
+        deleteKeyCode={null}
           defaultEdgeOptions={{
             type: 'smoothstep',
             animated: true,

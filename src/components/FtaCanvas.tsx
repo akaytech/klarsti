@@ -22,6 +22,8 @@ import { calculateProbability, FtaProbabilityContext } from '../utils/ftaProbabi
 import CalismaMenusu from './CalismaMenusu';
 import CanvasMiniMap from './CanvasMiniMap';
 import CanvasControls from './CanvasControls';
+import { useSilTusu } from '../utils/useSilTusu';
+import { islem } from '../store/gecmis';
 
 const nodeTypes = {
   ftaNode: FtaNode,
@@ -59,6 +61,13 @@ export default function FtaCanvas() {
   const ftaEdges = aktifAgac?.edges ?? BOS_EDGES;
   const { t } = useTranslation();
   const { setCenter, getZoom } = useReactFlow();
+
+  // Delete tuşu depo üzerinden siliyor; React Flow'un kendi silmesi kapalı,
+  // çünkü o kutuyu silmeden önce çizgileri kaldırıp alt olayları öksüz
+  // bırakıyordu (bkz. useSilTusu).
+  useSilTusu(useCallback((idler: string[]) => {
+    islem(() => idler.forEach((id) => useRoadmapStore.getState().deleteFtaNode(id)));
+  }, []));
   const [menu, setMenu] = useState<{ id: string; top: number; left: number } | null>(null);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   // Kullanıcı "kendim oluşturacağım" derse panel bu oturum boyunca geri gelmez.
@@ -132,7 +141,10 @@ export default function FtaCanvas() {
         onNodeContextMenu={onNodeContextMenu}
         onPaneClick={onPaneClick}
         fitView
-        deleteKeyCode={['Delete']}
+        // Silme React Flow'a bırakılmıyor: o, kutuyu silmeden ÖNCE çizgileri
+        // kaldırıyor ve ağacı çizgilerden okuyan bu araçta çocuklar
+        // öksüz kalıyor (bkz. useSilTusu).
+        deleteKeyCode={null}
         fitViewOptions={{ duration: 1000, maxZoom: 1.2 }}
         minZoom={0.1}
         defaultEdgeOptions={{

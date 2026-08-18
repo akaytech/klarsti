@@ -27,6 +27,7 @@ import WbsTreesMenu from './WbsTreesMenu';
 import { useTranslation } from 'react-i18next';
 import CanvasMiniMap from './CanvasMiniMap';
 import CanvasControls from './CanvasControls';
+import { useSilTusu } from '../utils/useSilTusu';
 
 const nodeTypes = {
   goalNode: GoalNode,
@@ -279,6 +280,10 @@ export default function WbsCanvas({ onNodeSelect }: { onNodeSelect: (id: string 
     islem(() => idler.forEach((id) => deleteGoal(id)));
   }, [deleteGoal]);
 
+  // Delete tuşu da aynı yoldan gidiyor. React Flow'un kendi silmesi kapalı;
+  // o, kutuyu silmeden önce çizgileri kaldırıp ağacı bozuyordu.
+  useSilTusu(topluSil);
+
   // Kanvas kaydırılınca/yakınlaştırılınca menü düğümle birlikte sürükleniyor ve
   // ekran dışına çıkabiliyordu; hareket başlar başlamaz kapatıyoruz.
   const onMoveStart = useCallback(() => {
@@ -360,7 +365,10 @@ export default function WbsCanvas({ onNodeSelect }: { onNodeSelect: (id: string 
         onPaneClick={onPaneClick}
         onMoveStart={onMoveStart}
         fitView
-        deleteKeyCode={['Delete']}
+        // Silme React Flow'a bırakılmıyor: o, kutuyu silmeden ÖNCE çizgileri
+        // kaldırıyor ve ağacı çizgilerden okuyan bu araçta çocuklar
+        // öksüz kalıyor (bkz. useSilTusu).
+        deleteKeyCode={null}
         // maxZoom: tek kutulu bir ağaçta sığdırma varsayılan üst sınıra (2 kat)
         // kadar yaklaşıyor ve sonradan gelen kutular o yakınlıkta kalıyordu.
         fitViewOptions={{ duration: 1000, maxZoom: 1.2 }}

@@ -789,7 +789,6 @@
   "demo_whys_desc": "Question the problem step by step until you reach the root cause.",
   "demo_pareto_desc": "See which problem weighs most, in numbers.",
   "demo_mindmap_desc": "Branch out your ideas and keep them in one place.",
-  "landing_badge": "Problem solving and planning tools — {{sayi}} tools in one place.",
   "guide_how_button": "How does it work?",
   "ws_intent_heading": "What do you want to do?",
   "amac_parcala": "Break a big job into pieces",

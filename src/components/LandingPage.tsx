@@ -107,16 +107,6 @@ export default function LandingPage() {
       <section className="relative overflow-hidden pt-24 pb-32 lg:pt-36 lg:pb-40">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-100 via-slate-50 to-slate-50 dark:from-indigo-900/20 dark:via-slate-900 dark:to-slate-900"></div>
         <div className="container mx-auto px-6 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-200 dark:border-indigo-800 bg-indigo-50/50 dark:bg-indigo-900/30 px-4 py-2 text-sm font-semibold text-indigo-600 dark:text-indigo-400 mb-8 backdrop-blur-sm">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping motion-reduce:animate-none absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
-            </span>
-            {/* Burada eskiden "Projelerini buluta kaydetmek için giriş yap."
-                yazıyordu (welcome_msg). Sayfanın ilk okunan yeri ürünün ne
-                olduğunu söylemeli; o metin giriş ekranında duruyor. */}
-            {t('landing_badge', { sayi: TOOLS.length })}
-          </div>
 
           <h1 className="mx-auto max-w-4xl text-5xl font-black tracking-tight md:text-7xl lg:text-8xl bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400 mb-8">
             {t('hero_title')}

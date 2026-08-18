@@ -9,6 +9,7 @@ import i18n from '../i18n';
 import { stripUndefined } from '../utils/firestoreSafe';
 import { bekleyenYazmalariBildir } from '../store/bekleyenYazmalar';
 import { projeCalismalariniEsitle, projeninCalismalariniSil, anahtarlardanAraclar, calismalaraKendiniEkle } from '../store/calismaYazma';
+import { calismaSirasiKur } from '../store/calismaOkuma';
 import { profiliTazele } from '../store/kullaniciProfili';
 
 const SAVE_DEBOUNCE_MS = 1000;
@@ -34,7 +35,12 @@ const safeWrite = (run: () => Promise<unknown>, label: string): Promise<boolean>
 // her uzak snapshot'ta değiştiği için üst bilginin gerçekten değişip
 // değişmediğine buradan bakılıyor. Anahtar sırası farklı gelirse imza da farklı
 // çıkar; bu yalnızca gereksiz bir tam yazma demektir, veri kaybettirmez.
-const metaImzasi = (p: Project) => JSON.stringify({ ...p, toolData: undefined, updatedAt: undefined });
+// calismaSirasi da dışarıda: o kullanıcının koyduğu bir üst bilgi değil,
+// araç verisinden TÜRETİLEN bir alan. İçeride bırakılsaydı, sunucudan ilk kez
+// sıra listesiyle dönen her proje "üst bilgim değişti" der ve dokümanın
+// tamamını bir kez daha yazdırırdı.
+const metaImzasi = (p: Project) =>
+  JSON.stringify({ ...p, toolData: undefined, updatedAt: undefined, calismaSirasi: undefined });
 
 // Oturum kapanmadan önce bekleyenleri göndermek için dışarı açılan tek kapı.
 // SyncManager takılıyken doludur, sökülünce boşalır.
@@ -106,13 +112,21 @@ export default function SyncManager() {
     // haritaları alan alan birleştirip dizileri komple değiştiriyor; araç
     // verilerinin hepsi dizi olduğu için istediğimiz davranış tam olarak bu.
     const writeProject = (projectId: string, project: Project, degisenAraclar: Set<string>, metaDegisti: boolean) => {
+      // Araç İÇERİĞİ artık klasör dokümanına yazılmıyor; yalnızca çalışma
+      // kayıtlarına gidiyor. Klasöre giden tek araç bilgisi sıra listesi:
+      // hangi araçta hangi çalışmalar var, hangi sırayla (bkz.
+      // calismaSirasiKur). Eskiden içerik iki yere birden yazılıyordu;
+      // "bir süre daha yedek olarak" diye başlamıştı, kalıcı olmuştu.
+      //
+      // Dokümanda duran eski toolData'ya DOKUNULMUYOR: siliniyor da değil,
+      // yazılıyor da değil. Donmuş bir yedek olarak kalıyor; okuma tarafı
+      // kaydı olmayan bir kimlik için hâlâ oraya düşebiliyor
+      // (bkz. calismaOkuma). Ayrı bir adımda temizlenecek.
       const govde: Record<string, any> = metaDegisti
-        ? project
+        ? { ...project, toolData: undefined, calismaSirasi: calismaSirasiKur(project) }
         : {
             updatedAt: project.updatedAt,
-            toolData: Object.fromEntries(
-              Array.from(degisenAraclar).map((anahtar) => [anahtar, project.toolData[anahtar]])
-            ),
+            calismaSirasi: calismaSirasiKur(project),
           };
       // Tam doküman gidiyorsa bütün araçların verisi yazılıyor demektir.
       const yoldakiler = metaDegisti ? new Set<string>(TOOL_STATE_KEYS) : new Set(degisenAraclar);
@@ -122,13 +136,12 @@ export default function SyncManager() {
           // Klasörün kaydı bize kapalıysa (tek bir çalışma paylaşılmışsa)
           // oraya yazılmıyor; zaten reddedilirdi. Düzenleme çalışmanın kendi
           // kaydına gidiyor.
-          // `govde` burada zaten temiz: değeri olmayan alanlar projeye
-          // girmeden, senkron anlık görüntüsü alınırken ayıklanıyor (aşağıda
-          // stripUndefined(rawProject)). Buraya bir daha uygulamak, her
-          // kaydetmede tüm araç verisinin gereksiz bir kopyasını çıkarmak
-          // olurdu. Firestore değeri olmayan bir alan görürse yazmanın
-          // tamamını reddeder, o yüzden o ayıklama şart (bkz. firestoreSafe.ts).
-          project.klasorYok ? Promise.resolve() : setDoc(doc(db, 'projects', projectId), govde, { merge: true }),
+          // stripUndefined şart: gövdede `toolData: undefined` duruyor ve
+          // Firestore değeri olmayan bir alan görürse yazmanın tamamını
+          // reddeder — üstelik söz dönmeden, senkron olarak fırlatarak
+          // (bkz. firestoreSafe.ts). Artık ucuz: gövdede içerik yok,
+          // yalnızca üst bilgi ve kimlik listesi var.
+          project.klasorYok ? Promise.resolve() : setDoc(doc(db, 'projects', projectId), stripUndefined(govde), { merge: true }),
           calismalariDaYaz(project, yoldakiler)
         ]),
         "Firestore Save Error:"

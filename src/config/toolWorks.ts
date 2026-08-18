@@ -225,6 +225,26 @@ export function calismaDokunulmamis(calisma: Record<string, any>, tool: ToolId):
   return false;
 }
 
+/**
+ * Bu çalışma kendi kaydını hak ediyor mu?
+ *
+ * Dokunulmamış başlangıç çalışması kayıt almıyor (yukarıdaki gerekçe). AMA
+ * yalnızca araçtaki TEK çalışma oysa. Kullanıcı ikinci bir çalışma açtıysa,
+ * ona hiç dokunmamış olsa bile o artık onun kararı; elenirse sayfa
+ * yenilenince sessizce kaybolurdu.
+ *
+ * Hem yazma hem sıra listesi bu tek kapıdan geçiyor. Ayrışırlarsa listede
+ * olup kaydı olmayan (ya da tersi) çalışmalar çıkar.
+ */
+export function calismaKayitHakEdiyor(
+  calisma: Record<string, any>,
+  tool: ToolId,
+  aractakiToplam: number
+): boolean {
+  if (aractakiToplam > 1) return true;
+  return !calismaDokunulmamis(calisma, tool);
+}
+
 /** toolData içinde bu aracın dizisini tutan anahtar. */
 export const aracAnahtari = (tool: ToolId): string | undefined => TANIMLAR[tool]?.anahtar;
 

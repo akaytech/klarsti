@@ -63,7 +63,7 @@ const calismaListedeVar = (tool: string, workId: string): boolean => {
   const anahtar = aracAnahtari(tool as ToolId);
   if (!anahtar) return false;
   const liste = (useRoadmapStore.getState() as Record<string, any>)[anahtar];
-  return Array.isArray(liste) && liste.some((c: any) => c?.id === workId);
+  return Array.isArray(liste) && liste.some((c: { id?: string } | null) => c?.id === workId);
 };
 
 export default function AuthenticatedApp() {

@@ -7,6 +7,10 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useRoadmapStore, getActiveFiveWhys } from '../store/useRoadmapStore';
+// Tip ile bileşen aynı adı taşıyor (aşağıda FiveWhysNode diye bir bileşen de
+// içe aktarılıyor); tip takma adla alınıyor.
+import type { FiveWhysNode as FiveWhysNodeType } from '../store/useRoadmapStore';
+import type { Edge } from '@xyflow/react';
 import { useShallow } from 'zustand/react/shallow';
 import { useTranslation } from 'react-i18next';
 import { Activity } from 'lucide-react';
@@ -32,8 +36,8 @@ const nodeTypes = {
 
 // Sabit boş diziler: her boyamada yenisi üretilirse ona bağlı useMemo'lar
 // boşuna yeniden hesaplanır.
-const BOS_NODES: any[] = [];
-const BOS_EDGES: any[] = [];
+const BOS_NODES: FiveWhysNodeType[] = [];
+const BOS_EDGES: Edge[] = [];
 
 
 function FiveWhysCanvasInner() {
@@ -98,7 +102,7 @@ function FiveWhysCanvasInner() {
    * basıp nereden geldiği belirsiz ikinci bir kök bulmasın diye pasif kalıyor.
    * Kök neden (solution) kutusunun altına da eklenmiyor; kısayol da eklemiyordu.
    */
-  const secili = fiveWhysNodes.filter((n: any) => n.selected);
+  const secili = fiveWhysNodes.filter((n) => n.selected);
   const seciliKutu = secili.length === 1 && secili[0].data?.type !== 'solution' ? secili[0] : null;
 
   const dugmeIleEkle = useCallback(() => {
@@ -109,7 +113,7 @@ function FiveWhysCanvasInner() {
   }, [seciliKutu, addFiveWhysNode, t]);
 
   const onNodeContextMenu = useCallback(
-    (event: React.MouseEvent, node: any) => {
+    (event: React.MouseEvent, node: FiveWhysNodeType) => {
       // Yazı alanlarında sağ tık tarayıcının kendi menüsüne bırakılıyor:
       // kullanıcı orada Kes/Kopyala/Yapıştır bekliyor, kutu menüsünü değil.
       if (metinAlaninda(event.target)) return;
@@ -158,7 +162,7 @@ function FiveWhysCanvasInner() {
   }, [addFiveWhysNode, screenToFlowPosition, t]);
 
   const onNodeClick = useCallback(
-    (event: React.MouseEvent, node: any) => {
+    (event: React.MouseEvent, node: FiveWhysNodeType) => {
       // Kök neden (solution) kutusuna çocuk eklenmesini engelle
       if (node.data.type === 'solution') return;
 

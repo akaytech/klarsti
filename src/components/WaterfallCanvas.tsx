@@ -3,6 +3,7 @@ import { useRoadmapStore } from '../store/useRoadmapStore';
 import { useShallow } from 'zustand/react/shallow';
 import type { WaterfallPhase } from '../store/useRoadmapStore';
 import { ArrowDownRight, Layers, BookOpen, PenTool, Code, CheckSquare, Shield, Lock, CheckCircle2, Server } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import ToolHeader from './ToolHeader';
@@ -13,7 +14,7 @@ import { OlusturSatiri, BosDurum, KayitBasligi, KalemKarti, KalemEkleSatiri, EKL
 export default function WaterfallCanvas() {
   const { t } = useTranslation();
 
-  const PHASES: { id: WaterfallPhase; title: string; icon: any; color: string; bg: string; border: string; buttonBg: string; desc: string; indent: string }[] = [
+  const PHASES: { id: WaterfallPhase; title: string; icon: LucideIcon; color: string; bg: string; border: string; buttonBg: string; desc: string; indent: string }[] = [
     { id: 'Requirements', title: t('req'), icon: BookOpen, color: 'text-indigo-600 dark:text-indigo-400', bg: 'bg-indigo-50 dark:bg-indigo-900/20', border: 'border-indigo-200 dark:border-indigo-900/50', buttonBg: 'bg-indigo-600 hover:bg-indigo-700', desc: t('req_desc'), indent: 'ms-0' },
     { id: 'High-Level Design', title: t('wf_hld'), icon: PenTool, color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-50 dark:bg-purple-900/20', border: 'border-purple-200 dark:border-purple-900/50', buttonBg: 'bg-purple-600 hover:bg-purple-700', desc: t('wf_hld_desc'), indent: 'ms-0 md:ms-12' },
     { id: 'Low-Level Design', title: t('wf_lld'), icon: Server, color: 'text-cyan-600 dark:text-cyan-400', bg: 'bg-cyan-50 dark:bg-cyan-900/20', border: 'border-cyan-200 dark:border-cyan-900/50', buttonBg: 'bg-cyan-600 hover:bg-cyan-700', desc: t('wf_lld_desc'), indent: 'ms-0 md:ms-24' },

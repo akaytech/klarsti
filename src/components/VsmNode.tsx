@@ -4,12 +4,23 @@ import { Handle, Position } from '@xyflow/react';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import { useRoadmapStore, getActiveVsmMap } from '../store/useRoadmapStore';
-import type { VsmSure, VsmBirim } from '../store/useRoadmapStore';
+import type { VsmSure, VsmBirim, VsmNodeData, VsmCustomField } from '../store/useRoadmapStore';
 import { Factory, Triangle, Plus, X, AlertTriangle, ClipboardList, Truck, Zap, Users } from 'lucide-react';
 import DebouncedField from './DebouncedField';
 import { VSM_KUTU_GENISLIK, taktSaniye, sureyiUretimSaniyesineCevir, gunlukCalismaSaniyesi } from '../utils/vsmHesap';
 
 const gsl = (tip: string) => ({ width: VSM_KUTU_GENISLIK[tip] });
+
+/**
+ * React Flow bir kutuya bunlardan fazlasını da geçiyor (selected, dragging,
+ * konum...); buradaki kutular yalnızca bu ikisini kullanıyor. Fazlasını
+ * yazmıyoruz: kullanılmayan alanı tiplemek, tiplemenin kendisini gürültüye
+ * çevirir.
+ */
+interface VsmNodeProps {
+  data: VsmNodeData;
+  id: string;
+}
 
 /**
  * Sayı alanı. Yazarken değil odak kaybında store'a yazar; yoksa her tuş
@@ -95,7 +106,7 @@ function useTakt() {
   };
 }
 
-export function VsmProcessNode({ data, id }: any) {
+export function VsmProcessNode({ data, id }: VsmNodeProps) {
   const { t } = useTranslation();
   const updateVsmNode = useRoadmapStore((s) => s.updateVsmNode);
   const { takt, calisma } = useTakt();
@@ -108,9 +119,9 @@ export function VsmProcessNode({ data, id }: any) {
     customFields: [...customFields, { id: uuidv4(), name: t('vsm_metric'), value: '0' }],
   });
   const alanGuncelle = (fieldId: string, patch: Partial<{ name: string; value: string }>) =>
-    updateVsmNode(id, { customFields: customFields.map((f: any) => (f.id === fieldId ? { ...f, ...patch } : f)) });
+    updateVsmNode(id, { customFields: customFields.map((f: VsmCustomField) => (f.id === fieldId ? { ...f, ...patch } : f)) });
   const alanSil = (fieldId: string) =>
-    updateVsmNode(id, { customFields: customFields.filter((f: any) => f.id !== fieldId) });
+    updateVsmNode(id, { customFields: customFields.filter((f: VsmCustomField) => f.id !== fieldId) });
 
   return (
     <div
@@ -160,7 +171,7 @@ export function VsmProcessNode({ data, id }: any) {
           </label>
         </div>
 
-        {customFields.map((field: any) => (
+        {customFields.map((field: VsmCustomField) => (
           <div key={field.id} className="group/field grid grid-cols-[1fr_1fr_auto] items-center gap-1 border-b border-slate-200 py-0.5 dark:border-slate-700">
             <DebouncedField initialValue={field.name} onCommit={(v) => alanGuncelle(field.id, { name: v })}
               className="w-full min-w-0 rounded border-none bg-transparent px-1 font-semibold text-slate-600 focus:bg-slate-100 focus:outline-none dark:text-slate-300 dark:focus:bg-slate-900" />
@@ -180,7 +191,7 @@ export function VsmProcessNode({ data, id }: any) {
   );
 }
 
-export function VsmSupplierCustomerNode({ data, id }: any) {
+export function VsmSupplierCustomerNode({ data, id }: VsmNodeProps) {
   const { t } = useTranslation();
   const updateVsmNode = useRoadmapStore((s) => s.updateVsmNode);
   const musteri = data.rol === 'musteri';
@@ -217,7 +228,7 @@ export function VsmSupplierCustomerNode({ data, id }: any) {
   );
 }
 
-export function VsmInventoryNode({ data, id }: any) {
+export function VsmInventoryNode({ data, id }: VsmNodeProps) {
   const { t } = useTranslation();
   const updateVsmNode = useRoadmapStore((s) => s.updateVsmNode);
   // Süre elle girilmişse adet alanı devre dışı; ikisi birden hesaba girmez.
@@ -268,7 +279,7 @@ export function VsmInventoryNode({ data, id }: any) {
   );
 }
 
-export function VsmSupermarketNode({ data, id }: any) {
+export function VsmSupermarketNode({ data, id }: VsmNodeProps) {
   const { t } = useTranslation();
   const updateVsmNode = useRoadmapStore((s) => s.updateVsmNode);
 
@@ -298,7 +309,7 @@ export function VsmSupermarketNode({ data, id }: any) {
   );
 }
 
-export function VsmProductionControlNode({ data, id }: any) {
+export function VsmProductionControlNode({ data, id }: VsmNodeProps) {
   const { t } = useTranslation();
   const updateVsmNode = useRoadmapStore((s) => s.updateVsmNode);
 
@@ -326,7 +337,7 @@ export function VsmProductionControlNode({ data, id }: any) {
   );
 }
 
-export function VsmShipmentNode({ data, id }: any) {
+export function VsmShipmentNode({ data, id }: VsmNodeProps) {
   const { t } = useTranslation();
   const updateVsmNode = useRoadmapStore((s) => s.updateVsmNode);
 
@@ -350,7 +361,7 @@ export function VsmShipmentNode({ data, id }: any) {
   );
 }
 
-export function VsmKaizenNode({ data, id }: any) {
+export function VsmKaizenNode({ data, id }: VsmNodeProps) {
   const { t } = useTranslation();
   const updateVsmNode = useRoadmapStore((s) => s.updateVsmNode);
 

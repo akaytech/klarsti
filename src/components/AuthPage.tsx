@@ -35,8 +35,10 @@ export default function AuthPage({ mode }: { mode: 'login' | 'register' }) {
     };
   }, []);
 
-  const mapAuthError = (err: any) => {
-    const code = err?.code;
+  // Firebase hatalari bir `code` alani tasiyor ama catch bloguna `unknown`
+  // olarak dusuyor; kodu okumadan once gercekten var mi diye bakiyoruz.
+  const mapAuthError = (err: unknown) => {
+    const code = typeof err === 'object' && err !== null && 'code' in err ? String(err.code) : undefined;
     switch (code) {
       case 'auth/invalid-credential':
       case 'auth/user-not-found':
@@ -74,7 +76,7 @@ export default function AuthPage({ mode }: { mode: 'login' | 'register' }) {
         toast.success(t('verification_email_sent', { defaultValue: 'A verification email has been sent' }));
       }
       // On success, App.tsx will re-render and navigate because user state changes.
-    } catch (err: any) {
+    } catch (err) {
       setError(mapAuthError(err));
       setIsSubmitting(false);
     }
@@ -89,7 +91,7 @@ export default function AuthPage({ mode }: { mode: 'login' | 'register' }) {
     try {
       await sendPasswordResetEmail(auth, email);
       toast.success(t('password_reset_sent'));
-    } catch (err: any) {
+    } catch (err) {
       toast.error(mapAuthError(err));
     } finally {
       setIsSubmitting(false);
@@ -114,7 +116,7 @@ export default function AuthPage({ mode }: { mode: 'login' | 'register' }) {
       await signInWithRedirect(auth, provider);
       // Sayfa Google'a yönlenecek; dönüşte firebaseCore.ts'teki
       // getRedirectResult + onAuthStateChanged süreci tamamlayacak.
-    } catch (err: any) {
+    } catch (err) {
       setError(mapAuthError(err));
       setIsSubmitting(false);
     }

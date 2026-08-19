@@ -1,7 +1,8 @@
 import { useRoadmapStore } from '../store/useRoadmapStore';
 import { useShallow } from 'zustand/react/shallow';
-import type { SwotType } from '../store/useRoadmapStore';
+import type { SwotType, SwotItem, SwotAnalysis } from '../store/useRoadmapStore';
 import { Trash2, Shield, Target, Zap, AlertTriangle } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import ToolHeader from './ToolHeader';
 import ConfirmModal from './ConfirmModal';
@@ -12,7 +13,7 @@ import { OlusturSatiri, BosDurum, KalemKarti, KalemEkleSatiri, EKLE_DUGMESI } fr
 export default function SwotCanvas() {
   const { t } = useTranslation();
 
-  const QUADRANTS: { type: SwotType; title: string; color: string; icon: any; bg: string; border: string; dugmeBg: string }[] = [
+  const QUADRANTS: { type: SwotType; title: string; color: string; icon: LucideIcon; bg: string; border: string; dugmeBg: string }[] = [
     { type: 'S', title: t('swot_s'), color: 'text-indigo-600 dark:text-indigo-400', bg: 'bg-indigo-50 dark:bg-indigo-900/20', border: 'border-indigo-200 dark:border-indigo-900/50', icon: Shield, dugmeBg: 'bg-indigo-500' },
     { type: 'W', title: t('swot_w'), color: 'text-rose-600 dark:text-rose-400', bg: 'bg-rose-50 dark:bg-rose-900/20', border: 'border-rose-200 dark:border-rose-900/50', icon: AlertTriangle, dugmeBg: 'bg-rose-500' },
     { type: 'O', title: t('swot_o'), color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/20', border: 'border-emerald-200 dark:border-emerald-900/50', icon: Zap, dugmeBg: 'bg-emerald-500' },
@@ -85,7 +86,7 @@ export default function SwotCanvas() {
         </div>
 
         <div className="mx-auto max-w-7xl space-y-16">
-        {swot.map((analysis: any) => {
+        {swot.map((analysis: SwotAnalysis) => {
           const safeItems = analysis.items;
           const safeTitle = analysis.title;
           const safeId = analysis.id;
@@ -113,7 +114,7 @@ export default function SwotCanvas() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full min-h-[500px]">
               {QUADRANTS.map((quadrant) => {
                 const Icon = quadrant.icon;
-                const items = safeItems.filter((item: any) => item.type === quadrant.type);
+                const items = safeItems.filter((item) => item.type === quadrant.type);
 
                 return (
                   <div key={quadrant.type} className={`flex flex-col rounded-3xl border-2 ${quadrant.border} ${quadrant.bg} shadow-sm overflow-hidden`}>
@@ -125,7 +126,7 @@ export default function SwotCanvas() {
                     </div>
 
                     <div className="flex-1 p-4 overflow-y-auto space-y-3 min-h-[150px]">
-                      {items.map((item: any) => (
+                      {items.map((item: SwotItem) => (
                         <KalemKarti
                           key={item.id}
                           sinif="gap-3 bg-white dark:bg-slate-800 p-4 border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow"

@@ -5,7 +5,7 @@ import {
   useReactFlow,
 } from '@xyflow/react';
 import { Network, LayoutGrid } from 'lucide-react';
-import type { NodeMouseHandler, Edge } from '@xyflow/react';
+import type { NodeMouseHandler, OnNodeDrag, Edge, NodeChange } from '@xyflow/react';
 import type { GoalNode as GoalNodeType, GoalStatus } from '../store/useRoadmapStore';
 import '@xyflow/react/dist/style.css';
 import { useRoadmapStore, getDescendants, getActiveWbsTree, isPristineWbs, WBS_NODE_W, WBS_NODE_H } from '../store/useRoadmapStore';
@@ -133,7 +133,7 @@ export default function WbsCanvas({ onNodeSelect }: { onNodeSelect: (id: string 
     setCenter(node.position.x + genislik / 2, node.position.y + yukseklik / 2, { zoom: getZoom(), duration: 800 });
   }, [addGoal, onNodeSelect, toggleExpand, setCenter, getZoom, t, edges]);
 
-  const onNodeDragStart = useCallback((_event: any, node: any) => {
+  const onNodeDragStart: OnNodeDrag<GoalNodeType> = useCallback((_event, node) => {
     // Sürükleme tek bir işlem: burada açılıyor, bırakılınca kapanıyor. Arada
     // olup biten (seçim, her karede güncellenen konum) geçmişe ayrı ayrı
     // girmiyor; geri alındığında kutu sürüklemeden ÖNCEKİ yerine dönüyor.
@@ -142,7 +142,7 @@ export default function WbsCanvas({ onNodeSelect }: { onNodeSelect: (id: string 
     surukleBaslangici.current = { id: node.id, x: node.position.x, y: node.position.y };
     if (isShiftPressed) {
       const descendants = getDescendants(node.id, edges);
-      const changes: any[] = descendants.map(id => ({ id, type: 'select', selected: true }));
+      const changes: NodeChange<GoalNodeType>[] = descendants.map((id) => ({ id, type: 'select', selected: true }));
       // Also select the node itself just in case
       changes.push({ id: node.id, type: 'select', selected: true });
       onNodesChange(changes);
@@ -151,7 +151,7 @@ export default function WbsCanvas({ onNodeSelect }: { onNodeSelect: (id: string 
 
   // Sapma sürükleme bitince tek seferde yazılır. Taşınan kutuların hepsi aynı
   // mesafeyi kat ettiği için tek bir fark yetiyor.
-  const onNodeDragStop = useCallback((_event: any, node: any, tasinanlar?: any[]) => {
+  const onNodeDragStop: OnNodeDrag<GoalNodeType> = useCallback((_event, node, tasinanlar) => {
     const baslangic = surukleBaslangici.current;
     surukleBaslangici.current = null;
     try {
@@ -159,7 +159,7 @@ export default function WbsCanvas({ onNodeSelect }: { onNodeSelect: (id: string 
 
       const dx = node.position.x - baslangic.x;
       const dy = node.position.y - baslangic.y;
-      const idler = (tasinanlar && tasinanlar.length > 0 ? tasinanlar : [node]).map((n: any) => n.id);
+      const idler = (tasinanlar && tasinanlar.length > 0 ? tasinanlar : [node]).map((n) => n.id);
       nudgeGoals(idler, dx, dy);
     } finally {
       // Erken çıkışta da kapanmalı; açık kalan bir işlem sonraki bütün
@@ -197,7 +197,7 @@ export default function WbsCanvas({ onNodeSelect }: { onNodeSelect: (id: string 
   }, [setContextMenuNodeId]);
 
   const onNodeContextMenu = useCallback(
-    (event: React.MouseEvent, node: any) => {
+    (event: React.MouseEvent, node: GoalNodeType) => {
       // Açıklama kutusu gibi yazı alanlarında sağ tık tarayıcının kendi
       // menüsüne bırakılıyor: kullanıcı orada Kes/Kopyala/Yapıştır bekliyor.
       if (metinAlaninda(event.target)) return;

@@ -192,8 +192,8 @@ import type { DecisionSlice, DecisionCriteria, DecisionOption, DecisionMatrixPro
 export type { DecisionCriteria, DecisionOption, DecisionMatrixProject };
 
 import { createVsmSlice } from './slices/createVsmSlice';
-import type { VsmSlice, VsmNode, VsmEdge, VsmNodeData, VsmHarita, VsmAyarlar, VsmSure, VsmBirim, VsmNodeTuru, VsmEdgeTuru, VsmHaritaTuru } from './slices/createVsmSlice';
-export type { VsmNode, VsmEdge, VsmNodeData, VsmHarita, VsmAyarlar, VsmSure, VsmBirim, VsmNodeTuru, VsmEdgeTuru, VsmHaritaTuru };
+import type { VsmSlice, VsmNode, VsmEdge, VsmNodeData, VsmCustomField, VsmHarita, VsmAyarlar, VsmSure, VsmBirim, VsmNodeTuru, VsmEdgeTuru, VsmHaritaTuru } from './slices/createVsmSlice';
+export type { VsmNode, VsmEdge, VsmNodeData, VsmCustomField, VsmHarita, VsmAyarlar, VsmSure, VsmBirim, VsmNodeTuru, VsmEdgeTuru, VsmHaritaTuru };
 export { getActiveVsmMap } from './slices/createVsmSlice';
 
 

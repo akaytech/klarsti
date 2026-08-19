@@ -263,7 +263,7 @@ export default function MindmapCanvas() {
     setMindmapDescriptionId(null);
   }, [setMindmapEditingLabel, setMindmapDescriptionId, setMindmapSelected]);
 
-  const onNodeContextMenu = useCallback((event: React.MouseEvent, node: any) => {
+  const onNodeContextMenu = useCallback((event: React.MouseEvent, node: MindmapNodeTipi) => {
     // Yazı alanlarında sağ tık tarayıcının kendi menüsüne bırakılıyor:
     // kullanıcı orada Kes/Kopyala/Yapıştır bekliyor, kutu menüsünü değil.
     if (metinAlaninda(event.target)) return;

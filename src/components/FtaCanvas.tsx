@@ -4,7 +4,10 @@ import {
   Panel,
   useReactFlow,
 } from '@xyflow/react';
-import type { NodeMouseHandler } from '@xyflow/react';
+import type { NodeMouseHandler, Edge } from '@xyflow/react';
+// Tip ile bileşen aynı adı taşıyor (aşağıda FtaNode diye bir bileşen de
+// içe aktarılıyor); tip takma adla alınıyor.
+import type { FtaNode as FtaNodeTipi } from '../store/useRoadmapStore';
 import '@xyflow/react/dist/style.css';
 import { GitBranch } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -31,8 +34,8 @@ const nodeTypes = {
 
 // Sabit boş diziler: her boyamada yenisi üretilirse ona bağlı useMemo'lar
 // boşuna yeniden hesaplanır.
-const BOS_NODES: any[] = [];
-const BOS_EDGES: any[] = [];
+const BOS_NODES: FtaNodeTipi[] = [];
+const BOS_EDGES: Edge[] = [];
 
 
 export default function FtaCanvas() {
@@ -82,7 +85,7 @@ export default function FtaCanvas() {
   }, [setCenter, getZoom]);
 
   const onNodeContextMenu = useCallback(
-    (event: React.MouseEvent, node: any) => {
+    (event: React.MouseEvent, node: FtaNodeTipi) => {
       // Yazı alanlarında sağ tık tarayıcının kendi menüsüne bırakılıyor:
       // kullanıcı orada Kes/Kopyala/Yapıştır bekliyor, kutu menüsünü değil.
       if (metinAlaninda(event.target)) return;

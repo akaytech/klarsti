@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { applyNodeChanges, applyEdgeChanges, addEdge } from '@xyflow/react';
+import { applyNodeChanges, applyEdgeChanges, addEdge } from './kutuDegisiklikleri';
 import type { NodeChange, EdgeChange, Connection, Edge, Node } from '@xyflow/react';
 import i18n from '../../i18n';
 import type { DiagramTypeDef } from '../../config/diagramShared';

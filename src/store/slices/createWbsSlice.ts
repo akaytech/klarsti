@@ -5,7 +5,7 @@ import {
   applyNodeChanges,
   applyEdgeChanges,
   addEdge,
-} from '@xyflow/react';
+} from './kutuDegisiklikleri';
 import type { Edge, NodeChange, EdgeChange, Connection, Node } from '@xyflow/react';
 
 import i18n from '../../i18n';

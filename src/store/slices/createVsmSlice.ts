@@ -1,6 +1,6 @@
 import type { StateCreator } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
-import { applyNodeChanges, applyEdgeChanges, addEdge } from '@xyflow/react';
+import { applyNodeChanges, applyEdgeChanges, addEdge } from './kutuDegisiklikleri';
 import type { Connection, EdgeChange, NodeChange } from '@xyflow/react';
 import type { RoadmapState } from '../useRoadmapStore';
 import { islem, tiktaIslem, gecmisiTemizle } from '../gecmis';

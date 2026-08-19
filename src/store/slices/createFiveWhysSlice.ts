@@ -14,7 +14,7 @@ import {
   addEdge,
   applyNodeChanges,
   applyEdgeChanges,
-} from '@xyflow/react';
+} from './kutuDegisiklikleri';
 
 import type { RoadmapState } from '../useRoadmapStore';
 import { islem, tiktaIslem, gecmisiTemizle } from '../gecmis';

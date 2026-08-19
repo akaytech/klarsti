@@ -1,7 +1,24 @@
 import i18n from '../i18n';
 import { isPristineWbs } from '../store/slices/createWbsSlice';
 import { isPristineFta } from '../store/slices/createFtaSlice';
-import type { ToolId } from '../store/useRoadmapStore';
+import type { ToolId, RoadmapState } from '../store/useRoadmapStore';
+
+/**
+ * Store'da GERÇEKTEN var olan bir adı işaretler.
+ *
+ * Buradaki eylemler doğrudan çağrılmıyor, store'da adıyla aranıyor. Ad düz
+ * `string` olduğu sürece bunun bir bedeli vardı: bir eylemin adı değiştiği gün
+ * ilgili düğme sessizce çalışmayı bırakıyordu — ne derleme uyarıyordu, ne
+ * tarayıcı konsolu, ne de kullanıcı bir şey görüyordu. Ancak biri tıklayana
+ * kadar fark edilmezdi.
+ *
+ * Artık ad tutmazsa DERLEME DURUYOR, yani hata canlıya hiç çıkamıyor.
+ *
+ * Bu, aşağıdaki `anahtar` ve `adAlani` için geçerli DEĞİL: onlar store'da bir
+ * şeyin adı değil, kullanıcının kaydında duran veri alanlarının adı. Onları
+ * değiştirmek eski kayıtları bozar; tip denetimiyle ilgileri yok.
+ */
+type DepoAdi<T extends keyof RoadmapState> = T;
 
 /**
  * Bir aracın içindeki tek bir çalışma: bir kırılım ağacı, bir zihin haritası,
@@ -18,7 +35,7 @@ export interface AracCalismasi {
 }
 
 /** Menüden bir çalışma seçilince açık çalışmayı değiştiren store eylemi. */
-export type CalismaSecimEylemi =
+export type CalismaSecimEylemi = DepoAdi<
   | 'setActiveWbsTree'
   | 'setActiveFiveWhys'
   | 'setActiveFta'
@@ -27,15 +44,16 @@ export type CalismaSecimEylemi =
   | 'setActiveOrgchart'
   | 'setActiveVsmMap'
   | 'setActiveGantt'
-  | 'setActiveRoadmap';
+  | 'setActiveRoadmap'
+>;
 
 interface AracTanimi {
-  /** toolData içindeki dizi. */
+  /** toolData içindeki dizi. Kullanıcının kaydındaki alan adı, store'daki değil. */
   anahtar: string;
   /** Çalışmanın adını değiştiren store eylemi. */
-  yenidenAdlandir: string;
+  yenidenAdlandir: keyof RoadmapState;
   /** Çalışmayı silen store eylemi. */
-  sil: string;
+  sil: keyof RoadmapState;
   /**
    * Çalışmanın adını taşıyan alan. Araçtan araca değişiyor: kırılım ağacının
    * "name"i var, SWOT'un "title"ı, balık kılçığının problem cümlesi, PDCA'nın
@@ -59,7 +77,7 @@ interface AracTanimi {
    * yazıyor; olmasaydı sayfa yenilenince açık çalışma unutulur ve listenin
    * ilkine dönülürdü. Yalnızca `secim` olan araçlarda var.
    */
-  aktifAlan?: string;
+  aktifAlan?: keyof RoadmapState;
 }
 
 const TANIMLAR: Record<ToolId, AracTanimi | null> = {
@@ -87,37 +105,51 @@ export const aracSecimEylemi = (tool: ToolId): CalismaSecimEylemi | undefined =>
   TANIMLAR[tool]?.secim;
 
 /** Açık çalışmanın kimliğini tutan store alanının adı. */
-export const aracAktifAlan = (tool: ToolId): string | undefined =>
+export const aracAktifAlan = (tool: ToolId): keyof RoadmapState | undefined =>
   TANIMLAR[tool]?.aktifAlan;
+
+/**
+ * Adıyla aranan eylemi bulur. Bulamazsa SESSİZ KALMAZ.
+ *
+ * Ad artık derleme zamanında denetleniyor (bkz. DepoAdi), yani normalde buraya
+ * düşülemez. Yine de kalması gerekiyor: store dışarıdan veriliyor ve çağıran
+ * taraf eksik bir nesne geçebilir. Eskiden bu durumda hiçbir şey olmuyordu —
+ * düğmeye basılıyor, hiçbir şey olmuyor, kimse sebebini bilmiyordu.
+ */
+function eylemiBul(store: Partial<RoadmapState>, ad: keyof RoadmapState, tool: ToolId) {
+  const eylem = store[ad];
+  if (typeof eylem === 'function') return eylem as (...args: unknown[]) => void;
+  console.error(
+    `toolWorks: "${String(ad)}" eylemi store'da bulunamadı (araç: ${tool}). ` +
+    'İlgili düğme hiçbir şey yapmayacak.'
+  );
+  return null;
+}
 
 /**
  * Çalışma üzerindeki eylemler. Store nesnesi dışarıdan veriliyor: bu dosya
  * bir yapılandırma dosyası, store'u içe aktarsa iki modül birbirini çağıran
  * bir halkaya girerdi.
  *
- * Eylem adları araçtan araca değiştiği ve buradan adıyla arandığı için `any`
- * kaçınılmaz. İmzalar ise artık on dört araçta da aynı: Pareto ile histogram
- * eskiden ilk argüman olarak proje kimliğini bekliyordu ama hiç kullanmıyordu,
- * o parametre kaldırıldı.
+ * Eylemler adıyla arandığı için gövdede tip denetimi yapılamıyor; ama ADIN
+ * kendisi denetleniyor (bkz. DepoAdi), asıl risk oradaydı. İmzalar da on dört
+ * araçta aynı: Pareto ile histogram eskiden ilk argüman olarak proje kimliğini
+ * bekliyordu ama hiç kullanmıyordu, o parametre kaldırıldı.
  */
 export function calismayiYenidenAdlandir(
-  store: Record<string, any>, tool: ToolId, calismaId: string, yeniAd: string
+  store: Partial<RoadmapState>, tool: ToolId, calismaId: string, yeniAd: string
 ) {
   const tanim = TANIMLAR[tool];
   if (!tanim) return;
-  const eylem = store[tanim.yenidenAdlandir];
-  if (typeof eylem !== 'function') return;
-  eylem(calismaId, yeniAd);
+  eylemiBul(store, tanim.yenidenAdlandir, tool)?.(calismaId, yeniAd);
 }
 
 export function calismayiSil(
-  store: Record<string, any>, tool: ToolId, calismaId: string
+  store: Partial<RoadmapState>, tool: ToolId, calismaId: string
 ) {
   const tanim = TANIMLAR[tool];
   if (!tanim) return;
-  const eylem = store[tanim.sil];
-  if (typeof eylem !== 'function') return;
-  eylem(calismaId);
+  eylemiBul(store, tanim.sil, tool)?.(calismaId);
 }
 
 /**

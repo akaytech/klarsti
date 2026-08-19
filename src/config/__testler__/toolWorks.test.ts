@@ -7,13 +7,17 @@ vi.mock('../../firebase', () => ({ logAppEvent: () => {}, db: {}, analytics: nul
 const { useRoadmapStore } = await import('../../store/useRoadmapStore');
 
 // Çalışma menüsündeki "adını değiştir" ve "sil" düğmeleri store eylemlerini
-// ADIYLA arıyor (bkz. toolWorks.ts). Ad tutmazsa hiçbir şey olmuyor: ne
-// derleme uyarır, ne konsol; düğme sessizce çalışmayı bırakıyor.
+// ADIYLA arıyor (bkz. toolWorks.ts). Eskiden ad tutmazsa hiçbir şey olmuyordu:
+// ne derleme uyarıyordu, ne konsol; düğme sessizce çalışmayı bırakıyordu.
 //
-// Bu yüzden testte sahte bir store DEĞİL, gerçek store kullanılıyor: aranan
-// ad gerçekten yoksa hiçbir çağrı kaydedilmiyor ve test kırmızı yanıyor.
+// Artık üç katman var ve üçü de burada sınanıyor:
+//   1. Ad derleme zamanında denetleniyor (keyof RoadmapState) — bunu test
+//      değil derleyici yakalıyor, bozunca `npx tsc` patlıyor.
+//   2. Ad yine de bulunamazsa konsola hata basılıyor, sessiz kalınmıyor.
+//   3. Testte sahte bir store DEĞİL gerçeği kullanılıyor: aranan ad gerçekten
+//      yoksa hiçbir çağrı kaydedilmiyor ve test kırmızı yanıyor.
 //
-// İkinci denetim imza: Pareto ile histogramın eylemleri eskiden ilk argüman
+// Dördüncü denetim imza: Pareto ile histogramın eylemleri eskiden ilk argüman
 // olarak proje kimliğini bekliyordu ama hiç kullanmıyordu; o parametre
 // kaldırıldı, on dört aracın imzası aynılaştı.
 
@@ -57,8 +61,12 @@ describe('adini degistir', () => {
     expect(cagrilar).toHaveLength(0);
   });
 
-  it('eylem adi bulunamazsa patlamiyor', () => {
+  it('eylem bulunamazsa patlamiyor ama SESSIZ de kalmiyor', () => {
+    const konsol = vi.spyOn(console, 'error').mockImplementation(() => {});
     expect(() => calismayiYenidenAdlandir({}, 'swot', 'c1', 'yeni ad')).not.toThrow();
+    expect(konsol).toHaveBeenCalledTimes(1);
+    expect(String(konsol.mock.calls[0][0])).toContain('updateSwotTitle');
+    konsol.mockRestore();
   });
 });
 
@@ -84,7 +92,18 @@ describe('sil', () => {
     expect(cagrilar).toHaveLength(0);
   });
 
-  it('eylem adi bulunamazsa patlamiyor', () => {
+  it('eylem bulunamazsa patlamiyor ama SESSIZ de kalmiyor', () => {
+    const konsol = vi.spyOn(console, 'error').mockImplementation(() => {});
     expect(() => calismayiSil({}, 'swot', 'c1')).not.toThrow();
+    expect(konsol).toHaveBeenCalledTimes(1);
+    expect(String(konsol.mock.calls[0][0])).toContain('deleteSwot');
+    konsol.mockRestore();
+  });
+
+  it('ajanda icin konsola hata da basilmiyor: eylemi olmamasi normal', () => {
+    const konsol = vi.spyOn(console, 'error').mockImplementation(() => {});
+    calismayiSil(izlenenStore, 'notepad', 'c1');
+    expect(konsol).not.toHaveBeenCalled();
+    konsol.mockRestore();
   });
 });

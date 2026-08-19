@@ -48,7 +48,7 @@ const acikCalismaId = (tool: string | null): string | undefined => {
   if (!tool) return undefined;
   const alan = aracAktifAlan(tool as ToolId);
   if (!alan) return undefined;
-  return (useRoadmapStore.getState() as Record<string, any>)[alan] || undefined;
+  return (useRoadmapStore.getState()[alan] as string | null) || undefined;
 };
 
 /**
@@ -88,7 +88,7 @@ export default function AuthenticatedApp() {
   // toolWorks'ten okunuyor.
   const acikCalisma = useRoadmapStore((state) => {
     const alan = state.activeTool ? aracAktifAlan(state.activeTool) : undefined;
-    return alan ? ((state as Record<string, any>)[alan] as string | null) : null;
+    return alan ? (state[alan] as string | null) : null;
   });
 
   const navigate = useNavigate();

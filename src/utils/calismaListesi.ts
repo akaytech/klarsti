@@ -65,7 +65,7 @@ export function calismayiAc(ozet: CalismaOzeti) {
   // Bütün çalışmalarını tek sayfada listeleyen araçlarda (SWOT, PDCA...)
   // seçilecek bir şey yok; aracı açmak yeterli.
   const eylem = aracSecimEylemi(ozet.tool);
-  if (eylem) (useRoadmapStore.getState() as Record<string, any>)[eylem](ozet.workId);
+  if (eylem) useRoadmapStore.getState()[eylem](ozet.workId);
 }
 
 /**

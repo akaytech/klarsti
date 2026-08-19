@@ -9,11 +9,12 @@ import {
 import { useRoadmapStore } from '../store/useRoadmapStore';
 import type { GanttDurum, GanttGorev } from '../store/slices/createGanttSlice';
 import { ozetHesapla, siraliGorevler, ustGorevMu } from '../store/slices/createGanttSlice';
-import {
-  araligiHesapla, ayEtiketi, ayinIlkiMi, bugununMetni, gunEkle, gunEtiketi,
-  gunFarki, gunSayisi, haftaBasiMi, haftaSonuMu, tariheCevir
-} from '../utils/ganttTarih';
+import { araligiHesapla, bugununMetni, gunEkle, gunEtiketi, gunFarki, gunSayisi } from '../utils/ganttTarih';
 import CalismaMenusu from './CalismaMenusu';
+import GanttTakvimBasligi from './GanttTakvimBasligi';
+import GanttBagimlilikOklari from './GanttBagimlilikOklari';
+import GanttIkonDugme from './GanttIkonDugme';
+import { GUN_GENISLIK, SATIR_YUKSEKLIK, BASLIK_YUKSEKLIK, DURUMLAR, type Yakinlik } from './ganttOlculeri';
 import CanvasKarsilama from './CanvasKarsilama';
 import ConfirmModal from './ConfirmModal';
 
@@ -31,13 +32,6 @@ import ConfirmModal from './ConfirmModal';
  * her zaman tam güne oturuyor.
  */
 
-type Yakinlik = 'gun' | 'hafta' | 'ay';
-
-/** Gün başına piksel. Ay görünümünde bir gün 4 piksel: bir yıl ~1500 piksel. */
-const GUN_GENISLIK: Record<Yakinlik, number> = { gun: 30, hafta: 11, ay: 4 };
-const SATIR_YUKSEKLIK = 38;
-const BASLIK_YUKSEKLIK = 52;
-
 /**
  * Çubuğun zemini, dolgusu ve çerçevesi.
  *
@@ -54,7 +48,7 @@ const DURUM_STILI: Record<GanttDurum, { cubuk: string; cerceve: string; ilerleme
   riskli: { cubuk: 'bg-slate-200 dark:bg-slate-700', cerceve: 'ring-rose-500/80', ilerleme: 'bg-rose-500', nokta: 'bg-rose-500' }
 };
 
-const DURUMLAR: GanttDurum[] = ['bekliyor', 'devam', 'bitti', 'riskli'];
+const BOS_GOREVLER: GanttGorev[] = [];
 
 export default function GanttCanvas() {
   const { t, i18n } = useTranslation();
@@ -100,7 +94,10 @@ export default function GanttCanvas() {
     if (plan && plan.id !== activeGanttId) setActiveGantt(plan.id);
   }, [plan, activeGanttId, setActiveGantt]);
 
-  const gorevler = plan?.gorevler || [];
+  // Sabit boş dizi: `|| []` her boyamada yenisini üretiyordu ve ona bağlı iki
+  // useMemo (özetler, sıralı görevler) plan boşken her seferinde yeniden
+  // hesaplanıyordu. Aynı kalıp 5 neden ve hata ağacı tuvallerinde de var.
+  const gorevler = plan?.gorevler ?? BOS_GOREVLER;
   const bugun = bugununMetni();
 
   const ozetler = useMemo(() => {
@@ -335,7 +332,7 @@ export default function GanttCanvas() {
                 {t('gantt_task')}
               </div>
               <div className="relative border-b border-slate-200 dark:border-slate-800" style={{ width: takvimGenislik }}>
-                <TakvimBasligi
+                <GanttTakvimBasligi
                   basla={aralik.basla}
                   toplamGun={toplamGun}
                   gunGenislik={gunGenislik}
@@ -346,7 +343,7 @@ export default function GanttCanvas() {
             </div>
 
             {/* Bağımlılık okları: satırların altında, sol sütunun üstünde değil. */}
-            <BagimlilikOklari
+            <GanttBagimlilikOklari
               satirlar={satirlar}
               ozetler={ozetler}
               gunuKonumla={gunuKonumla}
@@ -572,38 +569,38 @@ export default function GanttCanvas() {
             </div>
 
             <div className="ms-auto flex items-center gap-1">
-              <IkonDugme
+              <GanttIkonDugme
                 etiket={t('gantt_milestone')}
                 etkin={!!secili.kilometreTasi}
                 onClick={() => updateGanttGorev(plan.id, secili.id, { kilometreTasi: !secili.kilometreTasi })}
               >
                 <Diamond size={15} />
-              </IkonDugme>
-              <IkonDugme
+              </GanttIkonDugme>
+              <GanttIkonDugme
                 etiket={t('gantt_dependencies')}
                 etkin={bagimlilikPaneli}
                 onClick={() => setBagimlilikPaneli((a) => !a)}
               >
                 <Link2 size={15} />
-              </IkonDugme>
-              <IkonDugme etiket={t('gantt_outdent')} onClick={() => ganttGoreviDisarial(plan.id, secili.id)}>
+              </GanttIkonDugme>
+              <GanttIkonDugme etiket={t('gantt_outdent')} onClick={() => ganttGoreviDisarial(plan.id, secili.id)}>
                 <Outdent size={15} />
-              </IkonDugme>
-              <IkonDugme etiket={t('gantt_indent')} onClick={() => ganttGoreviIcerial(plan.id, secili.id)}>
+              </GanttIkonDugme>
+              <GanttIkonDugme etiket={t('gantt_indent')} onClick={() => ganttGoreviIcerial(plan.id, secili.id)}>
                 <Indent size={15} />
-              </IkonDugme>
-              <IkonDugme etiket={t('gantt_move_up')} onClick={() => ganttGoreviTasi(plan.id, secili.id, -1)}>
+              </GanttIkonDugme>
+              <GanttIkonDugme etiket={t('gantt_move_up')} onClick={() => ganttGoreviTasi(plan.id, secili.id, -1)}>
                 <span className="text-sm leading-none">↑</span>
-              </IkonDugme>
-              <IkonDugme etiket={t('gantt_move_down')} onClick={() => ganttGoreviTasi(plan.id, secili.id, 1)}>
+              </GanttIkonDugme>
+              <GanttIkonDugme etiket={t('gantt_move_down')} onClick={() => ganttGoreviTasi(plan.id, secili.id, 1)}>
                 <span className="text-sm leading-none">↓</span>
-              </IkonDugme>
-              <IkonDugme etiket={t('delete')} tehlike onClick={() => setSilinecek(secili)}>
+              </GanttIkonDugme>
+              <GanttIkonDugme etiket={t('delete')} tehlike onClick={() => setSilinecek(secili)}>
                 <Trash2 size={15} />
-              </IkonDugme>
-              <IkonDugme etiket={t('close')} onClick={() => { setSeciliId(null); setBagimlilikPaneli(false); }}>
+              </GanttIkonDugme>
+              <GanttIkonDugme etiket={t('close')} onClick={() => { setSeciliId(null); setBagimlilikPaneli(false); }}>
                 <X size={15} />
-              </IkonDugme>
+              </GanttIkonDugme>
             </div>
           </div>
 
@@ -648,161 +645,5 @@ export default function GanttCanvas() {
         onClose={() => setSilinecek(null)}
       />
     </div>
-  );
-}
-
-function IkonDugme({
-  children, etiket, onClick, etkin, tehlike
-}: {
-  children: React.ReactNode;
-  etiket: string;
-  onClick: () => void;
-  etkin?: boolean;
-  tehlike?: boolean;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      title={etiket}
-      aria-label={etiket}
-      aria-pressed={etkin}
-      className={clsx(
-        'flex h-8 w-8 items-center justify-center rounded-lg transition-colors',
-        etkin
-          ? 'bg-orange-600 text-white'
-          : tehlike
-          ? 'text-slate-500 hover:bg-rose-50 hover:text-rose-600 dark:text-slate-400 dark:hover:bg-rose-900/30'
-          : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200'
-      )}
-    >
-      {children}
-    </button>
-  );
-}
-
-/** Takvimin üst şeridi: ay adları ve altında gün/hafta işaretleri. */
-function TakvimBasligi({
-  basla, toplamGun, gunGenislik, yakinlik, dil
-}: {
-  basla: string;
-  toplamGun: number;
-  gunGenislik: number;
-  yakinlik: Yakinlik;
-  dil: string;
-}) {
-  const gunler = useMemo(
-    () => Array.from({ length: toplamGun }, (_, i) => gunEkle(basla, i)),
-    [basla, toplamGun]
-  );
-
-  // Ay etiketleri ayın ilk gününe konuyor; ilk ay için de takvimin başına.
-  const aylar = gunler
-    .map((g, i) => ({ g, i }))
-    .filter(({ g, i }) => i === 0 || ayinIlkiMi(g));
-
-  return (
-    <>
-      <div className="relative h-6 border-b border-slate-100 dark:border-slate-800">
-        {aylar.map(({ g, i }) => (
-          <span
-            key={g}
-            className="absolute top-0 whitespace-nowrap ps-1.5 text-[11px] font-bold text-slate-500 dark:text-slate-400"
-            style={{ insetInlineStart: i * gunGenislik }}
-          >
-            {ayEtiketi(g, dil)}
-          </span>
-        ))}
-      </div>
-      <div className="relative h-[26px]">
-        {gunler.map((g, i) => {
-          // Gün görünümünde her gün yazılıyor; hafta görünümünde yalnız
-          // pazartesiler; ay görünümünde hiçbiri (yer yok, ay şeridi yeter).
-          const gunGorunumu = yakinlik === 'gun';
-          const yaz = gunGorunumu || (yakinlik === 'hafta' && haftaBasiMi(g));
-          // Gün görünümünde hafta sonları yazısız da olsa çiziliyor: gri
-          // zeminleri takvimi haftalara bölen tek işaret.
-          if (!yaz && !(gunGorunumu && haftaSonuMu(g))) return null;
-          return (
-            <span
-              key={g}
-              className={clsx(
-                'absolute top-0 flex h-full items-center justify-center text-[10px] tabular-nums',
-                haftaSonuMu(g)
-                  ? 'bg-slate-100 font-semibold text-slate-400 dark:bg-slate-800/60 dark:text-slate-500'
-                  : 'text-slate-400 dark:text-slate-500'
-              )}
-              style={{ insetInlineStart: i * gunGenislik, width: gunGenislik }}
-            >
-              {yaz ? tariheCevir(g).getDate() : ''}
-            </span>
-          );
-        })}
-      </div>
-    </>
-  );
-}
-
-/**
- * Bağımlılık okları. Önceki görevin bitişinden sonrakinin başlangıcına
- * dirsekli bir çizgi çiziliyor; klasik "bitiş → başlangıç" bağı.
- *
- * Yalnız ikisi de ekranda görünen (kapatılmamış) görevler için çiziliyor:
- * gizli bir satıra giden ok boşluğa gider.
- */
-function BagimlilikOklari({
-  satirlar, ozetler, gunuKonumla, gunGenislik
-}: {
-  satirlar: { gorev: GanttGorev; derinlik: number }[];
-  ozetler: Map<string, { baslangic: string; bitis: string; ilerleme: number }>;
-  gunuKonumla: (tarih: string) => number;
-  gunGenislik: number;
-}) {
-  const sira = new Map(satirlar.map((s, i) => [s.gorev.id, i]));
-
-  const yollar: string[] = [];
-  satirlar.forEach(({ gorev }) => {
-    (gorev.oncekiler || []).forEach((oncekiId) => {
-      const oncekiSira = sira.get(oncekiId);
-      const buSira = sira.get(gorev.id);
-      if (oncekiSira === undefined || buSira === undefined) return;
-      const onceki = ozetler.get(oncekiId);
-      const bu = ozetler.get(gorev.id);
-      if (!onceki || !bu) return;
-
-      const x1 = gunuKonumla(onceki.bitis) + gunGenislik;
-      const y1 = BASLIK_YUKSEKLIK + oncekiSira * SATIR_YUKSEKLIK + SATIR_YUKSEKLIK / 2;
-      const x2 = gunuKonumla(bu.baslangic);
-      const y2 = BASLIK_YUKSEKLIK + buSira * SATIR_YUKSEKLIK + SATIR_YUKSEKLIK / 2;
-      const ara = x2 - 8 > x1 + 8 ? x2 - 8 : x1 + 8;
-      yollar.push(`M ${x1} ${y1} H ${ara} V ${y2} H ${x2}`);
-    });
-  });
-
-  if (yollar.length === 0) return null;
-
-  return (
-    <svg
-      aria-hidden
-      className="pointer-events-none absolute top-0 z-10 overflow-visible"
-      style={{ insetInlineStart: 'var(--gantt-sol)' }}
-      width="100%"
-      height="100%"
-    >
-      <defs>
-        <marker id="gantt-ok" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-          <path d="M0,0 L6,3 L0,6 Z" className="fill-slate-400 dark:fill-slate-500" />
-        </marker>
-      </defs>
-      {yollar.map((d) => (
-        <path
-          key={d}
-          d={d}
-          fill="none"
-          strokeWidth={1.5}
-          markerEnd="url(#gantt-ok)"
-          className="stroke-slate-400 dark:stroke-slate-500"
-        />
-      ))}
-    </svg>
   );
 }

@@ -16,6 +16,22 @@ export interface ToolDef {
 }
 
 
+/**
+ * Tuvali React Flow ile çizilen araçlar.
+ *
+ * Neden ayrı bir liste: çizim kütüphanesi 174 KB ve yalnızca bu araçlar için
+ * gerekiyor. Uygulama kabuğu onu herkese yüklemesin diye hem çizim
+ * sağlayıcısı hem de görsel dışa aktarma bu listeye bakarak gecikmeli
+ * yükleniyor. Yeni bir çizim aracı eklenirse BURAYA da eklenmeli; yoksa
+ * tuvali açılır ama çizim bağlamı olmadığı için patlar.
+ */
+export const CIZIM_ARACLARI: ToolId[] = [
+  'wbs', '5whys', 'fta', 'flowchart', 'orgchart', 'mindmap', 'vsm', 'roadmap'
+];
+
+export const cizimAraciMi = (tool: ToolId | null | undefined): boolean =>
+  !!tool && CIZIM_ARACLARI.includes(tool);
+
 export const CATEGORY_ORDER: CategoryId[] = [
   'cat_productivity_docs',
   'cat_process_project',

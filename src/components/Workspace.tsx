@@ -1,5 +1,4 @@
 import React, { Suspense } from 'react';
-import { ReactFlowProvider } from '@xyflow/react';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useRoadmapStore } from '../store/useRoadmapStore';
@@ -19,12 +18,16 @@ import { gecikmeliEkran } from '../utils/surumTazeleme';
 import { GUIDE_TOOLS } from '../content/toolGuides/available';
 import { kilavuzGosterildiMi, kilavuzuGosterildiIsaretle } from '../utils/kilavuzGosterimi';
 import { denemeKipindeMi } from '../utils/denemeKipi';
+import { cizimAraciMi } from '../config/tools';
 import { tamEkranKapat, tamEkrandaMi } from '../utils/tamEkran';
 
 // Kılavuz metinleri ve paneli ayrı bir parçada: kullanıcı kılavuzu
 // açmadıkça indirilmiyor.
 const ToolGuidePanel = gecikmeliEkran(() => import('./ToolGuidePanel'));
 const WorksPage = gecikmeliEkran(() => import('./WorksPage'));
+// Çizim bağlamı yalnızca çizim araçlarında kuruluyor; kütüphaneyi kabuğa
+// bağlamamak için gecikmeli (bkz. CizimSaglayici).
+const CizimSaglayici = gecikmeliEkran(() => import('./CizimSaglayici'));
 
 const WbsCanvas = gecikmeliEkran(() => import('./WbsCanvas'));
 const RoadmapCanvas = gecikmeliEkran(() => import('./RoadmapCanvas'));
@@ -140,8 +143,7 @@ export default function Workspace() {
   const guideMounted = React.useRef(false);
   if (guideOpen) guideMounted.current = true;
 
-  return (
-    <ReactFlowProvider>
+  const govde = (
       <div className="flex-1 relative overflow-hidden bg-slate-50 dark:bg-slate-900 transition-colors duration-200 flex flex-col">
         {/* Ajandada geri alma yok: notepad zaten temporal partialize dışında, yani
             ajanda değişiklikleri geçmişe hiç yazılmıyor, düğmeler orada işlevsizdi. */}
@@ -219,6 +221,9 @@ export default function Workspace() {
           </div>
         </Suspense>
       </div>
-    </ReactFlowProvider>
   );
+
+  // Çizim yapmayan araçlar (SWOT, PUKÖ, Pareto, ajanda...) sağlayıcıyı hiç
+  // görmüyor; çizim kütüphanesi de o yüzden inmiyor.
+  return cizimAraciMi(activeTool) ? <CizimSaglayici>{govde}</CizimSaglayici> : govde;
 }

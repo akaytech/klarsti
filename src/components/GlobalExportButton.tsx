@@ -1,119 +1,71 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useUIStore } from '../store/useUIStore';
-import { Camera, Loader2 } from 'lucide-react';
-import { toPng } from 'html-to-image';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import { useUIStore } from '../store/useUIStore';
 import { useRoadmapStore } from '../store/useRoadmapStore';
-import { getNodesBounds, getViewportForBounds, useReactFlow } from '@xyflow/react';
 import { useTheme } from '../theme';
 import { denemeKipindeMi } from '../utils/denemeKipi';
+import { cizimAraciMi } from '../config/tools';
+import { gecikmeliEkran } from '../utils/surumTazeleme';
+import DisaAktarDugmesi from './DisaAktarDugmesi';
+
+/**
+ * Görsel dışa aktarma. İki yol var ve ayrı durmaları bilinçli:
+ *
+ * - Çizim tuvalleri (kırılım ağacı, zihin haritası, akış şeması...) React
+ *   Flow'un görüş alanını çekiyor. O kod ayrı bir dosyada ve GECİKMELİ
+ *   yükleniyor; burada dursaydı 174 KB'lık çizim kütüphanesi uygulama
+ *   kabuğuna bağlanır, SWOT ya da ajanda açan kullanıcı da onu indirirdi.
+ * - Listeye dayalı araçlar (SWOT, PUKÖ, Pareto...) sayfanın kendisini
+ *   çekiyor. Aşağıdaki yol bu; çizim kütüphanesine hiç dokunmuyor.
+ */
+const CizimDisaAktar = gecikmeliEkran(() => import('./CizimDisaAktar'));
 
 const GlobalExportButton: React.FC = () => {
   const { t } = useTranslation();
-  const themeColors = useTheme();
-  const [isExporting, setIsExporting] = useState(false);
-  const activeTool = useRoadmapStore(s => s.activeTool);
-  const { getNodes } = useReactFlow();
-  const setTriggerExport = useUIStore(s => s.setTriggerExport);
+  const temaRenkleri = useTheme();
+  const [calisiyor, setCalisiyor] = useState(false);
+  const activeTool = useRoadmapStore((s) => s.activeTool);
+  const setTriggerExport = useUIStore((s) => s.setTriggerExport);
+  const cizim = cizimAraciMi(activeTool);
 
-  const handleExport = useCallback(async () => {
-    if (isExporting) return;
-    setIsExporting(true);
-
+  const aktar = useCallback(async () => {
+    if (calisiyor) return;
+    setCalisiyor(true);
     try {
-      // Kanvası React Flow olan araçların HEPSİ burada olmalı. Zihin haritası
-      // ve değer akışı listede yoktu; aşağıdaki HTML dalına düşüyor, o dal da
-      // bu kanvaslarda bulunmayan .flex-1.overflow-auto elemanını aradığı için
-      // dışa aktarma "aktarılacak bir şey yok" diyerek sessizce başarısızdı.
-      const isReactFlowTool = ['wbs', '5whys', 'fta', 'flowchart', 'orgchart', 'mindmap', 'vsm', 'roadmap'].includes(activeTool as string);
-
-      if (isReactFlowTool) {
-        const nodes = getNodes();
-        if (nodes.length === 0) {
-          setIsExporting(false);
-          toast.error(t('export_empty', { defaultValue: 'Nothing to export' }));
-          return;
-        }
-        
-        const nodesBounds = getNodesBounds(nodes);
-        const padding = 50;
-        nodesBounds.x -= padding;
-        nodesBounds.y -= padding;
-        nodesBounds.width += padding * 2;
-        nodesBounds.height += padding * 2;
-        
-        const transform = getViewportForBounds(nodesBounds, nodesBounds.width, nodesBounds.height, 0.5, 2, 0);
-        const element = document.querySelector('.react-flow__viewport') as HTMLElement;
-        
-        if (!element) throw new Error("ReactFlow viewport not found");
-        
-        // Wait for images or layout to stabilize
-        await new Promise(resolve => setTimeout(resolve, 200));
-
-        const dataUrl = await toPng(element, {
-          cacheBust: true,
-          backgroundColor: themeColors.exportBg,
-          width: nodesBounds.width,
-          height: nodesBounds.height,
-          style: {
-            width: `${nodesBounds.width}px`,
-            height: `${nodesBounds.height}px`,
-            transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.zoom})`,
-          }
-        });
-        
-        const a = document.createElement('a');
-        a.download = `${activeTool}-export.png`;
-        a.href = dataUrl;
-        a.click();
-        toast.success(t('export_success', { defaultValue: 'Exported successfully' }));
-      } else {
-        // HTML tool
-        const element = document.querySelector('.flex-1.overflow-auto');
-        
-        if (!element) {
-          toast.error(t('export_empty', { defaultValue: 'Nothing to export' }));
-          return;
-        }
-        
-        // Temporarily ensure no scrollbars or clipped content in the capture
-        const originalOverflow = (element as HTMLElement).style.overflow;
-        const originalHeight = (element as HTMLElement).style.height;
-        
-        (element as HTMLElement).style.overflow = 'visible';
-        (element as HTMLElement).style.height = 'auto';
-
-        await new Promise(resolve => setTimeout(resolve, 200));
-        
-        const dataUrl = await toPng(element as HTMLElement, {
-          cacheBust: true,
-          backgroundColor: themeColors.exportBg,
-          style: { margin: '0' }
-        });
-        
-        // Restore
-        (element as HTMLElement).style.overflow = originalOverflow;
-        (element as HTMLElement).style.height = originalHeight;
-        
-        const a = document.createElement('a');
-        a.download = `${activeTool}-export.png`;
-        a.href = dataUrl;
-        a.click();
-        toast.success(t('export_success', { defaultValue: 'Exported successfully' }));
+      const eleman = document.querySelector('.flex-1.overflow-auto') as HTMLElement | null;
+      if (!eleman) {
+        toast.error(t('export_empty', { defaultValue: 'Nothing to export' }));
+        return;
       }
-    } catch (error) {
-      console.error('Export failed:', error);
+
+      // Çekim sırasında kaydırma çubuğu ve kırpılmış içerik kalmasın.
+      const eskiTasma = eleman.style.overflow;
+      const eskiYukseklik = eleman.style.height;
+      eleman.style.overflow = 'visible';
+      eleman.style.height = 'auto';
+
+      try {
+        await gorseliIndirGetir(eleman, String(activeTool), temaRenkleri.exportBg);
+      } finally {
+        eleman.style.overflow = eskiTasma;
+        eleman.style.height = eskiYukseklik;
+      }
+    } catch (hata) {
+      console.error('Export failed:', hata);
       toast.error(t('export_failed', { defaultValue: 'Export failed' }));
     } finally {
-      setIsExporting(false);
+      setCalisiyor(false);
     }
-  }, [activeTool, getNodes, isExporting, t, themeColors.exportBg]);
+  }, [activeTool, calisiyor, t, temaRenkleri.exportBg]);
 
   useEffect(() => {
-    setTriggerExport(handleExport);
+    // Çizim araçlarında tetikleyiciyi CizimDisaAktar kuruyor; iki taraf
+    // birbirinin üstüne yazmasın.
+    if (cizim) return;
+    setTriggerExport(aktar);
     return () => setTriggerExport(() => {});
-  }, [handleExport, setTriggerExport]);
+  }, [aktar, cizim, setTriggerExport]);
 
   // Ajanda görsel olarak dışa aktarılmıyor: kişisel bir günlük, kanvas değil.
   if (!activeTool || activeTool === 'notepad') return null;
@@ -121,18 +73,15 @@ const GlobalExportButton: React.FC = () => {
   // açık; işini bitirip çıktısını alıp gitmesi için değil. Çıktı hesaba bağlı.
   if (denemeKipindeMi()) return null;
 
+  if (cizim) return <CizimDisaAktar />;
 
-  return (
-    <button
-      onClick={handleExport}
-      disabled={isExporting}
-      className={`hidden sm:flex items-center gap-2 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm transition-colors text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 font-medium text-sm ${isExporting ? 'opacity-75 cursor-not-allowed' : ''}`}
-      title={t('export_image')} aria-label={t('export_image')}
-    >
-      {isExporting ? <Loader2 size={18} className="animate-spin" /> : <Camera size={18} />}
-      <span className="hidden sm:inline">{t('export_image')}</span>
-    </button>
-  );
+  return <DisaAktarDugmesi calisiyor={calisiyor} onTikla={aktar} />;
 };
+
+/** html-to-image ağır; ancak dışa aktarıma basılınca iniyor. */
+async function gorseliIndirGetir(eleman: HTMLElement, ad: string, zemin: string) {
+  const { gorseliIndir } = await import('../utils/gorselIndir');
+  await gorseliIndir(eleman, ad, zemin, { style: { margin: '0' } });
+}
 
 export default GlobalExportButton;

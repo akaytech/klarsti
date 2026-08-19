@@ -9,6 +9,7 @@ import { bekleyenAraclar, kisiselBekliyorMu } from './bekleyenYazmalar';
 import { projeninCalismalariniSil, calismalarinKlasorAdiniGuncelle, calismalardanAyril, calismaDokumanId } from './calismaYazma';
 import { projeyeCalismalariUygula } from './calismaOkuma';
 import { gecmisiBagla, yazmayiIsle, gecmisiTemizle } from './gecmis';
+import { deepEqual } from './deepEqual';
 import { izinTekrariPlanla, izinTekrariSifirla } from './izinTekrari';
 import { stripUndefined } from '../utils/firestoreSafe';
 import { toast } from 'sonner';
@@ -33,18 +34,6 @@ const uzaktanGuncelle = (yaz: () => void) => {
 // yetmiyor: Firestore alanları kendi sırasıyla döndürüyor, yerelde ise ekleme
 // sırası korunuyor; aynı veri farklı metin veriyor. Tanımsız alanlar da
 // yok sayılıyor, çünkü buluta yazılırken zaten ayıklanıyorlar.
-const derinEsit = (a: any, b: any): boolean => {
-  if (a === b) return true;
-  if (a === null || b === null || typeof a !== 'object' || typeof b !== 'object') return false;
-  if (Array.isArray(a) !== Array.isArray(b)) return false;
-  if (Array.isArray(a)) {
-    return a.length === b.length && a.every((eleman, i) => derinEsit(eleman, b[i]));
-  }
-  const aAnahtarlar = Object.keys(a).filter((k) => a[k] !== undefined);
-  const bAnahtarlar = Object.keys(b).filter((k) => b[k] !== undefined);
-  return aAnahtarlar.length === bAnahtarlar.length && aAnahtarlar.every((k) => derinEsit(a[k], b[k]));
-};
-
 // Eski (proje içi) ajanda kaydı temizliği denenen projeler. Aynı proje için
 // tekrar tekrar yazma denememek için tutulur; bkz. fetchProjects.
 const legacyNotepadCleanupTried = new Set<string>();
@@ -452,7 +441,7 @@ function projeleriTazele(yeniProjeler?: Project[]) {
         return;
       }
       const gelen = acikProje.toolData[k] || aracBaslangici(acikProje, k);
-      const deger = derinEsit(mevcut, gelen) ? mevcut : gelen;
+      const deger = deepEqual(mevcut, gelen) ? mevcut : gelen;
       updates[k] = deger;
       korunanAraclar[k] = deger;
     });
@@ -534,7 +523,7 @@ export const useRoadmapStore = create<RoadmapState>()(
             // geçerli; ilk yüklemede bekleyen yazma olamaz, çünkü kaydetme
             // personalLoaded'ı bekliyor.)
             uzaktanGuncelle(() => set({
-              notepad: kisiselBekliyorMu() || derinEsit(mevcutNotepad, gelenNotepad) ? mevcutNotepad : gelenNotepad,
+              notepad: kisiselBekliyorMu() || deepEqual(mevcutNotepad, gelenNotepad) ? mevcutNotepad : gelenNotepad,
               // Günlerin kendisi ayrı dokümanlarda; burada sadece hangi günlerde
               // kayıt olduğunun listesi var (takvim işareti için).
               journalDates: Array.isArray(data?.journalDates) ? data.journalDates : [],

@@ -19,6 +19,8 @@
  *                                yutulur, bitişte tek kayıt düşer.
  */
 
+import { deepEqual } from './deepEqual';
+
 type Anlik = Record<string, unknown>;
 
 // İç içe eylemler tek kayıt olsun diye sayaç: addGoal içinden toggleExpand
@@ -42,30 +44,6 @@ let yiginiBosalt: (() => void) | null = null;
  * kayıt düşerse geri tuşu basıldığında ekranda hiçbir şey olmaz.
  */
 const YOK_SAYILAN_ALANLAR = new Set(['selected', 'dragging']);
-
-/**
- * İşlem bittiğinde ortada gerçek bir değişiklik var mı? Referans karşılaştırması
- * yetmiyor: eşik altında kalan bir sürükleme kutuyu yerine geri oturtuyor ama
- * yol boyunca yepyeni nesneler üretiyor. Derin karşılaştırma yalnızca
- * referansı değişmiş anahtarlar için, işlem başına bir kez çalışıyor.
- */
-const gecmisEsit = (a: unknown, b: unknown): boolean => {
-  if (a === b) return true;
-  if (a === null || b === null || typeof a !== 'object' || typeof b !== 'object') return false;
-  if (Array.isArray(a) !== Array.isArray(b)) return false;
-  if (Array.isArray(a)) {
-    const d = b as unknown[];
-    return a.length === d.length && a.every((eleman, i) => gecmisEsit(eleman, d[i]));
-  }
-  const aNesne = a as Anlik;
-  const bNesne = b as Anlik;
-  const anahtarlar = (n: Anlik) =>
-    Object.keys(n).filter((k) => !YOK_SAYILAN_ALANLAR.has(k) && n[k] !== undefined);
-  const aAnahtarlar = anahtarlar(aNesne);
-  const bAnahtarlar = anahtarlar(bNesne);
-  return aAnahtarlar.length === bAnahtarlar.length
-    && aAnahtarlar.every((k) => gecmisEsit(aNesne[k], bNesne[k]));
-};
 
 /** Depo kurulduktan sonra bir kez çağrılır (bkz. useRoadmapStore). */
 export const gecmisiBagla = (baglar: {
@@ -93,8 +71,10 @@ const islemiKapat = () => {
   if (!ilk || !gecmiseYaz || !anlikDurum) return;
 
   const son = anlikDurum();
+  // Önce referans, sonra içerik: derin karşılaştırma yalnızca referansı
+  // değişmiş anahtarlar için, işlem başına bir kez çalışıyor.
   const degisti = Object.keys(ilk).some(
-    (k) => ilk[k] !== son[k] && !gecmisEsit(ilk[k], son[k])
+    (k) => ilk[k] !== son[k] && !deepEqual(ilk[k], son[k], YOK_SAYILAN_ALANLAR)
   );
   if (degisti) gecmiseYaz(ilk);
 };

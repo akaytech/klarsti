@@ -11,6 +11,13 @@ import TopRightAgendaButton from './components/TopRightAgendaButton';
 import NewFolderModal from './components/NewFolderModal';
 import { useRoadmapStore, type ToolId } from './store/useRoadmapStore';
 import { aracSecimEylemi, aracAktifAlan, aracAnahtari } from './config/toolWorks';
+import { botKorumasiniBaslat } from './firebase';
+
+// Bot korumasi burada basliyor, firebase.ts yuklenirken degil: hesapsiz
+// deneme de o dosyayi cekiyor ama veritabanina hic dokunmuyor (bkz.
+// firebase.ts botKorumasiniBaslat). Modul seviyesinde, yani ilk Firestore
+// istegini yapan etkilerden once.
+botKorumasiniBaslat();
 import { PROJECT_TOOLS } from './config/tools';
 import { KLASORSUZ_ONEK, hedefKlasorBul, klasorsuzAracAdi, adresiCoz, hedefAdres, klasorListesiGerekir } from './utils/aracAdresi';
 import { useAuthStore } from './store/useAuthStore';

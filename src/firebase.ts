@@ -8,7 +8,31 @@ import { olcumlemeyeIzinVar } from './config/cerezIzni';
 // iniyor. Gizli olan es anahtar sadece Firebase konsolunda duruyor.
 const RECAPTCHA_SITE_KEY = '6LfHxngtAAAAAMX0_4Wf73QyxStX8P3wByu8Ujbj';
 
-if (typeof window !== 'undefined') {
+let botKorumasiBasladi = false;
+
+/**
+ * Bot korumasini (App Check) baslatir. Ikinci cagri etkisiz.
+ *
+ * NEDEN CAGRIYLA BASLIYOR: eskiden bu dosya yuklenir yuklenmez basliyordu.
+ * Bu dosyayi ise Firestore'a hic dokunmayan yerler de cekiyor -- ozellikle
+ * HESAPSIZ DENEME. Denemenin verisi tarayicida duruyor, veritabanina tek
+ * istek bile gitmiyor; buna ragmen ziyaretci Google'in 314 KB'lik reCAPTCHA
+ * betigini indiriyordu. O sayfanin indirdigi her seyin %44'u buydu, ustelik
+ * uygulamayi ilk kez tanıyan kisinin onunde.
+ *
+ * Artik yalnizca Firestore'a gercekten dokunan giris noktalari cagiriyor:
+ * AuthenticatedApp (uygulama), AdminPage (yonetim), blogDeposu (blog).
+ * Ucu de MODUL SEVIYESINDE cagiriyor, yani kendi parcalari yuklenirken --
+ * ilk Firestore istegi ancak React etkilerinde cikiyor, arada zaman var.
+ *
+ * DIKKAT: denemeden hesap acmaya gecis sayfayi yenilemiyor. Sorun degil,
+ * cunku giris yapilinca AuthenticatedApp'in parcasi yukleniyor ve koruma
+ * orada basliyor; denemeyi hesaba tasiyan yazma ondan sonra oluyor.
+ */
+export function botKorumasiniBaslat() {
+  if (botKorumasiBasladi || typeof window === 'undefined') return;
+  botKorumasiBasladi = true;
+
   // Gelistirme sunucusunda reCAPTCHA calismaz. Bu bayrak SDK'ya konsola bir
   // hata ayiklama token'i bastiriyor; o token Firebase Console -> App Check ->
   // Apps -> web uygulamasi -> Manage debug tokens altina eklenmeli, yoksa

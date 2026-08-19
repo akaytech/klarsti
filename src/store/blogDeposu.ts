@@ -2,6 +2,12 @@ import {
   collection, doc, deleteDoc, getDoc, getDocs, orderBy, query, setDoc
 } from 'firebase/firestore';
 import { db } from '../firebase';
+import { botKorumasiniBaslat } from '../firebase';
+
+// Blog herkese acik ama yazilari Firestore'dan okuyor, yani korumaya
+// ihtiyaci var. Sayfa bilesenleri yerine burada: blogu okuyan uc yer de
+// (liste, yazi, yonetim paneli) bu dosyadan geciyor.
+botKorumasiniBaslat();
 
 /**
  * Blog yazılarının veri katmanı.

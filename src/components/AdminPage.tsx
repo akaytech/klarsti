@@ -4,6 +4,11 @@ import {
   collection, query, where, orderBy, limit, getCountFromServer, getDocs,
 } from 'firebase/firestore';
 import { db } from '../firebase';
+import { botKorumasiniBaslat } from '../firebase';
+
+// Yonetim ekrani girisli uygulamanin DISINDA ve Firestore okuyor; korumayi
+// kendisi baslatmali.
+botKorumasiniBaslat();
 import { TOOLS } from '../config/tools';
 import { useAuthStore } from '../store/useAuthStore';
 import { yoneticiMi } from '../config/yonetici';

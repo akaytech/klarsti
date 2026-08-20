@@ -145,6 +145,18 @@ export function createDiagramOps(cfg: DiagramOpsConfig, set: (fn: (state: any) =
    */
   const elDegmemis = (sema: DiagramChart) => sema.edges.length === 0 && sema.nodes.length <= 1;
 
+  /** Bütün şemayı yukarıdan aşağıya dizer (bkz. utils/diagramLayout). */
+  const semayiYenidenDiz = (sema: DiagramChart): DiagramChart => {
+    const yerler = semayiDiz(sema.nodes, sema.edges);
+    return {
+      ...sema,
+      nodes: sema.nodes.map((n) => {
+        const yer = yerler.get(n.id);
+        return yer ? { ...n, position: yer } : n;
+      }),
+    };
+  };
+
   return {
     // Geçmiş açık şemaya ait; şema değişince (ya da şema eklenip silinince)
     // kayıtlar ekranda olmayan bir şeye ait olur ve geri tuşu görünürde
@@ -278,6 +290,16 @@ export function createDiagramOps(cfg: DiagramOpsConfig, set: (fn: (state: any) =
      * altındaki yerine oturuyor.
      */
     /**
+     * Kutuları bir kez hizaya sokar. Bilerek işlem sınırı YOK: bu, örnek
+     * şablon yüklendikten sonra çalışan otomatik bir düzeltme (bkz.
+     * DiagramCanvas). Kullanıcının yaptığı bir iş değil, geri alınacak ayrı
+     * bir adım olarak görünmemeli — bir geri, şablonun tamamını kaldırmalı.
+     */
+    normalizeLayout: () => {
+      set((state) => aktifiGuncelle(state, semayiYenidenDiz));
+    },
+
+    /**
      * Örnek şablon. Yalnızca el değmemiş şemaya yükleniyor: kullanıcının
      * üstünde çalıştığı bir şemayı silmek düğmenin işi değil.
      */
@@ -294,16 +316,7 @@ export function createDiagramOps(cfg: DiagramOpsConfig, set: (fn: (state: any) =
       set((state) => aktifiGuncelle(state, (sema) => {
         const secililer = sema.nodes.filter((n) => n.selected);
 
-        if (secililer.length === 0) {
-          const yerler = semayiDiz(sema.nodes, sema.edges);
-          return {
-            ...sema,
-            nodes: sema.nodes.map((n) => {
-              const yer = yerler.get(n.id);
-              return yer ? { ...n, position: yer } : n;
-            }),
-          };
-        }
+        if (secililer.length === 0) return semayiYenidenDiz(sema);
 
         // Birden çok kutu seçiliyse sırayla hizalanıyorlar; her biri bir
         // öncekinin bıraktığı hâlin üstüne konuyor.

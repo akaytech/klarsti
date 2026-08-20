@@ -35,6 +35,12 @@ export interface DiagramApi {
    * tanımsız kalıyor ve karşılama şeridi hiç çıkmıyor.
    */
   loadExample?: () => void;
+  /**
+   * Kutuları bir kez hizaya sokar, geçmişe kayıt düşmeden. Örnek şablon
+   * yüklendikten sonra çalışıyor: şablon yazılırken kutuların gerçek eni
+   * bilinmiyor, ancak ekrana çizilip ölçüldükten sonra doğru dizilebiliyor.
+   */
+  normalizeLayout: () => void;
 }
 
 export function useDiagram(kind: DiagramKind): DiagramApi {
@@ -55,6 +61,7 @@ export function useDiagram(kind: DiagramKind): DiagramApi {
           updateNode: s.updateOrgchartNode,
           deleteNode: s.deleteOrgchartNode,
           autoLayout: s.autoLayoutOrgchart,
+          normalizeLayout: s.normalizeOrgchartLayout,
         }
       : {
           charts: s.flowcharts,
@@ -72,6 +79,7 @@ export function useDiagram(kind: DiagramKind): DiagramApi {
           deleteNode: s.deleteFlowchartNode,
           autoLayout: s.autoLayoutFlowchart,
           loadExample: s.loadFlowchartExample,
+          normalizeLayout: s.normalizeFlowchartLayout,
         }
   )));
 }

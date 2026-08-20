@@ -45,6 +45,8 @@ export interface FlowchartSlice {
   autoLayoutFlowchart: () => void;
   /** El değmemiş şemaya türüne uygun örnek şablonu yükler. */
   loadFlowchartExample: () => void;
+  /** Kutuları hizaya sokar; geçmişe kayıt düşmez (örnek şablon sonrası). */
+  normalizeFlowchartLayout: () => void;
 }
 
 export function getActiveFlowchart(state: { flowcharts: Flowchart[]; activeFlowchartId: string | null }): Flowchart | undefined {
@@ -84,5 +86,6 @@ export const createFlowchartSlice: StateCreator<
     deleteFlowchartNode: ops.deleteNode,
     autoLayoutFlowchart: ops.autoLayout,
     loadFlowchartExample: ops.loadExample,
+    normalizeFlowchartLayout: ops.normalizeLayout,
   };
 };

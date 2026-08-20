@@ -31,7 +31,7 @@ import CanvasControls from '../CanvasControls';
 export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
   const { t } = useTranslation();
   const k = getDiagramKind(kind);
-  const { charts, activeId, onNodesChange, onEdgesChange, onConnect, addNode, updateNode, deleteNode, autoLayout, loadExample } = useDiagram(kind);
+  const { charts, activeId, onNodesChange, onEdgesChange, onConnect, addNode, updateNode, deleteNode, autoLayout, loadExample, normalizeLayout } = useDiagram(kind);
   const { setCenter, getZoom, fitView } = useReactFlow();
   const [menu, setMenu] = useState<{ id: string; top: number; left: number } | null>(null);
   // Adı yazılan kutu. Ad değiştirme kutunun içinde oluyor (bkz. DiagramNode),
@@ -78,8 +78,30 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
   const aktif = getActiveChart(charts, activeId);
 
   // Örnek şablon yüklenince ya da başka bir şemaya geçilince kamera içeriğe
-  // sığdırılıyor; yoksa on kutuluk örnek ekranın dışında açılıyor.
-  useEkranaSigdir(aktif?.id, aktif?.nodes.length ?? 0, { padding: 0.2 });
+  // sığdırılıyor; yoksa on kutuluk örnek ekranın dışında açılıyor. Gecikme
+  // aşağıdaki dizilim düzeltmesinden sonrasına ayarlı: daha erken sığdırılırsa
+  // kutuların henüz düzeltilmemiş yerlerine göre hesaplanıyor.
+  useEkranaSigdir(aktif?.id, aktif?.nodes.length ?? 0, { padding: 0.2, gecikme: 380 });
+
+  // Örnek şablonu yükleyip hizaya sokar.
+  //
+  // Şablon yazılırken kutuların gerçek eni bilinmiyor: en, içindeki yazıya ve
+  // yazı tipine göre değişiyor ve kutu daha ekrana çizilmedi. Şablondaki
+  // konumlar bu yüzden kabataslak; hepsi eşit enliymiş gibi duruyor ve
+  // kutular birbirine göre kayık çıkıyordu. Kutular çizilip ölçüldükten sonra
+  // dizilim bir kez çalıştırılıyor: sonuç, "Otomatik hizala" düğmesine
+  // basılmış gibi oluyor.
+  const [ornekSayaci, setOrnekSayaci] = useState(0);
+  useEffect(() => {
+    if (ornekSayaci === 0) return;
+    const zamanlayici = setTimeout(() => normalizeLayout(), 300);
+    return () => clearTimeout(zamanlayici);
+  }, [ornekSayaci, normalizeLayout]);
+
+  const ornekYukle = useCallback(() => {
+    loadExample?.();
+    setOrnekSayaci((n) => n + 1);
+  }, [loadExample]);
 
   // Başka bir şemaya geçilince yarım kalan ad yazma kipi kapanır; yoksa yeni
   // şemada aynı kimlikli kutu varsa onun içinde açılıyor.
@@ -273,7 +295,7 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
               baslik={t('flowchart_empty')}
               aciklama={t('flowchart_empty_hint')}
               birincil={{ etiket: t('start_from_scratch'), onClick: () => setKarsilamaKapandi(true) }}
-              ikincil={{ etiket: t('load_example'), onClick: () => loadExample() }}
+              ikincil={{ etiket: t('load_example'), onClick: ornekYukle }}
               onKapat={() => setKarsilamaKapandi(true)}
             />
           </Panel>

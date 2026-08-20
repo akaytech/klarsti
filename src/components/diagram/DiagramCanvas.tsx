@@ -69,8 +69,11 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
 
   const aktif = getActiveChart(charts, activeId);
 
-  const onNodeClick: NodeMouseHandler = useCallback((_event, node) => {
+  // Kutuya tıklayınca kanvas o kutuyu ortalıyor. Çift tıklamanın ikinci
+  // vuruşunda ortalanmıyor: kutu ad yazma kutusunun altından kayıp gidiyordu.
+  const onNodeClick: NodeMouseHandler = useCallback((event, node) => {
     document.dispatchEvent(new Event('close-menus'));
+    if (event.detail > 1) return;
     setCenter(node.position.x + 90, node.position.y + 40, { zoom: getZoom(), duration: 800 });
   }, [setCenter, getZoom]);
 
@@ -106,7 +109,12 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
     setMenu(null);
   }, []);
 
-  const onMoveStart = useCallback(() => {
+  // Kanvası KULLANICI kaydırırsa menüler kapanır (kutuya yapışık menü kanvasla
+  // birlikte ekran dışına çıkıyordu). Kodun kendi başlattığı kaydırmada
+  // (kutuyu ortalama) olay nesnesi gelmez; o zaman menü açık kalır, yoksa
+  // çift tıklamayla açılan ad yazma kutusu daha görünmeden kapanıyordu.
+  const onMoveStart = useCallback((event: any) => {
+    if (!event) return;
     document.dispatchEvent(new Event('close-menus'));
     setMenu(null);
   }, []);

@@ -41,7 +41,11 @@ export default memo(function DiagramNode({ id, data, selected, kind }: DiagramNo
   const { editingId, setEditingId } = useDiagramEditing();
   const duzenleniyor = editingId === id;
   const [taslak, setTaslak] = useState(label);
+  // Organizasyon şemasında kutuda ad ve unvan diye iki satır var; ikisi de
+  // kutunun içinde yazılıyor.
+  const [altTaslak, setAltTaslak] = useState(subtitle || '');
   const girdiRef = useRef<HTMLInputElement>(null);
+  const sarmalRef = useRef<HTMLDivElement>(null);
   // Esc ile çıkılınca yazma alanı ekrandan kalkıyor; arkasından gelebilecek
   // blur'un yazılanı kaydetmemesi için.
   const vazgecildi = useRef(false);
@@ -52,18 +56,43 @@ export default memo(function DiagramNode({ id, data, selected, kind }: DiagramNo
     if (!duzenleniyor) return;
     vazgecildi.current = false;
     setTaslak(label);
+    setAltTaslak(subtitle || '');
     const el = girdiRef.current;
     if (!el) return;
     el.focus();
     el.select();
-  }, [duzenleniyor, label]);
+  }, [duzenleniyor, label, subtitle]);
 
   const kaydet = () => {
     if (vazgecildi.current) return;
+    const degisim: Partial<DiagramNodeData> = {};
     const yeni = taslak.trim();
-    if (yeni && yeni !== label) updateNode(id, { label: yeni });
+    if (yeni && yeni !== label) degisim.label = yeni;
+    if (bicim.withSubtitle && altTaslak.trim() !== (subtitle || '')) degisim.subtitle = altTaslak.trim();
+    if (Object.keys(degisim).length > 0) updateNode(id, degisim);
     setEditingId(null);
   };
+
+  // Ad ve unvan iki ayrı yazma alanı; birinden ötekine geçmek kaydetmeyi
+  // tetiklememeli. Odak kutunun içinde kaldıysa hiçbir şey yapılmıyor.
+  const alandanCikinca = (olay: React.FocusEvent) => {
+    if (sarmalRef.current?.contains(olay.relatedTarget as Node | null)) return;
+    kaydet();
+  };
+
+  const tusIsle = (olay: React.KeyboardEvent) => {
+    if (olay.key === 'Enter') {
+      olay.preventDefault();
+      kaydet();
+    }
+    if (olay.key === 'Escape') {
+      olay.preventDefault();
+      vazgecildi.current = true;
+      setEditingId(null);
+    }
+  };
+
+  const girdiSinifi = 'nodrag nopan text-center text-inherit bg-white/85 dark:bg-slate-900/80 rounded px-1 outline-none ring-1 ring-indigo-500';
 
   const Ikon = bicim.icon;
 
@@ -93,55 +122,71 @@ export default memo(function DiagramNode({ id, data, selected, kind }: DiagramNo
         style={{ fontSize: 14, lineHeight: 1.25, padding: 8, ...bicim.innerStyle }}
       >
         {bicim.withIcon && <Ikon size={16} className="shrink-0 opacity-70" />}
-        <div className="flex flex-col items-center leading-tight">
+        <div className="flex flex-col items-center leading-tight" ref={sarmalRef}>
           {numara && <span className="text-[10px] font-black opacity-60">{numara}</span>}
           {duzenleniyor ? (
-            <input
-              ref={girdiRef}
-              // nodrag/nopan: yazıyı fareyle seçerken kutu sürükleniyor,
-              // kanvas kayıyordu.
-              // data-kutu-basligi: kanvas tıklamanın yazıya gelip gelmediğine
-              // bakıyor (bkz. DiagramCanvas onNodeClick).
-              className="nodrag nopan text-center font-bold text-inherit bg-white/85 dark:bg-slate-900/80 rounded px-1 outline-none ring-1 ring-indigo-500"
-              data-kutu-basligi
-              style={{
-                // Yazma alanı kutuyu şişirmesin diye genişlik yazı kadar,
-                // en fazla kutunun içi kadar (baklava gibi sabit ölçülü
-                // kutularda taşmasın).
-                width: `${Math.max(8, taslak.length + 1)}ch`,
-                maxWidth: '100%',
-                fontSize: 'inherit',
-                lineHeight: 'inherit',
-              }}
-              value={taslak}
-              onChange={(e) => setTaslak(e.target.value)}
-              onBlur={kaydet}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  kaydet();
-                }
-                if (e.key === 'Escape') {
-                  e.preventDefault();
-                  vazgecildi.current = true;
-                  setEditingId(null);
-                }
-              }}
-              placeholder={t(k.text.inputPlaceholder)}
-              aria-label={t(k.text.inputPlaceholder)}
-            />
+            <>
+              <input
+                ref={girdiRef}
+                // nodrag/nopan: yazıyı fareyle seçerken kutu sürükleniyor,
+                // kanvas kayıyordu.
+                // data-kutu-basligi: kanvas tıklamanın yazıya gelip gelmediğine
+                // bakıyor (bkz. DiagramCanvas onNodeClick).
+                className={`${girdiSinifi} font-bold`}
+                data-kutu-basligi
+                style={{
+                  // Yazma alanı kutuyu şişirmesin diye genişlik yazı kadar,
+                  // en fazla kutunun içi kadar (baklava gibi sabit ölçülü
+                  // kutularda taşmasın).
+                  width: `${Math.max(8, taslak.length + 1)}ch`,
+                  maxWidth: '100%',
+                  fontSize: 'inherit',
+                  lineHeight: 'inherit',
+                }}
+                value={taslak}
+                onChange={(e) => setTaslak(e.target.value)}
+                onBlur={alandanCikinca}
+                onKeyDown={tusIsle}
+                placeholder={t(k.text.inputPlaceholder)}
+                aria-label={t(k.text.inputPlaceholder)}
+              />
+              {/* Organizasyon şemasında unvan satırı. Kutuda adın altında
+                  duruyor, düzenlenirken de orada yazılıyor. */}
+              {bicim.withSubtitle && (
+                <input
+                  className={`${girdiSinifi} text-xs font-medium mt-0.5`}
+                  data-kutu-basligi
+                  style={{ width: `${Math.max(8, altTaslak.length + 1)}ch`, maxWidth: '100%' }}
+                  value={altTaslak}
+                  onChange={(e) => setAltTaslak(e.target.value)}
+                  onBlur={alandanCikinca}
+                  onKeyDown={tusIsle}
+                  placeholder={t(k.text.subtitlePlaceholder)}
+                  aria-label={t(k.text.subtitlePlaceholder)}
+                />
+              )}
+            </>
           ) : (
-            <span
-              data-kutu-basligi
-              onDoubleClick={() => setEditingId(id)}
-              className="cursor-text"
-              title={t('double_click_edit')}
-            >
-              {label}
-            </span>
-          )}
-          {bicim.withSubtitle && subtitle && (
-            <span className="text-xs font-medium opacity-60 mt-0.5">{subtitle}</span>
+            <>
+              <span
+                data-kutu-basligi
+                onDoubleClick={() => setEditingId(id)}
+                className="cursor-text"
+                title={t('double_click_edit')}
+              >
+                {label}
+              </span>
+              {bicim.withSubtitle && subtitle && (
+                <span
+                  data-kutu-basligi
+                  onDoubleClick={() => setEditingId(id)}
+                  className="text-xs font-medium opacity-60 mt-0.5 cursor-text"
+                  title={t('double_click_edit')}
+                >
+                  {subtitle}
+                </span>
+              )}
+            </>
           )}
         </div>
       </div>

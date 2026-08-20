@@ -224,6 +224,12 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
           y={menu.top}
           node={aktif.nodes.find((n) => n.id === menu.id)!}
           onClose={() => setMenu(null)}
+          // Menüdeki "Düzenle" de çift tıklamayla aynı yere çıkıyor: yazı
+          // kutunun içinde düzenleniyor, menü kapanıyor.
+          onEdit={() => {
+            setMenu(null);
+            setEditingId(menu.id);
+          }}
           onAddNode={(shape, label) => {
              // Yeni kutu üst kutunun altına konur.
              const parentNode = aktif.nodes.find(n => n.id === menu.id);

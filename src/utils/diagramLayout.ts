@@ -32,18 +32,18 @@ const kisaKenar = (n: Node) => {
 };
 
 /**
- * İki kutu arasındaki boşluk: kutunun kısa kenarı kadar. Sabit bir sayı
- * yerine kutunun kendi ölçüsüne bağlı, çünkü sabit boşluk küçük kutularda
- * seyrek, iri kutularda sıkışık duruyordu.
+ * İki kutu arasındaki boşluk: sade işlem kutusunun kısa kenarı kadar.
  *
- * Bir dizilimde birden çok kutu var ve hepsinin ölçüsü aynı olmayabilir;
- * boşluk tek bir sayı olmak zorunda olduğu için ortalama alınıyor. Kutular eşit
- * boyken (olağan hâl) bu tam olarak kutunun kısa kenarı demek.
+ * Şemadaki EN KÜÇÜK kısa kenar alınıyor; bu her zaman sade işlem kutusudur.
+ * Karar baklavası, belge, veri deposu gibi biçimler ona ek yükseklik koyar,
+ * hiçbiri ondan alçak olamaz (hepsinin en az 56 piksellik ortak bir tabanı
+ * var). Ortalama alınıyordu ve yanlıştı: iri bir kutu bütün şemanın arasını
+ * açıyor, aynı şema başka kutu eklenince aralık değiştiriyordu. Ölçü tek bir
+ * yere bağlı olunca boşluk her yerde aynı kalıyor.
  */
 function bosluk(nodes: Node[]): number {
   if (nodes.length === 0) return VARSAYILAN_BOY;
-  const toplam = nodes.reduce((a, n) => a + kisaKenar(n), 0);
-  return Math.round(toplam / nodes.length);
+  return Math.round(Math.min(...nodes.map(kisaKenar)));
 }
 
 /**
@@ -160,9 +160,15 @@ export function altKutular(nodes: Node[], edges: Edge[], id: string): Set<string
 /**
  * Seçili kutunun, bağlı olduğu üst kutunun altındaki yeri.
  *
- * Kardeşleri KIMILDAMIYOR: kutu, kardeşleriyle birlikte kurulacak sıranın
- * kendi sırasındaki yerine oturuyor. Böylece kutular tek tek seçilip
- * hizalandığında satır kendiliğinden düzgün çıkıyor.
+ * Yer, bütün şemanın dizilimine (semayiDiz) bakılarak bulunuyor: dizilimde bu
+ * kutunun ebeveynine göre nerede durduğu ölçülüp, aynı fark ebeveynin
+ * ŞU ANKİ yerine ekleniyor. İki şeyi birden sağlıyor:
+ *
+ * - Ebeveyn ve kardeşler kımıldamıyor; yalnızca seçili kutu yerine oturuyor.
+ * - Sonuç bütün şemayı hizalamakla aynı hesaptan çıkıyor. Eskiden burada ayrı
+ *   bir "kardeşleri sıraya diz" hesabı vardı ve ikisi aynı yeri göstermiyordu:
+ *   zaten dizili bir şemada kutuları seçip hizalayınca hepsi yerinden
+ *   oynuyordu.
  *
  * Üstünde bağlı olduğu bir kutu yoksa null döner (hizalanacak bir pivot yok).
  */
@@ -176,24 +182,13 @@ export function ebeveyneHizala(nodes: Node[], edges: Edge[], id: string): Konum 
   if (!ebeveynKenari) return null;
   const ebeveyn = kutuById.get(ebeveynKenari.source)!;
 
-  // Kardeşler: aynı kutuya bağlı bütün kutular, çizgilerin eklenme sırasıyla.
-  const kardesler: string[] = [];
-  for (const e of edges) {
-    if (!hiyerarsik(e) || e.source !== ebeveyn.id || e.target === ebeveyn.id) continue;
-    if (!kutuById.has(e.target) || kardesler.includes(e.target)) continue;
-    kardesler.push(e.target);
-  }
+  const yerler = semayiDiz(nodes, edges);
+  const kendiYeri = yerler.get(id);
+  const ebeveynYeri = yerler.get(ebeveyn.id);
+  if (!kendiYeri || !ebeveynYeri) return null;
 
-  const sira = kardesler.indexOf(id);
-  if (sira < 0) return null;
-
-  const ara = bosluk([ebeveyn, ...kardesler.map((k) => kutuById.get(k)!)]);
-  const enler = kardesler.map((k) => olcu(kutuById.get(k)!).width);
-  const toplamEn = enler.reduce((a, b) => a + b, 0) + ara * (kardesler.length - 1);
-  const ebeveynOlcu = olcu(ebeveyn);
-
-  let x = ebeveyn.position.x + ebeveynOlcu.width / 2 - toplamEn / 2;
-  for (let i = 0; i < sira; i++) x += enler[i] + ara;
-
-  return { x, y: ebeveyn.position.y + ebeveynOlcu.height + ara };
+  return {
+    x: ebeveyn.position.x + (kendiYeri.x - ebeveynYeri.x),
+    y: ebeveyn.position.y + (kendiYeri.y - ebeveynYeri.y),
+  };
 }

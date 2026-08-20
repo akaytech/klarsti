@@ -51,6 +51,16 @@ describe('ebeveyneHizala', () => {
     expect(yer.y).toBe(140 + 140);
   });
 
+  it('bosluk en kucuk kutunun kisa kenari, ortalama degil', () => {
+    // Ebeveyn sade bir işlem kutusu (kısa kenar 60), çocuk iri bir kutu
+    // (kısa kenar 140). Boşluk 60 olmalı; ortalama alınsaydı 100 çıkardı.
+    const iriKutu = (id: string, h: number): Node =>
+      ({ id, position: { x: 0, y: 0 }, data: {}, measured: { width: 200, height: h } });
+    const nodes = [iriKutu('a', 60), iriKutu('b', 140)];
+    const yer = ebeveyneHizala(nodes, [cizgi('a', 'b')], 'b')!;
+    expect(yer.y).toBe(60 + 60);
+  });
+
   it('ustunde bagli kutu yoksa hizalanacak yer de yok', () => {
     expect(ebeveyneHizala([kutu('a', 0, 0)], [], 'a')).toBeNull();
   });

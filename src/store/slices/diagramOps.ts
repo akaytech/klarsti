@@ -321,7 +321,14 @@ export function createDiagramOps(cfg: DiagramOpsConfig, set: (fn: (state: any) =
       set((state) => aktifiGuncelle(state, (sema) => {
         const secililer = sema.nodes.filter((n) => n.selected);
 
-        if (secililer.length === 0) return semayiYenidenDiz(sema);
+        // Hiçbir kutu seçili değilse de, HEPSİ seçiliyse de aynı iş: bütün
+        // şemayı baştan dizmek. Hepsi seçiliyken kutular tek tek ebeveynlerine
+        // göre hizalanıyordu ve sonuç bütün şemanın dizilimiyle aynı yere
+        // düşmüyordu: zaten dizili bir şemayı hepsini seçip hizalayınca
+        // kutular yerlerinden oynuyordu.
+        if (secililer.length === 0 || secililer.length === sema.nodes.length) {
+          return semayiYenidenDiz(sema);
+        }
 
         // Birden çok kutu seçiliyse sırayla hizalanıyorlar; her biri bir
         // öncekinin bıraktığı hâlin üstüne konuyor.

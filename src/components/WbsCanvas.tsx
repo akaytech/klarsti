@@ -115,13 +115,19 @@ export default function WbsCanvas({ onNodeSelect }: { onNodeSelect: (id: string 
     }
     
     onNodeSelect(node.id);
+  }, [addGoal, onNodeSelect, t, edges]);
 
-    // Kutunun ismine tıklamak "kutuya tıklandı" sayılmıyor. İsim değiştirmek
-    // için çift tıklandığında araya iki tek tıklama giriyor; alt kutular
-    // açılıp hemen kapanıyor ve kamera her seferinde kutuya yaklaşıyordu.
-    // Yalnızca yazının kendisi kapsam dışı: ismin durduğu blok kutunun
-    // neredeyse tamamını kapladığı için kısa isimli kutularda tıklanacak yer
-    // kalmazdı.
+  // Alt kutuları açıp kapatmak ÇİFT tıkla. Eskiden tek tıktaydı: kutuyu
+  // seçmek isteyen kullanıcı istemeden dalı kapatıyor, kamera da her
+  // seçimde kutuya yaklaşıyordu. Tek tık artık yalnızca seçiyor.
+  //
+  // Kamera ortalama bu harekete bağlı kaldı: "kutuyu aç" ile "kutuya bak"
+  // aynı jestin iki yarısı.
+  const onNodeDoubleClick: NodeMouseHandler<GoalNodeType> = useCallback((event, node) => {
+    // Kutunun ismine çift tıklamak ismi düzenlemeye açıyor (bkz. GoalNode);
+    // orada dalın da açılıp kapanması istenmiyor. Yalnızca yazının kendisi
+    // kapsam dışı: ismin durduğu blok kutunun neredeyse tamamını kapladığı
+    // için kısa isimli kutularda çift tıklanacak yer kalmazdı.
     if ((event.target as HTMLElement)?.closest?.('[data-kutu-basligi]')) return;
 
     toggleExpand(node.id);
@@ -131,7 +137,7 @@ export default function WbsCanvas({ onNodeSelect }: { onNodeSelect: (id: string 
     const genislik = node.measured?.width || WBS_NODE_W;
     const yukseklik = node.measured?.height || WBS_NODE_H;
     setCenter(node.position.x + genislik / 2, node.position.y + yukseklik / 2, { zoom: getZoom(), duration: 800 });
-  }, [addGoal, onNodeSelect, toggleExpand, setCenter, getZoom, t, edges]);
+  }, [toggleExpand, setCenter, getZoom]);
 
   const onNodeDragStart: OnNodeDrag<GoalNodeType> = useCallback((_event, node) => {
     // Sürükleme tek bir işlem: burada açılıyor, bırakılınca kapanıyor. Arada
@@ -359,6 +365,7 @@ export default function WbsCanvas({ onNodeSelect }: { onNodeSelect: (id: string 
         nodeTypes={nodeTypes}
         nodesConnectable={false}
         onNodeClick={onNodeClick}
+        onNodeDoubleClick={onNodeDoubleClick}
         onNodeDragStart={onNodeDragStart}
         onNodeDragStop={onNodeDragStop}
         onNodeContextMenu={onNodeContextMenu}

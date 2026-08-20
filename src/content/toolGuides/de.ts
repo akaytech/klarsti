@@ -49,7 +49,7 @@ const guides: ToolGuideBundle = {
       'Ein Baum enthält ein Projektkästchen. Für ein zweites Projekt öffnest du links im Menü "Bäume" einen neuen Baum.',
       'Die Schaltfläche unten richtet sich nach der Auswahl: Beim Projekt heißt sie "Phase hinzufügen", bei einer Phase oder einem Arbeitspaket "Arbeitspaket hinzufügen". Ohne Auswahl kommt eine Phase unter das Projekt.',
       'Dasselbe per Tastatur: Strg-Klick auf ein Kästchen legt darunter ein neues an.',
-      'Ein einfacher Klick wählt das Kästchen aus, klappt die Zweige darunter auf oder zu und zentriert die Kamera darauf.',
+      'Ein einfacher Klick wählt das Kästchen nur aus. Zum Auf- und Zuklappen der Zweige darunter doppelklickst du auf das Kästchen; die Kamera zentriert sich dabei darauf. (Ein Doppelklick auf den Namen bearbeitet den Namen.)',
       'Rechtsklick auf ein Kästchen: Name, Fälligkeitsdatum, Start- und Endzeit, Beschreibung und Status (Zu erledigen / In Arbeit / Erledigt / Fehlgeschlagen).',
       'Im selben Menü verschiebt "Zur Agenda hinzufügen" den Eintrag mit dem gewählten Datum in deine Agenda. Bei einem vergangenen Datum kommt eine Warnung.',
       'Markierst du einen Eintrag als fehlgeschlagen, erscheint "Ursache analysieren"; ein Klick überträgt ihn als Problem in die 5-Warum-Analyse.'

@@ -49,7 +49,7 @@ const guides: ToolGuideBundle = {
       'A tree holds one project box. For a second project, open a new tree from the "Trees" menu on the left.',
       'The add button at the bottom follows your selection: with the project selected it says "Add phase", with a phase or work package selected it says "Add work package". With nothing selected it adds a phase under the project.',
       'To do the same with the keyboard, Ctrl-click a box: it opens a new one underneath.',
-      'A plain click selects the box, expands or collapses the branches below it, and centres the camera on it.',
+      'A plain click only selects the box. To expand or collapse the branches below it, DOUBLE-click the box; the camera centres on it too. (Double-clicking the name edits the name instead.)',
       'Right-click a box to set its name, due date, start and end time, description and status (To Do / In Progress / Done / Failed).',
       'The same menu has "Add to Agenda", which moves the item into your agenda on the chosen date. It warns you if the date is already in the past.',
       'Mark an item as Failed and the menu offers "analyze root cause"; one click sends it to the 5 Whys tool as a problem.'

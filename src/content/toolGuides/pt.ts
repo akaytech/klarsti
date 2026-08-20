@@ -49,7 +49,7 @@ const guides: ToolGuideBundle = {
       'Uma árvore tem uma única caixa de projeto. Para um segundo projeto, abra uma árvore nova no menu "Árvores" à esquerda.',
       'O botão de baixo segue a seleção: com o projeto selecionado diz "Adicionar fase"; com uma fase ou pacote, "Adicionar pacote de trabalho". Sem seleção, adiciona uma fase abaixo do projeto.',
       'O mesmo pelo teclado: Ctrl+clique numa caixa abre outra abaixo dela.',
-      'Um clique simples seleciona a caixa, abre ou fecha os ramos abaixo e centraliza a câmera nela.',
+      'Um clique simples apenas seleciona a caixa. Para abrir ou fechar os ramos abaixo, dê DUPLO clique na caixa; a câmera também se centraliza nela. (Duplo clique no nome edita o nome.)',
       'Clique direito numa caixa: nome, data de fim, hora de início e fim, descrição e status (A fazer / Em andamento / Concluído / Falhou).',
       'No mesmo menu, "Adicionar à agenda" leva o item para a sua agenda na data escolhida. Avisa se a data já passou.',
       'Se marcar um item como Falhou, o menu oferece "analisar a causa raiz"; um clique o envia aos 5 Porquês como problema.'

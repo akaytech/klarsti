@@ -49,7 +49,7 @@ const guides: ToolGuideBundle = {
       'Un árbol tiene un solo cuadro de proyecto. Para un segundo proyecto, abre un árbol nuevo en el menú "Árboles" de la izquierda.',
       'El botón de abajo cambia según la selección: con el proyecto seleccionado dice "Añadir fase"; con una fase o un paquete, "Añadir paquete de trabajo". Sin selección, añade una fase bajo el proyecto.',
       'Lo mismo con el teclado: Ctrl+clic en un cuadro abre uno nuevo debajo.',
-      'Un clic normal selecciona el cuadro, abre o cierra las ramas de abajo y centra la cámara en él.',
+      'Un clic normal solo selecciona el cuadro. Para abrir o cerrar las ramas de abajo, haz DOBLE clic en el cuadro; la cámara también se centra en él. (Doble clic en el nombre edita el nombre.)',
       'Clic derecho en un cuadro: nombre, fecha de fin, hora de inicio y fin, descripción y estado (Por hacer / En curso / Hecho / Fallido).',
       'En ese mismo menú, "Añadir a la agenda" lleva el elemento a tu agenda en la fecha elegida. Avisa si la fecha ya pasó.',
       'Si marcas algo como Fallido, el menú ofrece "analizar la causa raíz"; con un clic pasa a los 5 Porqués como problema.'

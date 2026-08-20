@@ -49,7 +49,7 @@ const kilavuzlar: ToolGuideBundle = {
       'Bir ağaçta tek proje kutusu olur. İkinci bir proje için soldaki "Ağaçlar" menüsünden yeni bir ağaç aç.',
       'Ekranın altındaki ekleme düğmesi hedefe göre değişir: proje seçiliyken "Faz Ekle", faz ya da iş paketi seçiliyken "İş Paketi Ekle" der. Hiçbir şey seçili değilse projenin altına faz ekler.',
       'Aynı işi kısayolla yapmak istersen kutuya Ctrl basılı tıkla: altına yenisini açar.',
-      'Ctrl\'süz tıklamak kutuyu seçer, altındaki dalları açıp kapatır ve kamerayı o kutuya ortalar.',
+      'Ctrl\'süz tıklamak kutuyu yalnızca seçer. Alt dalları açıp kapatmak için kutuya ÇİFT tıkla; kamera da o kutuya ortalanır. (İsmine çift tıklamak ismi düzenler.)',
       'Kutuya sağ tıkla: adı, bitiş tarihi, başlangıç–bitiş saati, açıklama ve durum (Yapılacak / Devam Ediyor / Tamamlandı / Başarısız) buradan ayarlanır.',
       'Aynı menüdeki "Ajandaya Planla" işi seçtiğin tarihle ajandana taşır. Geçmiş bir tarih seçilmişse uyarı verir.',
       'Bir işi Başarısız işaretlersen menüde "kök nedeni analiz et" çıkar; tek tıkla o iş 5 Neden aracına problem olarak taşınır.'

@@ -49,7 +49,7 @@ const guides: ToolGuideBundle = {
       'Un arbre contient une seule case projet. Pour un deuxième projet, ouvrez un nouvel arbre dans le menu « Arbres » à gauche.',
       'Le bouton en bas suit la sélection : sur le projet il affiche « Ajouter une phase », sur une phase ou un lot « Ajouter un lot de travail ». Sans sélection, il ajoute une phase sous le projet.',
       'La même chose au clavier : Ctrl+clic sur une case ouvre une nouvelle case en dessous.',
-      'Un clic simple sélectionne la case, ouvre ou ferme les branches en dessous et centre la caméra dessus.',
+      'Un clic simple ne fait que sélectionner la case. Pour ouvrir ou fermer les branches en dessous, DOUBLE-cliquez sur la case ; la caméra se centre dessus aussi. (Un double-clic sur le nom modifie le nom.)',
       'Clic droit sur une case : nom, échéance, heures de début et de fin, description et statut (À faire / En cours / Terminé / Échoué).',
       'Le même menu propose « Ajouter à l’agenda », qui place l’élément dans votre agenda à la date choisie. Il vous prévient si la date est passée.',
       'Marquez un élément comme Échoué et le menu propose « analyser la cause racine » ; un clic l’envoie dans les 5 Pourquoi comme problème.'

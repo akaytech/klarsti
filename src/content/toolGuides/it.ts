@@ -54,7 +54,7 @@ const guides: ToolGuideBundle = {
       'Un albero contiene un solo riquadro progetto. Per un secondo progetto apri un nuovo albero dal menu "Alberi" a sinistra.',
       'Il pulsante in basso segue la selezione: sul progetto dice "Aggiungi fase", su una fase o un pacchetto dice "Aggiungi pacchetto di lavoro". Senza selezione aggiunge una fase sotto il progetto.',
       'Lo stesso da tastiera: Ctrl+clic su un riquadro apre quello nuovo sotto.',
-      'Un clic normale seleziona il riquadro, apre o chiude i rami sottostanti e centra la camera su di esso.',
+      'Un clic normale seleziona soltanto il riquadro. Per aprire o chiudere i rami sottostanti fai DOPPIO clic sul riquadro; la camera si centra anche su di esso. (Il doppio clic sul nome modifica il nome.)',
       'Clic destro su un riquadro: nome, data di fine, orario di inizio e fine, descrizione e stato (Da fare / In corso / Fatto / Fallito).',
       'Nello stesso menu "Aggiungi all’agenda" porta l’elemento nella tua agenda alla data scelta. Avvisa se la data è già passata.',
       'Se segni un elemento come Fallito, il menu propone "analizza la causa radice"; con un clic passa ai 5 Perché come problema.'

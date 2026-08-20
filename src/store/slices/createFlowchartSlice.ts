@@ -38,9 +38,14 @@ export interface FlowchartSlice {
   onFlowchartNodesChange: (changes: NodeChange[]) => void;
   onFlowchartEdgesChange: (changes: EdgeChange[]) => void;
   onFlowchartConnect: (connection: Connection) => void;
-  addFlowchartNode: (parentId: string | null, shape: FlowchartNodeType, label: string, position: { x: number, y: number }) => void;
+  addFlowchartNode: (parentId: string | null, shape: FlowchartNodeType, label: string, position: { x: number, y: number }, tutamaklar?: { sourceHandle?: string; targetHandle?: string }) => void;
   updateFlowchartNode: (id: string, data: Partial<FlowchartNodeData>) => void;
   deleteFlowchartNode: (id: string) => void;
+  /** Çizginin üstündeki yazı; boş verilirse yazı kaldırılır. */
+  setFlowchartEdgeLabel: (id: string, label: string) => void;
+  deleteFlowchartEdge: (id: string) => void;
+  /** Çizginin ucunu başka bir tutamağa taşır. */
+  reconnectFlowchartEdge: (id: string, baglanti: Connection) => void;
   /** Kutuları otomatik dizer; seçili kutu varsa yalnızca onu hizalar. */
   autoLayoutFlowchart: () => void;
   /** El değmemiş şemaya türüne uygun örnek şablonu yükler. */
@@ -84,6 +89,9 @@ export const createFlowchartSlice: StateCreator<
     addFlowchartNode: ops.addNode as FlowchartSlice['addFlowchartNode'],
     updateFlowchartNode: ops.updateNode,
     deleteFlowchartNode: ops.deleteNode,
+    setFlowchartEdgeLabel: ops.setEdgeLabel,
+    deleteFlowchartEdge: ops.deleteEdge,
+    reconnectFlowchartEdge: ops.reconnectEdge,
     autoLayoutFlowchart: ops.autoLayout,
     loadFlowchartExample: ops.loadExample,
     normalizeFlowchartLayout: ops.normalizeLayout,

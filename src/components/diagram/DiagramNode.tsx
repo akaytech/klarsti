@@ -1,12 +1,13 @@
 import { memo, useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
-import { Handle, NodeToolbar, Position } from '@xyflow/react';
+import { Handle, NodeToolbar } from '@xyflow/react';
 import { Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useRoadmapStore } from '../../store/useRoadmapStore';
 import type { DiagramNodeData } from '../../store/slices/diagramOps';
 import { getDiagramKind, type DiagramKind } from '../../config/diagramKinds';
 import { useDiagramEditing } from './diagramEditing';
+import { POZISYON, YONLER, type Yon } from './diagramYonler';
 import DiagramShapeStrip from './DiagramShapeStrip';
 
 interface DiagramNodeProps {
@@ -110,11 +111,35 @@ export default memo(function DiagramNode({ id, data, selected, kind }: DiagramNo
     }
   };
 
-  // Kutunun altındaki "+" ve ondan açılan şekil şeridi. Şerit yalnızca
+  // Dört tutamaktaki "+" ve ondan açılan şekil şeridi. Artılar yalnızca
   // üstüne gelince / kutu seçiliyken görünüyor: yedi kutuluk bir şemada hepsi
   // birden dursa ekran düğmeden geçilmiyor.
   const [uzerinde, setUzerinde] = useState(false);
-  const [seritAcik, setSeritAcik] = useState(false);
+  /** Şerit hangi tutamaktan açıldı? Kapalıysa null. */
+  const [seritYon, setSeritYon] = useState<Yon | null>(null);
+
+  // Fare kutudan çıkınca artılar HEMEN kaybolmuyor.
+  //
+  // Eski hali şuydu: artı kutunun dışında, arada birkaç piksellik boşluk olan
+  // ayrı bir katmanda duruyordu. İmleç o boşluğa girer girmez "kutudan çıktı"
+  // sayılıp artı kayboluyor, kullanıcı düğmeye varamıyordu. Kutuyu bir kez
+  // tıklamak işe yarıyordu ama sebebi bambaşkaydı: seçili kutuda artı zaten
+  // sürekli duruyor.
+  const gecikme = useRef<number | undefined>(undefined);
+  const uzerineGel = () => {
+    window.clearTimeout(gecikme.current);
+    setUzerinde(true);
+  };
+  const uzerindenAyril = () => {
+    window.clearTimeout(gecikme.current);
+    gecikme.current = window.setTimeout(() => setUzerinde(false), 260);
+  };
+  useEffect(() => () => window.clearTimeout(gecikme.current), []);
+
+  // Tutamağa basılıp SÜRÜKLENDİYSE tıklama sayılmıyor. Basma noktasıyla
+  // bırakma noktası arasında birkaç pikselden fazla varsa kullanıcı çizgi
+  // çekmeye çalışmıştır; boşa giden çizgiden sonra şekil şeridi açılmamalı.
+  const basmaYeri = useRef<{ x: number; y: number } | null>(null);
 
   // Şeridin hangi şekilleri göstereceği şemanın türüne bağlı. Bütün şemayı
   // değil yalnızca tür bilgisini okuyor: kutular birbirinin taşınmasında
@@ -127,11 +152,11 @@ export default memo(function DiagramNode({ id, data, selected, kind }: DiagramNo
 
   // Kanvasta boşluğa tıklamak / kaydırmak açık şeridi kapatır.
   useEffect(() => {
-    if (!seritAcik) return;
-    const kapat = () => setSeritAcik(false);
+    if (!seritYon) return;
+    const kapat = () => setSeritYon(null);
     document.addEventListener('close-menus', kapat);
     return () => document.removeEventListener('close-menus', kapat);
-  }, [seritAcik]);
+  }, [seritYon]);
 
   const girdiSinifi = 'nodrag nopan text-center text-inherit bg-white/85 dark:bg-slate-900/80 rounded px-1 outline-none ring-1 ring-indigo-500';
 
@@ -142,51 +167,95 @@ export default memo(function DiagramNode({ id, data, selected, kind }: DiagramNo
    * kendi yerleştirmesi tamamen devre dışı bırakılıyor: sağ/alt dayamaları
    * sıfırlanıp tutamak verilen noktaya ortalanıyor.
    */
-  const tutamak = (yon: 'top' | 'right' | 'bottom' | 'left'): CSSProperties | undefined => {
+  const tutamak = (yon: Yon): CSSProperties | undefined => {
     const duzeltme = bicim.handleStyles?.[yon];
     if (!duzeltme) return undefined;
     return { right: 'auto', bottom: 'auto', transform: 'translate(-50%, -50%)', ...duzeltme };
   };
 
+  const artiGorunur = uzerinde || !!selected || seritYon !== null;
+
   return (
     <div
       // Şablon hizaya sokulana kadar saydam (bkz. diagramEditing.hazirlaniyor).
-      className={`relative flex items-center justify-center min-h-[56px] transition-all ${bicim.boxClass} ${selected ? 'ring-4 ring-indigo-500/30' : ''} ${hazirlaniyor ? 'opacity-0' : ''}`}
-      onMouseEnter={() => setUzerinde(true)}
-      onMouseLeave={() => setUzerinde(false)}
+      className={`relative flex items-center justify-center min-h-[56px] transition-all ${bicim.boxClass} ${selected && !bicim.clipClass ? 'ring-4 ring-indigo-500/30' : ''} ${hazirlaniyor ? 'opacity-0' : ''}`}
+      onMouseEnter={uzerineGel}
+      onMouseLeave={uzerindenAyril}
     >
-      {/* Yeni kutu buradan ekleniyor: "+" şekil şeridini açıyor, şeritten
-          seçilen kutu bunun altına inip bağlanıyor ve adı yazma kipinde
-          açılıyor. */}
-      <NodeToolbar isVisible={seritAcik || uzerinde || !!selected} position={Position.Bottom} offset={14}>
-        {seritAcik ? (
+      {/* Kırpılarak çizilen şekillerin dolgusu (ok, üçgen). Arkada duruyor ki
+          kırpma yazıyı ve bağlantı noktalarını da kesmesin; seçim halkası da
+          dörtgen olarak değil şeklin kendi kenarından ışıyarak veriliyor. */}
+      {bicim.clipClass && (
+        <div
+          aria-hidden
+          className={`absolute inset-0 -z-10 ${selected ? 'drop-shadow-[0_0_5px_rgba(99,102,241,0.95)]' : ''}`}
+        >
+          <div className={`h-full w-full ${bicim.clipClass}`} />
+        </div>
+      )}
+
+      {/* Yeni kutu tutamaklardaki artılardan ekleniyor: artı şekil şeridini
+          açıyor, şeritten seçilen kutu o yöne inip aynı tutamaktan bağlanıyor
+          ve adı yazma kipinde açılıyor. */}
+      <NodeToolbar isVisible={seritYon !== null} position={POZISYON[seritYon ?? 'bottom']} offset={18}>
+        <div onMouseEnter={uzerineGel} onMouseLeave={uzerindenAyril}>
           <DiagramShapeStrip
             kind={kind}
             chartType={semaTuru}
             onSec={(sekil, ad) => {
-              setSeritAcik(false);
-              kutuEkle(id, sekil, ad);
+              const yon = seritYon;
+              setSeritYon(null);
+              if (yon) kutuEkle(id, sekil, ad, yon);
             }}
           />
-        ) : (
+        </div>
+      </NodeToolbar>
+
+      {/* Dört tutamak da hem çıkış hem giriş: hepsi "source" tipinde ve kanvas
+          gevşek bağlanma kipinde çalışıyor (bkz. DiagramCanvas). Kütüphane
+          çizginin çıkış ucunu yalnız "source" tutamaklar arasında arıyor;
+          "target" tipli bir tutamaktan çizgi ÇIKAMIYOR. */}
+      {YONLER.map((yon) => (
+        <Handle
+          key={yon}
+          id={yon}
+          type="source"
+          position={POZISYON[yon]}
+          style={tutamak(yon)}
+          className="w-3 h-3 bg-slate-400 dark:bg-slate-500 border-2 border-white dark:border-slate-800"
+          onMouseDown={(e) => { basmaYeri.current = { x: e.clientX, y: e.clientY }; }}
+          onClick={(e) => {
+            e.stopPropagation();
+            const bas = basmaYeri.current;
+            basmaYeri.current = null;
+            if (bas && Math.hypot(e.clientX - bas.x, e.clientY - bas.y) > 4) return;
+            // Aynı artıya ikinci kez basmak şeridi kapatıyor. Karar bu satırda
+            // veriliyor: aşağıdaki yayın şeridi zaten kapattığı için "önceki
+            // hâle" bakan bir güncelleme her seferinde yeniden açardı.
+            const kapansin = seritYon === yon;
+            // Açık kalmış başka bir menü (sağ tık menüsü, başka kutunun
+            // şeridi) kapanıyor; ikisi birden ekranda durmuyor.
+            document.dispatchEvent(new Event('close-menus'));
+            setSeritYon(kapansin ? null : yon);
+          }}
+        >
+          {/* Artı, tutamağın İÇİNDE duruyor: tutamak kutunun bir parçası
+              olduğu için imleç oraya gidince kutudan çıkılmış sayılmıyor ve
+              düğme ayağının altından kaçmıyor. Tutamağın kendi ölçüsü
+              değişmiyor; çizgiler hep aynı noktaya bağlanıyor. */}
           <button
             type="button"
             title={t(k.text.addBox)}
             aria-label={t(k.text.addBox)}
-            onClick={(e) => {
-              e.stopPropagation();
-              setSeritAcik(true);
-            }}
-            onMouseDown={(e) => e.stopPropagation()}
-            className="nodrag nopan flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg shadow-indigo-600/25 transition-colors hover:bg-indigo-700"
+            // Görünmezken sıraya girmiyor: her kutuda dört tane var, hepsi
+            // sekmede dolaşsaydı klavyeyle şemada gezmek imkânsızdı.
+            tabIndex={artiGorunur ? 0 : -1}
+            className={`absolute left-1/2 top-1/2 flex h-5 w-5 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-indigo-600 text-white shadow-md shadow-indigo-600/30 transition-opacity hover:bg-indigo-700 ${artiGorunur ? 'opacity-100' : 'pointer-events-none opacity-0'} ${bicim.innerClass || ''}`}
           >
-            <Plus size={16} className="stroke-[3]" />
+            <Plus size={12} className="stroke-[3]" />
           </button>
-        )}
-      </NodeToolbar>
-
-      <Handle type="target" position={Position.Top} style={tutamak('top')} className="w-3 h-3 bg-slate-300 dark:bg-slate-600 border-none" />
-      <Handle type="target" position={Position.Left} id="left" style={tutamak('left')} className="w-3 h-3 bg-slate-300 dark:bg-slate-600 border-none" />
+        </Handle>
+      ))}
 
       {/* Yazı boyu ve iç boşluk satır içi stille veriliyor: sınıf olarak
           verilince temel sınıflarla çakışıp hangisinin kazanacağı belirsiz
@@ -265,8 +334,6 @@ export default memo(function DiagramNode({ id, data, selected, kind }: DiagramNo
         </div>
       </div>
 
-      <Handle type="source" position={Position.Bottom} style={tutamak('bottom')} className="w-3 h-3 bg-slate-400 dark:bg-slate-500 border-2 border-white dark:border-slate-800" />
-      <Handle type="source" position={Position.Right} id="right" style={tutamak('right')} className="w-3 h-3 bg-slate-400 dark:bg-slate-500 border-2 border-white dark:border-slate-800" />
     </div>
   );
 });

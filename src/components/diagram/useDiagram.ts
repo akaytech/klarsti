@@ -20,10 +20,24 @@ export interface DiagramApi {
   onNodesChange: (changes: NodeChange[]) => void;
   onEdgesChange: (changes: EdgeChange[]) => void;
   onConnect: (connection: Connection) => void;
-  /** Eklenen kutunun kimliğini döndürür (bkz. diagramOps.addNode). */
-  addNode: (parentId: string | null, shape: string, label: string, position: { x: number; y: number }) => string;
+  /**
+   * Eklenen kutunun kimliğini döndürür (bkz. diagramOps.addNode).
+   * `tutamaklar` verilirse çizgi o tutamaklardan bağlanır.
+   */
+  addNode: (
+    parentId: string | null,
+    shape: string,
+    label: string,
+    position: { x: number; y: number },
+    tutamaklar?: { sourceHandle?: string; targetHandle?: string }
+  ) => string;
   updateNode: (id: string, data: Partial<DiagramNodeData>) => void;
   deleteNode: (id: string) => void;
+  /** Çizginin üstündeki yazı; boş verilirse yazı kaldırılır. */
+  setEdgeLabel: (id: string, label: string) => void;
+  deleteEdge: (id: string) => void;
+  /** Çizginin ucunu başka bir tutamağa taşır (sökme/takma). */
+  reconnectEdge: (id: string, baglanti: Connection) => void;
   /**
    * Otomatik hizalama. Seçili kutu yoksa bütün şemayı baştan dizer; seçili
    * kutu varsa yalnızca onu bağlı olduğu kutunun altına oturtur.
@@ -60,6 +74,9 @@ export function useDiagram(kind: DiagramKind): DiagramApi {
           addNode: s.addOrgchartNode as DiagramApi['addNode'],
           updateNode: s.updateOrgchartNode,
           deleteNode: s.deleteOrgchartNode,
+          setEdgeLabel: s.setOrgchartEdgeLabel,
+          deleteEdge: s.deleteOrgchartEdge,
+          reconnectEdge: s.reconnectOrgchartEdge,
           autoLayout: s.autoLayoutOrgchart,
           normalizeLayout: s.normalizeOrgchartLayout,
         }
@@ -77,6 +94,9 @@ export function useDiagram(kind: DiagramKind): DiagramApi {
           addNode: s.addFlowchartNode as DiagramApi['addNode'],
           updateNode: s.updateFlowchartNode,
           deleteNode: s.deleteFlowchartNode,
+          setEdgeLabel: s.setFlowchartEdgeLabel,
+          deleteEdge: s.deleteFlowchartEdge,
+          reconnectEdge: s.reconnectFlowchartEdge,
           autoLayout: s.autoLayoutFlowchart,
           loadExample: s.loadFlowchartExample,
           normalizeLayout: s.normalizeFlowchartLayout,

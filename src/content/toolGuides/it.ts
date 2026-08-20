@@ -120,9 +120,9 @@ const guides: ToolGuideBundle = {
     steps: [
       "La scelta del tipo compare la prima volta che apri lo strumento. Puoi cambiarlo in seguito; i riquadri vengono convertiti nell'equivalente più vicino del nuovo tipo.",
       "Il menu dei diagrammi in alto a sinistra ti permette di tenere più diagrammi nello stesso progetto e di passare dall'uno all'altro.",
-      "Clic destro su un riquadro: quando ne aggiungi uno sotto scegli anche la sua forma (inizio, processo, decisione, documento, fine...). Lo stesso menu modifica il testo o elimina il riquadro.",
+      "Porta il puntatore su una casella: su tutti e quattro i punti di connessione compare un +. Premine uno, scegli una forma e la nuova casella compare su quel lato, già collegata. Doppio clic su una casella per rinominarla; clic destro per le altre opzioni.",
       "Trascina i riquadri dove vuoi: qui non c'è disposizione automatica, la sistemazione è tua.",
-      "Per tracciare un collegamento, trascina da un punto di connessione sul bordo di un riquadro verso un altro riquadro.",
+      "Per tracciare un collegamento, trascina da un punto qualsiasi di una casella a un punto qualsiasi di un'altra: da lato a lato, da sopra a sopra, nella direzione che vuoi. Per spostare un capo, prendi la punta della linea e lasciala su un altro punto. Doppio clic su una linea per scriverci sopra (per esempio sì / no).",
       "Ingrandisci con i comandi in basso a sinistra e muoviti nei diagrammi grandi con la mini mappa in basso a destra."
     ],
     shortcuts: [
@@ -149,7 +149,7 @@ const guides: ToolGuideBundle = {
     steps: [
       "Scegli il tipo la prima volta che apri lo strumento. Può essere cambiato in seguito; i riquadri vengono convertiti nell'equivalente più vicino e la disposizione viene conservata.",
       "Il menu in alto a sinistra ti permette di tenere più organigrammi in un progetto (per esempio struttura attuale e struttura obiettivo).",
-      "Clic destro su un riquadro per aggiungere sotto di esso una posizione, un'unità, un team o una posizione vacante. Lo stesso menu modifica il nome e il titolo sottostante.",
+      "Porta il puntatore su una casella: su tutti e quattro i punti di connessione compare un +. Premine uno e scegli posizione, unità, team o posto vacante; la nuova casella compare su quel lato. Doppio clic su una casella per cambiare il nome e il ruolo sotto.",
       "Trascina i riquadri per sistemarli come preferisci.",
       "I collegamenti normali si tracciano dai punti superiore e inferiore di un riquadro: è la linea di riporto principale.",
       "Le linee tracciate dai punti laterali appaiono tratteggiate e indicano un riporto secondario (disponibili negli organigrammi a matrice, gerarchico e a rete)."

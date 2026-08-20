@@ -158,8 +158,19 @@ const SHAPES: Record<FlowchartShapeId, FlowchartShapeDef> = {
     nameKey: 'flowchart_shape_transport',
     newLabelKey: 'flowchart_new_transport',
     icon: ArrowRight,
+    boxClass: 'w-40 h-16 text-sky-900 dark:text-sky-100',
     // Ok biçimi kırpma ile veriliyor, kırpılan kenarda çerçeve görünmez.
-    boxClass: 'w-40 h-16 bg-sky-200 text-sky-900 dark:bg-sky-500/30 dark:text-sky-100 [clip-path:polygon(0_25%,70%_25%,70%_0,100%_50%,70%_100%,70%_75%,0_75%)]',
+    // Kırpma ayrı katmanda: bkz. DiagramShapeDef.clipClass.
+    clipClass: 'bg-sky-200 dark:bg-sky-500/30 [clip-path:polygon(0_25%,70%_25%,70%_0,100%_50%,70%_100%,70%_75%,0_75%)]',
+    // Okun kenarları kutunun kenarlarıyla aynı yerde değil: gövde yalnız
+    // yüksekliğin %25-%75 arasında, uç da tam sağda. Tutamaklar kuyruğa, uca
+    // ve gövdenin tam üstü/altına oturuyor.
+    handleStyles: {
+      top: { left: '35%', top: '25%' },
+      right: { left: '100%', top: '50%' },
+      bottom: { left: '35%', top: '75%' },
+      left: { left: 0, top: '50%' }
+    },
     // Sağdaki ok ucuna yazı girmemeli.
     innerStyle: { fontSize: 12, lineHeight: 1.1, padding: '4px 48px 4px 8px' },
     menuClass: 'text-sky-600 dark:text-sky-500 hover:bg-sky-50 dark:hover:bg-sky-900/20',
@@ -182,7 +193,16 @@ const SHAPES: Record<FlowchartShapeId, FlowchartShapeDef> = {
     newLabelKey: 'flowchart_new_storage',
     icon: Triangle,
     // Üçgenin tepesi dar; metin aşağı itilmezse kenarlardan taşıyor.
-    boxClass: 'w-40 h-32 bg-teal-200 text-teal-900 dark:bg-teal-500/30 dark:text-teal-100 [clip-path:polygon(50%_0,100%_100%,0_100%)]',
+    boxClass: 'w-40 h-32 text-teal-900 dark:text-teal-100',
+    clipClass: 'bg-teal-200 dark:bg-teal-500/30 [clip-path:polygon(50%_0,100%_100%,0_100%)]',
+    // Tepe, tabanın ortası ve iki yan kenarın tam ortası. Kutunun sağ/sol
+    // kenar ortası üçgenin dışında kalıyor, tutamak oraya konamaz.
+    handleStyles: {
+      top: { left: '50%', top: 0 },
+      right: { left: '75%', top: '50%' },
+      bottom: { left: '50%', top: '100%' },
+      left: { left: '25%', top: '50%' }
+    },
     innerStyle: { fontSize: 11, lineHeight: 1.1, padding: '68px 24px 8px' },
     menuClass: 'text-teal-600 dark:text-teal-500 hover:bg-teal-50 dark:hover:bg-teal-900/20',
     minimapColor: '#14b8a6'

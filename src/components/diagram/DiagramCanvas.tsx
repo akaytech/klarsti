@@ -2,9 +2,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ReactFlow,
   useReactFlow,
-  Panel
+  Panel,
+  ConnectionMode,
+  MarkerType
 } from '@xyflow/react';
-import type { NodeMouseHandler } from '@xyflow/react';
+import type { Connection, Edge, NodeMouseHandler } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { LayoutGrid } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -17,6 +19,8 @@ import { edgeStyle } from '../../config/diagramShared';
 import { getActiveChart } from '../../store/slices/diagramOps';
 import DiagramNode from './DiagramNode';
 import DiagramContextMenu from './DiagramContextMenu';
+import DiagramEdgeMenu from './DiagramEdgeMenu';
+import { KARSI_YON, yeniKutuYeri, type Yon } from './diagramYonler';
 import DiagramTypePicker from './DiagramTypePicker';
 import DiagramChartsMenu from './DiagramChartsMenu';
 import DiagramShapeStrip from './DiagramShapeStrip';
@@ -31,9 +35,11 @@ import CanvasControls from '../CanvasControls';
 export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
   const { t } = useTranslation();
   const k = getDiagramKind(kind);
-  const { charts, activeId, onNodesChange, onEdgesChange, onConnect, addNode, updateNode, deleteNode, autoLayout, loadExample, normalizeLayout } = useDiagram(kind);
+  const { charts, activeId, onNodesChange, onEdgesChange, onConnect, addNode, updateNode, deleteNode, setEdgeLabel, deleteEdge, reconnectEdge, autoLayout, loadExample, normalizeLayout } = useDiagram(kind);
   const { setCenter, getZoom, fitView } = useReactFlow();
   const [menu, setMenu] = useState<{ id: string; top: number; left: number } | null>(null);
+  /** Çizginin menüsü: üstüne yazı yazma ve bağlantıyı sökme. */
+  const [cizgiMenu, setCizgiMenu] = useState<{ id: string; top: number; left: number } | null>(null);
   // Adı yazılan kutu. Ad değiştirme kutunun içinde oluyor (bkz. DiagramNode),
   // ama hangi kutunun yazma kipinde olduğunu kanvas biliyor: yeni eklenen kutu
   // da doğrudan yazma kipinde açılıyor.
@@ -76,6 +82,43 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
   );
 
   const aktif = getActiveChart(charts, activeId);
+  const tur = k.getType(aktif?.type);
+
+  /**
+   * Çizgilerin uçlarındaki tutamak adları.
+   *
+   * Eski şemalarda bu bilgi yok: tutamakların görevi sabitken (alttan çık,
+   * üstten gir) ad yazmaya gerek yoktu. Dördü de aynı tipe geçince kütüphane
+   * adsız uca "listedeki ilk tutamak" demeye başladı ve eski çizgiler
+   * kutuların tepesinden çıkıyormuş gibi duruyordu. Eksik adlar burada eski
+   * davranışla dolduruluyor; kayıtlara dokunulmuyor, kullanıcı ucu
+   * oynattığında zaten gerçek adı yazılıyor.
+   */
+  const cizgiler = useMemo(
+    () => (aktif?.edges ?? []).map((e) => (e.sourceHandle && e.targetHandle
+      ? e
+      : { ...e, sourceHandle: e.sourceHandle ?? 'bottom', targetHandle: e.targetHandle ?? 'top' })),
+    [aktif?.edges]
+  );
+
+  /**
+   * Bütün çizgilerin ortak ayarları. Kayda geçmiyor, her boyamada buradan
+   * veriliyor: şemanın türü değişince ya da ok başı ayarı değişince eski
+   * çizgiler de yeni haline geçiyor.
+   */
+  const varsayilanCizgi = useMemo(() => ({
+    type: tur.edge.type,
+    animated: tur.edge.animated,
+    style: edgeStyle(tur.edge),
+    // Çizgiler artık her tutamaktan her tutamağa gidebiliyor; yukarı ya da
+    // yana giden bir çizgide yön yalnız ok başından anlaşılıyor.
+    markerEnd: { type: MarkerType.ArrowClosed, color: tur.edge.stroke },
+    // Çizginin üstündeki yazının zemini; rengi koyu/açık temaya göre
+    // stil dosyasından geliyor (bkz. index.css, react-flow__edge-textbg).
+    labelShowBg: true,
+    labelBgPadding: [6, 3] as [number, number],
+    labelBgBorderRadius: 6,
+  }), [tur]);
 
   // Örnek şablon yüklenince ya da başka bir şemaya geçilince kamera içeriğe
   // sığdırılıyor; yoksa on kutuluk örnek ekranın dışında açılıyor. Gecikme
@@ -193,6 +236,7 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
   const onPaneClick = useCallback(() => {
     document.dispatchEvent(new Event('close-menus'));
     setMenu(null);
+    setCizgiMenu(null);
     setEditingId(null);
   }, []);
 
@@ -204,20 +248,22 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
     if (!event) return;
     document.dispatchEvent(new Event('close-menus'));
     setMenu(null);
+    setCizgiMenu(null);
   }, []);
 
   /**
-   * Yeni kutu: verilen kutunun altına iner, bağlantısı çizilir ve adı
-   * doğrudan yazma kipinde açılır. Kardeşler üst üste binmesin diye her yeni
-   * kutu bir öncekinin sağına konuyor.
+   * Yeni kutu: hangi tutamaktaki artıya basıldıysa o yöne iner, bağlantısı o
+   * tutamaktan çizilir ve adı doğrudan yazma kipinde açılır. Aynı tutamaktan
+   * çıkan kardeşler üst üste binmesin diye her yenisi bir öncekinin yanına
+   * konuyor (bkz. diagramYonler.yeniKutuYeri).
    */
-  const kutuEkle = useCallback((parentId: string, shape: string, label: string) => {
+  const kutuEkle = useCallback((parentId: string, shape: string, label: string, yon: Yon) => {
     const ebeveyn = aktif?.nodes.find((n) => n.id === parentId);
-    const kardesSayisi = aktif?.edges.filter((e) => e.source === parentId).length ?? 0;
-    const yer = ebeveyn
-      ? { x: ebeveyn.position.x + kardesSayisi * 220, y: ebeveyn.position.y + 150 }
-      : { x: 0, y: 0 };
-    const yeniId = addNode(parentId, shape, label, yer);
+    const kardesSayisi = aktif?.edges.filter(
+      (e) => e.source === parentId && (e.sourceHandle ?? 'bottom') === yon
+    ).length ?? 0;
+    const yer = yeniKutuYeri(ebeveyn, yon, kardesSayisi);
+    const yeniId = addNode(parentId, shape, label, yer, { sourceHandle: yon, targetHandle: KARSI_YON[yon] });
     setMenu(null);
     setEditingId(yeniId);
   }, [aktif, addNode]);
@@ -227,9 +273,26 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
   const kutuEkleRef = useRef(kutuEkle);
   kutuEkleRef.current = kutuEkle;
   const kutuEkleSabit = useCallback(
-    (parentId: string, shape: string, label: string) => kutuEkleRef.current(parentId, shape, label),
+    (parentId: string, shape: string, label: string, yon: Yon) => kutuEkleRef.current(parentId, shape, label, yon),
     []
   );
+
+  /**
+   * Çizginin menüsü çift tıklamayla da sağ tıklamayla da açılıyor: kullanıcı
+   * yazıyı yazmak için hangisini denerse denesin aynı yere çıkıyor.
+   */
+  const cizgiMenusuAc = useCallback((event: React.MouseEvent, edge: Edge) => {
+    event.preventDefault();
+    event.stopPropagation();
+    document.dispatchEvent(new Event('close-menus'));
+    setMenu(null);
+    setCizgiMenu({ id: edge.id, top: event.clientY, left: event.clientX });
+  }, []);
+
+  /** Çizginin ucunu başka bir tutamağa taşıma (sökme/takma). */
+  const cizgiyiTasi = useCallback((eski: Edge, yeni: Connection) => {
+    reconnectEdge(eski.id, yeni);
+  }, [reconnectEdge]);
 
   const duzenleme = useMemo(
     () => ({ editingId, setEditingId, kutuEkle: kutuEkleSabit, hazirlaniyor: ornekBekliyor }),
@@ -241,7 +304,6 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
     return <DiagramTypePicker kind={kind} />;
   }
 
-  const tur = k.getType(aktif.type);
   const TurIkonu = tur.icon;
   // Şemaya el değmemiş mi? Aynı ölçü depoda da var (bkz. diagramOps): örnek
   // şablon yalnızca bu haldeki şemaya yükleniyor.
@@ -253,7 +315,7 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
       <ReactFlow
         key={aktif.id}
         nodes={aktif.nodes}
-        edges={aktif.edges}
+        edges={cizgiler}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
@@ -263,17 +325,31 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
         onNodeDragStop={onNodeDragStop}
         onNodeContextMenu={onNodeContextMenu}
         onNodeDoubleClick={onNodeDoubleClick}
+        onEdgeDoubleClick={cizgiMenusuAc}
+        onEdgeContextMenu={cizgiMenusuAc}
+        onReconnect={cizgiyiTasi}
         onPaneClick={onPaneClick}
         onMoveStart={onMoveStart}
         fitView
         deleteKeyCode={['Delete']}
         fitViewOptions={{ duration: 1000, maxZoom: 1.2 }}
         minZoom={0.1}
-        defaultEdgeOptions={{
-          type: tur.edge.type,
-          animated: tur.edge.animated,
-          style: edgeStyle(tur.edge),
-        }}
+        /* Her tutamak hem çıkış hem giriş: gevşek kipte kütüphane bir çizginin
+           giriş ucunu yalnız "target" tutamaklarda değil, hepsinde arıyor.
+           Dört tutamağın dördü de "source" tipinde (bkz. DiagramNode). */
+        connectionMode={ConnectionMode.Loose}
+        /* Tutamaktaki artıya basarken parmak birkaç piksel kayıyor. Eşik 1
+           pikselken bu "çizgi çekmeye başladı" sayılıyor ve düğme basılmıyor
+           gibi görünüyordu. */
+        connectionDragThreshold={5}
+        /* Tutamağa tıklamak yeni kutu ekliyor; kütüphanenin kendi
+           "tıkla-bağla" kipi devrede kalırsa ikisi çakışıyor. */
+        connectOnClick={false}
+        /* Çift tıklama bu tuvalde "adını değiştir" ve "çizgiye yazı yaz"
+           demek; aynı hareket kamerayı da yakınlaştırırsa kullanıcı her
+           düzenlemede şemayı kaybediyor. */
+        zoomOnDoubleClick={false}
+        defaultEdgeOptions={varsayilanCizgi}
         proOptions={{ hideAttribution: true }}
       >
         <CanvasBackdrop />
@@ -362,6 +438,18 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
              deleteNode(menu.id);
              setMenu(null);
           }}
+        />
+      )}
+
+      {cizgiMenu && aktif.edges.some((e) => e.id === cizgiMenu.id) && (
+        <DiagramEdgeMenu
+          key={cizgiMenu.id}
+          x={cizgiMenu.left}
+          y={cizgiMenu.top}
+          label={String(aktif.edges.find((e) => e.id === cizgiMenu.id)?.label ?? '')}
+          onKaydet={(yazi) => setEdgeLabel(cizgiMenu.id, yazi)}
+          onSil={() => deleteEdge(cizgiMenu.id)}
+          onClose={() => setCizgiMenu(null)}
         />
       )}
 

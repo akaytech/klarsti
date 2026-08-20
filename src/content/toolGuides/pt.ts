@@ -115,9 +115,9 @@ const guides: ToolGuideBundle = {
     steps: [
       'Na primeira abertura aparece o seletor de tipo. Ele pode ser trocado depois; as caixas são convertidas para o equivalente mais próximo.',
       'O menu de diagramas no canto superior esquerdo permite manter vários diagramas no mesmo projeto e alternar entre eles.',
-      'Clique com o botão direito numa caixa: ao adicionar outra abaixo você também escolhe a forma (início, processo, decisão, documento, fim...). No mesmo menu você edita o texto ou exclui.',
+      "Passe o ponteiro sobre uma caixa: aparece um + nos quatro pontos de conexão. Clique em um deles, escolha uma forma e a caixa nova surge daquele lado, já conectada. Dê dois cliques em uma caixa para renomear; clique com o botão direito para as demais opções.",
       'Arraste as caixas para onde quiser; aqui não há arranjo automático, a disposição é sua.',
-      'Para traçar uma ligação, arraste de um ponto de conexão na borda de uma caixa até outra.',
+      "Para desenhar uma conexão, arraste de qualquer ponto de uma caixa até qualquer ponto de outra: de lado a lado, de cima a cima, na direção que quiser. Para mudar uma ponta de lugar, segure a extremidade da linha e solte em outro ponto. Dê dois cliques em uma linha para escrever sobre ela (por exemplo sim / não).",
       'Com os controles no canto inferior esquerdo você aproxima, e com o minimapa no canto inferior direito navega em diagramas grandes.'
     ],
     shortcuts: [
@@ -144,7 +144,7 @@ const guides: ToolGuideBundle = {
     steps: [
       'Na primeira abertura você escolhe o tipo de organograma. Ele pode ser trocado depois; as caixas são convertidas e o arranjo é preservado.',
       'O menu no canto superior esquerdo permite manter vários organogramas em um projeto (por exemplo, estrutura atual e estrutura alvo).',
-      'Clique com o botão direito numa caixa para adicionar abaixo um cargo, uma unidade, uma equipe ou uma vaga em aberto. No mesmo menu você edita o nome e o título da linha de baixo.',
+      "Passe o ponteiro sobre uma caixa: aparece um + nos quatro pontos de conexão. Clique em um deles e escolha cargo, unidade, time ou vaga em aberto; a caixa nova surge daquele lado. Dê dois cliques em uma caixa para mudar o nome e o cargo abaixo dele.",
       'Arraste as caixas para posicioná-las como quiser.',
       'As ligações normais saem dos pontos superior e inferior de uma caixa: essa é a linha de reporte principal.',
       'As linhas puxadas dos pontos laterais aparecem tracejadas e indicam reporte secundário (nos organogramas matricial, hierárquico e de rede).'

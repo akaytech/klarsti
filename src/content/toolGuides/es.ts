@@ -115,9 +115,9 @@ const guides: ToolGuideBundle = {
     steps: [
       'La primera vez aparece el selector de tipo. Puedes cambiarlo después; las cajas se convierten a su equivalente más cercano.',
       'El menú de diagramas de arriba a la izquierda te permite tener varios diagramas en el mismo proyecto y alternar entre ellos.',
-      'Clic derecho en una caja: al añadir otra debajo también eliges su forma (inicio, proceso, decisión, documento, fin...). Desde ahí también editas el texto o la borras.',
+      "Pon el puntero sobre una caja: aparece un + en sus cuatro puntos de conexión. Pulsa uno, elige una forma y la caja nueva aparece en ese lado ya conectada. Haz doble clic en una caja para cambiar su nombre; clic derecho para el resto de opciones.",
       'Arrastra las cajas donde quieras; aquí no hay disposición automática, el orden es tuyo.',
-      'Para trazar una conexión, arrastra desde un punto del borde de una caja hasta otra.',
+      "Para dibujar una conexión, arrastra desde cualquier punto de una caja hasta cualquier punto de otra: de lado a lado, de arriba a arriba, en la dirección que quieras. Para mover un extremo, agarra la punta de la línea y suéltala en otro punto. Haz doble clic en una línea para escribir sobre ella (por ejemplo sí / no).",
       'Con los controles de abajo a la izquierda haces zoom y con el minimapa de abajo a la derecha navegas por diagramas grandes.'
     ],
     shortcuts: [
@@ -144,7 +144,7 @@ const guides: ToolGuideBundle = {
     steps: [
       'La primera vez eliges el tipo de organigrama. Puede cambiarse después; las cajas se convierten a su equivalente más cercano y la disposición se mantiene.',
       'El menú de arriba a la izquierda te permite tener varios organigramas en un proyecto (por ejemplo, estructura actual y objetivo).',
-      'Clic derecho en una caja para añadir debajo un puesto, una unidad, un equipo o una vacante. Desde ahí editas el nombre y el cargo de la línea inferior.',
+      "Pon el puntero sobre una caja: aparece un + en sus cuatro puntos de conexión. Pulsa uno y elige puesto, unidad, equipo o vacante; la caja nueva aparece en ese lado. Haz doble clic en una caja para cambiar el nombre y el cargo de debajo.",
       'Arrastra las cajas para colocarlas como quieras.',
       'Las conexiones normales salen de los puntos superior e inferior de una caja: esa es la línea de reporte principal.',
       'Las líneas trazadas desde los puntos laterales se dibujan discontinuas e indican reporte secundario (en los organigramas matricial, jerárquico y de red).'

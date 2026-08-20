@@ -115,9 +115,9 @@ const guides: ToolGuideBundle = {
     steps: [
       'Beim ersten Öffnen erscheint die Typauswahl. Der Typ lässt sich später ändern; die Kästchen werden in die nächstliegende Entsprechung überführt.',
       'Über das Diagrammmenü oben links hältst du mehrere Diagramme im selben Projekt und wechselst zwischen ihnen.',
-      'Rechtsklick auf ein Kästchen: Beim Anlegen eines Kästchens darunter wählst du auch dessen Form (Start, Bearbeitung, Entscheidung, Dokument, Ende ...). Im selben Menü bearbeitest oder löschst du es.',
+      "Bewege den Zeiger über einen Kasten: An allen vier Verbindungspunkten erscheint ein +. Klicke auf einen, wähle eine Form, und der neue Kasten landet fertig verbunden auf dieser Seite. Zum Umbenennen doppelklicke den Kasten, für die übrigen Optionen klicke mit der rechten Maustaste.",
       'Kästchen ziehst du frei an ihren Platz; hier gibt es keine automatische Anordnung, die Aufteilung gehört dir.',
-      'Für eine Verbindung ziehst du von einem Verbindungspunkt am Rand eines Kästchens zu einem anderen.',
+      "Zum Verbinden ziehe von einem beliebigen Punkt eines Kastens zu einem beliebigen Punkt eines anderen: von der Seite zur Seite, von oben nach oben, in jede Richtung. Um ein Ende zu versetzen, fasse die Spitze der Linie und lass sie auf einem anderen Punkt los. Doppelklicke eine Linie, um sie zu beschriften (zum Beispiel ja / nein).",
       'Unten links zoomst du über die Steuerung, unten rechts navigierst du mit der Übersichtskarte.'
     ],
     shortcuts: [
@@ -144,7 +144,7 @@ const guides: ToolGuideBundle = {
     steps: [
       'Beim ersten Öffnen wählst du den Diagrammtyp. Er lässt sich später ändern; die Kästchen werden übernommen und die Anordnung bleibt erhalten.',
       'Über das Diagrammmenü oben links hältst du mehrere Diagramme in einem Projekt (etwa Ist- und Zielstruktur).',
-      'Rechtsklick auf ein Kästchen: Position, Einheit, Team oder offene Stelle darunter anlegen. Im selben Menü bearbeitest du Namen und die Bezeichnung darunter.',
+      "Bewege den Zeiger über einen Kasten: An allen vier Verbindungspunkten erscheint ein +. Klicke auf einen und wähle Position, Einheit, Team oder unbesetzte Stelle; der neue Kasten landet auf dieser Seite. Doppelklicke einen Kasten, um den Namen und den Titel darunter zu ändern.",
       'Kästchen ziehst du frei an ihren Platz.',
       'Normale Verbindungen ziehst du von den oberen und unteren Punkten eines Kästchens: Das ist die eigentliche Berichtslinie.',
       'Linien von den seitlichen Punkten werden gestrichelt gezeichnet und stehen für eine zweite Berichtslinie (in Matrix-, hierarchischen und Netzwerkdiagrammen).'

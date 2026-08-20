@@ -3,7 +3,7 @@ import { applyNodeChanges, applyEdgeChanges, addEdge } from './kutuDegisiklikler
 import type { NodeChange, EdgeChange, Connection, Edge, Node } from '@xyflow/react';
 import i18n from '../../i18n';
 import type { DiagramTemplate, DiagramTypeDef } from '../../config/diagramShared';
-import { edgeStyle } from '../../config/diagramShared';
+import { edgeStyle, edgeMarker } from '../../config/diagramShared';
 import { islem, tiktaIslem, gecmisiTemizle } from '../gecmis';
 import { siraDegistir } from './siralama';
 import { altKutular, ebeveyneHizala, semayiDiz } from '../../utils/diagramLayout';
@@ -47,6 +47,34 @@ export function getActiveChart(charts: DiagramChart[], activeId: string | null):
  */
 function ikincilMi(sourceHandle?: string | null, targetHandle?: string | null) {
   return sourceHandle === 'right' || targetHandle === 'left';
+}
+
+/** Bir çizginin iki ucundaki tutamak adları. Boş olanlar hiç yazılmıyor. */
+type Uclar = { source: string; target: string; sourceHandle?: string | null; targetHandle?: string | null };
+
+/**
+ * Yeni çizgi nesnesi. Üç yerden çağrılıyor: elle bağlama (onConnect), kutunun
+ * tutamağındaki artıyla ekleme (addNode) ve hazır şablon. Üçünde de aynı
+ * kurallar geçerli olsun diye tek yerde duruyor.
+ */
+function cizgiKur(tur: DiagramTypeDef, uclar: Uclar, ek?: { label?: string; secondary?: boolean }): Edge {
+  const cizgi: Record<string, unknown> = { id: uuidv4(), source: uclar.source, target: uclar.target };
+  if (uclar.sourceHandle) cizgi.sourceHandle = uclar.sourceHandle;
+  if (uclar.targetHandle) cizgi.targetHandle = uclar.targetHandle;
+  if (ek?.label) cizgi.label = ek.label;
+
+  // Yandan yana çekilen çizgi ikincil hat sayılır; türün kesikli stili varsa
+  // o uygulanır, yoksa çizgi normal görünür.
+  if (tur.secondaryEdge && (ek?.secondary || ikincilMi(uclar.sourceHandle, uclar.targetHandle))) {
+    cizgi.type = tur.secondaryEdge.type;
+    cizgi.animated = tur.secondaryEdge.animated;
+    cizgi.style = edgeStyle(tur.secondaryEdge);
+    // Ok başı olağan çizgilere kanvastan veriliyor; kendi rengi olan ikincil
+    // hat kendi okunu taşıyor.
+    cizgi.markerEnd = edgeMarker(tur.secondaryEdge);
+  }
+
+  return cizgi as Edge;
 }
 
 interface DiagramOpsConfig {
@@ -100,21 +128,16 @@ export function createDiagramOps(cfg: DiagramOpsConfig, set: (fn: (state: any) =
       };
     });
 
-    const edges: Edge[] = sablon.edges.map((c) => {
-      const temel: Edge = {
-        id: uuidv4(),
+    const edges: Edge[] = sablon.edges.map((c) => cizgiKur(
+      tur,
+      {
         source: kimlikler[c.source],
         target: kimlikler[c.target],
-      };
-      if (c.sourceHandle) temel.sourceHandle = c.sourceHandle;
-      if (c.targetHandle) temel.targetHandle = c.targetHandle;
-      if (c.secondary && tur.secondaryEdge) {
-        temel.type = tur.secondaryEdge.type;
-        temel.animated = tur.secondaryEdge.animated;
-        temel.style = edgeStyle(tur.secondaryEdge);
-      }
-      return temel;
-    });
+        sourceHandle: c.sourceHandle,
+        targetHandle: c.targetHandle,
+      },
+      { secondary: c.secondary, label: c.labelKey ? i18n.t(c.labelKey) : undefined }
+    ));
 
     return { nodes, edges };
   };
@@ -145,9 +168,17 @@ export function createDiagramOps(cfg: DiagramOpsConfig, set: (fn: (state: any) =
    */
   const elDegmemis = (sema: DiagramChart) => sema.edges.length === 0 && sema.nodes.length <= 1;
 
+  /**
+   * Şemanın türünde kesik çizgili ikincil hat var mı? Varsa (organizasyon
+   * şemaları) yandan yana çekilen çizgiler hiyerarşi anlatmıyor ve dizilime
+   * karışmıyorlar. Akış şemalarında öyle bir ayrım yok: yan çizgi de akışın
+   * bir parçası (bkz. utils/diagramLayout).
+   */
+  const ikincilHatVar = (sema: DiagramChart) => !!cfg.getType(sema.type).secondaryEdge;
+
   /** Bütün şemayı yukarıdan aşağıya dizer (bkz. utils/diagramLayout). */
   const semayiYenidenDiz = (sema: DiagramChart): DiagramChart => {
-    const yerler = semayiDiz(sema.nodes, sema.edges);
+    const yerler = semayiDiz(sema.nodes, sema.edges, ikincilHatVar(sema));
     return {
       ...sema,
       nodes: sema.nodes.map((n) => {
@@ -232,23 +263,80 @@ export function createDiagramOps(cfg: DiagramOpsConfig, set: (fn: (state: any) =
 
     onConnect: (connection: Connection) => islem(() => {
       set((state) => aktifiGuncelle(state, (sema) => {
-        const tur = cfg.getType(sema.type);
-        // Yandan yana çekilen çizgi ikincil hat sayılır; türün kesikli stili
-        // varsa o uygulanır, yoksa çizgi normal görünür.
-        const ikincil = tur.secondaryEdge && ikincilMi(connection.sourceHandle, connection.targetHandle);
-        const yeni: any = { ...connection, id: uuidv4() };
-        if (ikincil) {
-          yeni.type = tur.secondaryEdge!.type;
-          yeni.animated = tur.secondaryEdge!.animated;
-          yeni.style = edgeStyle(tur.secondaryEdge!);
-        }
-        return { ...sema, edges: addEdge(yeni, sema.edges as any) as Edge[] };
+        const yeni = cizgiKur(cfg.getType(sema.type), connection);
+        return { ...sema, edges: addEdge(yeni as any, sema.edges as any) as Edge[] };
+      }));
+    }),
+
+    /**
+     * Çizginin üstündeki yazı ("Evet", "Hayır", "olmazsa"...). Boş verilirse
+     * yazı tamamen kaldırılıyor: boş dizge kalırsa çizginin ortasında boş bir
+     * etiket kutusu duruyor.
+     */
+    setEdgeLabel: (id: string, label: string) => islem(() => {
+      set((state) => aktifiGuncelle(state, (sema) => ({
+        ...sema,
+        edges: sema.edges.map((e) => {
+          if (e.id !== id) return e;
+          const yeni = { ...e };
+          if (label) yeni.label = label;
+          else delete yeni.label;
+          return yeni;
+        }),
+      })));
+    }),
+
+    deleteEdge: (id: string) => islem(() => {
+      set((state) => aktifiGuncelle(state, (sema) => ({
+        ...sema,
+        edges: sema.edges.filter((e) => e.id !== id),
+      })));
+    }),
+
+    /**
+     * Çizginin ucunu tutup başka bir tutamağa taşıma (sökme/takma). Yazısı ve
+     * stili çizgiyle birlikte geliyor; kullanıcı ucunu oynattı diye "Hayır"
+     * yazısını yeniden yazmak zorunda kalmıyor.
+     */
+    reconnectEdge: (id: string, baglanti: Connection) => islem(() => {
+      set((state) => aktifiGuncelle(state, (sema) => {
+        if (!sema.edges.some((e) => e.id === id)) return sema;
+        const ayni = (e: Edge) =>
+          e.source === baglanti.source &&
+          e.target === baglanti.target &&
+          (e.sourceHandle ?? null) === (baglanti.sourceHandle ?? null) &&
+          (e.targetHandle ?? null) === (baglanti.targetHandle ?? null);
+        // Aynı iki tutamağın arasında zaten çizgi varsa ikincisi kurulmuyor;
+        // taşınan çizgi eski yerinde kalıyor.
+        if (sema.edges.some((e) => e.id !== id && ayni(e))) return sema;
+        return {
+          ...sema,
+          edges: sema.edges.map((e) => {
+            if (e.id !== id) return e;
+            const yeni = { ...e, source: baglanti.source, target: baglanti.target };
+            if (baglanti.sourceHandle) yeni.sourceHandle = baglanti.sourceHandle;
+            else delete yeni.sourceHandle;
+            if (baglanti.targetHandle) yeni.targetHandle = baglanti.targetHandle;
+            else delete yeni.targetHandle;
+            return yeni;
+          }),
+        };
       }));
     }),
 
     // Yeni kutunun kimliği geri veriliyor: kanvas kutuyu ekler eklemez adını
     // yazma kutusunu onun üstünde açıyor.
-    addNode: (parentId: string | null, shape: string, label: string, position: { x: number; y: number }) => islem(() => {
+    //
+    // `tutamaklar`: kutu hangi tutamaktaki artıdan eklendiyse çizgi de oradan
+    // çıkıyor. Sağdaki artıdan eklenen kutu sağa iniyor ve çizgi sağdan
+    // çıkıp yeni kutunun soluna giriyor; verilmezse alt/üst (eski davranış).
+    addNode: (
+      parentId: string | null,
+      shape: string,
+      label: string,
+      position: { x: number; y: number },
+      tutamaklar?: { sourceHandle?: string; targetHandle?: string }
+    ) => islem(() => {
       const yeniId = uuidv4();
       set((state) => aktifiGuncelle(state, (sema) => {
         const newNode: DiagramNode = {
@@ -260,7 +348,14 @@ export function createDiagramOps(cfg: DiagramOpsConfig, set: (fn: (state: any) =
         return {
           ...sema,
           nodes: [...sema.nodes, newNode],
-          edges: parentId ? [...sema.edges, { id: uuidv4(), source: parentId, target: newNode.id }] : sema.edges,
+          edges: parentId
+            ? [...sema.edges, cizgiKur(cfg.getType(sema.type), {
+                source: parentId,
+                target: newNode.id,
+                sourceHandle: tutamaklar?.sourceHandle,
+                targetHandle: tutamaklar?.targetHandle,
+              })]
+            : sema.edges,
         };
       }));
       return yeniId;
@@ -332,9 +427,10 @@ export function createDiagramOps(cfg: DiagramOpsConfig, set: (fn: (state: any) =
 
         // Birden çok kutu seçiliyse sırayla hizalanıyorlar; her biri bir
         // öncekinin bıraktığı hâlin üstüne konuyor.
+        const ikincil = ikincilHatVar(sema);
         let nodes = sema.nodes;
         for (const secili of secililer) {
-          const hedef = ebeveyneHizala(nodes, sema.edges, secili.id);
+          const hedef = ebeveyneHizala(nodes, sema.edges, secili.id, ikincil);
           if (!hedef) continue;
           const simdiki = nodes.find((n) => n.id === secili.id);
           if (!simdiki) continue;
@@ -342,7 +438,7 @@ export function createDiagramOps(cfg: DiagramOpsConfig, set: (fn: (state: any) =
           const dy = hedef.y - simdiki.position.y;
           if (dx === 0 && dy === 0) continue;
           // Kutunun altındaki bacak da aynı kadar kayıyor; şekli bozulmuyor.
-          const tasinacak = altKutular(sema.nodes, sema.edges, secili.id);
+          const tasinacak = altKutular(sema.nodes, sema.edges, secili.id, ikincil);
           tasinacak.add(secili.id);
           nodes = nodes.map((n) => (tasinacak.has(n.id)
             ? { ...n, position: { x: n.position.x + dx, y: n.position.y + dy } }

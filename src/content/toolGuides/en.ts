@@ -115,9 +115,9 @@ const guides: ToolGuideBundle = {
     steps: [
       'The type picker appears the first time you open the tool. You can change the type later; boxes are converted to the closest equivalent in the new type.',
       'The chart menu at the top left lets you keep several charts in the same project and switch between them.',
-      'Right-click a box: when adding a box beneath it you also choose its shape (start, process, decision, document, end...). The same menu edits the text or deletes the box.',
+      "Move the pointer over a box: a + appears at each of its four connection points. Click one, pick a shape, and the new box lands on that side already connected. Double-click a box to rename it; right-click for the other options.",
       'Drag boxes wherever you want; there is no automatic layout here, the arrangement is yours.',
-      'To draw a connection, drag from a connection point on the edge of one box to another box.',
+      "To draw a connection, drag from any point on one box to any point on another: side to side, top to top, in any direction you want. To move an end, grab the tip of the line and drop it on another point. Double-click a line to write on it (for example yes / no).",
       'Zoom with the controls at the bottom left and navigate large charts with the mini map at the bottom right.'
     ],
     shortcuts: [
@@ -144,7 +144,7 @@ const guides: ToolGuideBundle = {
     steps: [
       'You pick the chart type the first time you open the tool. It can be changed later; boxes are converted to the closest equivalent and the layout is preserved.',
       'The chart menu at the top left lets you keep several charts in one project (for example current structure and target structure).',
-      'Right-click a box to add a position, unit, team or vacant role beneath it. The same menu edits the name and the title underneath it.',
+      "Move the pointer over a box: a + appears at each of its four connection points. Click one and pick a position, unit, team or vacant role; the new box lands on that side. Double-click a box to change its name and the title underneath.",
       'Drag boxes to arrange them as you like.',
       'Normal connections are drawn from the top and bottom points of a box: this is the primary reporting line.',
       'Lines drawn from the side points appear dashed and mean secondary reporting (available in the matrix, hierarchical and network charts).'

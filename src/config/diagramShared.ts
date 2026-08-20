@@ -17,6 +17,17 @@ export interface DiagramShapeDef {
   icon: LucideIcon;
   /** Kutunun dış görünümü */
   boxClass: string;
+  /**
+   * Kırpılarak çizilen şekillerin (taşıma oku, depolama üçgeni) dolgusu.
+   *
+   * NEDEN AYRI: `clip-path` yalnız elemanı değil İÇİNDEKİLERİ de kırpıyor.
+   * Kırpma kutunun kendisine verilince bağlantı noktaları şeklin dışında
+   * kalan her yerde görünmez oluyordu — okun üstündeki ve altındaki noktalar
+   * duruyor ama çizilmiyordu, kullanıcı da "burada nokta yok" diye görüyordu.
+   * Kırpma artık arkada duran ayrı bir dolgu katmanında; noktalar, yazı ve
+   * seçim halkası kırpılmıyor.
+   */
+  clipClass?: string;
   /** Dönmüş/eğilmiş kutularda içeriği düzeltmek için */
   innerClass?: string;
   /**
@@ -34,11 +45,15 @@ export interface DiagramShapeDef {
   /** Kutuda ikinci bir satır (organizasyon şemasında unvan) */
   withSubtitle?: boolean;
   /**
-   * Tutamakların yerini elle düzelten stiller. Döndürülmüş kutularda (karar
-   * baklavası `rotate-45` ile çiziliyor) tutamaklar da kutuyla dönüyor ve
-   * baklavanın köşelerine, yani çapraz noktalara düşüyorlar. Kutunun köşe
-   * noktaları döndükten sonra baklavanın üst/sağ/alt/sol uçlarına denk
-   * geldiği için tutamaklar oralara taşınıyor.
+   * Tutamakların yerini elle düzelten stiller. İki sebeple gerekiyor:
+   *
+   * 1. Döndürülmüş kutularda (karar baklavası `rotate-45` ile çiziliyor)
+   *    tutamaklar da kutuyla dönüyor ve baklavanın köşelerine düşüyorlar;
+   *    kutunun köşeleri döndükten sonra baklavanın uçlarına denk geldiği için
+   *    tutamaklar oralara taşınıyor.
+   * 2. Kırpılan şekillerde (ok, üçgen) kutunun kenar ortası şeklin dışında
+   *    kalıyor. Tutamak şeklin gerçek kenarına oturtuluyor: okun gövdesinin
+   *    üstü/altı, üçgenin yan kenarlarının ortası.
    */
   handleStyles?: Partial<Record<'top' | 'right' | 'bottom' | 'left', CSSProperties>>;
 }
@@ -69,6 +84,8 @@ export interface DiagramTemplateEdge {
   secondary?: boolean;
   sourceHandle?: string;
   targetHandle?: string;
+  /** Çizginin üstündeki yazı (karar dallarında "Evet" / "Hayır") */
+  labelKey?: string;
 }
 
 export interface DiagramTemplate {
@@ -114,4 +131,19 @@ export function edgeStyle(e: DiagramEdgeStyle) {
   return e.dashed
     ? { strokeWidth: 3, stroke: e.stroke, strokeDasharray: '8 6' }
     : { strokeWidth: 3, stroke: e.stroke };
+}
+
+/**
+ * Çizginin ucundaki ok başı.
+ *
+ * Neden şart oldu: çizgiler artık her tutamaktan her tutamağa gidebiliyor.
+ * Yukarı, sola, yana giden bir çizgide yönü yalnız akan noktalardan anlamak
+ * mümkün değil — resim olarak dışa aktarıldığında akış hiç görünmüyordu.
+ *
+ * `'arrowclosed'` dizgesi React Flow'un `MarkerType.ArrowClosed` değeri.
+ * Kütüphaneyi buraya bağlamamak için elle yazılıyor: bu dosyayı depo da
+ * kullanıyor ve depoyu bütün araçlar indiriyor (bkz. kutuDegisiklikleri.ts).
+ */
+export function edgeMarker(e: DiagramEdgeStyle) {
+  return { type: 'arrowclosed' as const, color: e.stroke };
 }

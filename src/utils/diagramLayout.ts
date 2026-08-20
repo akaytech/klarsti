@@ -51,8 +51,14 @@ function bosluk(nodes: Node[]): number {
  * (sağdan çıkıp soldan giren) ikincil hat sayılıyor: matris şemasındaki ikinci
  * yönetici, ağ şemasındaki dış paydaş hattı (bkz. diagramOps). Bunlar kimin
  * kimin altında olduğunu anlatmadığı için dizilime karışmıyorlar.
+ *
+ * `ikincilVar` yalnızca öyle bir hattı OLAN şemalar için doğru (organizasyon
+ * şemaları). Akış şemalarında yandan çekilen çizgi de olağan bir akış
+ * çizgisidir; kutunun sağındaki artıdan eklenen kutular dizilimin dışında
+ * kalırsa "otomatik hizala" onları köksüz sanıp şemanın tepesine yığıyordu.
  */
-const hiyerarsik = (e: Edge) => e.sourceHandle !== 'right' && e.targetHandle !== 'left';
+const hiyerarsik = (e: Edge, ikincilVar: boolean) =>
+  !ikincilVar || (e.sourceHandle !== 'right' && e.targetHandle !== 'left');
 
 /**
  * Bütün şemayı yukarıdan aşağıya dizer; kutu kimliğinden yeni konuma bir
@@ -62,7 +68,7 @@ const hiyerarsik = (e: Edge) => e.sourceHandle !== 'right' && e.targetHandle !==
  * neredeyse oraya taşınıyor: yoksa hizala düğmesine basan kullanıcının şeması
  * ekrandan kayıp gidiyor.
  */
-export function semayiDiz(nodes: Node[], edges: Edge[]): Map<string, Konum> {
+export function semayiDiz(nodes: Node[], edges: Edge[], ikincilVar = true): Map<string, Konum> {
   const sonuc = new Map<string, Konum>();
   if (nodes.length === 0) return sonuc;
 
@@ -74,7 +80,7 @@ export function semayiDiz(nodes: Node[], edges: Edge[]): Map<string, Konum> {
   const kutular = new Set(nodes.map((n) => n.id));
   nodes.forEach((n) => g.setNode(n.id, olcu(n)));
   edges.forEach((e) => {
-    if (!hiyerarsik(e)) return;
+    if (!hiyerarsik(e, ikincilVar)) return;
     if (!kutular.has(e.source) || !kutular.has(e.target)) return;
     g.setEdge(e.source, e.target);
   });
@@ -142,9 +148,9 @@ function asagiUlasilan(kenarlar: Edge[], baslangic: string[], durak?: string): S
  * Şemanın tamamı çevrimin içindeyse (baş sayılacak kutu yok) kimse taşınmaz;
  * orada "alt" diye bir şey yok, sadece seçili kutu yerine oturur.
  */
-export function altKutular(nodes: Node[], edges: Edge[], id: string): Set<string> {
+export function altKutular(nodes: Node[], edges: Edge[], id: string, ikincilVar = true): Set<string> {
   const kutular = new Set(nodes.map((n) => n.id));
-  const kenarlar = edges.filter((e) => hiyerarsik(e) && kutular.has(e.source) && kutular.has(e.target));
+  const kenarlar = edges.filter((e) => hiyerarsik(e, ikincilVar) && kutular.has(e.source) && kutular.has(e.target));
 
   const ebeveynli = new Set(kenarlar.map((e) => e.target));
   const kokler = nodes.filter((n) => !ebeveynli.has(n.id)).map((n) => n.id);
@@ -172,17 +178,17 @@ export function altKutular(nodes: Node[], edges: Edge[], id: string): Set<string
  *
  * Üstünde bağlı olduğu bir kutu yoksa null döner (hizalanacak bir pivot yok).
  */
-export function ebeveyneHizala(nodes: Node[], edges: Edge[], id: string): Konum | null {
+export function ebeveyneHizala(nodes: Node[], edges: Edge[], id: string, ikincilVar = true): Konum | null {
   const kutuById = new Map(nodes.map((n) => [n.id, n]));
   if (!kutuById.has(id)) return null;
 
   const ebeveynKenari = edges.find(
-    (e) => hiyerarsik(e) && e.target === id && e.source !== id && kutuById.has(e.source)
+    (e) => hiyerarsik(e, ikincilVar) && e.target === id && e.source !== id && kutuById.has(e.source)
   );
   if (!ebeveynKenari) return null;
   const ebeveyn = kutuById.get(ebeveynKenari.source)!;
 
-  const yerler = semayiDiz(nodes, edges);
+  const yerler = semayiDiz(nodes, edges, ikincilVar);
   const kendiYeri = yerler.get(id);
   const ebeveynYeri = yerler.get(ebeveyn.id);
   if (!kendiYeri || !ebeveynYeri) return null;

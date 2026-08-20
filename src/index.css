@@ -336,6 +336,34 @@ select:disabled {
   transition: none;
 }
 
+/*
+ * Çizginin üstündeki yazı ("Evet", "Hayır", "olmazsa"...).
+ *
+ * Kütüphanenin hazır etiketi beyaz zemine siyah yazı basıyor; koyu temada
+ * şemanın ortasında beyaz bir leke kalıyordu. Renk çizgiyle birlikte
+ * KAYDEDİLMİYOR, buradan veriliyor: tema değiştirildiğinde eski şemalardaki
+ * yazılar da yeni temaya uyuyor.
+ */
+.react-flow__edge-textbg {
+  fill: rgb(255 255 255 / 0.92);
+}
+.dark .react-flow__edge-textbg {
+  fill: rgb(15 23 42 / 0.92); /* slate-900 */
+}
+.react-flow__edge-text {
+  fill: rgb(51 65 85); /* slate-700 */
+  font-size: 12px;
+  font-weight: 700;
+}
+.dark .react-flow__edge-text {
+  fill: rgb(226 232 240); /* slate-200 */
+}
+/* Yazıya de çift tıklanabilsin diye; kütüphane etiketi tıklamaya kapatıyor. */
+.react-flow__edge-textwrapper {
+  pointer-events: all;
+  cursor: pointer;
+}
+
 /* --- Basma geri bildirimi ---
  * 260 düğmenin yalnız 26'sında basınca küçülme vardı, kalanı parmağın
  * altında ölü duruyordu.

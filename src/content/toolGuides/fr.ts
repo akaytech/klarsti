@@ -115,9 +115,9 @@ const guides: ToolGuideBundle = {
     steps: [
       'Au premier lancement, le sélecteur de type apparaît. Il peut être changé ensuite ; les boîtes sont converties vers leur équivalent le plus proche.',
       'Le menu des schémas en haut à gauche permet de garder plusieurs schémas dans un même projet et de passer de l\'un à l\'autre.',
-      'Clic droit sur une boîte : en ajoutant une boîte en dessous, tu choisis aussi sa forme (début, traitement, décision, document, fin...). Le même menu sert à modifier le texte ou à supprimer.',
+      "Passe le pointeur sur une boîte : un + apparaît sur ses quatre points de connexion. Clique sur l'un d'eux, choisis une forme, et la nouvelle boîte se place de ce côté, déjà reliée. Double-clique sur une boîte pour la renommer ; clic droit pour les autres options.",
       'Place les boîtes librement par glisser-déposer ; il n\'y a pas de disposition automatique ici, l\'agencement t\'appartient.',
-      'Pour tracer une liaison, glisse depuis un point de connexion au bord d\'une boîte vers une autre.',
+      "Pour tracer une connexion, fais glisser depuis n'importe quel point d'une boîte vers n'importe quel point d'une autre : côté à côté, haut à haut, dans le sens que tu veux. Pour déplacer une extrémité, attrape le bout de la ligne et lâche-le sur un autre point. Double-clique sur une ligne pour écrire dessus (par exemple oui / non).",
       'Les contrôles en bas à gauche servent au zoom, la mini-carte en bas à droite à naviguer dans les grands schémas.'
     ],
     shortcuts: [
@@ -144,7 +144,7 @@ const guides: ToolGuideBundle = {
     steps: [
       'Au premier lancement, tu choisis le type d\'organigramme. Il reste modifiable ; les boîtes sont converties et la disposition est conservée.',
       'Le menu en haut à gauche permet de garder plusieurs organigrammes dans un projet (par exemple structure actuelle et structure cible).',
-      'Clic droit sur une boîte pour ajouter en dessous un poste, une entité, une équipe ou un poste vacant. Le même menu modifie le nom et l\'intitulé en dessous.',
+      "Passe le pointeur sur une boîte : un + apparaît sur ses quatre points de connexion. Clique sur l'un d'eux et choisis un poste, une unité, une équipe ou un poste vacant ; la nouvelle boîte se place de ce côté. Double-clique sur une boîte pour modifier son nom et l'intitulé en dessous.",
       'Place les boîtes par glisser-déposer.',
       'Les liaisons normales partent des points haut et bas d\'une boîte : c\'est le lien hiérarchique principal.',
       'Les lignes tirées depuis les points latéraux sont en pointillés et signalent un rattachement secondaire (dans les organigrammes matriciel, hiérarchique et en réseau).'

@@ -115,9 +115,9 @@ const kilavuzlar: ToolGuideBundle = {
     steps: [
       'Araç ilk açıldığında tür seçim ekranı çıkar. Türü sonradan da değiştirebilirsin; kutular yeni türün en yakın karşılığına çevrilir.',
       'Sol üstteki şema menüsünden aynı proje içinde birden çok şema tutabilir, aralarında geçiş yapabilirsin.',
-      'Bir kutuya sağ tıkla: altına yeni kutu eklerken şeklini de seçersin (başlangıç, işlem, karar, belge, bitiş...). Aynı menüden metni düzenler ya da kutuyu silersin.',
+      "İmleci bir kutunun üstüne getir: dört bağlantı noktasının hepsinde bir + çıkar. Birine bas, şekli seç; yeni kutu o yöne iner ve bağlantısı çizilmiş olur. Adını değiştirmek için kutuya çift tıkla, diğer seçenekler için sağ tıkla.",
       'Kutuları serbestçe sürükleyerek yerleştirirsin; burada otomatik dizilim yok, düzen sana ait.',
-      'Bağlantı çizmek için bir kutunun kenarındaki bağlantı noktasından diğer kutuya sürükle.',
+      "Bağlantı çizmek için bir kutunun herhangi bir noktasından diğerinin herhangi bir noktasına sürükle: yandan yana, üstten üste, hangi yönü istersen. Bağlı bir ucu değiştirmek için çizginin ucunu tutup başka bir noktaya bırak. Çizginin üstüne yazı yazmak için çizgiye çift tıkla (örneğin evet / hayır).",
       'Sol alttaki kontrol düğmeleriyle yakınlaştırır, sağ alttaki mini haritayla büyük şemalarda gezinirsin.'
     ],
     shortcuts: [
@@ -144,7 +144,7 @@ const kilavuzlar: ToolGuideBundle = {
     steps: [
       'Araç ilk açıldığında şema türünü seçersin. Tür sonradan değiştirilebilir; kutular yeni türün en yakın karşılığına çevrilir, dizilim korunur.',
       'Sol üstteki şema menüsünden aynı proje içinde birden çok şema tutabilirsin (örneğin mevcut yapı ve hedef yapı).',
-      'Kutuya sağ tıkla: altına yeni pozisyon, birim, ekip ya da boş kadro eklersin. Aynı menüden adı ve altındaki unvanı düzenlersin.',
+      "İmleci bir kutunun üstüne getir: dört bağlantı noktasının hepsinde bir + çıkar. Birine basıp pozisyon, birim, ekip ya da boş kadro seç; yeni kutu o yöne iner. Adı ve altındaki unvanı değiştirmek için kutuya çift tıkla.",
       'Kutuları sürükleyerek istediğin gibi yerleştirirsin.',
       'Normal bağlantı, kutunun alt ve üst noktalarından çekilir: bu asıl raporlama hattıdır.',
       'Kutuların yan noktalarından çektiğin çizgiler kesik çizgiyle çizilir; bu ikincil raporlamadır (matris, hiyerarşik ve ağ şemalarında geçerli).'

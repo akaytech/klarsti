@@ -79,28 +79,36 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
 
   // Örnek şablon yüklenince ya da başka bir şemaya geçilince kamera içeriğe
   // sığdırılıyor; yoksa on kutuluk örnek ekranın dışında açılıyor. Gecikme
-  // aşağıdaki dizilim düzeltmesinden sonrasına ayarlı: daha erken sığdırılırsa
-  // kutuların henüz düzeltilmemiş yerlerine göre hesaplanıyor.
-  useEkranaSigdir(aktif?.id, aktif?.nodes.length ?? 0, { padding: 0.2, gecikme: 380 });
+  // aşağıdaki dizilime pay bırakıyor: daha erken sığdırılırsa kutuların henüz
+  // düzeltilmemiş yerlerine göre hesaplanıyor.
+  useEkranaSigdir(aktif?.id, aktif?.nodes.length ?? 0, { padding: 0.2, gecikme: 150 });
 
   // Örnek şablonu yükleyip hizaya sokar.
   //
   // Şablon yazılırken kutuların gerçek eni bilinmiyor: en, içindeki yazıya ve
   // yazı tipine göre değişiyor ve kutu daha ekrana çizilmedi. Şablondaki
-  // konumlar bu yüzden kabataslak; hepsi eşit enliymiş gibi duruyor ve
-  // kutular birbirine göre kayık çıkıyordu. Kutular çizilip ölçüldükten sonra
-  // dizilim bir kez çalıştırılıyor: sonuç, "Otomatik hizala" düğmesine
-  // basılmış gibi oluyor.
-  const [ornekSayaci, setOrnekSayaci] = useState(0);
+  // konumlar bu yüzden kabataslak; hepsi eşit enliymiş gibi duruyor ve kutular
+  // birbirine göre kayık çıkıyor.
+  //
+  // Dizilim, kutuların ölçüsü belli olur olmaz çalışıyor. Ölçü beklemenin
+  // SÜREYLE yapılması yanlıştı: sabit bir bekleme hem gereksiz uzun, hem de
+  // yavaş makinede yetersiz. Şimdi kutuların ölçülmesi bekleniyor (React Flow
+  // ölçtükçe depoya yazıyor, bkz. kutuDegisiklikleri 'dimensions'); ölçüm ilk
+  // boyamayla birlikte geldiği için şablon zaten hizalı açılıyor, kullanıcı
+  // kutuların yerine oturmasını izlemiyor.
+  const [ornekBekliyor, setOrnekBekliyor] = useState(false);
+
   useEffect(() => {
-    if (ornekSayaci === 0) return;
-    const zamanlayici = setTimeout(() => normalizeLayout(), 300);
-    return () => clearTimeout(zamanlayici);
-  }, [ornekSayaci, normalizeLayout]);
+    if (!ornekBekliyor) return;
+    const kutular = aktif?.nodes ?? [];
+    if (kutular.length === 0 || !kutular.every((n) => n.measured?.width)) return;
+    setOrnekBekliyor(false);
+    normalizeLayout();
+  }, [ornekBekliyor, aktif?.nodes, normalizeLayout]);
 
   const ornekYukle = useCallback(() => {
     loadExample?.();
-    setOrnekSayaci((n) => n + 1);
+    setOrnekBekliyor(true);
   }, [loadExample]);
 
   // Başka bir şemaya geçilince yarım kalan ad yazma kipi kapanır; yoksa yeni

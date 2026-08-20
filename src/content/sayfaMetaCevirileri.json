@@ -1,0 +1,99 @@
+{
+  "_aciklama": "Araç DIŞINDAKİ herkese açık sayfaların arama motoru açıklamaları, dil başına. Başlıklar buraya yazılmıyor: onlar locale dosyalarındaki titleKey'den geliyor (tek kaynak). Araç sayfalarının başlığı ve açıklaması da burada yok; onlar src/content/toolGuides/<dil>.ts içindeki title ve summary alanlarından üretiliyor, çünkü o metinler zaten 11 dilde yazılmış durumda.",
+  "privacy": {
+    "tr": "Klarsti kişisel verilerini nasıl topluyor, işliyor ve saklıyor; veriler nerede duruyor; erişim veya silme talebini nasıl iletirsin.",
+    "de": "Wie Klarsti deine personenbezogenen Daten erhebt, verarbeitet und speichert, wo sie liegen und wie du Auskunft oder Löschung verlangst.",
+    "es": "Cómo Klarsti recoge, trata y guarda tus datos personales, dónde se alojan y cómo puedes pedir acceso o eliminación.",
+    "fr": "Comment Klarsti collecte, traite et conserve tes données personnelles, où elles sont hébergées et comment en demander l’accès ou la suppression.",
+    "it": "Come Klarsti raccoglie, tratta e conserva i tuoi dati personali, dove sono ospitati e come chiederne l’accesso o la cancellazione.",
+    "pt": "Como a Klarsti coleta, trata e armazena seus dados pessoais, onde eles ficam e como pedir acesso ou exclusão.",
+    "ru": "Как Klarsti собирает, обрабатывает и хранит твои персональные данные, где они находятся и как запросить доступ или удаление.",
+    "ja": "Klarsti が個人データをどのように収集・処理・保管し、どこに置いているか、開示や削除をどう請求できるか。",
+    "zh": "Klarsti 如何收集、处理和存储你的个人数据，数据存放在哪里，以及如何申请查阅或删除。",
+    "ar": "كيف تجمع Klarsti بياناتك الشخصية وتعالجها وتخزّنها، وأين تُحفظ، وكيف تطلب الاطلاع عليها أو حذفها."
+  },
+  "cookies": {
+    "tr": "Klarsti tarayıcında tam olarak neyi saklıyor, her biri ne işe yarıyor, ne kadar duruyor ve onay gerektirenleri nasıl kapatırsın.",
+    "de": "Was Klarsti genau in deinem Browser speichert, wozu jeder Eintrag dient, wie lange er bleibt und wie du die zustimmungspflichtigen Teile abschaltest.",
+    "es": "Qué guarda Klarsti exactamente en tu navegador, para qué sirve cada elemento, cuánto dura y cómo desactivar lo que necesita tu consentimiento.",
+    "fr": "Ce que Klarsti conserve exactement dans ton navigateur, à quoi sert chaque élément, combien de temps il reste et comment désactiver ce qui nécessite ton consentement.",
+    "it": "Che cosa conserva Klarsti nel tuo browser, a cosa serve ogni elemento, quanto dura e come disattivare le parti che richiedono il consenso.",
+    "pt": "O que a Klarsti guarda no seu navegador, para que serve cada item, quanto tempo dura e como desligar o que precisa do seu consentimento.",
+    "ru": "Что именно Klarsti хранит в твоём браузере, зачем нужен каждый пункт, сколько он живёт и как отключить то, что требует согласия.",
+    "ja": "Klarsti がブラウザーに保存する内容、それぞれの用途と保持期間、同意が必要な項目をオフにする方法。",
+    "zh": "Klarsti 在你的浏览器里究竟存了什么、各项用途和保存时长，以及如何关闭需要同意的部分。",
+    "ar": "ما الذي تخزّنه Klarsti في متصفحك بالضبط، وفائدة كل عنصر ومدة بقائه، وكيف توقف ما يحتاج إلى موافقتك."
+  },
+  "terms": {
+    "tr": "Klarsti'yi kullanırken geçerli koşullar: hizmetin kapsamı, kullanıcı olarak sorumlulukların ve sorumluluğumuzun sınırları.",
+    "de": "Die Bedingungen für deine Nutzung von Klarsti: Umfang des Dienstes, deine Pflichten als Nutzer und die Grenzen unserer Haftung.",
+    "es": "Las condiciones que rigen tu uso de Klarsti: alcance del servicio, tus responsabilidades como usuario y los límites de nuestra responsabilidad.",
+    "fr": "Les conditions qui régissent ton utilisation de Klarsti : périmètre du service, tes responsabilités d’utilisateur et les limites de notre responsabilité.",
+    "it": "Le condizioni che regolano il tuo uso di Klarsti: ambito del servizio, le tue responsabilità come utente e i limiti della nostra responsabilità.",
+    "pt": "As condições que regem o seu uso da Klarsti: escopo do serviço, suas responsabilidades como usuário e os limites da nossa responsabilidade.",
+    "ru": "Условия использования Klarsti: объём услуги, твои обязанности как пользователя и границы нашей ответственности.",
+    "ja": "Klarsti を利用するうえでの条件：サービスの範囲、利用者としての責任、当方の責任の限界。",
+    "zh": "使用 Klarsti 的条款：服务范围、你作为用户的责任，以及我们的责任限度。",
+    "ar": "الشروط التي تحكم استخدامك لـ Klarsti: نطاق الخدمة، ومسؤولياتك كمستخدم، وحدود مسؤوليتنا."
+  },
+  "login": {
+    "tr": "Klarsti hesabına giriş yap; çalışmalarına, problem çözme araçlarına ve paylaşılan panolarına ulaş.",
+    "de": "Melde dich bei deinem Klarsti-Konto an und öffne deine Werkzeuge, Arbeiten und geteilten Boards.",
+    "es": "Inicia sesión en tu cuenta de Klarsti para abrir tus herramientas, trabajos y tableros compartidos.",
+    "fr": "Connecte-toi à ton compte Klarsti pour ouvrir tes outils, tes travaux et les tableaux partagés.",
+    "it": "Accedi al tuo account Klarsti per aprire strumenti, lavori e board condivise.",
+    "pt": "Faça login na sua conta Klarsti para abrir suas ferramentas, trabalhos e quadros compartilhados.",
+    "ru": "Войди в аккаунт Klarsti, чтобы открыть свои инструменты, работы и общие доски.",
+    "ja": "Klarsti アカウントにログインして、ツール・作業・共有ボードを開きます。",
+    "zh": "登录 Klarsti 账户，打开你的工具、工作和共享看板。",
+    "ar": "سجّل الدخول إلى حسابك في Klarsti لفتح أدواتك وأعمالك واللوحات المشتركة."
+  },
+  "register": {
+    "tr": "Ücretsiz Klarsti hesabı aç; SWOT, Balık Kılçığı, 5 Neden, Zihin Haritası ve diğerlerini dakikalar içinde kullanmaya başla.",
+    "de": "Erstelle ein kostenloses Klarsti-Konto und nutze SWOT, Ishikawa, 5-Warum, Mindmap und mehr in wenigen Minuten.",
+    "es": "Crea una cuenta gratuita de Klarsti y empieza a usar SWOT, Ishikawa, 5 Porqués, Mapa Mental y más en minutos.",
+    "fr": "Crée un compte Klarsti gratuit et commence à utiliser SWOT, Ishikawa, 5 Pourquoi, Carte Mentale et plus en quelques minutes.",
+    "it": "Crea un account Klarsti gratuito e inizia a usare SWOT, Ishikawa, 5 Perché, Mappa Mentale e altro in pochi minuti.",
+    "pt": "Crie uma conta Klarsti gratuita e comece a usar SWOT, Espinha de Peixe, 5 Porquês, Mapa Mental e mais em minutos.",
+    "ru": "Создай бесплатный аккаунт Klarsti и начни работать со SWOT, диаграммой Исикавы, «5 почему», интеллект-картой и другими инструментами.",
+    "ja": "無料の Klarsti アカウントを作成して、SWOT・特性要因図・なぜなぜ分析・マインドマップなどを数分で使い始めましょう。",
+    "zh": "创建免费的 Klarsti 账户，几分钟内开始使用 SWOT、鱼骨图、5 问法、思维导图等工具。",
+    "ar": "أنشئ حسابًا مجانيًا في Klarsti وابدأ خلال دقائق باستخدام SWOT ومخطط عظم السمكة وتحليل الأسباب الخمسة والخريطة الذهنية وغيرها."
+  },
+  "contact": {
+    "tr": "Klarsti ile iletişime geç: sorun bildir, soru sor, verilerine erişim veya silme talebinde bulun. Her mesaja cevap veriliyor.",
+    "de": "Nimm Kontakt zu Klarsti auf: ein Problem melden, eine Frage stellen oder Auskunft bzw. Löschung deiner Daten verlangen. Jede Nachricht wird beantwortet.",
+    "es": "Ponte en contacto con Klarsti: informa de un problema, haz una pregunta o pide acceso a tus datos o su eliminación. Todo mensaje recibe respuesta.",
+    "fr": "Contacte Klarsti : signaler un problème, poser une question, demander l’accès à tes données ou leur suppression. Chaque message reçoit une réponse.",
+    "it": "Contatta Klarsti: segnala un problema, fai una domanda o richiedi l’accesso ai tuoi dati o la loro cancellazione. Ogni messaggio riceve risposta.",
+    "pt": "Fale com a Klarsti: relate um problema, tire uma dúvida ou peça acesso aos seus dados ou a exclusão deles. Toda mensagem é respondida.",
+    "ru": "Свяжись с Klarsti: сообщи о проблеме, задай вопрос, запроси доступ к своим данным или их удаление. Ответ приходит на каждое сообщение.",
+    "ja": "Klarsti への問い合わせ：不具合の報告、質問、データの開示や削除の請求。すべてのメッセージに返信します。",
+    "zh": "联系 Klarsti：报告问题、提出疑问，或申请查阅、删除你的数据。每一条消息都会得到回复。",
+    "ar": "تواصل مع Klarsti: أبلغ عن مشكلة، أو اطرح سؤالًا، أو اطلب الاطلاع على بياناتك أو حذفها. كل رسالة تلقى ردًا."
+  },
+  "about": {
+    "tr": "Klarsti'nin arkasında kim var, bunu neden yapıyoruz ve bize nasıl ulaşırsın.",
+    "de": "Wer hinter Klarsti steht, warum wir es bauen und wie du uns erreichst.",
+    "es": "Quién está detrás de Klarsti, por qué lo construimos y cómo contactarnos.",
+    "fr": "Qui est derrière Klarsti, pourquoi nous le construisons et comment nous joindre.",
+    "it": "Chi c’è dietro Klarsti, perché lo costruiamo e come contattarci.",
+    "pt": "Quem está por trás da Klarsti, por que a construímos e como falar conosco.",
+    "ru": "Кто стоит за Klarsti, зачем мы его делаем и как с нами связаться.",
+    "ja": "Klarsti を作っているのは誰か、なぜ作っているのか、どう連絡できるか。",
+    "zh": "Klarsti 背后是谁、我们为什么做它，以及如何联系我们。",
+    "ar": "من يقف خلف Klarsti، ولماذا نبنيه، وكيف تتواصل معنا."
+  },
+  "blog": {
+    "tr": "Problem çözme, kök neden analizi ve planlama yöntemleri — gerçekte nasıl kullanılır, Klarsti ekibinin kaleminden.",
+    "de": "Problemlösung, Ursachenanalyse und Planungsmethoden — wie man sie wirklich anwendet, geschrieben vom Team hinter Klarsti.",
+    "es": "Resolución de problemas, análisis de causa raíz y métodos de planificación: cómo se usan de verdad, escrito por el equipo de Klarsti.",
+    "fr": "Résolution de problèmes, analyse des causes racines et méthodes de planification : comment s’en servir vraiment, par l’équipe Klarsti.",
+    "it": "Problem solving, analisi delle cause profonde e metodi di pianificazione: come si usano davvero, scritto dal team di Klarsti.",
+    "pt": "Resolução de problemas, análise de causa raiz e métodos de planejamento — como usar de verdade, escrito pelo time da Klarsti.",
+    "ru": "Решение проблем, анализ первопричин и методы планирования — как ими пользоваться на практике, от команды Klarsti.",
+    "ja": "問題解決、根本原因分析、計画手法 — 実際にどう使うかを、Klarsti のチームが書いています。",
+    "zh": "问题解决、根本原因分析和规划方法——真正该怎么用，由 Klarsti 团队撰写。",
+    "ar": "حل المشكلات وتحليل الأسباب الجذرية وأساليب التخطيط — كيف تُستخدم فعلًا، بقلم فريق Klarsti."
+  }
+}

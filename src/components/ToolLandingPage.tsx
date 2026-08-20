@@ -7,6 +7,7 @@ import { toolTheme } from '../config/toolTheme';
 import { toolPageAdresi, type ToolPage } from '../config/toolPages';
 import { loadToolGuides, type ToolGuide } from '../content/toolGuides';
 import { sayfaMetaAyarla, sayfaMetaSifirla } from '../utils/sayfaMeta';
+import { dilliYol } from '../utils/dilYolu';
 import { useAuthStore } from '../store/useAuthStore';
 import PublicHeader from './PublicHeader';
 import PublicFooter from './PublicFooter';
@@ -71,15 +72,20 @@ export default function ToolLandingPage({ sayfa }: { sayfa: ToolPage }) {
   const kisaAciklama = arac ? t(arac.descKey) : '';
 
   useEffect(() => {
+    // Statik HTML dile göre üretiliyor (bkz. scripts/staticPages.mjs); uygulama
+    // içi gezinmede de aynı metin görünsün diye başlık ve açıklama İngilizce
+    // JSON'dan değil aktif dilden alınıyor. İngilizcede JSON'daki elle yazılmış
+    // metin daha iyi, orada o kalıyor.
+    const ingilizce = i18n.language.startsWith('en');
     sayfaMetaAyarla({
-      title: sayfa.title,
-      description: sayfa.description,
-      canonical: `https://klarsti.com/${sayfa.slug}`
+      title: ingilizce ? sayfa.title : `${baslik} | Klarsti`,
+      description: ingilizce ? sayfa.description : kisaAciklama || sayfa.description,
+      canonical: `https://klarsti.com${dilliYol(i18n.language, sayfa.slug)}`
     });
     // Kullanıcı buradan tanıtım sayfasına ya da uygulamaya geçtiğinde sekme
     // başlığı bu araçta takılı kalmasın.
     return () => sayfaMetaSifirla();
-  }, [sayfa]);
+  }, [sayfa, i18n.language, baslik, kisaAciklama]);
 
   useEffect(() => {
     let iptal = false;

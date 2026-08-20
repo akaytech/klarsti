@@ -9,6 +9,7 @@ import { contactPageBul } from './config/contactPage';
 import { aboutPageBul } from './config/aboutPage';
 import { blogYoluBul } from './config/blogSayfasi';
 import { DENEME_ONEK, denemeAracAdi } from './utils/aracAdresi';
+import { dilOnekiniAyikla } from './utils/dilYolu';
 // Çerez şeridi gecikmeli DEĞİL: her sayfada, giriş yapılmamışken de
 // görünmesi gerekiyor ve içinde ağır hiçbir şey yok (bkz. CookieConsent).
 import CookieConsent from './components/CookieConsent';
@@ -53,27 +54,30 @@ function App() {
   const user = useAuthStore(state => state.user);
   const isAuthLoading = useAuthStore(state => state.isAuthLoading);
   const location = useLocation();
-  const isAuthRoute = location.pathname === '/login' || location.pathname === '/register';
+  // Adres dil öneki taşıyabiliyor (/tr/wbs). Yönlendirme öneksiz yolu görüyor;
+  // dilin kendisini i18n'in 'path' algılayıcısı okuyor (bkz. i18n.ts).
+  const { yol } = dilOnekiniAyikla(location.pathname);
+  const isAuthRoute = yol === '/login' || yol === '/register';
 
   // Araç tanıtım sayfaları (klarsti.com/wbs, /swot ...) herkese açık: oturum
   // kapısının önünde çözülüyor. Giriş yapmış kullanıcı da görebiliyor, yoksa
   // tanıtım sayfasındaki ya da arama sonucundaki link onun için çalışmazdı.
   // Oturumun çözülmesi de beklenmiyor; sayfanın içeriği oturuma bağlı değil.
-  const aracSayfasi = toolPageBul(location.pathname);
+  const aracSayfasi = toolPageBul(yol);
   // Yasal sayfalar da (gizlilik, kullanım koşulları) oturumdan bağımsız:
   // Google'ın giriş ekranı onayı ve uygulama mağazaları bu adresleri giriş
   // yapmadan açıp okuyabilmeli.
-  const yasalSayfa = legalPageBul(location.pathname);
+  const yasalSayfa = legalPageBul(yol);
   // İletişim sayfası da aynı sebeple oturumdan bağımsız: yardım arayan
   // kullanıcının çoğu zaman sorunu zaten giriş yapamamak oluyor.
-  const iletisimSayfasi = contactPageBul(location.pathname);
+  const iletisimSayfasi = contactPageBul(yol);
   // Hakkımızda da oturumdan bağımsız: sitenin arkasında kimin olduğunu merak
   // eden ziyaretçi henüz hesap açmamış oluyor.
-  const hakkimizdaSayfasi = aboutPageBul(location.pathname);
+  const hakkimizdaSayfasi = aboutPageBul(yol);
   // Blog da oturumdan bağımsız: yazılar herkese açık, okumak için hesap
   // gerekmiyor. Giriş yapmış kullanıcı da okuyabilmeli, yoksa alt bilgideki
   // link onun için çalışmazdı.
-  const blogYolu = blogYoluBul(location.pathname);
+  const blogYolu = blogYoluBul(yol);
 
   const theme = useTheme();
 
@@ -82,9 +86,9 @@ function App() {
       <Toaster position="bottom-center" theme={theme.isDark ? 'dark' : 'light'} richColors />
       <CookieConsent />
 
-      {DemoStudio && location.pathname.startsWith('/demo-cekim/') ? (
+      {DemoStudio && yol.startsWith('/demo-cekim/') ? (
         <Suspense fallback={<LoadingScreen />}>
-          <DemoStudio ad={location.pathname.replace('/demo-cekim/', '')} />
+          <DemoStudio ad={yol.replace('/demo-cekim/', '')} />
         </Suspense>
       ) : aracSayfasi ? (
         <Suspense fallback={<LoadingScreen />}>
@@ -108,7 +112,7 @@ function App() {
         </Suspense>
       ) : isAuthLoading ? (
         <LoadingScreen />
-      ) : !user && (location.pathname === '/dene' || location.pathname.startsWith(DENEME_ONEK)) ? (
+      ) : !user && (yol === '/dene' || yol.startsWith(DENEME_ONEK)) ? (
         // Hesapsız deneme. Oturum açmış kullanıcı buraya düşmüyor: onun için
         // uygulamanın kendisi zaten açık, denemeye gerek yok.
         //
@@ -116,12 +120,12 @@ function App() {
         // araç satırları denemede bu adresi taşıyor; sağ tıkla yeni sekmede
         // açıldığında deneme o araçla, önceki çizilenler yerinde açılıyor.
         <Suspense fallback={<LoadingScreen />}>
-          <DenemeApp arac={denemeAracAdi(location.pathname)} />
+          <DenemeApp arac={denemeAracAdi(yol)} />
         </Suspense>
       ) : !user ? (
         isAuthRoute ? (
           <Suspense fallback={<LoadingScreen />}>
-            <AuthPage mode={location.pathname === '/register' ? 'register' : 'login'} />
+            <AuthPage mode={yol === '/register' ? 'register' : 'login'} />
           </Suspense>
         ) : (
           <Suspense fallback={<LoadingScreen />}>
@@ -132,7 +136,7 @@ function App() {
         <Suspense fallback={<LoadingScreen />}>
           <VerifyEmailPage />
         </Suspense>
-      ) : location.pathname === '/admin' ? (
+      ) : yol === '/admin' ? (
         <Suspense fallback={<LoadingScreen />}>
           <AdminPage />
         </Suspense>

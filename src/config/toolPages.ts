@@ -29,10 +29,14 @@ export interface ToolPage {
 
 export const TOOL_PAGES = sayfalar as ToolPage[];
 
-// DİKKAT: Adresler dilsiz ve tek parça, yani araç sayfaları uygulamanın kendi
-// yollarıyla aynı isim havuzunu paylaşıyor. Yeni bir slug eklerken şunlarla
-// çakışmamalı: login, register, agenda, works, project, work, new, admin,
-// dene, about, contact, terms, privacy, cookies, __ (Firebase Auth).
+// DİKKAT: Slug tek parça ve araç sayfaları uygulamanın kendi yollarıyla aynı
+// isim havuzunu paylaşıyor. Yeni bir slug eklerken şunlarla çakışmamalı:
+// login, register, agenda, works, project, work, new, admin, dene, about,
+// contact, terms, privacy, cookies, __ (Firebase Auth).
+//
+// Ayrıca DİL KODLARI da rezerve: adresin ilk parçası dil olabiliyor
+// (/tr/wbs, /de/swot — bkz. src/utils/dilYolu.ts), yani "tr", "de", "es",
+// "fr", "it", "ja", "pt", "ru", "ar", "zh" slug olarak kullanılamaz.
 
 const SLUG_ILE = new Map(TOOL_PAGES.map((s) => [s.slug, s]));
 const ARAC_ILE = new Map(TOOL_PAGES.map((s) => [s.toolId, s]));

@@ -31,6 +31,45 @@ const SITE = 'https://klarsti.com';
 const oku = (dosya) =>
   JSON.parse(fs.readFileSync(path.join(KOK, 'src/content', dosya), 'utf8'));
 
+// Arayuzun cevirisi olan diller. Liste src/config/languages.ts'ten okunuyor:
+// yeni bir dil eklendiginde burasi kendiliginden ogreniyor.
+const DILLER = [...fs
+  .readFileSync(path.join(KOK, 'src/config/languages.ts'), 'utf8')
+  .matchAll(/code:\s*'([a-z-]+)'/g)].map((m) => m[1]);
+if (DILLER.length < 2) {
+  console.error('staticPages: languages.ts icinden dil listesi okunamadi.');
+  process.exit(1);
+}
+// Ingilizce adres oneki ALMIYOR: /wbs ingilizce, /tr/wbs turkce. Boylece
+// bugune kadar paylasilmis adresler kirilmiyor (bkz. src/utils/dilYolu.ts).
+const VARSAYILAN_DIL = 'en';
+const RTL = new Set(['ar', 'he', 'fa', 'ur']);
+
+const yerel = Object.fromEntries(
+  DILLER.map((d) => [d, JSON.parse(fs.readFileSync(path.join(KOK, 'src/locales', d + '.json'), 'utf8'))])
+);
+
+/** Dil onekli yol: ingilizce icin onek yok. */
+// Boş slug ana sayfa demek: İngilizce için "/", diğerleri için "/tr" (sondaki
+// eğik çizgi YOK). Adres ile canonical/hreflang birebir aynı olmalı, yoksa
+// Google iki ayrı adres görür.
+const dilliYol = (dil, slug) => {
+  if (!slug) return dil === VARSAYILAN_DIL ? '/' : '/' + dil;
+  return dil === VARSAYILAN_DIL ? '/' + slug : '/' + dil + '/' + slug;
+};
+const dilliAdres = (dil, slug) => SITE + dilliYol(dil, slug);
+
+// Arama sonucundaki aciklama iki satir gosteriliyor; uzun ozetler kelime
+// sinirindan kirpiliyor ki cumle ortasindan kesilmesin.
+function kirp(metin, sinir = 165) {
+  if (!metin) return '';
+  const tek = metin.replace(/\s+/g, ' ').trim();
+  if (tek.length <= sinir) return tek;
+  const kesik = tek.slice(0, sinir);
+  const bosluk = kesik.lastIndexOf(' ');
+  return (bosluk > sinir * 0.6 ? kesik.slice(0, bosluk) : kesik).replace(/[,;:.—-]+$/, '') + '…';
+}
+
 const araclar = oku('toolPages.json');
 // Yasal sayfalar (gizlilik, kullanım koşulları) da statik üretiliyor: Google'ın
 // giriş ekranı onayı bu adresleri açıp okuyabilmeyi bekliyor, ve doğru
@@ -53,6 +92,9 @@ const iletisim = oku('contactPage.json');
 const hakkimizda = oku('aboutPage.json');
 // Blog liste sayfası. Yazıların kendisi Firestore'dan geliyor (aşağıda).
 const blogListesi = oku('blogPage.json');
+// Arac disindaki sayfalarin dil basina aciklamalari. Basliklar buraya
+// yazilmiyor: onlar locale dosyalarindaki titleKey'den geliyor.
+const metaCeviri = oku('sayfaMetaCevirileri.json');
 
 const TUR = { ARAC: 'arac', YASAL: 'yasal', GIRIS: 'giris', ILETISIM: 'iletisim', HAKKIMIZDA: 'hakkimizda', BLOG: 'blog' };
 const ONCELIK = { [TUR.ARAC]: '0.8', [TUR.BLOG]: '0.7', [TUR.ILETISIM]: '0.6', [TUR.HAKKIMIZDA]: '0.6', [TUR.GIRIS]: '0.5', [TUR.YASAL]: '0.3' };
@@ -172,8 +214,8 @@ function yapilandirilmisVeri(sayfa, adres) {
  *
  * `typescript` zaten devDependency ve CI `npm ci` ile kuruyor.
  */
-async function ingilizceKilavuzlar() {
-  const kaynak = fs.readFileSync(path.join(KOK, 'src/content/toolGuides/en.ts'), 'utf8');
+async function kilavuzOku(dil) {
+  const kaynak = fs.readFileSync(path.join(KOK, 'src/content/toolGuides/' + dil + '.ts'), 'utf8');
   const js = ts.transpileModule(kaynak, {
     compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 }
   }).outputText;
@@ -181,15 +223,16 @@ async function ingilizceKilavuzlar() {
   return modul.default;
 }
 
-// Kılavuzun bölüm başlıkları arayüzde i18n'den geliyor; burada üretilen sayfa
-// bilerek İngilizce (bkz. index.html'deki lang="en" ve sayfa başlıkları).
-const BASLIK = {
-  when: 'When to use it',
-  steps: 'Step by step',
-  shortcuts: 'Keyboard shortcuts (desktop)',
-  tips: 'Tips',
-  other: 'Other tools'
-};
+// Kılavuzun bölüm başlıkları arayüzdekiyle aynı anahtarlardan okunuyor, yani
+// üretilen sayfa hangi dildeyse başlıkları da o dilde.
+const baslikSeti = (dil) => ({
+  when: yerel[dil].guide_when,
+  steps: yerel[dil].guide_steps,
+  shortcuts: yerel[dil].guide_shortcuts,
+  tips: yerel[dil].guide_tips,
+  other: yerel[dil].tool_page_other_tools,
+  kayit: yerel[dil].register_now
+});
 
 // `Mod` arayüzde macOS'ta ⌘, başka yerde Ctrl çiziliyor. Statik dosya tek bir
 // hali taşıyabilir; okuyan çoğunluk için Ctrl yazıyoruz.
@@ -216,7 +259,7 @@ const bolum = (baslik, icerik) => `
  * aynı metin ve aynı stiller olduğu için değişim göze çarpmıyor; yan fayda,
  * sayfanın boş ekranla değil dolu açılması.
  */
-function govde(sayfa, kilavuz, digerleri) {
+function govde(sayfa, kilavuz, digerleri, dil, BASLIK) {
   const bolumler = [];
 
   if (kilavuz?.whenToUse?.length) {
@@ -257,7 +300,7 @@ function govde(sayfa, kilavuz, digerleri) {
   const linkler = digerleri
     .map(
       (d) =>
-        `<a href="${KOKADRES}${d.slug}" class="flex items-center gap-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-5 font-bold text-slate-900 dark:text-white">${kacir(d.name)}</a>`
+        `<a href="${KOKADRES}${dil === VARSAYILAN_DIL ? '' : dil + '/'}${d.slug}" class="flex items-center gap-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-5 font-bold text-slate-900 dark:text-white">${kacir(d.name)}</a>`
     )
     .join('\n          ');
 
@@ -269,11 +312,11 @@ function govde(sayfa, kilavuz, digerleri) {
     <section class="pt-14 pb-20">
       <div class="container mx-auto px-6"><div class="max-w-4xl">
         <nav aria-label="breadcrumb" class="mb-10 flex items-center gap-1.5 text-sm font-medium text-slate-500 dark:text-slate-400">
-          <a href="${KOKADRES}">Klarsti</a><span aria-hidden="true">›</span><span class="text-slate-800 dark:text-slate-200">${kacir(ad)}</span>
+          <a href="${KOKADRES}${dil === VARSAYILAN_DIL ? '' : dil + '/'}">Klarsti</a><span aria-hidden="true">›</span><span class="text-slate-800 dark:text-slate-200">${kacir(ad)}</span>
         </nav>
         <h1 class="mb-6 text-4xl md:text-6xl font-black tracking-tight text-slate-900 dark:text-white">${kacir(ad)}</h1>
         <p class="mb-10 max-w-2xl text-lg md:text-xl leading-relaxed text-slate-600 dark:text-slate-400">${kacir(ozet)}</p>
-        <a href="${KOKADRES}register" class="inline-flex items-center gap-2 rounded-full bg-slate-900 dark:bg-white px-8 py-4 text-lg font-bold text-white dark:text-slate-900">Sign up</a>
+        <a href="${KOKADRES}${dil === VARSAYILAN_DIL ? '' : dil + '/'}register" class="inline-flex items-center gap-2 rounded-full bg-slate-900 dark:bg-white px-8 py-4 text-lg font-bold text-white dark:text-slate-900">${kacir(BASLIK.kayit)}</a>
       </div></div>
     </section>
     <section class="pb-24 bg-white dark:bg-slate-950 border-t border-slate-100 dark:border-slate-900 pt-16">
@@ -414,16 +457,84 @@ function blogListeGovdesi(yazilar) {
 </div>`;
 }
 
-const kilavuzlar = await ingilizceKilavuzlar();
+// Her dilin kilavuzu okunuyor: uretilen sayfanin govdesi de o dilde olsun.
+const kilavuzlar = Object.fromEntries(
+  await Promise.all(DILLER.map(async (d) => [d, await kilavuzOku(d)]))
+);
+
+/**
+ * Bir sayfanin arama motoru metinlerini istenen dilde uretir.
+ *
+ * Ingilizce icin JSON'daki elle yazilmis metinler kullaniliyor (daha iyiler).
+ * Diger diller icin kaynak, zaten 11 dilde yazilmis olan malzeme:
+ *  - arac sayfalari  -> toolGuides/<dil>.ts icindeki title ve summary
+ *  - digerleri       -> locale'deki titleKey + sayfaMetaCevirileri.json
+ * Boylece 25 sayfa x 10 dil icin ayrica SEO metni yazmak gerekmiyor ve
+ * metinler arayuzdekiyle ayni yerden besleniyor.
+ */
+function sayfaMetni(sayfa, dil) {
+  if (dil === VARSAYILAN_DIL) return sayfa;
+  const marka = ' | Klarsti';
+  if (aracMi(sayfa)) {
+    const k = kilavuzlar[dil]?.[sayfa.toolId];
+    const ad = k?.title || sayfa.name;
+    return {
+      ...sayfa,
+      name: ad,
+      title: ad + marka,
+      description: kirp(k?.summary || sayfa.description),
+      // Aranan terimlerin bir kismi her dilde ingilizce yaziliyor (swot, wbs),
+      // o yuzden ingilizce anahtarlar korunup basina yerel ad ekleniyor.
+      keywords: ad.toLowerCase() + ', ' + sayfa.keywords
+    };
+  }
+  const ad = (sayfa.titleKey && yerel[dil][sayfa.titleKey]) || sayfa.name;
+  const aciklama = metaCeviri[sayfa.slug]?.[dil];
+  return {
+    ...sayfa,
+    name: ad,
+    title: ad + marka,
+    description: kirp(aciklama || sayfa.description),
+    keywords: sayfa.keywords
+  };
+}
+
+/**
+ * Sayfanin butun dillerdeki karsiliklarini birbirine baglar.
+ *
+ * Bu olmadan Google 11 ayri adresi birbirinin kopyasi sayar ve yalnizca birini
+ * dizine alir. x-default oneksiz (ingilizce) surumu gosteriyor.
+ */
+function hreflangEtiketleri(slug) {
+  const satirlar = DILLER.map(
+    (d) => `<link rel="alternate" hreflang="${d}" href="${dilliAdres(d, slug)}" />`
+  );
+  satirlar.push(`<link rel="alternate" hreflang="x-default" href="${dilliAdres(VARSAYILAN_DIL, slug)}" />`);
+  return satirlar.join('\n    ') + '\n    ';
+}
+
+/** Kabuktaki <html lang="en"> sayfanin diline gore yeniden yaziliyor. */
+function dilNitelikleri(html, dil) {
+  return degistir(
+    html,
+    /<html[^>]*>/i,
+    `<html lang="${dil}" dir="${RTL.has(dil) ? 'rtl' : 'ltr'}">`,
+    '<html> etiketi'
+  );
+}
 // Yayımlanmış yazılar. Kimlik yoksa boş liste döner ve blog sayfaları
 // üretilmez; yerel derleme bu yüzden durmuyor (bkz. blogCek.mjs).
 const blogYazilari = await yayinlananYazilariCek('klarsti');
 const { blogAyristir, blogDuzMetin } = await blogAyristirici();
 
 let uretilen = 0;
-for (const sayfa of sayfalar) {
-  const adres = `${SITE}/${sayfa.slug}`;
-  let html = kabuk;
+for (const dil of DILLER) {
+  const BASLIK = baslikSeti(dil);
+  if (dil !== VARSAYILAN_DIL) fs.mkdirSync(path.join(DIST, dil), { recursive: true });
+  for (const kaynakSayfa of sayfalar) {
+  const sayfa = sayfaMetni(kaynakSayfa, dil);
+  const adres = dilliAdres(dil, sayfa.slug);
+  let html = dilNitelikleri(kabuk, dil);
 
   html = degistir(html, /<title>[^<]*<\/title>/i, `<title>${kacir(sayfa.title)}</title>`, '<title>');
   html = icerikDegistir(html, 'name', 'description', sayfa.description);
@@ -440,7 +551,14 @@ for (const sayfa of sayfalar) {
     'canonical'
   );
 
-  html = degistir(html, /<\/head>/i, `${yapilandirilmisVeri(sayfa, adres)}</head>`, '</head>');
+  // Dil sürümlerinin birbirine bağlanması: bu olmadan Google 11 adresi
+  // birbirinin kopyası sayıp yalnızca birini dizine alır.
+  html = degistir(
+    html,
+    /<\/head>/i,
+    `${hreflangEtiketleri(sayfa.slug)}${yapilandirilmisVeri(sayfa, adres)}</head>`,
+    '</head>'
+  );
 
   // Blog liste sayfasının gövdesi de dolduruluyor: yazı başlıkları gerçek
   // link olmalı, arama motorunun tek tek yazılara giden yolu burası.
@@ -471,12 +589,56 @@ for (const sayfa of sayfalar) {
     html = degistirDuz(
       html,
       /<div id="root">\s*<\/div>/i,
-      `<div id="statik-onizleme" class="fixed inset-0 z-[1] overflow-y-auto bg-slate-50 dark:bg-slate-900">${govde(sayfa, kilavuzlar[sayfa.toolId], digerleri)}</div>\n    <div id="root"></div>`,
+      `<div id="statik-onizleme" class="fixed inset-0 z-[1] overflow-y-auto bg-slate-50 dark:bg-slate-900">${govde(sayfa, kilavuzlar[dil]?.[sayfa.toolId], digerleri, dil, BASLIK)}</div>\n    <div id="root"></div>`,
       'root kutusu'
     );
   }
 
-  fs.writeFileSync(path.join(DIST, `${sayfa.slug}.html`), html, 'utf8');
+  const hedef = dil === VARSAYILAN_DIL
+    ? path.join(DIST, `${sayfa.slug}.html`)
+    : path.join(DIST, dil, `${sayfa.slug}.html`);
+  fs.writeFileSync(hedef, html, 'utf8');
+  uretilen++;
+  }
+}
+
+/**
+ * Ana sayfanın dil sürümleri: dist/tr.html, dist/de.html ...
+ *
+ * Bunlar olmadan /tr isteği rewrite kuralına düşüp İngilizce etiketli
+ * index.html'i alırdı; sitemap'te duran adresin karşılığı olmazdı.
+ * İngilizce ana sayfa dist/index.html olarak zaten var, ona yalnızca
+ * hreflang ekleniyor.
+ *
+ * Başlık ve açıklama tanıtım sayfasının kendi metinlerinden geliyor
+ * (hero_title / hero_subtitle): ekranda yazan cümlenin aynısı.
+ */
+for (const dil of DILLER) {
+  const adres = dilliAdres(dil, '');
+  const baslik = `Klarsti — ${yerel[dil].hero_title}`;
+  const aciklama = kirp(yerel[dil].hero_subtitle);
+  let html = dilNitelikleri(kabuk, dil);
+
+  html = degistir(html, /<title>[^<]*<\/title>/i, `<title>${kacir(baslik)}</title>`, '<title>');
+  html = icerikDegistir(html, 'name', 'description', aciklama);
+  html = icerikDegistir(html, 'property', 'og:title', baslik);
+  html = icerikDegistir(html, 'property', 'og:description', aciklama);
+  html = icerikDegistir(html, 'property', 'og:url', adres);
+  html = icerikDegistir(html, 'name', 'twitter:title', baslik);
+  html = icerikDegistir(html, 'name', 'twitter:description', aciklama);
+  html = degistir(
+    html,
+    /<link\s+rel="canonical"\s+href="[^"]*"\s*\/?>/i,
+    `<link rel="canonical" href="${adres}" />`,
+    'canonical'
+  );
+  html = degistir(html, /<\/head>/i, `${hreflangEtiketleri('')}</head>`, '</head>');
+
+  fs.writeFileSync(
+    path.join(DIST, dil === VARSAYILAN_DIL ? 'index.html' : `${dil}.html`),
+    html,
+    'utf8'
+  );
   uretilen++;
 }
 
@@ -562,14 +724,39 @@ for (const yazi of blogYazilari) {
 // Sitemap elle tutulmuyordu ve tek adres içeriyordu; artık listeden üretiliyor,
 // yani yeni bir araç sayfası eklendiğinde kendiliğinden içine giriyor.
 const bugun = new Date().toISOString().slice(0, 10);
+// Her adres 11 dilde var; sitemap'te hepsi ayri girdi ve her girdi
+// digerlerine xhtml:link ile bagli. Google dil surumlerini ancak boyle
+// eslestiriyor, yoksa birini secip otekileri yinelenen icerik sayiyor.
+const alternatifler = (slug) =>
+  [...DILLER.map((d) => `    <xhtml:link rel="alternate" hreflang="${d}" href="${dilliAdres(d, slug)}"/>`),
+   `    <xhtml:link rel="alternate" hreflang="x-default" href="${dilliAdres(VARSAYILAN_DIL, slug)}"/>`].join('\n');
+
+const anaSayfalar = DILLER.map(
+  (d) => `  <url>
+    <loc>${SITE}${d === VARSAYILAN_DIL ? '/' : '/' + d}</loc>
+${alternatifler('')}
+    <lastmod>${bugun}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>`
+);
+
 const girdiler = [
-  `  <url>\n    <loc>${SITE}/</loc>\n    <lastmod>${bugun}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>1.0</priority>\n  </url>`,
+  ...anaSayfalar,
   // Yasal sayfalar arama sonucunda öne çıkmak için değil, bulunabilir olmak
   // için listede; bu yüzden düşük öncelikli. Giriş/kayıt ikisinin arasında:
   // araç sayfaları kadar değerli değiller ama sitenin ana yollarından biri.
-  ...sayfalar.map(
-    (s) =>
-      `  <url>\n    <loc>${SITE}/${s.slug}</loc>\n    <lastmod>${bugun}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>${ONCELIK[s.tur]}</priority>\n  </url>`
+  ...DILLER.flatMap((d) =>
+    sayfalar.map(
+      (s) =>
+        `  <url>
+    <loc>${dilliAdres(d, s.slug)}</loc>
+${alternatifler(s.slug)}
+    <lastmod>${bugun}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>${ONCELIK[s.tur]}</priority>
+  </url>`
+    )
   ),
   // Blog yazıları. lastmod olarak yazının kendi yayın tarihi veriliyor:
   // her derlemede bugünü yazmak, değişmemiş bir yazıyı her gün "güncellendi"
@@ -582,10 +769,10 @@ const girdiler = [
 ];
 fs.writeFileSync(
   path.join(DIST, 'sitemap.xml'),
-  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${girdiler.join('\n')}\n</urlset>\n`,
+  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${girdiler.join('\n')}\n</urlset>\n`,
   'utf8'
 );
 
 console.log(
-  `staticPages: ${uretilen} sayfa (${araclar.length} arac + ${yasal.length} yasal + ${girisler.length} giris + ${iletisim.length} iletisim + ${hakkimizda.length} hakkimizda + ${blogListesi.length} blog listesi + ${blogYazilari.length} blog yazisi) + sitemap uretildi`
+  `staticPages: ${uretilen} sayfa (${sayfalar.length} sayfa x ${DILLER.length} dil + ${blogYazilari.length} blog yazisi) + sitemap uretildi`
 );

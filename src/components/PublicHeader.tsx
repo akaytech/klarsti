@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Palette, Languages, Check } from 'lucide-react';
 import packageJson from '../../package.json';
 import { useAuthStore } from '../store/useAuthStore';
 import ThemeOptionList from './ThemeOptionList';
 import { DESTEKLENEN_DILLER } from '../config/languages';
+import { dilOnekiniAyikla, dilliYol } from '../utils/dilYolu';
 
 // Giriş gerektirmeyen sayfaların (tanıtım sayfası, araç sayfaları) ortak üst
 // çubuğu. Eskiden LandingPage'in içine gömülüydü; araç sayfaları eklenince
@@ -18,6 +19,9 @@ import { DESTEKLENEN_DILLER } from '../config/languages';
 export default function PublicHeader() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  // window.location DEĞİL: yayında kök "/" ama GitHub Pages önizlemesinde
+  // "/klarsti/" ve o önek burada dil sanılırdı (bkz. vite.config.ts).
+  const konum = useLocation();
   const user = useAuthStore((s) => s.user);
   const isAuthLoading = useAuthStore((s) => s.isAuthLoading);
 
@@ -43,6 +47,13 @@ export default function PublicHeader() {
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
     setShowLanguagePicker(false);
+    // Herkese açık sayfalarda adres dili taşıyor (/tr/wbs). Dil değişince
+    // adres de değişmeli, yoksa canonical ile ekrandaki dil ayrışır ve
+    // paylaşılan link yanlış dilde açılır. Yeniden yükleme yok; React
+    // zaten yeni dille çiziliyor.
+    const { yol } = dilOnekiniAyikla(konum.pathname);
+    const yeni = dilliYol(lng, yol);
+    if (yeni !== konum.pathname) navigate(yeni + konum.search, { replace: true });
   };
 
   return (

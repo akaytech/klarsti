@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { applyNodeChanges, applyEdgeChanges, addEdge } from './kutuDegisiklikleri';
 import type { NodeChange, EdgeChange, Connection, Edge, Node } from '@xyflow/react';
 import i18n from '../../i18n';
-import type { DiagramTypeDef } from '../../config/diagramShared';
+import type { DiagramTemplate, DiagramTypeDef } from '../../config/diagramShared';
 import { edgeStyle } from '../../config/diagramShared';
 import { islem, tiktaIslem, gecmisiTemizle } from '../gecmis';
 import { siraDegistir } from './siralama';
@@ -59,6 +59,11 @@ interface DiagramOpsConfig {
   getType: (id: string | null | undefined) => DiagramTypeDef;
   /** Tür değişiminde kutuların en yakın karşılığı */
   fallbacks: Record<string, string[]>;
+  /**
+   * Türün örnek şablonu (boş tuvaldeki "Örnek şablon yükle"). Yalnızca akış
+   * şemalarında var; organizasyon şeması zaten hazır iskeletle açılıyor.
+   */
+  getExample?: (typeId: string) => DiagramTemplate | undefined;
 }
 
 export function createDiagramOps(cfg: DiagramOpsConfig, set: (fn: (state: any) => any) => void) {
@@ -72,6 +77,46 @@ export function createDiagramOps(cfg: DiagramOpsConfig, set: (fn: (state: any) =
       ...state,
       [cfg.listKey]: listesi(state).map((s) => (s.id === aktif.id ? degistir(s) : s)),
     };
+  };
+
+  /**
+   * Şablondaki kutu ve çizgileri gerçek kimliklerle kurar. İki yerden
+   * çağrılıyor: yeni şemanın hazır iskeleti ve örnek şablon düğmesi.
+   */
+  const sablonuKur = (sablon: DiagramTemplate, tur: DiagramTypeDef) => {
+    const kimlikler: Record<string, string> = {};
+    const nodes: DiagramNode[] = sablon.nodes.map((k) => {
+      const id = uuidv4();
+      kimlikler[k.key] = id;
+      return {
+        id,
+        type: cfg.nodeType,
+        position: { x: k.x, y: k.y },
+        data: {
+          label: i18n.t(k.labelKey),
+          shape: k.shape,
+          ...(k.subtitleKey ? { subtitle: i18n.t(k.subtitleKey) } : {}),
+        },
+      };
+    });
+
+    const edges: Edge[] = sablon.edges.map((c) => {
+      const temel: Edge = {
+        id: uuidv4(),
+        source: kimlikler[c.source],
+        target: kimlikler[c.target],
+      };
+      if (c.sourceHandle) temel.sourceHandle = c.sourceHandle;
+      if (c.targetHandle) temel.targetHandle = c.targetHandle;
+      if (c.secondary && tur.secondaryEdge) {
+        temel.type = tur.secondaryEdge.type;
+        temel.animated = tur.secondaryEdge.animated;
+        temel.style = edgeStyle(tur.secondaryEdge);
+      }
+      return temel;
+    });
+
+    return { nodes, edges };
   };
 
   /**
@@ -91,41 +136,14 @@ export function createDiagramOps(cfg: DiagramOpsConfig, set: (fn: (state: any) =
         edges: [] as Edge[],
       };
     }
-
-    const kimlikler: Record<string, string> = {};
-    const nodes: DiagramNode[] = tur.template.nodes.map((k) => {
-      const id = uuidv4();
-      kimlikler[k.key] = id;
-      return {
-        id,
-        type: cfg.nodeType,
-        position: { x: k.x, y: k.y },
-        data: {
-          label: i18n.t(k.labelKey),
-          shape: k.shape,
-          ...(k.subtitleKey ? { subtitle: i18n.t(k.subtitleKey) } : {}),
-        },
-      };
-    });
-
-    const edges: Edge[] = tur.template.edges.map((c) => {
-      const temel: Edge = {
-        id: uuidv4(),
-        source: kimlikler[c.source],
-        target: kimlikler[c.target],
-      };
-      if (c.sourceHandle) temel.sourceHandle = c.sourceHandle;
-      if (c.targetHandle) temel.targetHandle = c.targetHandle;
-      if (c.secondary && tur.secondaryEdge) {
-        temel.type = tur.secondaryEdge.type;
-        temel.animated = tur.secondaryEdge.animated;
-        temel.style = edgeStyle(tur.secondaryEdge);
-      }
-      return temel;
-    });
-
-    return { nodes, edges };
+    return sablonuKur(tur.template, tur);
   };
+
+  /**
+   * Şemaya el değmemiş mi? Ya bomboş, ya da yalnızca yeni şemayla gelen tek
+   * kutu duruyor. Karşılama şeridi ve örnek şablon buna bakıyor.
+   */
+  const elDegmemis = (sema: DiagramChart) => sema.edges.length === 0 && sema.nodes.length <= 1;
 
   return {
     // Geçmiş açık şemaya ait; şema değişince (ya da şema eklenip silinince)
@@ -259,6 +277,19 @@ export function createDiagramOps(cfg: DiagramOpsConfig, set: (fn: (state: any) =
      * şekli bozulmasın diye altındaki bacak — bağlı olduğu üst kutunun
      * altındaki yerine oturuyor.
      */
+    /**
+     * Örnek şablon. Yalnızca el değmemiş şemaya yükleniyor: kullanıcının
+     * üstünde çalıştığı bir şemayı silmek düğmenin işi değil.
+     */
+    loadExample: () => islem(() => {
+      set((state) => aktifiGuncelle(state, (sema) => {
+        if (!elDegmemis(sema)) return sema;
+        const ornek = cfg.getExample?.(sema.type);
+        if (!ornek) return sema;
+        return { ...sema, ...sablonuKur(ornek, cfg.getType(sema.type)) };
+      }));
+    }),
+
     autoLayout: () => islem(() => {
       set((state) => aktifiGuncelle(state, (sema) => {
         const secililer = sema.nodes.filter((n) => n.selected);

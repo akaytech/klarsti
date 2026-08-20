@@ -29,6 +29,12 @@ export interface DiagramApi {
    * kutu varsa yalnızca onu bağlı olduğu kutunun altına oturtur.
    */
   autoLayout: () => void;
+  /**
+   * El değmemiş şemayı örnek bir şemayla doldurur. Yalnızca akış şemalarında
+   * var; organizasyon şeması zaten hazır iskeletle açıldığı için orada
+   * tanımsız kalıyor ve karşılama şeridi hiç çıkmıyor.
+   */
+  loadExample?: () => void;
 }
 
 export function useDiagram(kind: DiagramKind): DiagramApi {
@@ -65,6 +71,7 @@ export function useDiagram(kind: DiagramKind): DiagramApi {
           updateNode: s.updateFlowchartNode,
           deleteNode: s.deleteFlowchartNode,
           autoLayout: s.autoLayoutFlowchart,
+          loadExample: s.loadFlowchartExample,
         }
   )));
 }

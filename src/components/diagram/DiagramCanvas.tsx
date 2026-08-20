@@ -9,6 +9,8 @@ import '@xyflow/react/dist/style.css';
 import { LayoutGrid } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import CanvasBackdrop from '../CanvasBackdrop';
+import CanvasKarsilama from '../CanvasKarsilama';
+import { useEkranaSigdir } from '../../utils/ekranaSigdir';
 import { metinAlaninda } from '../../utils/metinAlaninda';
 import { getDiagramKind, type DiagramKind } from '../../config/diagramKinds';
 import { edgeStyle } from '../../config/diagramShared';
@@ -29,7 +31,7 @@ import CanvasControls from '../CanvasControls';
 export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
   const { t } = useTranslation();
   const k = getDiagramKind(kind);
-  const { charts, activeId, onNodesChange, onEdgesChange, onConnect, addNode, updateNode, deleteNode, autoLayout } = useDiagram(kind);
+  const { charts, activeId, onNodesChange, onEdgesChange, onConnect, addNode, updateNode, deleteNode, autoLayout, loadExample } = useDiagram(kind);
   const { setCenter, getZoom, fitView } = useReactFlow();
   const [menu, setMenu] = useState<{ id: string; top: number; left: number } | null>(null);
   // Adı yazılan kutu. Ad değiştirme kutunun içinde oluyor (bkz. DiagramNode),
@@ -37,6 +39,8 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
   // da doğrudan yazma kipinde açılıyor.
   const [editingId, setEditingId] = useState<string | null>(null);
   const [yeniSemaAcik, setYeniSemaAcik] = useState(false);
+  // Kullanıcı "kendim oluşturacağım" derse karşılama bu oturum boyunca gelmez.
+  const [karsilamaKapandi, setKarsilamaKapandi] = useState(false);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   // Geçmişte açık bir sürükleme işlemi var mı? (bkz. onNodeDragStart)
   const surukleAcik = useRef(false);
@@ -72,6 +76,10 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
   );
 
   const aktif = getActiveChart(charts, activeId);
+
+  // Örnek şablon yüklenince ya da başka bir şemaya geçilince kamera içeriğe
+  // sığdırılıyor; yoksa on kutuluk örnek ekranın dışında açılıyor.
+  useEkranaSigdir(aktif?.id, aktif?.nodes.length ?? 0, { padding: 0.2 });
 
   // Başka bir şemaya geçilince yarım kalan ad yazma kipi kapanır; yoksa yeni
   // şemada aynı kimlikli kutu varsa onun içinde açılıyor.
@@ -187,6 +195,10 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
   }
 
   const tur = k.getType(aktif.type);
+  const TurIkonu = tur.icon;
+  // Şemaya el değmemiş mi? Aynı ölçü depoda da var (bkz. diagramOps): örnek
+  // şablon yalnızca bu haldeki şemaya yükleniyor.
+  const elDegmemis = aktif.edges.length === 0 && aktif.nodes.length <= 1;
 
   return (
     <DiagramEditingContext.Provider value={duzenleme}>
@@ -251,9 +263,23 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
 
         <CanvasMiniMap nodeColor={(n) => k.getShape((n.data as any)?.shape).minimapColor} />
 
-        {/* Şema bomboşsa eklemeyi başlatacak bir kutu da yok; şerit ortada
-            duruyor, seçilen şekil ilk kutu oluyor. */}
-        {aktif.nodes.length === 0 && (
+{/* El değmemiş şemada karşılama şeridi: ya kendin çizersin ya da hazır
+            bir örnekle başlarsın. Yalnızca örneği olan araçta (akış şeması)
+            çıkıyor; organizasyon şeması zaten dolu bir iskeletle açılıyor. */}
+        {loadExample && elDegmemis && !karsilamaKapandi ? (
+          <Panel position="top-center" style={{ marginTop: 96 }}>
+            <CanvasKarsilama
+              simge={<TurIkonu size={18} />}
+              baslik={t('flowchart_empty')}
+              aciklama={t('flowchart_empty_hint')}
+              birincil={{ etiket: t('start_from_scratch'), onClick: () => setKarsilamaKapandi(true) }}
+              ikincil={{ etiket: t('load_example'), onClick: () => loadExample() }}
+              onKapat={() => setKarsilamaKapandi(true)}
+            />
+          </Panel>
+        ) : aktif.nodes.length === 0 && (
+          /* Şema bomboşsa eklemeyi başlatacak bir kutu da yok; şerit ortada
+             duruyor, seçilen şekil ilk kutu oluyor. */
           <Panel position="top-center" style={{ marginTop: 96 }}>
             <div className="flex flex-col items-center gap-2">
               <p className="text-sm font-bold text-slate-500 dark:text-slate-400">{t(k.text.addBox)}</p>

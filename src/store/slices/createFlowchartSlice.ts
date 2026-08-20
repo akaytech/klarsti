@@ -2,6 +2,7 @@ import type { StateCreator } from 'zustand';
 import type { NodeChange, EdgeChange, Connection } from '@xyflow/react';
 import type { RoadmapState } from '../useRoadmapStore';
 import { getFlowchartType, FLOWCHART_SHAPE_FALLBACKS, type FlowchartShapeId, type FlowchartTypeId } from '../../config/flowchartTypes';
+import { getFlowchartExample } from '../../config/flowchartExamples';
 import { createDiagramOps, getActiveChart } from './diagramOps';
 import type { DiagramChart, DiagramNode, DiagramNodeData } from './diagramOps';
 
@@ -42,6 +43,8 @@ export interface FlowchartSlice {
   deleteFlowchartNode: (id: string) => void;
   /** Kutuları otomatik dizer; seçili kutu varsa yalnızca onu hizalar. */
   autoLayoutFlowchart: () => void;
+  /** El değmemiş şemaya türüne uygun örnek şablonu yükler. */
+  loadFlowchartExample: () => void;
 }
 
 export function getActiveFlowchart(state: { flowcharts: Flowchart[]; activeFlowchartId: string | null }): Flowchart | undefined {
@@ -60,6 +63,7 @@ export const createFlowchartSlice: StateCreator<
     nodeType: 'flowchartNode',
     getType: getFlowchartType,
     fallbacks: FLOWCHART_SHAPE_FALLBACKS,
+    getExample: getFlowchartExample,
   }, set as any);
 
   return {
@@ -79,5 +83,6 @@ export const createFlowchartSlice: StateCreator<
     updateFlowchartNode: ops.updateNode,
     deleteFlowchartNode: ops.deleteNode,
     autoLayoutFlowchart: ops.autoLayout,
+    loadFlowchartExample: ops.loadExample,
   };
 };

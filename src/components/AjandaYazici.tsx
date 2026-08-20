@@ -145,7 +145,7 @@ export default function AjandaYazici({ yazici }: { yazici: AjandaYaziciDurumu })
                   type="text"
                   value={draftTitle}
                   onChange={(e) => setDraftTitle(e.target.value)}
-                  placeholder={t('notepad_write_title', { defaultValue: 'Başlık (İsteğe bağlı)' })}
+                  placeholder={t('notepad_write_title')}
                   className="w-full mb-3 rounded-xl border-none bg-white dark:bg-slate-800/80 px-4 py-3 text-lg font-bold text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none shadow-sm"
                 />
 

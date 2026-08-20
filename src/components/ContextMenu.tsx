@@ -220,7 +220,7 @@ export default function ContextMenu({
           className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-start text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
         >
           <Calendar size={18} />
-          {t('add_to_agenda', { defaultValue: 'Ajandaya Planla' })}
+          {t('add_to_agenda')}
         </button>
       )}
 

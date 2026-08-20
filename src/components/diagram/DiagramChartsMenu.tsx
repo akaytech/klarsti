@@ -35,14 +35,14 @@ export default function DiagramChartsMenu({ kind, aktif, onYeniSema }: { kind: D
               kalıbına zorluyordu. Başka bir tür isteyen yeni şema açar; tür
               seçimi orada, işe başlamadan önce yapılıyor. */}
           <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-            {t(k.text.chartType, { defaultValue: 'Tür' })}
+            {t(k.text.chartType)}
           </div>
           <div className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 dark:text-slate-300">
             <Ikon size={16} className="shrink-0 text-slate-400" />
             {t(tur.labelKey)}
           </div>
           <p className="px-3 pb-2 pt-1 text-xs text-slate-400 dark:text-slate-500">
-            {t(k.text.typeLockedHint, { defaultValue: 'Tür sonradan değiştirilemez. Başka bir tür için yeni şema aç.' })}
+            {t(k.text.typeLockedHint)}
           </p>
           <div className="my-1 h-px w-full bg-slate-100 dark:bg-slate-700" />
         </>

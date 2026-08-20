@@ -124,8 +124,8 @@ export default function GoalNode({ data, selected }: { data: GoalNodeData; selec
               ? "bg-slate-100 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600"
               : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-slate-700"
           )}
-          title={`${t('node_progress_hint', { biten: completedChildrenCount, toplam: childrenIds.length })} — ${data.hideCompleted ? t('show_hidden') : t('hide_completed')}`}
-          aria-label={`${t('node_progress_hint', { biten: completedChildrenCount, toplam: childrenIds.length })} — ${data.hideCompleted ? t('show_hidden') : t('hide_completed')}`}
+          title={`${t('node_progress_hint', { biten: completedChildrenCount, toplam: childrenIds.length, count: childrenIds.length })} — ${data.hideCompleted ? t('show_hidden') : t('hide_completed')}`}
+          aria-label={`${t('node_progress_hint', { biten: completedChildrenCount, toplam: childrenIds.length, count: childrenIds.length })} — ${data.hideCompleted ? t('show_hidden') : t('hide_completed')}`}
         >
           {data.hideCompleted ? <EyeOff size={12} /> : <Eye size={12} />}
           {/* Kaç alt görev bitti: sayı tek başına ne kadarın kaldığını

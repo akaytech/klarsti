@@ -63,7 +63,7 @@ export default function SelectionContextMenu({
               kurallarına giriyor ve dile göre _one/_two/_few gibi ayrı
               anahtarlar arıyor. Arapçanın altı biçimi var; hepsini yazmak
               yerine sayı düz bir değer olarak geçiliyor. */}
-          {t('bulk_selected_count', { adet: sayi, defaultValue: '{{adet}} boxes selected' })}
+          {t('bulk_selected_count', { adet: sayi, count: sayi })}
         </div>
 
         <div className="px-3 pb-1.5 text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">

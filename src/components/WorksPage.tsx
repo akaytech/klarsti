@@ -100,7 +100,7 @@ export default function WorksPage() {
             {t('my_projects')}
           </h1>
           <p className="mt-2 text-slate-500 dark:text-slate-400">
-            {t('works_count', { sayi: hepsi.length })}
+            {t('works_count', { sayi: hepsi.length, count: hepsi.length })}
           </p>
         </header>
 

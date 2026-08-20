@@ -177,7 +177,7 @@ export default memo(function RoadmapNode({ data, selected }: { data: Ekstra; sel
           onClick={(e) => { e.stopPropagation(); setDetayId(nodeId); }}
           onDoubleClick={(e) => e.stopPropagation()}
           aria-label={t('roadmap_resources')}
-          title={t('roadmap_resource_count', { sayi: kaynakSayisi })}
+          title={t('roadmap_resource_count', { sayi: kaynakSayisi, count: kaynakSayisi })}
           className="nodrag nopan flex shrink-0 items-center gap-0.5 text-[10px] font-bold text-sky-500 transition-colors hover:text-sky-600"
         >
           <Link2 size={12} />

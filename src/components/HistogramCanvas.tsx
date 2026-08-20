@@ -223,7 +223,7 @@ export default function HistogramCanvas() {
             />
           )}
           <div className="mt-1 text-end text-xs font-semibold text-slate-500 dark:text-slate-400">
-            {t('histogram_count', { sayi: aktif?.olcumler.length ?? 0 })}
+            {t('histogram_count', { sayi: aktif?.olcumler.length ?? 0, count: aktif?.olcumler.length ?? 0 })}
           </div>
 
           <div className="mt-5 border-t border-slate-100 pt-4 dark:border-slate-700">

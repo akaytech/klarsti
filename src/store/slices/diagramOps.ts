@@ -308,7 +308,12 @@ export function createDiagramOps(cfg: DiagramOpsConfig, set: (fn: (state: any) =
         if (!elDegmemis(sema)) return sema;
         const ornek = cfg.getExample?.(sema.type);
         if (!ornek) return sema;
-        return { ...sema, ...sablonuKur(ornek, cfg.getType(sema.type)) };
+        // Şablondaki konumlar kabataslak; dizilimden geçiriliyor ki şema daha
+        // İLK boyamada hizalı çıksın. Kutular henüz ölçülmediği için burada
+        // varsayılan ölçüler kullanılıyor — gerçek enler gelince kanvas
+        // dizilimi bir kez daha çalıştırıp ince ayarı yapıyor
+        // (bkz. DiagramCanvas, ornekYukle).
+        return semayiYenidenDiz({ ...sema, ...sablonuKur(ornek, cfg.getType(sema.type)) });
       }));
     }),
 

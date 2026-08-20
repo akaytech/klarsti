@@ -101,9 +101,19 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
   useEffect(() => {
     if (!ornekBekliyor) return;
     const kutular = aktif?.nodes ?? [];
-    if (kutular.length === 0 || !kutular.every((n) => n.measured?.width)) return;
-    setOrnekBekliyor(false);
-    normalizeLayout();
+    if (kutular.length > 0 && kutular.every((n) => n.measured?.width)) {
+      setOrnekBekliyor(false);
+      normalizeLayout();
+      return;
+    }
+    // Ölçüm hiç gelmezse şablon ince ayarsız kalmasın: en geç yarım saniye
+    // sonra eldeki ölçülerle diziliyor. Olağan halde üstteki hızlı yol
+    // çalışıyor ve bu zamanlayıcıya sıra gelmiyor.
+    const zamanlayici = setTimeout(() => {
+      setOrnekBekliyor(false);
+      normalizeLayout();
+    }, 500);
+    return () => clearTimeout(zamanlayici);
   }, [ornekBekliyor, aktif?.nodes, normalizeLayout]);
 
   const ornekYukle = useCallback(() => {

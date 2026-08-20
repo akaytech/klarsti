@@ -301,7 +301,10 @@ export default function CalismaMenusu({
 
       {satirMenusu && menuOgesi && (
         <div
-          className="context-menu absolute z-10 w-[190px] overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-xl dark:border-slate-700 dark:bg-slate-800"
+          // z-30: bu menü, açık listenin ÜSTÜNDE durmak zorunda. Liste 20'ye
+          // çıkarıldığında burası 10'da kalmıştı ve sağ tık menüsü listenin
+          // altında kalıp hiç görünmüyordu.
+          className="context-menu absolute z-30 w-[190px] overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-xl dark:border-slate-700 dark:bg-slate-800"
           style={{ top: satirMenusu.top, insetInlineStart: satirMenusu.left }}
         >
           <button onClick={() => adaBasla(menuOgesi)} className={`${menuSatiri} ${menuSade}`}>

@@ -162,7 +162,7 @@ const guides: ToolGuideBundle = {
   },
 
   swot: {
-    title: 'Análisis DAFO (SWOT)',
+    title: 'Análisis SWOT',
     summary:
       'Lee una idea, un proyecto o una organización por cuatro ventanas: qué hay bueno y malo dentro, qué oportunidades y amenazas hay fuera. El objetivo no es hacer cuatro listas, sino enlazarlas para sacar una estrategia.',
     whenToUse: [
@@ -172,7 +172,7 @@ const guides: ToolGuideBundle = {
       'Para construir una imagen común en el equipo: todos miran los mismos cuatro cuadros.'
     ],
     steps: [
-      'Escribe arriba el nombre del análisis y pulsa Crear. Un proyecto puede tener varios DAFO.',
+      'Escribe arriba el nombre del análisis y pulsa Crear. Un proyecto puede tener varios SWOT.',
       'Aparecen cuatro cuadros: Fortalezas, Debilidades, Oportunidades, Amenazas.',
       'Escribe un punto en el campo bajo un cuadro y pulsa Enter, o haz clic en el botón más.',
       'Haz clic en un punto ya escrito para editarlo en el sitio; los cambios se guardan solos.',
@@ -185,7 +185,7 @@ const guides: ToolGuideBundle = {
       { keys: ['Mod', 'Y'], desc: 'Rehacer' }
     ],
     tips: [
-      'Fortalezas y debilidades son internas, están en tu mano; oportunidades y amenazas son externas. Un DAFO que confunde ambas no sirve.',
+      'Fortalezas y debilidades son internas, están en tu mano; oportunidades y amenazas son externas. Un SWOT que confunde ambas no sirve.',
       'El trabajo de verdad está en cruzar los cuadros: qué fortaleza aprovecha qué oportunidad, qué debilidad te expone a qué amenaza.',
       'Llenar un cuadro con diez puntos y dejar otro vacío no es analizar, es tomar partido.'
     ]
@@ -219,7 +219,7 @@ const guides: ToolGuideBundle = {
   },
 
   pdca: {
-    title: 'Ciclo PHVA (PDCA)',
+    title: 'Ciclo PDCA',
     summary:
       'Planificar, Hacer, Verificar, Actuar. Lleva una mejora no como tarea única sino como una rueda que gira: cada vuelta empieza con el resultado de la anterior.',
     whenToUse: [
@@ -269,7 +269,7 @@ const guides: ToolGuideBundle = {
     tips: [
       'No hay botón para reabrir una fase; si la completaste por error, deshacer es la única vuelta atrás.',
       'Asegúrate de que la fase está realmente terminada antes de cerrarla: al cerrarse también se bloquea el texto.',
-      'Si los requisitos van a cambiar sobre la marcha, la cascada te aprieta; ahí funcionan mejor la EDT o el PHVA.'
+      'Si los requisitos van a cambiar sobre la marcha, la cascada te aprieta; ahí funcionan mejor la EDT o el PDCA.'
     ]
   },
 
@@ -314,7 +314,7 @@ const guides: ToolGuideBundle = {
     ],
     steps: [
       'Ingresa la demanda diaria y los turnos en el panel superior derecho. De ahí sale el tiempo takt: cada cuánto debe salir una pieza.',
-      'En un lienzo vacío, crea el esqueleto inicial o empieza desde cero. Haz clic derecho en el lienzo para agregar cualquier caja.',
+      'En un lienzo vacío, crea el esqueleto inicial o empieza desde cero. Haz clic derecho en el lienzo para añadir cualquier caja.',
       'Escribe el tiempo de ciclo con su unidad en la caja de proceso. Si supera el tiempo takt la caja se pone roja: ahí está el cuello de botella.',
       'Escribe las piezas en espera en la caja de inventario; el tiempo de espera sale como piezas ÷ demanda diaria. Si no tienes conteo, ingresa el tiempo directamente.',
       'Conecta las cajas. Haz clic derecho en una conexión para cambiarla a empuje, extracción, FIFO, información manual o electrónica. Solo las flechas de material entran en el cálculo.',

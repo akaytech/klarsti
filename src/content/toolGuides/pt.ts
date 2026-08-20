@@ -439,62 +439,62 @@ const guides: ToolGuideBundle = {
   },
   gantt: {
     title: "Gráfico de Gantt",
-    summary: "Uma ferramenta de planeamento que coloca o trabalho como barras horizontais num calendário. O que começa quando, quanto dura e o que espera pelo quê, tudo num ecrã.",
+    summary: "Uma ferramenta de planejamento que coloca o trabalho como barras horizontais num calendário. O que começa quando, quanto dura e o que espera pelo quê, tudo numa tela.",
     whenToUse: [
       "Para prender o trabalho a datas e deixar os inícios claros.",
       "Para mostrar a ordem e as tarefas que dependem umas das outras.",
-      "Para ver cedo o que está a atrasar."
+      "Para ver cedo o que está atrasando."
     ],
     steps: [
-      "Um projeto pode ter vários gráficos. No menu do canto superior esquerdo cria um novo ou muda entre eles.",
-      "Adicione linhas com \"Adicionar tarefa\". Duplo clique no nome para o mudar.",
-      "Ao selecionar uma linha abre-se a barra de detalhe em baixo: início, fim, progresso e estado.",
-      "Arraste uma barra para deslocar as datas; puxe uma ponta para a alongar ou encurtar.",
+      "Um projeto pode ter vários gráficos. No menu do canto superior esquerdo você cria um novo ou alterna entre eles.",
+      "Adicione linhas com \"Adicionar tarefa\". Duplo clique no nome para alterá-lo.",
+      "Ao selecionar uma linha, abre-se a barra de detalhe embaixo: início, fim, progresso e status.",
+      "Arraste uma barra para deslocar as datas; puxe uma ponta para alongá-la ou encurtá-la.",
       "O botão de avanço torna uma linha subtarefa da anterior. A barra de uma tarefa-mãe é calculada.",
       "O botão de dependência cria o laço \"não começa antes de\"; é desenhada uma seta entre as barras."
     ],
     tips: [
       "Para marcos sem duração escolha marco: em vez de barra aparece um losango.",
-      "A linha vermelha marca hoje. Tarefas por concluir com data passada ficam com contorno vermelho.",
-      "Dia / semana / mês apertam ou abrem o calendário. A vista de mês cabe um plano longo num ecrã."
+      "A linha vermelha marca hoje. Tarefas não concluídas com data passada ficam com contorno vermelho.",
+      "Dia / semana / mês apertam ou abrem o calendário. A visão de mês cabe um plano longo numa tela."
     ]
   },
 
   roadmap: {
     title: "Roteiro",
-    summary: "Um mapa que divide um assunto em etapas sucessivas, com os temas pendurados em cada etapa. Nunca arrastas as caixas: o mapa organiza-se sozinho a cada alteração. Ao contrário da estrutura de decomposição, aqui segue-se o progresso: cada caixa tem um estado e a faixa de cima diz quanto já está feito.",
+    summary: "Um mapa que divide um assunto em etapas sucessivas, com os temas pendurados em cada etapa. Você nunca arrasta as caixas: o mapa se organiza sozinho a cada alteração. Ao contrário da estrutura analítica, aqui você acompanha o progresso: cada caixa tem um status e a faixa de cima diz quanto já está feito.",
     whenToUse: [
-      "Para pôr um assunto por ordem de aprendizagem e saber onde ficaste.",
-      "Para planear passo a passo os primeiros meses de quem chega.",
-      "Para mostrar num só ecrã as fases por que passa um trabalho.",
-      "Para dividir um programa de formação em temas e anexar-lhes os materiais."
+      "Para pôr um assunto em ordem de aprendizado e saber até onde você chegou.",
+      "Para planejar passo a passo os primeiros meses de quem chega.",
+      "Para mostrar numa só tela as fases pelas quais um trabalho passa.",
+      "Para dividir um programa de treinamento em temas e anexar os materiais a eles."
     ],
     steps: [
-      "Uma pasta pode ter vários roteiros. No menu do canto superior esquerdo crias um novo e alternas entre eles.",
-      "O traçado principal vai do início ao fim. Seleciona uma etapa e carrega em Enter para acrescentar a seguinte.",
-      "Com uma etapa selecionada, o Tab pendura-lhe um tema. Num tema, o Tab cria um subtema e o Enter um do mesmo nível.",
-      "O círculo no início da caixa muda o estado: Por começar → Em curso → Concluído → Ignorado. A cor acompanha.",
-      "Botão direito numa caixa e «Detalhes» abre o painel lateral: nota, tempo estimado e ligações.",
-      "Para dividir um roteiro longo, acrescenta um título de secção pelo menu de contexto (Inicial / Intermédio / Avançado, por exemplo).",
-      "Um tema tornado opcional é ligado a tracejado e fica de fora da percentagem.",
-      "O botão de rodar na faixa passa o traçado de vertical a horizontal; assim um roteiro longo lê-se bem num ecrã largo."
+      "Uma pasta pode ter vários roteiros. No menu do canto superior esquerdo você cria um novo e alterna entre eles.",
+      "O traçado principal vai do início ao fim. Selecione uma etapa e pressione Enter para adicionar a seguinte.",
+      "Com uma etapa selecionada, o Tab pendura um tema nela. Num tema, o Tab cria um subtema e o Enter um do mesmo nível.",
+      "O círculo no início da caixa muda o status: Não iniciado → Em andamento → Concluído → Ignorado. A cor acompanha.",
+      "Botão direito numa caixa e «Detalhes» abre o painel lateral: nota, tempo estimado e links.",
+      "Para dividir um roteiro longo, adicione um título de seção pelo menu de contexto (Inicial / Intermediário / Avançado, por exemplo).",
+      "Um tema tornado opcional é ligado por tracejado e fica de fora da porcentagem.",
+      "O botão de girar na faixa passa o traçado de vertical para horizontal; assim um roteiro longo se lê bem numa tela larga."
     ],
     shortcuts: [
       { keys: ["Enter"], desc: "Nova etapa no traçado" },
       { keys: ["Tab"], desc: "Tema sob a caixa selecionada" },
       { keys: ["F2"], desc: "Mudar o nome da caixa selecionada" },
-      { keys: ["Delete"], desc: "Eliminar a caixa selecionada" },
+      { keys: ["Delete"], desc: "Excluir a caixa selecionada" },
       { keys: ["Shift", "Enter"], desc: "Mudar de linha ao escrever" },
       { keys: ["Esc"], desc: "Fechar o campo de texto" },
-      { keys: ["Mod", "Z"], desc: "Anular" },
+      { keys: ["Mod", "Z"], desc: "Desfazer" },
       { keys: ["Mod", "Y"], desc: "Refazer" }
     ],
     tips: [
-      "As caixas não se arrastam, a disposição é automática. Para mudar a ordem de uma etapa usa os comandos do menu de contexto.",
+      "As caixas não se arrastam, a disposição é automática. Para mudar a ordem de uma etapa, use os comandos do menu de contexto.",
       "Os temas alternam de lado de etapa para etapa, para o mapa não crescer só para um lado.",
-      "As caixas ignoradas contam como terminadas: um tema que decidiste não fazer não deve travar a percentagem para sempre.",
-      "As horas que escreves somam-se; a faixa mostra o total que falta nas caixas por terminar.",
-      "O endereço tem de começar por http ou https, caso contrário não é aceite."
+      "As caixas ignoradas contam como concluídas: um tema que você decidiu não fazer não deve travar a porcentagem para sempre.",
+      "As horas que você escreve são somadas; a faixa mostra o total que falta nas caixas não concluídas.",
+      "O endereço precisa começar com http ou https, caso contrário não é aceito."
     ]
   }
 };

@@ -12,11 +12,6 @@ import type { Edge, Node } from '@xyflow/react';
  * çok ebeveyni de kaldırıyor.
  */
 
-/** İki kardeş kutu arasındaki en küçük yatay boşluk. */
-const YATAY = 60;
-/** İki sıra arasındaki dikey boşluk. */
-const DIKEY = 90;
-
 // Kutu daha ölçülmediyse (ekranda hiç çizilmediyse) kullanılan kaba ölçü.
 const VARSAYILAN_EN = 180;
 const VARSAYILAN_BOY = 60;
@@ -28,6 +23,27 @@ function olcu(n: Node) {
     width: n.measured?.width ?? n.width ?? VARSAYILAN_EN,
     height: n.measured?.height ?? n.height ?? VARSAYILAN_BOY,
   };
+}
+
+/** Kutunun kısa kenarı. Kutular yatık olduğu için bu neredeyse hep boyudur. */
+const kisaKenar = (n: Node) => {
+  const { width, height } = olcu(n);
+  return Math.min(width, height);
+};
+
+/**
+ * İki kutu arasındaki boşluk: kutunun kısa kenarı kadar. Sabit bir sayı
+ * yerine kutunun kendi ölçüsüne bağlı, çünkü sabit boşluk küçük kutularda
+ * seyrek, iri kutularda sıkışık duruyordu.
+ *
+ * Bir dizilimde birden çok kutu var ve hepsinin ölçüsü aynı olmayabilir;
+ * boşluk tek bir sayı olmak zorunda olduğu için ortalama alınıyor. Kutular eşit
+ * boyken (olağan hâl) bu tam olarak kutunun kısa kenarı demek.
+ */
+function bosluk(nodes: Node[]): number {
+  if (nodes.length === 0) return VARSAYILAN_BOY;
+  const toplam = nodes.reduce((a, n) => a + kisaKenar(n), 0);
+  return Math.round(toplam / nodes.length);
 }
 
 /**
@@ -52,7 +68,8 @@ export function semayiDiz(nodes: Node[], edges: Edge[]): Map<string, Konum> {
 
   const g = new dagre.graphlib.Graph();
   g.setDefaultEdgeLabel(() => ({}));
-  g.setGraph({ rankdir: 'TB', nodesep: YATAY, ranksep: DIKEY });
+  const ara = bosluk(nodes);
+  g.setGraph({ rankdir: 'TB', nodesep: ara, ranksep: ara });
 
   const kutular = new Set(nodes.map((n) => n.id));
   nodes.forEach((n) => g.setNode(n.id, olcu(n)));
@@ -170,12 +187,13 @@ export function ebeveyneHizala(nodes: Node[], edges: Edge[], id: string): Konum 
   const sira = kardesler.indexOf(id);
   if (sira < 0) return null;
 
+  const ara = bosluk([ebeveyn, ...kardesler.map((k) => kutuById.get(k)!)]);
   const enler = kardesler.map((k) => olcu(kutuById.get(k)!).width);
-  const toplamEn = enler.reduce((a, b) => a + b, 0) + YATAY * (kardesler.length - 1);
+  const toplamEn = enler.reduce((a, b) => a + b, 0) + ara * (kardesler.length - 1);
   const ebeveynOlcu = olcu(ebeveyn);
 
   let x = ebeveyn.position.x + ebeveynOlcu.width / 2 - toplamEn / 2;
-  for (let i = 0; i < sira; i++) x += enler[i] + YATAY;
+  for (let i = 0; i < sira; i++) x += enler[i] + ara;
 
-  return { x, y: ebeveyn.position.y + ebeveynOlcu.height + DIKEY };
+  return { x, y: ebeveyn.position.y + ebeveynOlcu.height + ara };
 }

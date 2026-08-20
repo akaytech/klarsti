@@ -8,6 +8,9 @@ import { altKutular, ebeveyneHizala, semayiDiz } from '../diagramLayout';
 
 const EN = 200;
 const BOY = 60;
+// Kutular arasındaki boşluk kutunun kısa kenarı kadar; kutular yatık olduğu
+// için kısa kenar boydur.
+const ARA = BOY;
 
 const kutu = (id: string, x: number, y: number): Node => ({
   id,
@@ -24,7 +27,7 @@ describe('ebeveyneHizala', () => {
     const nodes = [kutu('a', 0, 0), kutu('b', 640, 900)];
     const yer = ebeveyneHizala(nodes, [cizgi('a', 'b')], 'b');
     // Genişlikler eşit olduğu için tek çocuk ebeveyniyle aynı x'e gelir.
-    expect(yer).toEqual({ x: 0, y: BOY + 90 });
+    expect(yer).toEqual({ x: 0, y: BOY + ARA });
   });
 
   it('kardesler varken kendi sirasindaki yere oturur, kardesler kimildamaz', () => {
@@ -34,10 +37,18 @@ describe('ebeveyneHizala', () => {
     const ilk = ebeveyneHizala(nodes, edges, 'b')!;
     const ikinci = ebeveyneHizala(nodes, edges, 'c')!;
 
-    // İki kutu 60px boşlukla yan yana, ikisinin ortası ebeveynin ortasında.
-    expect(ikinci.x - ilk.x).toBe(EN + 60);
+    // İkisi bir kısa kenar boşlukla yan yana, ortaları ebeveynin ortasında.
+    expect(ikinci.x - ilk.x).toBe(EN + ARA);
     expect((ilk.x + ikinci.x + EN) / 2).toBe(EN / 2);
     expect(ilk.y).toBe(ikinci.y);
+  });
+
+  it('bosluk kutunun kisa kenari kadar', () => {
+    // Kutu büyüyünce arası da büyür: sabit bir sayıya bağlı değil.
+    const iri = (id: string): Node => ({ id, position: { x: 0, y: 0 }, data: {}, measured: { width: 400, height: 140 } });
+    const nodes = [iri('a'), iri('b')];
+    const yer = ebeveyneHizala(nodes, [cizgi('a', 'b')], 'b')!;
+    expect(yer.y).toBe(140 + 140);
   });
 
   it('ustunde bagli kutu yoksa hizalanacak yer de yok', () => {

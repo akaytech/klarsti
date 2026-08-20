@@ -759,7 +759,6 @@
   "wbs_new_package": "新しいワークパッケージ",
   "wbs_hint_phase": "プロジェクトの下に新しいフェーズを追加します。",
   "wbs_hint_package": "選択したボックスの下にワークパッケージを追加します。",
-  "wbs_one_project": "1つの分解ツリーにプロジェクトは1つです。別のプロジェクトは左のメニューから新しいツリーを作ってください。",
   "canvas_add_generic": "追加",
   "whys_add_cause": "原因を追加",
   "ws_recent_heading": "前回の続き",

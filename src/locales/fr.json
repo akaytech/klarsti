@@ -759,7 +759,6 @@
   "wbs_new_package": "Nouveau lot de travail",
   "wbs_hint_phase": "Ajoute une nouvelle phase sous le projet.",
   "wbs_hint_package": "Ajoute un lot de travail sous la case sélectionnée.",
-  "wbs_one_project": "Un arbre de découpage contient un seul projet. Pour un autre projet, ouvrez un nouvel arbre dans le menu de gauche.",
   "canvas_add_generic": "Ajouter",
   "whys_add_cause": "Ajouter une cause",
   "ws_recent_heading": "Où vous en étiez",

@@ -759,7 +759,6 @@
   "wbs_new_package": "Yeni İş Paketi",
   "wbs_hint_phase": "Projenin altına yeni bir faz ekler.",
   "wbs_hint_package": "Seçili kutunun altına yeni bir iş paketi ekler.",
-  "wbs_one_project": "Bir kırılım ağacında tek proje olur. Yeni bir proje için soldaki menüden yeni ağaç aç.",
   "canvas_add_generic": "Ekle",
   "whys_add_cause": "Neden Ekle",
   "ws_recent_heading": "Kaldığın Yer",

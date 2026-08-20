@@ -759,7 +759,6 @@
   "wbs_new_package": "Nuevo paquete de trabajo",
   "wbs_hint_phase": "Añade una fase nueva bajo el proyecto.",
   "wbs_hint_package": "Añade un paquete de trabajo bajo el cuadro seleccionado.",
-  "wbs_one_project": "Un árbol de desglose contiene un solo proyecto. Para otro proyecto, abre un árbol nuevo en el menú de la izquierda.",
   "canvas_add_generic": "Añadir",
   "whys_add_cause": "Añadir causa",
   "ws_recent_heading": "Donde lo dejaste",

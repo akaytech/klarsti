@@ -759,7 +759,6 @@
   "wbs_new_package": "Nuovo pacchetto di lavoro",
   "wbs_hint_phase": "Aggiunge una nuova fase sotto il progetto.",
   "wbs_hint_package": "Aggiunge un pacchetto di lavoro sotto il riquadro selezionato.",
-  "wbs_one_project": "Un albero di scomposizione contiene un solo progetto. Per un altro progetto, apri un nuovo albero dal menu a sinistra.",
   "canvas_add_generic": "Aggiungi",
   "whys_add_cause": "Aggiungi causa",
   "ws_recent_heading": "Dove eri rimasto",

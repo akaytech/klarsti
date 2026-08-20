@@ -759,7 +759,6 @@
   "wbs_new_package": "Neues Arbeitspaket",
   "wbs_hint_phase": "Fügt unter dem Projekt eine neue Phase hinzu.",
   "wbs_hint_package": "Fügt unter dem ausgewählten Feld ein neues Arbeitspaket hinzu.",
-  "wbs_one_project": "Ein Strukturbaum enthält ein Projekt. Für ein weiteres Projekt öffne links einen neuen Baum.",
   "canvas_add_generic": "Hinzufügen",
   "whys_add_cause": "Ursache hinzufügen",
   "ws_recent_heading": "Wo du aufgehört hast",

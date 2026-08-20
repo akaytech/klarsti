@@ -13,7 +13,6 @@ import { useShallow } from 'zustand/react/shallow';
 import { islem, islemBasla, islemBitir } from '../store/gecmis';
 import { getDepth } from '../utils/layout';
 import { altKutuAdi, altKutuEkleEtiketi } from '../utils/wbsSeviye';
-import { toast } from 'sonner';
 import { useTheme } from '../theme';
 import CanvasBackdrop from './CanvasBackdrop';
 import { metinAlaninda } from '../utils/metinAlaninda';
@@ -337,15 +336,11 @@ export default function WbsCanvas({ onNodeSelect }: { onNodeSelect: (id: string 
 
   const onPaneClick = useCallback((event: React.MouseEvent) => {
     document.dispatchEvent(new Event('close-menus'));
-    if (event.ctrlKey || event.metaKey) {
-      // Ağaçta proje varsa Ctrl+tık ikinci bir proje AÇMIYOR; eskiden açıyordu
-      // ve kullanıcı farkında olmadan yan yana iki kök ağaç kuruyordu.
-      if (nodes.length > 0) {
-        toast.info(t('wbs_one_project'));
-      } else {
-        const pos = screenToFlowPosition({ x: event.clientX, y: event.clientY });
-        addGoal(null, t('new_project_node'), pos);
-      }
+    // Ctrl+tık yalnızca ağaç bomboşken projeyi açıyor. Proje varsa sessizce
+    // görmezden geliniyor: ikinci bir kök ağaç kurulmasın diye.
+    if ((event.ctrlKey || event.metaKey) && nodes.length === 0) {
+      const pos = screenToFlowPosition({ x: event.clientX, y: event.clientY });
+      addGoal(null, t('new_project_node'), pos);
     }
     setContextMenuNodeId(null);
     setPaneMenu(null);

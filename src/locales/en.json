@@ -139,7 +139,7 @@
   "fta_add_undeveloped": "Undeveloped Event",
   "fta_add_xor": "XOR Gate",
   "fta_delete_node": "Delete Node",
-  "fta_desc": "Analyze root causes of failures using AND/OR logic gates",
+  "fta_desc": "Analyze root causes of failures using AND/OR logic gates.",
   "fta_desc_input": "Description (Optional)...",
   "fta_edit": "Edit",
   "fta_events": "EVENTS",

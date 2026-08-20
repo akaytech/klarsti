@@ -4,7 +4,7 @@ const guides: ToolGuideBundle = {
   mindmap: {
     title: 'Carte mentale',
     summary:
-      'Un outil d\'association libre où les idées se ramifient depuis un seul centre. Vous ne déplacez pas les boîtes : la carte se réorganise après chaque ajout, pour que vous restiez sur le contenu plutôt que sur la mise en page.',
+      'Un outil d\'association libre où les idées se ramifient depuis un seul centre. Tu ne déplaces pas les cases : la carte se réorganise après chaque ajout, pour que tu restes sur le contenu plutôt que sur la mise en page.',
     whenToUse: [
       'En remue-méninges, quand les idées doivent sortir vite et que la hiérarchie n\'est pas encore claire.',
       'Pour découper un sujet en sous-titres et en voir l\'étendue.',
@@ -13,11 +13,11 @@ const guides: ToolGuideBundle = {
     ],
     steps: [
       'Un projet peut contenir plusieurs cartes. Le menu des cartes en haut à gauche sert à en créer une ou à passer de l\'une à l\'autre.',
-      'Sélectionnez la boîte racine au centre et renommez-la avec F2 ; le sujet va là.',
+      'Sélectionne la boîte racine au centre et renomme-la avec F2 ; le sujet va là.',
       'Tab ouvre une nouvelle branche sous la boîte sélectionnée. La nouvelle boîte est prête à la saisie.',
-      'Entrée crée une branche sœur au même niveau. Cela marche aussi pendant la saisie : vous finissez le texte, Entrée, la boîte suivante s\'ouvre.',
+      'Entrée crée une branche sœur au même niveau. Cela marche aussi pendant la saisie : tu finis le texte, Entrée, la boîte suivante s\'ouvre.',
       'Clic droit sur une boîte : ajouter une description, marquer la branche comme faite, ou la replier quand elle devient chargée.',
-      'La mini-carte en bas à droite montre où vous êtes ; faites-y glisser pour vous déplacer dans les grandes cartes.'
+      'La mini-carte en bas à droite montre où tu es ; fais-y glisser pour te déplacer dans les grandes cartes.'
     ],
     shortcuts: [
       { keys: ['Tab'], desc: 'Nouvelle branche sous la boîte sélectionnée' },
@@ -30,29 +30,29 @@ const guides: ToolGuideBundle = {
       { keys: ['Mod', 'Y'], desc: 'Rétablir' }
     ],
     tips: [
-      'Les boîtes ne se déplacent pas, la disposition est automatique. Pour déplacer une branche, supprimez-la et recréez-la au bon endroit.',
+      'Les boîtes ne se déplacent pas, la disposition est automatique. Pour déplacer une branche, supprime-la et recrée-la au bon endroit.',
       'La couleur d\'une branche vient de la branche principale issue de la racine : même couleur, même grand titre.',
-      'Dans un champ de saisie, Suppr et F2 n\'agissent pas ; terminez d\'abord par Entrée ou Échap.'
+      'Dans un champ de saisie, Suppr et F2 n\'agissent pas ; termine d\'abord par Entrée ou Échap.'
     ]
   },
 
   wbs: {
     title: 'Organigramme des tâches (OTP)',
     summary:
-      'Un arbre à trois niveaux : le PROJET en haut, les PHASES en dessous, et les LOTS DE TRAVAIL sous les phases. Chaque case porte un statut, une échéance, des heures de travail et une description. Contrairement à une carte mentale, ici vous pilotez du travail, pas des idées.',
+      'Un arbre à trois niveaux : le PROJET en haut, les PHASES en dessous, et les LOTS DE TRAVAIL sous les phases. Chaque case porte un statut, une échéance, des heures de travail et une description. Contrairement à une carte mentale, ici tu pilotes du travail, pas des idées.',
     whenToUse: [
       'Pour découper un projet jusqu’à savoir clairement qui fait quoi.',
       'Pour figer le périmètre : ce qui n’est pas dans l’arbre n’est pas dans le projet.',
       'Pour relier le travail au calendrier et suivre l’avancement par les statuts.'
     ],
     steps: [
-      'Un arbre contient une seule case projet. Pour un deuxième projet, ouvrez un nouvel arbre dans le menu « Arbres » à gauche.',
+      'Un arbre contient une seule case projet. Pour un deuxième projet, ouvre un nouvel arbre dans le menu « Arbres » à gauche.',
       'Le bouton en bas suit la sélection : sur le projet il affiche « Ajouter une phase », sur une phase ou un lot « Ajouter un lot de travail ». Sans sélection, il ajoute une phase sous le projet.',
       'La même chose au clavier : Ctrl+clic sur une case ouvre une nouvelle case en dessous.',
-      'Un clic simple ne fait que sélectionner la case. Pour ouvrir ou fermer les branches en dessous, DOUBLE-cliquez sur la case ; la caméra se centre dessus aussi. (Un double-clic sur le nom modifie le nom.)',
+      'Un clic simple ne fait que sélectionner la case. Pour ouvrir ou fermer les branches en dessous, DOUBLE-clique sur la case ; la caméra se centre dessus aussi. (Un double-clic sur le nom modifie le nom.)',
       'Clic droit sur une case : nom, échéance, heures de début et de fin, description et statut (À faire / En cours / Terminé / Échoué).',
-      'Le même menu propose « Ajouter à l’agenda », qui place l’élément dans votre agenda à la date choisie. Il vous prévient si la date est passée.',
-      'Marquez un élément comme Échoué et le menu propose « analyser la cause racine » ; un clic l’envoie dans les 5 Pourquoi comme problème.'
+      'Le même menu propose « Ajouter à l’agenda », qui place l’élément dans ton agenda à la date choisie. Il te prévient si la date est passée.',
+      'Marque un élément comme Échoué et le menu propose « analyser la cause racine » ; un clic l’envoie dans les 5 Pourquoi comme problème.'
     ],
     shortcuts: [
       { keys: ['Mod', 'Clic'], desc: 'Sur la case projet : ajoute une phase' },
@@ -65,15 +65,15 @@ const guides: ToolGuideBundle = {
     tips: [
       'Ce qui se trouve sous un lot de travail est encore un lot de travail ; le découpage peut descendre autant que nécessaire.',
       'Sans Shift, seule la case saisie bouge ; ce qui est en dessous reste en place.',
-      'Découpez jusqu’à ce que chaque lot puisse être terminé par une seule personne.',
-      'Pour effacer une date, cliquez sur la petite croix à côté du champ dans le menu contextuel ; les heures partent avec.'
+      'Découpe jusqu’à ce que chaque lot puisse être terminé par une seule personne.',
+      'Pour effacer une date, clique sur la petite croix à côté du champ dans le menu contextuel ; les heures partent avec.'
     ]
   },
 
   '5whys': {
     title: '5 Pourquoi',
     summary:
-      'Demander « et pourquoi cela est-il arrivé ? » encore et encore pour descendre du symptôme visible à la cause racine. Cinq n\'est pas une règle mais un repère : quand les réponses se répètent, vous avez touché le fond.',
+      'Demander « et pourquoi cela est-il arrivé ? » encore et encore pour descendre du symptôme visible à la cause racine. Cinq n\'est pas une règle mais un repère : quand les réponses se répètent, tu as touché le fond.',
     whenToUse: [
       'Pour trouver la cause réelle d\'une défaillance au lieu de traiter le symptôme.',
       'Dans les retours d\'incident, où l\'on cherche la cause et non le coupable.',
@@ -81,9 +81,9 @@ const guides: ToolGuideBundle = {
     ],
     steps: [
       'Le menu en haut à gauche permet de passer d\'une analyse à l\'autre dans le même projet, d\'en créer, d\'en renommer ou d\'en supprimer.',
-      'Commencez sur l\'écran vide par « Ajouter un problème » et décrivez en une phrase ce qui s\'est passé. Un exemple prêt à l\'emploi existe aussi.',
-      'Ctrl+clic sur une boîte ouvre un nouveau « pourquoi » en dessous. Écrivez-y la réponse, puis recommencez sur cette boîte.',
-      'Quand vous ne pouvez plus descendre, Shift+clic sur cette boîte crée une boîte de cause racine. Elle n\'accepte pas d\'enfant : la chaîne s\'arrête là.',
+      'Commence sur l\'écran vide par « Ajouter un problème » et décris en une phrase ce qui s\'est passé. Un exemple prêt à l\'emploi existe aussi.',
+      'Ctrl+clic sur une boîte ouvre un nouveau « pourquoi » en dessous. Écris-y la réponse, puis recommence sur cette boîte.',
+      'Quand tu ne peux plus descendre, Shift+clic sur cette boîte crée une boîte de cause racine. Elle n\'accepte pas d\'enfant : la chaîne s\'arrête là.',
       'Le clic droit permet de modifier ou de supprimer les boîtes.',
       'Ctrl+clic dans le vide démarre une seconde chaîne de problème, indépendante, sur le même canevas.'
     ],
@@ -97,8 +97,8 @@ const guides: ToolGuideBundle = {
     ],
     tips: [
       'Lancer une analyse des causes depuis une tâche de l\'organigramme des tâches ouvre une analyse distincte pour cette tâche ; celle en cours n\'est pas écrasée.',
-      'Une cause peut avoir plusieurs réponses ; répétez le Ctrl+clic sur la même boîte pour la ramifier.',
-      'Appuyez chaque réponse sur quelque chose de vérifiable. « Négligence » n\'est pas une cause racine, c\'est une question sans réponse.',
+      'Une cause peut avoir plusieurs réponses ; répète le Ctrl+clic sur la même boîte pour la ramifier.',
+      'Appuie chaque réponse sur quelque chose de vérifiable. « Négligence » n\'est pas une cause racine, c\'est une question sans réponse.',
       'Une tâche du WBS marquée comme échouée peut être envoyée ici comme problème depuis son propre menu contextuel.'
     ]
   },
@@ -106,7 +106,7 @@ const guides: ToolGuideBundle = {
   flowchart: {
     title: 'Logigrammes',
     summary:
-      'Dessinez les étapes, les points de décision et le sens d\'un processus. Trois types de schémas existent : flux de travail, flux de processus et flux de données. Le type choisi détermine les formes de boîtes disponibles.',
+      'Dessine les étapes, les points de décision et le sens d\'un processus. Trois types de schémas existent : flux de travail, flux de processus et flux de données. Le type choisi détermine les formes de boîtes disponibles.',
     whenToUse: [
       'Schéma de flux de travail : pour montrer tâches, décisions, validations et qui les exécute.',
       'Schéma de flux de processus : pour analyser une production ou un service par les étapes d\'opération, transport, contrôle, attente et stockage.',
@@ -115,9 +115,9 @@ const guides: ToolGuideBundle = {
     steps: [
       'Au premier lancement, le sélecteur de type apparaît. Il peut être changé ensuite ; les boîtes sont converties vers leur équivalent le plus proche.',
       'Le menu des schémas en haut à gauche permet de garder plusieurs schémas dans un même projet et de passer de l\'un à l\'autre.',
-      'Clic droit sur une boîte : en ajoutant une boîte en dessous, vous choisissez aussi sa forme (début, traitement, décision, document, fin...). Le même menu sert à modifier le texte ou à supprimer.',
-      'Placez les boîtes librement par glisser-déposer ; il n\'y a pas de disposition automatique ici, l\'agencement vous appartient.',
-      'Pour tracer une liaison, glissez depuis un point de connexion au bord d\'une boîte vers une autre.',
+      'Clic droit sur une boîte : en ajoutant une boîte en dessous, tu choisis aussi sa forme (début, traitement, décision, document, fin...). Le même menu sert à modifier le texte ou à supprimer.',
+      'Place les boîtes librement par glisser-déposer ; il n\'y a pas de disposition automatique ici, l\'agencement t\'appartient.',
+      'Pour tracer une liaison, glisse depuis un point de connexion au bord d\'une boîte vers une autre.',
       'Les contrôles en bas à gauche servent au zoom, la mini-carte en bas à droite à naviguer dans les grands schémas.'
     ],
     shortcuts: [
@@ -126,9 +126,9 @@ const guides: ToolGuideBundle = {
       { keys: ['Mod', 'Y'], desc: 'Rétablir' }
     ],
     tips: [
-      'Étiquetez chaque chemin sortant d\'une décision ; le lecteur doit voir quelle condition mène où.',
-      'Si un schéma ne tient plus sur un écran, découpez-le : mettez la partie chargée dans une boîte de sous-processus et dessinez-la à part.',
-      'La boîte Rôle du flux de travail sert à montrer qui exécute une étape ; laissez-la de côté si vous décrivez le processus indépendamment des personnes.'
+      'Étiquette chaque chemin sortant d\'une décision ; le lecteur doit voir quelle condition mène où.',
+      'Si un schéma ne tient plus sur un écran, découpe-le : mets la partie chargée dans une boîte de sous-processus et dessine-la à part.',
+      'La boîte Rôle du flux de travail sert à montrer qui exécute une étape ; laisse-la de côté si tu décris le processus indépendamment des personnes.'
     ]
   },
 
@@ -142,10 +142,10 @@ const guides: ToolGuideBundle = {
       'Pour rendre explicite la double hiérarchie du matriciel, ou les partenaires externes du réseau.'
     ],
     steps: [
-      'Au premier lancement, vous choisissez le type d\'organigramme. Il reste modifiable ; les boîtes sont converties et la disposition est conservée.',
+      'Au premier lancement, tu choisis le type d\'organigramme. Il reste modifiable ; les boîtes sont converties et la disposition est conservée.',
       'Le menu en haut à gauche permet de garder plusieurs organigrammes dans un projet (par exemple structure actuelle et structure cible).',
       'Clic droit sur une boîte pour ajouter en dessous un poste, une entité, une équipe ou un poste vacant. Le même menu modifie le nom et l\'intitulé en dessous.',
-      'Placez les boîtes par glisser-déposer.',
+      'Place les boîtes par glisser-déposer.',
       'Les liaisons normales partent des points haut et bas d\'une boîte : c\'est le lien hiérarchique principal.',
       'Les lignes tirées depuis les points latéraux sont en pointillés et signalent un rattachement secondaire (dans les organigrammes matriciel, hiérarchique et en réseau).'
     ],
@@ -156,8 +156,8 @@ const guides: ToolGuideBundle = {
     ],
     tips: [
       'La boîte de poste vacant garde visibles les postes non pourvus : l\'organigramme se lit aussi comme un plan de recrutement.',
-      'Utilisez la deuxième ligne pour l\'intitulé : la personne ou l\'entité au-dessus, le rôle en dessous.',
-      'Ne mélangez pas les deux styles de trait : le trait plein dit de qui vous dépendez, le pointillé avec qui vous travaillez.'
+      'Utilise la deuxième ligne pour l\'intitulé : la personne ou l\'entité au-dessus, le rôle en dessous.',
+      'Ne mélange pas les deux styles de trait : le trait plein dit de qui tu dépends, le pointillé avec qui tu travailles.'
     ]
   },
 
@@ -167,17 +167,17 @@ const guides: ToolGuideBundle = {
       'Lit une idée, un projet ou une organisation par quatre fenêtres : ce qui est bon et mauvais à l\'intérieur, quelles opportunités et menaces à l\'extérieur. Le but n\'est pas de faire quatre listes mais de les relier en stratégie.',
     whenToUse: [
       'Pour avoir une vue d\'ensemble avant de s\'engager.',
-      'Avant un plan annuel ou un budget, pour situer où vous en êtes.',
-      'Pour évaluer votre position face à un concurrent.',
+      'Avant un plan annuel ou un budget, pour situer où tu en es.',
+      'Pour évaluer ta position face à un concurrent.',
       'Pour construire une image commune en équipe : tout le monde regarde les quatre mêmes cases.'
     ],
     steps: [
-      'Saisissez en haut le nom de l\'analyse et cliquez sur Créer. Un projet peut contenir plusieurs SWOT.',
+      'Saisis en haut le nom de l\'analyse et clique sur Créer. Un projet peut contenir plusieurs SWOT.',
       'Quatre cases apparaissent : Forces, Faiblesses, Opportunités, Menaces.',
-      'Écrivez un point dans le champ sous une case et appuyez sur Entrée, ou cliquez sur le plus.',
-      'Cliquez sur un point existant pour le modifier sur place ; les changements sont enregistrés automatiquement.',
+      'Écris un point dans le champ sous une case et appuie sur Entrée, ou clique sur le plus.',
+      'Clique sur un point existant pour le modifier sur place ; les changements sont enregistrés automatiquement.',
       'La corbeille du point supprime ce point, celle de l\'en-tête supprime toute l\'analyse.',
-      'Pour découvrir l\'outil, chargez l\'exemple depuis l\'écran affiché quand aucune analyse n\'existe.'
+      'Pour découvrir l\'outil, charge l\'exemple depuis l\'écran affiché quand aucune analyse n\'existe.'
     ],
     shortcuts: [
       { keys: ['Entrée'], desc: 'Ajouter à la case le point saisi' },
@@ -185,7 +185,7 @@ const guides: ToolGuideBundle = {
       { keys: ['Mod', 'Y'], desc: 'Rétablir' }
     ],
     tips: [
-      'Forces et faiblesses sont internes, elles dépendent de vous ; opportunités et menaces sont externes. Un SWOT qui confond les deux ne sert à rien.',
+      'Forces et faiblesses sont internes, elles dépendent de toi ; opportunités et menaces sont externes. Un SWOT qui confond les deux ne sert à rien.',
       'Le vrai travail est de croiser les cases : quelle force saisit quelle opportunité, quelle faiblesse expose à quelle menace.',
       'Remplir une case de dix points et en laisser une vide n\'est pas une analyse, c\'est une prise de parti.'
     ]
@@ -201,8 +201,8 @@ const guides: ToolGuideBundle = {
       'Pour rassembler des causes candidates avant d\'entrer dans les 5 Pourquoi.'
     ],
     steps: [
-      'Décrivez le problème en une phrase en haut et cliquez sur Démarrer.',
-      'Six cases de catégorie apparaissent. Écrivez une cause possible dans le champ du dessous et appuyez sur Entrée.',
+      'Décris le problème en une phrase en haut et clique sur Démarrer.',
+      'Six cases de catégorie apparaissent. Écris une cause possible dans le champ du dessous et appuie sur Entrée.',
       'L\'énoncé du problème se modifie depuis l\'en-tête, les points directement dans leurs cases.',
       'Un projet peut contenir plusieurs analyses ; chacune devient une carte avec son propre énoncé.'
     ],
@@ -213,8 +213,8 @@ const guides: ToolGuideBundle = {
     ],
     tips: [
       'Vous n\'êtes pas obligé de remplir chaque catégorie ; une catégorie vide est aussi une information.',
-      'Écrivez ce qui s\'est passé, pas le symptôme : non pas « c\'était en retard », mais « la validation est restée trois jours ».',
-      'Emmenez les meilleurs candidats dans les 5 Pourquoi. Ishikawa donne la largeur, les 5 Pourquoi la profondeur.'
+      'Écris ce qui s\'est passé, pas le symptôme : non pas « c\'était en retard », mais « la validation est restée trois jours ».',
+      'Emmène les meilleurs candidats dans les 5 Pourquoi. Ishikawa donne la largeur, les 5 Pourquoi la profondeur.'
     ]
   },
 
@@ -228,8 +228,8 @@ const guides: ToolGuideBundle = {
       'Pour suivre les tours dans les équipes en amélioration continue.'
     ],
     steps: [
-      'Écrivez en haut l\'objectif du cycle et cliquez sur Démarrer.',
-      'Quatre cases de phase apparaissent. Ajoutez vos points dans le champ sous chaque phase.',
+      'Écris en haut l\'objectif du cycle et clique sur Démarrer.',
+      'Quatre cases de phase apparaissent. Ajoute tes points dans le champ sous chaque phase.',
       'Un clic sur le cercle à gauche d\'un point le marque comme terminé et le barre.',
       'Un projet peut contenir plusieurs cycles ; chaque objectif devient une carte.'
     ],
@@ -239,9 +239,9 @@ const guides: ToolGuideBundle = {
       { keys: ['Mod', 'Y'], desc: 'Rétablir' }
     ],
     tips: [
-      'Mettez du mesurable dans la phase Vérifier. Sans chiffre derrière « est-ce mieux ? », le cycle ne se referme jamais.',
+      'Mets du mesurable dans la phase Vérifier. Sans chiffre derrière « est-ce mieux ? », le cycle ne se referme jamais.',
       'Ce qui sort de la phase Agir est l\'entrée du Planifier du tour suivant.',
-      'N\'essayez pas de remplir les quatre cases en même temps ; avancer dans l\'ordre est la méthode elle-même.'
+      'N\'essaie pas de remplir les quatre cases en même temps ; avancer dans l\'ordre est la méthode elle-même.'
     ]
   },
 
@@ -255,9 +255,9 @@ const guides: ToolGuideBundle = {
       'Des travaux où l\'ordre compte : ne pas produire avant d\'avoir fini la conception.'
     ],
     steps: [
-      'Écrivez en haut le nom du projet et cliquez sur Démarrer.',
+      'Écris en haut le nom du projet et clique sur Démarrer.',
       'Les six phases s\'empilent. Seule la phase ouverte accepte des points ; les suivantes portent un cadenas.',
-      'Quand la phase est terminée, cliquez sur « terminer cette phase » sous la case.',
+      'Quand la phase est terminée, clique sur « terminer cette phase » sous la case.',
       'Après confirmation, la phase suivante s\'ouvre ; la phase terminée reçoit une coche et ses points ne sont plus modifiables.',
       'Un projet peut contenir plusieurs projets en cascade.'
     ],
@@ -267,9 +267,9 @@ const guides: ToolGuideBundle = {
       { keys: ['Mod', 'Y'], desc: 'Rétablir' }
     ],
     tips: [
-      'Aucun bouton ne rouvre une phase ; si vous l\'avez terminée par erreur, seule l\'annulation ramène en arrière.',
-      'Assurez-vous que la phase est vraiment complète avant de la clore : la clôture verrouille aussi les textes.',
-      'Si les exigences bougeront en cours de route, la cascade vous enferme ; le WBS ou le PDCA y sont plus confortables.'
+      'Aucun bouton ne rouvre une phase ; si tu l\'as terminée par erreur, seule l\'annulation ramène en arrière.',
+      'Assure-toi que la phase est vraiment complète avant de la clore : la clôture verrouille aussi les textes.',
+      'Si les exigences bougeront en cours de route, la cascade t\'enferme ; le WBS ou le PDCA y sont plus confortables.'
     ]
   },
 
@@ -284,12 +284,12 @@ const guides: ToolGuideBundle = {
     ],
     steps: [
       'Le menu en haut à gauche permet de passer d\'un arbre à l\'autre dans le même projet, d\'en créer, d\'en renommer ou d\'en supprimer.',
-      'Créez la boîte de l\'événement sommet sur l\'écran vide, ou chargez l\'exemple.',
+      'Crée la boîte de l\'événement sommet sur l\'écran vide, ou charge l\'exemple.',
       'Clic droit sur une boîte puis Modifier pour le nom, la description et — sur les événements de base — la probabilité.',
-      'Depuis ce menu, ajoutez des événements en dessous : événement, événement de base, événement non développé ou événement conditionnel.',
+      'Depuis ce menu, ajoute des événements en dessous : événement, événement de base, événement non développé ou événement conditionnel.',
       'Le même menu contient les portes logiques : ET, ET prioritaire, OU, OU exclusif et porte d\'inhibition.',
-      'Saisissez les probabilités en pourcentage sur les événements de base ; les portes au-dessus et l\'événement sommet en découlent.',
-      'Placez les boîtes par glisser-déposer et servez-vous de la mini-carte en bas à droite dans un grand arbre.'
+      'Saisis les probabilités en pourcentage sur les événements de base ; les portes au-dessus et l\'événement sommet en découlent.',
+      'Place les boîtes par glisser-déposer et sers-toi de la mini-carte en bas à droite dans un grand arbre.'
     ],
     shortcuts: [
       { keys: ['Suppr'], desc: 'Supprimer la boîte sélectionnée' },
@@ -343,9 +343,9 @@ const guides: ToolGuideBundle = {
       'Pour défendre une concentration des moyens sur quelques points plutôt qu\'une dispersion.'
     ],
     steps: [
-      'Créez l\'analyse au premier lancement. La liste du haut sert à passer d\'une analyse à l\'autre, le crayon à renommer, la corbeille à supprimer.',
-      'Dans le tableau du panneau de gauche, saisissez le nom de la catégorie et sa fréquence.',
-      'Pour une nouvelle ligne, utilisez le bouton d\'ajout sous le tableau.',
+      'Crée l\'analyse au premier lancement. La liste du haut sert à passer d\'une analyse à l\'autre, le crayon à renommer, la corbeille à supprimer.',
+      'Dans le tableau du panneau de gauche, saisis le nom de la catégorie et sa fréquence.',
+      'Pour une nouvelle ligne, utilise le bouton d\'ajout sous le tableau.',
       'Le graphique se met à jour aussitôt : les barres se trient du plus grand au plus petit et la courbe montre le cumul.'
     ],
     shortcuts: [
@@ -353,9 +353,9 @@ const guides: ToolGuideBundle = {
       { keys: ['Mod', 'Y'], desc: 'Rétablir' }
     ],
     tips: [
-      'À la place de la fréquence, vous pouvez saisir un coût ou un temps perdu, du moment que toutes les lignes utilisent la même unité.',
-      'Arrêtez-vous là où la courbe s\'aplatit : la longue traîne de droite ne vaut pas l\'effort.',
-      'Des catégories trop fines et plus rien ne ressort, le graphique s\'aplatit. Regroupez ce qui se ressemble.'
+      'À la place de la fréquence, tu peux saisir un coût ou un temps perdu, du moment que toutes les lignes utilisent la même unité.',
+      'Arrête-toi là où la courbe s\'aplatit : la longue traîne de droite ne vaut pas l\'effort.',
+      'Des catégories trop fines et plus rien ne ressort, le graphique s\'aplatit. Regroupe ce qui se ressemble.'
     ]
   },
 
@@ -392,14 +392,14 @@ const guides: ToolGuideBundle = {
     summary:
       'Note plusieurs options selon les mêmes critères. Chaque critère porte un poids ; le total d\'une option est la somme des produits note × poids.',
     whenToUse: [
-      'Quand vous êtes bloqué entre quelques options et que la discussion tourne en rond.',
+      'Quand tu es bloqué entre quelques options et que la discussion tourne en rond.',
       'Quand la justification d\'une décision doit rester écrite.',
       'Quand chacun, dans l\'équipe, pèse en silence un critère différent : la matrice les fait sortir.'
     ],
     steps: [
-      'Ajoutez les critères : les rubriques sur lesquelles vous comparez (coût, délai, risque...).',
-      'Donnez à chaque critère un poids de 1 à 5, selon son importance pour vous.',
-      'Ajoutez les options : les alternatives à comparer.',
+      'Ajoute les critères : les rubriques sur lesquelles tu compares (coût, délai, risque...).',
+      'Donne à chaque critère un poids de 1 à 5, selon son importance pour toi.',
+      'Ajoute les options : les alternatives à comparer.',
       'Dans le tableau, notez chaque option sur chaque critère de 0 à 10.',
       'Les totaux se calculent seuls et l\'option la mieux notée reçoit un trophée.'
     ],
@@ -409,32 +409,32 @@ const guides: ToolGuideBundle = {
     ],
     tips: [
       'Fixez les poids avant de commencer à noter. Les retoucher ensuite, ce n\'est pas décider, c\'est fabriquer la réponse voulue.',
-      'La matrice ne décide pas à votre place ; elle rend visible ce sur quoi vous avez décidé.',
-      'Si deux totaux sont très proches, la réponse n\'est pas « à égalité » mais « ces critères ne les séparent pas » : cherchez le critère manquant.'
+      'La matrice ne décide pas à ta place ; elle rend visible ce sur quoi tu as décidé.',
+      'Si deux totaux sont très proches, la réponse n\'est pas « à égalité » mais « ces critères ne les séparent pas » : cherche le critère manquant.'
     ]
   },
 
   notepad: {
     title: 'Agenda',
     summary:
-      'Un espace personnel où vous choisissez des jours dans le calendrier et les planifiez. Contrairement aux autres outils, l\'agenda n\'est pas une donnée de projet : les entrées vous appartiennent et ne partent chez personne quand vous partagez un projet.',
+      'Un espace personnel où tu choisis des jours dans le calendrier et les planifies. Contrairement aux autres outils, l\'agenda n\'est pas une donnée de projet : les entrées t\'appartiennent et ne partent chez personne quand tu partages un projet.',
     whenToUse: [
       'Pour organiser la journée et placer le travail dans les heures.',
       'Pour amener une tâche du WBS sur un jour précis.',
-      'Pour écrire avec vos mots comment la journée s\'est passée, au moment de la clore.'
+      'Pour écrire avec tes mots comment la journée s\'est passée, au moment de la clore.'
     ],
     steps: [
       'Les jours contenant des entrées sont marqués dans le calendrier ; un clic ouvre le déroulé de ce jour.',
-      'Pour une nouvelle entrée, écrivez le titre et le texte. Donnez-lui une plage horaire ou laissez-la sur toute la journée.',
+      'Pour une nouvelle entrée, écris le titre et le texte. Donne-lui une plage horaire ou laisse-la sur toute la journée.',
       'Si la plage saisie chevauche une autre entrée, un avertissement de conflit s\'affiche.',
-      'Vous pouvez régler un rappel : à l\'heure, 5 / 15 / 30 minutes, 1 heure ou 1 jour avant. Les rappels arrivent en notification dans l\'application mobile.',
-      'Dans la section de bilan de journée, en haut, vous écrivez avec vos mots comment cela s\'est passé ; pas besoin d\'enregistrer à part.',
+      'Tu peux régler un rappel : à l\'heure, 5 / 15 / 30 minutes, 1 heure ou 1 jour avant. Les rappels arrivent en notification dans l\'application mobile.',
+      'Dans la section de bilan de journée, en haut, tu écris avec tes mots comment cela s\'est passé ; pas besoin d\'enregistrer à part.',
       'On ne peut pas ajouter d\'entrée à un jour passé. Les entrées existantes restent modifiables, ou se ramènent avec « déplacer à aujourd\'hui ».'
     ],
     tips: [
       'Clic droit sur une tâche du WBS puis « Ajouter à l\'agenda » : elle atterrit ici avec sa propre date.',
       'Annuler et rétablir ne fonctionnent pas dans l\'agenda ; elle ne garde pas d\'historique.',
-      'La liste sous le calendrier montre vos prochaines entrées ; commencez par là si vous ne savez pas quel jour ouvrir.'
+      'La liste sous le calendrier montre tes prochaines entrées ; commence par là si tu ne sais pas quel jour ouvrir.'
     ]
   },
   gantt: {

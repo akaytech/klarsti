@@ -34,6 +34,7 @@ const SHAPES: Record<FlowchartShapeId, FlowchartShapeDef> = {
   start: {
     id: 'start',
     addLabelKey: 'flowchart_add_start',
+    nameKey: 'flowchart_shape_start',
     newLabelKey: 'flowchart_new_start',
     icon: PlayCircle,
     boxClass: 'rounded-full border-2 bg-emerald-50 border-emerald-500 text-emerald-700 dark:bg-emerald-500/10 dark:border-emerald-400 dark:text-emerald-300 min-w-[110px] px-4 shadow-sm',
@@ -43,6 +44,7 @@ const SHAPES: Record<FlowchartShapeId, FlowchartShapeDef> = {
   end: {
     id: 'end',
     addLabelKey: 'flowchart_add_end',
+    nameKey: 'flowchart_shape_end',
     newLabelKey: 'flowchart_new_end',
     icon: StopCircle,
     boxClass: 'rounded-full border-2 bg-rose-50 border-rose-500 text-rose-700 dark:bg-rose-500/10 dark:border-rose-400 dark:text-rose-300 min-w-[110px] px-4 shadow-sm',
@@ -52,6 +54,7 @@ const SHAPES: Record<FlowchartShapeId, FlowchartShapeDef> = {
   process: {
     id: 'process',
     addLabelKey: 'flowchart_add_process',
+    nameKey: 'flowchart_shape_process',
     newLabelKey: 'flowchart_new_process',
     icon: Box,
     boxClass: 'rounded-xl border-2 bg-blue-50 border-blue-500 text-blue-700 dark:bg-blue-500/10 dark:border-blue-400 dark:text-blue-300 min-w-[130px] px-3 shadow-sm',
@@ -61,12 +64,21 @@ const SHAPES: Record<FlowchartShapeId, FlowchartShapeDef> = {
   decision: {
     id: 'decision',
     addLabelKey: 'flowchart_add_decision',
+    nameKey: 'flowchart_shape_decision',
     newLabelKey: 'flowchart_new_decision',
     icon: GitMerge,
     boxClass: 'rotate-45 transform w-28 h-28 border-2 bg-amber-50 border-amber-500 text-amber-700 dark:bg-amber-500/10 dark:border-amber-400 dark:text-amber-300 shadow-sm',
     innerClass: '-rotate-45 transform',
     // Sabit ölçülü kutularda metin taşmasın diye küçültülüp sıkıştırılıyor.
     innerStyle: { fontSize: 12, lineHeight: 1.15, padding: '4px 6px' },
+    // Kutu 45° döndüğü için köşeleri baklavanın uçlarına denk geliyor:
+    // sol üst köşe -> üst uç, sağ üst -> sağ uç, sağ alt -> alt, sol alt -> sol.
+    handleStyles: {
+      top: { left: 0, top: 0 },
+      right: { left: '100%', top: 0 },
+      bottom: { left: '100%', top: '100%' },
+      left: { left: 0, top: '100%' }
+    },
     menuClass: 'text-amber-600 dark:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20',
     minimapColor: '#f59e0b'
   },
@@ -75,6 +87,7 @@ const SHAPES: Record<FlowchartShapeId, FlowchartShapeDef> = {
   subprocess: {
     id: 'subprocess',
     addLabelKey: 'flowchart_add_subprocess',
+    nameKey: 'flowchart_shape_subprocess',
     newLabelKey: 'flowchart_new_subprocess',
     icon: Layers,
     boxClass: 'rounded-xl border-4 border-double bg-indigo-50 border-indigo-500 text-indigo-700 dark:bg-indigo-500/10 dark:border-indigo-400 dark:text-indigo-300 min-w-[140px] px-3 shadow-sm',
@@ -84,6 +97,7 @@ const SHAPES: Record<FlowchartShapeId, FlowchartShapeDef> = {
   approval: {
     id: 'approval',
     addLabelKey: 'flowchart_add_approval',
+    nameKey: 'flowchart_shape_approval',
     newLabelKey: 'flowchart_new_approval',
     icon: ShieldCheck,
     boxClass: 'rounded-xl border-2 bg-yellow-50 border-yellow-500 text-yellow-800 dark:bg-yellow-500/10 dark:border-yellow-400 dark:text-yellow-200 min-w-[130px] px-3 shadow-sm',
@@ -94,6 +108,7 @@ const SHAPES: Record<FlowchartShapeId, FlowchartShapeDef> = {
   document: {
     id: 'document',
     addLabelKey: 'flowchart_add_document',
+    nameKey: 'flowchart_shape_document',
     newLabelKey: 'flowchart_new_document',
     icon: FileText,
     // Belge sembolünün alt kenarı dalgalıdır; eliptik köşe yarıçapı bunu yaklaşık verir.
@@ -105,6 +120,7 @@ const SHAPES: Record<FlowchartShapeId, FlowchartShapeDef> = {
   role: {
     id: 'role',
     addLabelKey: 'flowchart_add_role',
+    nameKey: 'flowchart_shape_role',
     newLabelKey: 'flowchart_new_role',
     icon: User,
     boxClass: 'rounded-2xl border-2 border-dashed bg-slate-100 border-slate-400 text-slate-700 dark:bg-slate-800 dark:border-slate-500 dark:text-slate-200 min-w-[120px] px-3 shadow-sm',
@@ -117,6 +133,7 @@ const SHAPES: Record<FlowchartShapeId, FlowchartShapeDef> = {
   operation: {
     id: 'operation',
     addLabelKey: 'flowchart_add_operation',
+    nameKey: 'flowchart_shape_operation',
     newLabelKey: 'flowchart_new_operation',
     icon: Circle,
     boxClass: 'rounded-full border-2 w-28 h-28 bg-blue-50 border-blue-500 text-blue-700 dark:bg-blue-500/10 dark:border-blue-400 dark:text-blue-300 shadow-sm',
@@ -127,6 +144,7 @@ const SHAPES: Record<FlowchartShapeId, FlowchartShapeDef> = {
   inspection: {
     id: 'inspection',
     addLabelKey: 'flowchart_add_inspection',
+    nameKey: 'flowchart_shape_inspection',
     newLabelKey: 'flowchart_new_inspection',
     icon: Square,
     boxClass: 'border-2 w-28 h-28 bg-amber-50 border-amber-500 text-amber-700 dark:bg-amber-500/10 dark:border-amber-400 dark:text-amber-300 shadow-sm',
@@ -137,6 +155,7 @@ const SHAPES: Record<FlowchartShapeId, FlowchartShapeDef> = {
   transport: {
     id: 'transport',
     addLabelKey: 'flowchart_add_transport',
+    nameKey: 'flowchart_shape_transport',
     newLabelKey: 'flowchart_new_transport',
     icon: ArrowRight,
     // Ok biçimi kırpma ile veriliyor, kırpılan kenarda çerçeve görünmez.
@@ -149,6 +168,7 @@ const SHAPES: Record<FlowchartShapeId, FlowchartShapeDef> = {
   delay: {
     id: 'delay',
     addLabelKey: 'flowchart_add_delay',
+    nameKey: 'flowchart_shape_delay',
     newLabelKey: 'flowchart_new_delay',
     icon: Clock,
     boxClass: 'rounded-e-full border-2 bg-orange-50 border-orange-500 text-orange-700 dark:bg-orange-500/10 dark:border-orange-400 dark:text-orange-300 min-w-[130px] px-4 shadow-sm',
@@ -158,6 +178,7 @@ const SHAPES: Record<FlowchartShapeId, FlowchartShapeDef> = {
   storage: {
     id: 'storage',
     addLabelKey: 'flowchart_add_storage',
+    nameKey: 'flowchart_shape_storage',
     newLabelKey: 'flowchart_new_storage',
     icon: Triangle,
     // Üçgenin tepesi dar; metin aşağı itilmezse kenarlardan taşıyor.
@@ -169,6 +190,7 @@ const SHAPES: Record<FlowchartShapeId, FlowchartShapeDef> = {
   inputOutput: {
     id: 'inputOutput',
     addLabelKey: 'flowchart_add_input_output',
+    nameKey: 'flowchart_shape_input_output',
     newLabelKey: 'flowchart_new_input_output',
     icon: FileInput,
     boxClass: '-skew-x-12 transform border-2 bg-violet-50 border-violet-500 text-violet-700 dark:bg-violet-500/10 dark:border-violet-400 dark:text-violet-300 min-w-[140px] px-4 shadow-sm',
@@ -181,6 +203,7 @@ const SHAPES: Record<FlowchartShapeId, FlowchartShapeDef> = {
   externalEntity: {
     id: 'externalEntity',
     addLabelKey: 'flowchart_add_external',
+    nameKey: 'flowchart_shape_external',
     newLabelKey: 'flowchart_new_external',
     icon: Building,
     boxClass: 'rounded-sm border-2 bg-slate-100 border-slate-600 text-slate-800 dark:bg-slate-800 dark:border-slate-400 dark:text-slate-200 min-w-[130px] px-3 shadow-md',
@@ -191,6 +214,7 @@ const SHAPES: Record<FlowchartShapeId, FlowchartShapeDef> = {
   dataStore: {
     id: 'dataStore',
     addLabelKey: 'flowchart_add_datastore',
+    nameKey: 'flowchart_shape_datastore',
     newLabelKey: 'flowchart_new_datastore',
     icon: Database,
     boxClass: 'border-y-[3px] border-x-0 bg-sky-50 border-sky-600 text-sky-800 dark:bg-sky-900/20 dark:border-sky-500 dark:text-sky-200 min-w-[150px] px-4 shadow-sm',

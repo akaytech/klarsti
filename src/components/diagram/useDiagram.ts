@@ -20,7 +20,8 @@ export interface DiagramApi {
   onNodesChange: (changes: NodeChange[]) => void;
   onEdgesChange: (changes: EdgeChange[]) => void;
   onConnect: (connection: Connection) => void;
-  addNode: (parentId: string | null, shape: string, label: string, position: { x: number; y: number }) => void;
+  /** Eklenen kutunun kimliğini döndürür (bkz. diagramOps.addNode). */
+  addNode: (parentId: string | null, shape: string, label: string, position: { x: number; y: number }) => string;
   updateNode: (id: string, data: Partial<DiagramNodeData>) => void;
   deleteNode: (id: string) => void;
 }

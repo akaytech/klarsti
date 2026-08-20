@@ -30,6 +30,7 @@ const SHAPES: Record<OrgchartShapeId, OrgchartShapeDef> = {
   position: {
     id: 'position',
     addLabelKey: 'org_add_position',
+    nameKey: 'org_shape_position',
     newLabelKey: 'org_new_position',
     icon: User,
     boxClass: 'rounded-xl border-2 bg-white border-indigo-400 text-slate-800 dark:bg-slate-800 dark:border-indigo-500 dark:text-slate-100 min-w-[160px] px-4 shadow-md',
@@ -40,6 +41,7 @@ const SHAPES: Record<OrgchartShapeId, OrgchartShapeDef> = {
   department: {
     id: 'department',
     addLabelKey: 'org_add_department',
+    nameKey: 'org_shape_department',
     newLabelKey: 'org_new_department',
     icon: Building2,
     boxClass: 'rounded-xl border-2 bg-indigo-50 border-indigo-500 text-indigo-800 dark:bg-indigo-500/10 dark:border-indigo-400 dark:text-indigo-200 min-w-[160px] px-4 shadow-sm font-black uppercase tracking-wide',
@@ -52,6 +54,7 @@ const SHAPES: Record<OrgchartShapeId, OrgchartShapeDef> = {
   division: {
     id: 'division',
     addLabelKey: 'org_add_division',
+    nameKey: 'org_shape_division',
     newLabelKey: 'org_new_division',
     icon: Boxes,
     boxClass: 'rounded-2xl border-[3px] bg-violet-50 border-violet-500 text-violet-800 dark:bg-violet-500/10 dark:border-violet-400 dark:text-violet-200 min-w-[180px] px-5 shadow-md font-black uppercase tracking-wide',
@@ -62,6 +65,7 @@ const SHAPES: Record<OrgchartShapeId, OrgchartShapeDef> = {
   team: {
     id: 'team',
     addLabelKey: 'org_add_team',
+    nameKey: 'org_shape_team',
     newLabelKey: 'org_new_team',
     icon: Users,
     boxClass: 'rounded-2xl border-2 bg-emerald-50 border-emerald-500 text-emerald-800 dark:bg-emerald-500/10 dark:border-emerald-400 dark:text-emerald-200 min-w-[150px] px-4 shadow-sm',
@@ -74,6 +78,7 @@ const SHAPES: Record<OrgchartShapeId, OrgchartShapeDef> = {
   staff: {
     id: 'staff',
     addLabelKey: 'org_add_staff',
+    nameKey: 'org_shape_staff',
     newLabelKey: 'org_new_staff',
     icon: UserCog,
     boxClass: 'rounded-xl border-2 border-dashed bg-white border-slate-400 text-slate-700 dark:bg-slate-800 dark:border-slate-500 dark:text-slate-200 min-w-[150px] px-4 shadow-sm',
@@ -84,6 +89,7 @@ const SHAPES: Record<OrgchartShapeId, OrgchartShapeDef> = {
   vacant: {
     id: 'vacant',
     addLabelKey: 'org_add_vacant',
+    nameKey: 'org_shape_vacant',
     newLabelKey: 'org_new_vacant',
     icon: CircleDashed,
     boxClass: 'rounded-xl border-2 border-dashed bg-slate-50 border-slate-300 text-slate-400 dark:bg-slate-900 dark:border-slate-600 dark:text-slate-500 min-w-[150px] px-4',
@@ -96,6 +102,7 @@ const SHAPES: Record<OrgchartShapeId, OrgchartShapeDef> = {
   partner: {
     id: 'partner',
     addLabelKey: 'org_add_partner',
+    nameKey: 'org_shape_partner',
     newLabelKey: 'org_new_partner',
     icon: Handshake,
     boxClass: 'rounded-full border-2 border-dashed bg-teal-50 border-teal-500 text-teal-800 dark:bg-teal-500/10 dark:border-teal-400 dark:text-teal-200 min-w-[160px] px-5 shadow-sm',

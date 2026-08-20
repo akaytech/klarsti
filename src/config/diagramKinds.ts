@@ -38,6 +38,10 @@ interface DiagramKindDef {
     typeLockedHint: string;
     edit: string;
     save: string;
+    /** Menüdeki "Kutu ekle" başlığı */
+    addBox: string;
+    /** Menüdeki "Kutunun türü" başlığı: seçilen kutuyu başka bir kutuya çevirir */
+    changeShape: string;
     deleteNode: string;
     inputPlaceholder: string;
     subtitlePlaceholder: string;
@@ -59,6 +63,8 @@ const ORTAK_METIN = {
   typeLockedHint: 'flowchart_change_type_hint',
   edit: 'edit',
   save: 'save',
+  addBox: 'diagram_add_box',
+  changeShape: 'diagram_change_shape',
   deleteNode: 'delete',
   inputPlaceholder: 'flowchart_input_placeholder',
   subtitlePlaceholder: 'flowchart_subtitle_placeholder'

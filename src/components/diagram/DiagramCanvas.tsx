@@ -29,7 +29,9 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
   const k = getDiagramKind(kind);
   const { charts, activeId, onNodesChange, onEdgesChange, onConnect, addNode, updateNode, deleteNode } = useDiagram(kind);
   const { setCenter, getZoom } = useReactFlow();
-  const [menu, setMenu] = useState<{ id: string; top: number; left: number } | null>(null);
+  // `duzenle`: menü doğrudan ad yazma kutusuyla mı açılsın (çift tıklama ve
+  // yeni eklenen kutu) yoksa satır listesiyle mi (sağ tık).
+  const [menu, setMenu] = useState<{ id: string; top: number; left: number; duzenle?: boolean } | null>(null);
   const [yeniSemaAcik, setYeniSemaAcik] = useState(false);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   // Geçmişte açık bir sürükleme işlemi var mı? (bkz. onNodeDragStart)
@@ -89,6 +91,16 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
     []
   );
 
+  // Kutuya çift tıklamak doğrudan adını değiştirmeye açar: kullanıcının
+  // kutuyla ilk işi zaten adını yazmak, sağ tık menüsünden geçmesi gereksiz.
+  const onNodeDoubleClick = useCallback(
+    (event: React.MouseEvent, node: any) => {
+      document.dispatchEvent(new Event('close-menus'));
+      setMenu({ id: node.id, top: event.clientY, left: event.clientX, duzenle: true });
+    },
+    []
+  );
+
   const onPaneClick = useCallback(() => {
     document.dispatchEvent(new Event('close-menus'));
     setMenu(null);
@@ -135,6 +147,7 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
         onNodeDragStart={onNodeDragStart}
         onNodeDragStop={onNodeDragStop}
         onNodeContextMenu={onNodeContextMenu}
+        onNodeDoubleClick={onNodeDoubleClick}
         onPaneClick={onPaneClick}
         onMoveStart={onMoveStart}
         fitView
@@ -178,19 +191,25 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
         )}
       </ReactFlow>
 
-      {menu && (
+      {menu && aktif.nodes.some((n) => n.id === menu.id) && (
         <DiagramContextMenu
+          // Menü açıkken başka bir kutuya geçilebiliyor (yeni kutu eklenince);
+          // anahtar olmadan içerideki yazı eski kutununki kalırdı.
+          key={`${menu.id}-${menu.duzenle ? 'd' : 'l'}`}
           kind={kind}
           x={menu.left}
           y={menu.top}
+          duzenleBaslat={menu.duzenle}
           node={aktif.nodes.find((n) => n.id === menu.id)!}
           onClose={() => setMenu(null)}
           onAddNode={(shape, label) => {
              // Yeni kutu üst kutunun altına konur.
              const parentNode = aktif.nodes.find(n => n.id === menu.id);
              const pos = parentNode ? { x: parentNode.position.x, y: parentNode.position.y + 150 } : { x: 0, y: 0 };
-             addNode(menu.id, shape, label, pos);
-             setMenu(null);
+             const yeniId = addNode(menu.id, shape, label, pos);
+             // Kutu eklenir eklenmez adı yazılsın diye menü yeni kutunun
+             // üstünde, yazma kipinde açık kalıyor.
+             setMenu({ id: yeniId, top: menu.top, left: menu.left, duzenle: true });
           }}
           onUpdate={(data) => updateNode(menu.id, data)}
           onDelete={() => {

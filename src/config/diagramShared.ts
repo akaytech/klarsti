@@ -10,6 +10,8 @@ export interface DiagramShapeDef {
   id: string;
   /** Sağ tık menüsündeki "... Ekle" satırı */
   addLabelKey: string;
+  /** Kutunun yalın adı ("Karar", "İşlem"). "Türü değiştir" listesinde kullanılır. */
+  nameKey: string;
   /** Yeni eklenen kutunun içine yazılan varsayılan metin */
   newLabelKey: string;
   icon: LucideIcon;
@@ -31,6 +33,14 @@ export interface DiagramShapeDef {
   withIcon?: boolean;
   /** Kutuda ikinci bir satır (organizasyon şemasında unvan) */
   withSubtitle?: boolean;
+  /**
+   * Tutamakların yerini elle düzelten stiller. Döndürülmüş kutularda (karar
+   * baklavası `rotate-45` ile çiziliyor) tutamaklar da kutuyla dönüyor ve
+   * baklavanın köşelerine, yani çapraz noktalara düşüyorlar. Kutunun köşe
+   * noktaları döndükten sonra baklavanın üst/sağ/alt/sol uçlarına denk
+   * geldiği için tutamaklar oralara taşınıyor.
+   */
+  handleStyles?: Partial<Record<'top' | 'right' | 'bottom' | 'left', CSSProperties>>;
 }
 
 export interface DiagramEdgeStyle {

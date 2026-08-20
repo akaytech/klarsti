@@ -17,11 +17,13 @@ interface DiagramContextMenuProps {
   onAddNode: (shape: string, label: string) => void;
   onUpdate: (data: Partial<DiagramNodeData>) => void;
   onDelete: () => void;
+  /** Menü doğrudan ad yazma kutusuyla açılsın (çift tıklama, yeni kutu). */
+  duzenleBaslat?: boolean;
 }
 
-export default function DiagramContextMenu({ kind, x, y, node, onClose, onAddNode, onUpdate, onDelete }: DiagramContextMenuProps) {
+export default function DiagramContextMenu({ kind, x, y, node, onClose, onAddNode, onUpdate, onDelete, duzenleBaslat = false }: DiagramContextMenuProps) {
   const { t } = useTranslation();
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(duzenleBaslat);
   const [editLabel, setEditLabel] = useState(node.data.label);
   const [editSubtitle, setEditSubtitle] = useState(node.data.subtitle || '');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -33,19 +35,41 @@ export default function DiagramContextMenu({ kind, x, y, node, onClose, onAddNod
 
   useBaglamMenusuKapat(onClose);
 
+  // Yazı hazır seçili geliyor: yeni kutuda içerideki varsayılan ad ("Yeni
+  // işlem") ilk tuşta silinsin, kullanıcı elle temizlemesin diye.
   useEffect(() => {
     if (isEditing && inputRef.current) {
       inputRef.current.focus();
+      inputRef.current.select();
     }
   }, [isEditing]);
 
+  // Kaydedince menü kapanır. Eskiden yalnızca yazma kutusu kapanıp altındaki
+  // sağ tık menüsü yeniden açılıyordu; kullanıcı işini bitirmişken menüyü
+  // ikinci kez kapatmak zorunda kalıyordu.
   const handleSave = () => {
     const degisim: Partial<DiagramNodeData> = {};
     if (editLabel.trim()) degisim.label = editLabel.trim();
     if (altBaslikVar) degisim.subtitle = editSubtitle.trim();
     if (Object.keys(degisim).length > 0) onUpdate(degisim);
-    setIsEditing(false);
+    onClose();
   };
+
+  // Çift tıklamayla ya da yeni kutuyla açıldıysa arkada menü yok; vazgeçmek
+  // menüyü büsbütün kapatır. Sağ tık menüsünden girildiyse listeye dönülür.
+  const handleCancel = () => {
+    if (duzenleBaslat) onClose();
+    else setIsEditing(false);
+  };
+
+  // Kutunun türünü değiştirir: yazı ve bağlantılar durur, yalnızca şekil
+  // değişir. Aynı türden şemada kullanılabilen bütün kutular listeleniyor.
+  const turDegistir = (shape: string) => {
+    onUpdate({ shape });
+    onClose();
+  };
+
+  const digerBicimler = tur.shapes.filter((b) => b.id !== node.data.shape);
 
   return (
     <MenuPortal>
@@ -79,7 +103,7 @@ export default function DiagramContextMenu({ kind, x, y, node, onClose, onAddNod
             />
           )}
           <div className="flex justify-end gap-2 mt-1">
-            <button onClick={() => setIsEditing(false)} className="px-3 py-1.5 text-xs font-medium text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors">{t("cancel")}</button>
+            <button onClick={handleCancel} className="px-3 py-1.5 text-xs font-medium text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors">{t("cancel")}</button>
             <button onClick={handleSave} className="px-3 py-1.5 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors">{t(k.text.save)}</button>
           </div>
         </div>
@@ -91,7 +115,29 @@ export default function DiagramContextMenu({ kind, x, y, node, onClose, onAddNod
 
           <div className="h-px bg-slate-100 dark:bg-slate-700/50 my-1"></div>
 
-          <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t(tur.labelKey)}</div>
+          {/* Kutunun türünü değiştirme. Yanlış kutuyu ekleyen kullanıcı eskiden
+              kutuyu silip yenisini çizmek zorundaydı; bağlantıları da gidiyordu. */}
+          {digerBicimler.length > 0 && (
+            <>
+              <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t(k.text.changeShape)}</div>
+              {digerBicimler.map((bicim) => {
+                const Ikon = bicim.icon;
+                return (
+                  <button
+                    key={`tur-${bicim.id}`}
+                    onClick={() => turDegistir(bicim.id)}
+                    className={`w-full px-4 py-1.5 text-start text-sm flex items-center gap-2 transition-colors ${bicim.menuClass}`}
+                  >
+                    <Ikon size={16} /> {t(bicim.nameKey)}
+                  </button>
+                );
+              })}
+
+              <div className="h-px bg-slate-100 dark:bg-slate-700/50 my-1"></div>
+            </>
+          )}
+
+          <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t(k.text.addBox)}</div>
 
           {/* Eklenebilecek kutular şema türüne göre değişiyor; liste katalogdan
               geliyor, burada tür başına ayrı blok yok. */}

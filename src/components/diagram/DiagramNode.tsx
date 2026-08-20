@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import type { CSSProperties } from 'react';
 import { Handle, Position } from '@xyflow/react';
 import { useRoadmapStore } from '../../store/useRoadmapStore';
 import type { DiagramNodeData } from '../../store/slices/diagramOps';
@@ -31,12 +32,23 @@ export default memo(function DiagramNode({ id, data, selected, kind }: DiagramNo
 
   const Ikon = bicim.icon;
 
+  /**
+   * Tutamağın yerini katalog düzeltiyorsa (bkz. karar baklavası) React Flow'un
+   * kendi yerleştirmesi tamamen devre dışı bırakılıyor: sağ/alt dayamaları
+   * sıfırlanıp tutamak verilen noktaya ortalanıyor.
+   */
+  const tutamak = (yon: 'top' | 'right' | 'bottom' | 'left'): CSSProperties | undefined => {
+    const duzeltme = bicim.handleStyles?.[yon];
+    if (!duzeltme) return undefined;
+    return { right: 'auto', bottom: 'auto', transform: 'translate(-50%, -50%)', ...duzeltme };
+  };
+
   return (
     <div
       className={`relative flex items-center justify-center min-h-[56px] transition-all ${bicim.boxClass} ${selected ? 'ring-4 ring-indigo-500/30' : ''}`}
     >
-      <Handle type="target" position={Position.Top} className="w-3 h-3 bg-slate-300 dark:bg-slate-600 border-none" />
-      <Handle type="target" position={Position.Left} id="left" className="w-3 h-3 bg-slate-300 dark:bg-slate-600 border-none" />
+      <Handle type="target" position={Position.Top} style={tutamak('top')} className="w-3 h-3 bg-slate-300 dark:bg-slate-600 border-none" />
+      <Handle type="target" position={Position.Left} id="left" style={tutamak('left')} className="w-3 h-3 bg-slate-300 dark:bg-slate-600 border-none" />
 
       {/* Yazı boyu ve iç boşluk satır içi stille veriliyor: sınıf olarak
           verilince temel sınıflarla çakışıp hangisinin kazanacağı belirsiz
@@ -55,8 +67,8 @@ export default memo(function DiagramNode({ id, data, selected, kind }: DiagramNo
         </div>
       </div>
 
-      <Handle type="source" position={Position.Bottom} className="w-3 h-3 bg-slate-400 dark:bg-slate-500 border-2 border-white dark:border-slate-800" />
-      <Handle type="source" position={Position.Right} id="right" className="w-3 h-3 bg-slate-400 dark:bg-slate-500 border-2 border-white dark:border-slate-800" />
+      <Handle type="source" position={Position.Bottom} style={tutamak('bottom')} className="w-3 h-3 bg-slate-400 dark:bg-slate-500 border-2 border-white dark:border-slate-800" />
+      <Handle type="source" position={Position.Right} id="right" style={tutamak('right')} className="w-3 h-3 bg-slate-400 dark:bg-slate-500 border-2 border-white dark:border-slate-800" />
     </div>
   );
 });

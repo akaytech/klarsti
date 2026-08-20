@@ -215,10 +215,13 @@ export function createDiagramOps(cfg: DiagramOpsConfig, set: (fn: (state: any) =
       }));
     }),
 
+    // Yeni kutunun kimliği geri veriliyor: kanvas kutuyu ekler eklemez adını
+    // yazma kutusunu onun üstünde açıyor.
     addNode: (parentId: string | null, shape: string, label: string, position: { x: number; y: number }) => islem(() => {
+      const yeniId = uuidv4();
       set((state) => aktifiGuncelle(state, (sema) => {
         const newNode: DiagramNode = {
-          id: uuidv4(),
+          id: yeniId,
           type: cfg.nodeType,
           position,
           data: { label, shape },
@@ -229,6 +232,7 @@ export function createDiagramOps(cfg: DiagramOpsConfig, set: (fn: (state: any) =
           edges: parentId ? [...sema.edges, { id: uuidv4(), source: parentId, target: newNode.id }] : sema.edges,
         };
       }));
+      return yeniId;
     }),
 
     updateNode: (id: string, data: Partial<DiagramNodeData>) => islem(() => {

@@ -274,7 +274,7 @@ const guides: ToolGuideBundle = {
   },
 
   fta: {
-    title: 'Arbre de défaillances (FTA)',
+    title: 'Analyse par arbre de défaillances (FTA)',
     summary:
       'En haut, un événement redouté ; en dessous, les conditions qui doivent se combiner pour qu\'il survienne. L\'arbre se construit avec des portes logiques ; en saisissant des probabilités sur les événements de base, celle de l\'événement sommet se calcule seule.',
     whenToUse: [

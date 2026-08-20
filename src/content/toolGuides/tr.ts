@@ -2,7 +2,7 @@ import type { ToolGuideBundle } from './types';
 
 const kilavuzlar: ToolGuideBundle = {
   mindmap: {
-    title: 'Zihin Haritası',
+    title: 'Zihin haritası',
     summary:
       'Tek bir merkezden dallanan, serbest çağrışımla fikir toplama aracı. Kutuları sen taşımazsın; her ekleme sonrası harita kendini yeniden dizer, böylece düzenle uğraşmadan içeriğe odaklanırsın.',
     whenToUse: [
@@ -37,7 +37,7 @@ const kilavuzlar: ToolGuideBundle = {
   },
 
   wbs: {
-    title: 'İş Kırılım Yapısı',
+    title: 'İş kırılım yapısı',
     summary:
       'Bir işi üç seviyede bölen ağaç: en üstte PROJE, onun altında FAZLAR, fazların altında İŞ PAKETLERİ. Her kutu durum, bitiş tarihi, çalışma saati ve açıklama taşır. Zihin haritasından farkı, burada fikir değil iş yönetiyor olman.',
     whenToUse: [
@@ -71,7 +71,7 @@ const kilavuzlar: ToolGuideBundle = {
   },
 
   '5whys': {
-    title: '5 Neden Analizi',
+    title: '5 Neden analizi',
     summary:
       'Bir problemi "peki bu neden oldu?" diye üst üste sorarak yüzeydeki belirtiden kök nedene inme yöntemi. Beş sayısı kural değil, ölçüdür: kendini tekrar etmeye başladığında dibe inmişsindir.',
     whenToUse: [
@@ -104,7 +104,7 @@ const kilavuzlar: ToolGuideBundle = {
   },
 
   flowchart: {
-    title: 'Akış Diyagramları',
+    title: 'Akış diyagramları',
     summary:
       'Bir sürecin adımlarını, karar noktalarını ve akış yönünü çizersin. Üç şema türü var: İş Akış Şeması, Süreç Akış Şeması ve Veri Akış Şeması. Seçtiğin türe göre kullanabileceğin kutu şekilleri değişir.',
     whenToUse: [
@@ -162,7 +162,7 @@ const kilavuzlar: ToolGuideBundle = {
   },
 
   swot: {
-    title: 'SWOT Analizi',
+    title: 'SWOT analizi',
     summary:
       'Bir fikri, projeyi ya da kurumu dört pencereden okur: içeride ne iyi, ne kötü; dışarıda hangi fırsat, hangi tehdit var. Amaç dört liste çıkarmak değil, bu listeleri birbirine bağlayıp strateji üretmek.',
     whenToUse: [
@@ -192,7 +192,7 @@ const kilavuzlar: ToolGuideBundle = {
   },
 
   ishikawa: {
-    title: 'Balık Kılçığı Diyagramı',
+    title: 'Balık kılçığı diyagramı',
     summary:
       'Bir problemin olası nedenlerini altı başlık altında toplar: İnsan, Makine, Malzeme, Metot, Ölçüm ve Çevre. Balığın başı problem, kılçıklar neden gruplarıdır. Amaç nedeni tek bir yerde aramak yerine bütün alanları taramak.',
     whenToUse: [
@@ -219,7 +219,7 @@ const kilavuzlar: ToolGuideBundle = {
   },
 
   pdca: {
-    title: 'PUKÖ Döngüsü',
+    title: 'PUKÖ döngüsü',
     summary:
       'Planla, Uygula, Kontrol Et, Önlem Al. Bir iyileştirmeyi tek seferlik iş olarak değil, dönen bir çark olarak yürütür: her tur, bir öncekinin sonucuyla başlar.',
     whenToUse: [
@@ -246,7 +246,7 @@ const kilavuzlar: ToolGuideBundle = {
   },
 
   waterfall: {
-    title: 'Şelale Modeli',
+    title: 'Şelale modeli',
     summary:
       'Projeyi altı faza böler ve sırayla yürütür: Gereksinim Analizi, Üst Düzey Tasarım, Alt Düzey Tasarım, Uygulama, Test, Bakım. Bir faz kapanmadan sonraki açılmaz; kapanan faz da kilitlenir.',
     whenToUse: [
@@ -304,7 +304,7 @@ const kilavuzlar: ToolGuideBundle = {
   },
 
   vsm: {
-    title: 'Değer Akışı Haritalama',
+    title: 'Değer akışı haritalama',
     summary:
       'Bir ürünün ya da işin baştan sona akışını, aradaki bekleme ve stoklarla birlikte çizer. Amaç toplam sürenin ne kadarının gerçekten değer kattığını görmek — genelde sanılandan çok daha azıdır.',
     whenToUse: [
@@ -334,7 +334,7 @@ const kilavuzlar: ToolGuideBundle = {
   },
 
   pareto: {
-    title: 'Pareto Analizi',
+    title: 'Pareto analizi',
     summary:
       'Sonuçların çoğu, nedenlerin azından çıkar. Kategorileri sıklığa göre büyükten küçüğe sıralar ve üstüne kümülatif yüzde eğrisi çizer; böylece işin çoğunu hangi birkaç kalemin oluşturduğu görünür.',
     whenToUse: [

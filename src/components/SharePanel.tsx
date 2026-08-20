@@ -222,7 +222,7 @@ export default function SharePanel({ onClose, projectId: istenenProje, tool, wor
           <button
             ref={kapatDugmesi}
             onClick={onClose}
-            aria-label={t('close_modal')}
+            aria-label={t('close')}
             className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:hover:bg-slate-800 dark:hover:text-slate-300"
           >
             <X size={18} />
@@ -320,7 +320,7 @@ export default function SharePanel({ onClose, projectId: istenenProje, tool, wor
                             onClick={() => setOnayBekleyen(null)}
                             className="rounded-lg px-2 py-1 text-xs font-medium text-slate-500 transition-colors hover:bg-slate-100 dark:hover:bg-slate-700"
                           >
-                            {t('cancel_btn')}
+                            {t('cancel')}
                           </button>
                         </div>
                       ) : (

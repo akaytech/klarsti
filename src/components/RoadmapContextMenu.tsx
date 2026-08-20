@@ -149,7 +149,7 @@ export default function RoadmapContextMenu({
             <div className="my-1 h-px w-full bg-slate-100 dark:bg-slate-700/50" />
             <button onClick={onSil} className={`${satir} text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20`}>
               <Trash2 size={16} />
-              <span className="flex-1">{t('roadmap_delete')}</span>
+              <span className="flex-1">{t('delete')}</span>
               <kbd className="text-[10px] font-bold text-slate-400">Del</kbd>
             </button>
           </>

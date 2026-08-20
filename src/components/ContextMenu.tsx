@@ -275,7 +275,7 @@ export default function ContextMenu({
         onClick={() => { onDelete(); onClose(); }}
         className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-start text-sm font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-700 dark:hover:text-red-300 transition-colors"
       >
-        <Trash2 size={18} /> {t('delete_goal')}
+        <Trash2 size={18} /> {t('delete')}
       </button>
     </div>
     </div>

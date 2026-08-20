@@ -179,7 +179,7 @@ export default function AjandaYazici({ yazici }: { yazici: AjandaYaziciDurumu })
                     )}
                   >
                     <Plus className="w-4 h-4" />
-                    {t('notepad_save')}
+                    {t('save')}
                   </button>
                 </div>
               </div>

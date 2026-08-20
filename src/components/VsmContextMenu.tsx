@@ -90,7 +90,7 @@ export default function VsmContextMenu({ hedef, top, left, onClose, onRequestDel
         <div className="mb-2 flex items-center justify-between border-b border-slate-100 px-3 pb-2 text-xs font-semibold text-slate-500 dark:border-slate-700/50 dark:text-slate-400">
           {hedef.tur === 'edge' ? t('vsm_flow_type') : t('actions', { defaultValue: 'Actions' })}
           <button onClick={onClose} className="rounded p-2 hover:bg-slate-100 dark:hover:bg-slate-700"
-            title={t('close_modal', { defaultValue: 'Close' })} aria-label={t('close_modal', { defaultValue: 'Close' })}>
+            title={t('close', { defaultValue: 'Close' })} aria-label={t('close', { defaultValue: 'Close' })}>
             <X size={14} />
           </button>
         </div>

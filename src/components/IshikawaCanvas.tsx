@@ -125,7 +125,7 @@ export default function IshikawaCanvas() {
         isOpen={form.silinecekId !== null}
         onClose={() => form.setSilinecekId(null)}
         onConfirm={() => { if (form.silinecekId) deleteIshikawa(form.silinecekId); }}
-        title={t('delete_ishikawa_title')}
+        title={t('delete_analysis_title')}
         message={t('delete_ishikawa_msg')}
       />
     </div>

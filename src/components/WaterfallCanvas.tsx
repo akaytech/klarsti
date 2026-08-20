@@ -138,7 +138,7 @@ export default function WaterfallCanvas() {
                                   deger={form.kalemMetni(project.id, phase.id)}
                                   onDegisti={(deger) => form.kalemYaz(project.id, phase.id, deger)}
                                   onGonder={(e) => form.kalemGonder(e, project.id, phase.id)}
-                                  ipucu={t('wf_add_item')}
+                                  ipucu={t('pdca_add_item')}
                                   formSinifi="mt-2"
                                   girdiSinifi="rounded-xl bg-white/80 dark:bg-slate-800/80 px-4 py-2"
                                   dugmeSinifi={`${EKLE_DUGMESI} ${phase.buttonBg}`}

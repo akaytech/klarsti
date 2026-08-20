@@ -197,7 +197,7 @@ const guides: ToolGuideBundle = {
   },
 
   ishikawa: {
-    title: "Diagramma a Lisca di Pesce",
+    title: "Diagramma a lisca di pesce",
     summary:
       "Raccoglie le possibili cause di un problema sotto sei voci: Manodopera, Macchina, Materiale, Metodo, Misurazione e Ambiente. La testa del pesce è il problema, le lische sono gruppi di cause. Il punto è passare in rassegna ogni ambito invece di cercare la causa in un solo posto.",
     whenToUse: [

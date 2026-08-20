@@ -66,10 +66,17 @@ const govde = (await Promise.all(dosyalar.map((d) => readFile(d, 'utf8').catch((
 const tr = JSON.parse(await readFile(path.join(DILLER, 'tr.json'), 'utf8'));
 const anahtarlar = Object.keys(tr);
 
+// Çoğul biçimleri (works_count_one, _few, _many …) kodda hiç geçmez: çağrı
+// taban anahtarı verir, biçimi i18next seçer. Ek atılmadan arandığında hepsi
+// "kullanılmıyor" görünüyordu — `--sil` çalıştırılsa bütün çoğul biçimler
+// silinirdi.
+const COGUL_EKI = /_(zero|one|two|few|many|other)$/;
+
 const olu = [];
 const kurulanSayisi = [];
 for (const anahtar of anahtarlar) {
-  if (govde.includes(anahtar)) continue;
+  const aranan = anahtar.replace(COGUL_EKI, '');
+  if (govde.includes(aranan)) continue;
   if (KURULAN.some((k) => k.test(anahtar))) {
     kurulanSayisi.push(anahtar);
     continue;

@@ -426,7 +426,7 @@ export default function WbsCanvas({ onNodeSelect }: { onNodeSelect: (id: string 
               baslik={t('wbs_empty')}
               aciklama={t('wbs_empty_hint')}
               birincil={{
-                etiket: isEmptyCanvas ? t('wbs_add_root') : t('start_from_scratch'),
+                etiket: isEmptyCanvas ? t('wbs_add_project') : t('start_from_scratch'),
                 onClick: () => {
                   // Tuval boşsa kök düğüm gerekiyor; varsayılan kök zaten duruyorsa paneli kapatmak yeterli.
                   if (isEmptyCanvas) addGoal(null, t('new_project_node'));

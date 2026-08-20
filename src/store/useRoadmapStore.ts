@@ -801,7 +801,7 @@ export const useRoadmapStore = create<RoadmapState>()(
         // Hata bildirimi projenin geri kalanıyla aynı yoldan geçer; alert()
         // sayfayı kilitliyor ve diğer bildirimlerden farklı görünüyordu.
         const bildirHata = (e: { message: string }) =>
-          toast.error(i18n.t('delete_error') + e.message, { id: 'delete-error' });
+          toast.error(i18n.t('delete_error', { hata: e.message }), { id: 'delete-error' });
 
         if (project && project.userId !== user.uid) {
              // Klasörün kendi kaydı bize kapalıysa (tek bir çalışma

@@ -57,9 +57,9 @@ const ORTAK_METIN = {
   deleteChartMsg: 'flowchart_delete_chart_msg',
   chartType: 'flowchart_change_type',
   typeLockedHint: 'flowchart_change_type_hint',
-  edit: 'flowchart_edit',
-  save: 'flowchart_save',
-  deleteNode: 'flowchart_delete_node',
+  edit: 'edit',
+  save: 'save',
+  deleteNode: 'delete',
   inputPlaceholder: 'flowchart_input_placeholder',
   subtitlePlaceholder: 'flowchart_subtitle_placeholder'
 };

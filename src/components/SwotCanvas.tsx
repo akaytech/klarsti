@@ -174,7 +174,7 @@ export default function SwotCanvas() {
         isOpen={form.silinecekId !== null}
         onClose={() => form.setSilinecekId(null)}
         onConfirm={() => { if (form.silinecekId) deleteSwot(form.silinecekId); }}
-        title={t('delete_swot_title')}
+        title={t('delete_analysis_title')}
         message={t('delete_swot_msg')}
       />
     </div>

@@ -81,7 +81,7 @@ export default function FiveWhysContextMenu({ x, y, node, onClose, onAddNode, on
              />
              <div className="flex justify-end gap-2">
                <button onClick={() => setIsEditing(false)} className="px-3 py-1.5 text-xs font-medium text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors">{t('cancel') || 'Cancel'}</button>
-               <button onClick={handleSaveEdit} className="px-3 py-1.5 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors">{t('whys_save')}</button>
+               <button onClick={handleSaveEdit} className="px-3 py-1.5 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors">{t('save')}</button>
              </div>
           </div>
         ) : isAddingNode ? (
@@ -149,7 +149,7 @@ export default function FiveWhysContextMenu({ x, y, node, onClose, onAddNode, on
               <div className="w-7 h-7 rounded-md bg-red-100 dark:bg-red-900/30 flex items-center justify-center shrink-0">
                 <Trash2 size={16} />
               </div>
-              {t('whys_delete_node')}
+              {t('delete')}
             </button>
           </>
         )}

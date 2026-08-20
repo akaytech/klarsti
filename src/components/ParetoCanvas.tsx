@@ -147,7 +147,7 @@ export default function ParetoCanvas() {
                 </button>
               )}
               {activePareto && (
-                <button onClick={() => setConfirmDeleteOpen(true)} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-400 hover:text-red-500 transition-colors" title={t('delete_pareto_title')} aria-label={t('delete_pareto_title')}>
+                <button onClick={() => setConfirmDeleteOpen(true)} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-400 hover:text-red-500 transition-colors" title={t('delete_analysis_title')} aria-label={t('delete_analysis_title')}>
                   <Trash2 size={16} />
                 </button>
               )}
@@ -356,7 +356,7 @@ export default function ParetoCanvas() {
             setActiveParetoId(null);
           }
         }}
-        title={t('delete_pareto_title')}
+        title={t('delete_analysis_title')}
         message={t('delete_pareto_msg')}
       />
     </div>

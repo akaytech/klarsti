@@ -71,7 +71,7 @@ const guides: ToolGuideBundle = {
   },
 
   '5whys': {
-    title: '5 Porquês',
+    title: 'Análise dos 5 Porquês',
     summary:
       'Perguntar "e por que isso aconteceu?" repetidamente para descer do sintoma visível até a causa raiz. Cinco não é regra, é medida: quando as respostas começam a se repetir, você chegou ao fundo.',
     whenToUse: [

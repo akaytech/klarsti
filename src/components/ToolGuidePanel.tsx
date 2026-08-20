@@ -123,7 +123,7 @@ export default function ToolGuidePanel() {
           <button
             ref={kapatRef}
             onClick={kapat}
-            aria-label={t('close_modal', { defaultValue: 'Close' })}
+            aria-label={t('close', { defaultValue: 'Close' })}
             className="shrink-0 rounded-full p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200"
           >
             <X size={20} />

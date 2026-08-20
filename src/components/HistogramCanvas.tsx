@@ -175,7 +175,7 @@ export default function HistogramCanvas() {
                   <button onClick={() => setAdDuzenleniyor(true)} className="shrink-0 p-2 text-slate-400 transition-colors hover:text-indigo-600 dark:hover:text-indigo-400" title={t('rename_title')} aria-label={t('rename_title')}>
                     <Edit2 size={16} />
                   </button>
-                  <button onClick={() => setSilmeOnayi(true)} className="shrink-0 p-2 text-slate-400 transition-colors hover:text-red-500" title={t('delete_histogram_title')} aria-label={t('delete_histogram_title')}>
+                  <button onClick={() => setSilmeOnayi(true)} className="shrink-0 p-2 text-slate-400 transition-colors hover:text-red-500" title={t('delete_analysis_title')} aria-label={t('delete_analysis_title')}>
                     <Trash2 size={16} />
                   </button>
                 </>
@@ -199,7 +199,7 @@ export default function HistogramCanvas() {
                     {aktif.eskiKalemler.map((k) => <li key={k.id}>{k.category} — {k.frequency}</li>)}
                   </ul>
                 </div>
-                <button onClick={() => clearHistogramEskiKalemler(aktif.id)} className="shrink-0 text-amber-600 hover:text-amber-800 dark:text-amber-400" title={t('close_modal', { defaultValue: 'Close' })} aria-label={t('close_modal', { defaultValue: 'Close' })}>
+                <button onClick={() => clearHistogramEskiKalemler(aktif.id)} className="shrink-0 text-amber-600 hover:text-amber-800 dark:text-amber-400" title={t('close', { defaultValue: 'Close' })} aria-label={t('close', { defaultValue: 'Close' })}>
                   <X size={14} />
                 </button>
               </div>
@@ -383,7 +383,7 @@ export default function HistogramCanvas() {
             setAktifId(null);
           }
         }}
-        title={t('delete_histogram_title')}
+        title={t('delete_analysis_title')}
         message={t('delete_histogram_msg')}
       />
     </div>

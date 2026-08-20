@@ -4,7 +4,7 @@ import { auth } from '../firebaseCore';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithRedirect, sendPasswordResetEmail, sendEmailVerification } from 'firebase/auth';
 import { Eye, EyeOff, Loader2, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import LegalModal from './LegalModal';
 
 export default function AuthPage({ mode }: { mode: 'login' | 'register' }) {
@@ -316,17 +316,23 @@ export default function AuthPage({ mode }: { mode: 'login' | 'register' }) {
           {t('continue_google')}
         </button>
 
+        {/* Metin ve link tek anahtarda: eskiden iki parça yan yana
+            yazılıyordu ve İngilizcedeki sondaki boşluğa güveniyordu. Japonca
+            ve Çincede o boşluk yoktu, yazı linke yapışıyordu. <Trans> ile
+            linkin cümle içindeki yeri çeviriye bırakıldı. */}
         <p className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400 w-full">
-          {isLoginMode ? t('no_account') : t('have_account')}
-          <button 
-            type="button"
-            onClick={() => {
-              navigate(isLoginMode ? '/register' : '/login', { replace: true });
+          <Trans
+            i18nKey={isLoginMode ? 'no_account' : 'have_account'}
+            components={{
+              1: (
+                <button
+                  type="button"
+                  onClick={() => navigate(isLoginMode ? '/register' : '/login', { replace: true })}
+                  className="font-bold text-indigo-600 dark:text-indigo-400 hover:underline"
+                />
+              )
             }}
-            className="font-bold text-indigo-600 dark:text-indigo-400 hover:underline ms-1"
-          >
-            {isLoginMode ? t('register_now') : t('login')}
-          </button>
+          />
         </p>
 
         <p className="mt-8 text-center text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-sm mx-auto md:mx-0 md:max-w-none w-full">

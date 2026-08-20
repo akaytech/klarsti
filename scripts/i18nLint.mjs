@@ -107,12 +107,18 @@ const KURALLAR = [
   {
     ad: 'gorunmez-karakter',
     seviye: 'hata',
-    aciklama: 'sıfır genişlikli boşluk ve yön işaretleri',
+    aciklama: 'sifir genislikli bosluk ve yon isaretleri',
     calistir() {
+      // Fransizcada % ve iki nokta oncesindeki kesintisiz bosluk (U+00A0)
+      // tipografi kurali, kaza degil. Yalniz o kullanim serbest.
+      const frSerbest = / (?=[%:;!?»])|« /g;
+      const kotu = /[​-‍﻿ ‪-‮]/;
       for (const d of DILLER) {
         for (const [k, v] of Object.entries(sozluk[d])) {
-          if (typeof v === 'string' && /[​-‍﻿ ‪-‮]/.test(v)) {
-            bildir(this.ad, this.seviye, d, k, 'metinde görünmez karakter var');
+          if (typeof v !== 'string') continue;
+          const bakilan = d === 'fr' ? v.replace(frSerbest, '') : v;
+          if (kotu.test(bakilan)) {
+            bildir(this.ad, this.seviye, d, k, 'metinde gorunmez karakter var');
           }
         }
       }

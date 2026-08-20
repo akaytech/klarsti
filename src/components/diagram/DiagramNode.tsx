@@ -1,11 +1,13 @@
 import { memo, useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
-import { Handle, Position } from '@xyflow/react';
+import { Handle, NodeToolbar, Position } from '@xyflow/react';
+import { Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useRoadmapStore } from '../../store/useRoadmapStore';
 import type { DiagramNodeData } from '../../store/slices/diagramOps';
 import { getDiagramKind, type DiagramKind } from '../../config/diagramKinds';
 import { useDiagramEditing } from './diagramEditing';
+import DiagramShapeStrip from './DiagramShapeStrip';
 
 interface DiagramNodeProps {
   id: string;
@@ -38,7 +40,7 @@ export default memo(function DiagramNode({ id, data, selected, kind }: DiagramNo
   // ayrı bir menü kutusu açılıyordu; kullanıcı adını değiştirdiği kutuya
   // bakarken yazıyı bambaşka bir yerde yazıyordu.
   const updateNode = useRoadmapStore((s) => (kind === 'orgchart' ? s.updateOrgchartNode : s.updateFlowchartNode));
-  const { editingId, setEditingId } = useDiagramEditing();
+  const { editingId, setEditingId, kutuEkle } = useDiagramEditing();
   const duzenleniyor = editingId === id;
   const [taslak, setTaslak] = useState(label);
   // Organizasyon şemasında kutuda ad ve unvan diye iki satır var; ikisi de
@@ -92,6 +94,29 @@ export default memo(function DiagramNode({ id, data, selected, kind }: DiagramNo
     }
   };
 
+  // Kutunun altındaki "+" ve ondan açılan şekil şeridi. Şerit yalnızca
+  // üstüne gelince / kutu seçiliyken görünüyor: yedi kutuluk bir şemada hepsi
+  // birden dursa ekran düğmeden geçilmiyor.
+  const [uzerinde, setUzerinde] = useState(false);
+  const [seritAcik, setSeritAcik] = useState(false);
+
+  // Şeridin hangi şekilleri göstereceği şemanın türüne bağlı. Bütün şemayı
+  // değil yalnızca tür bilgisini okuyor: kutular birbirinin taşınmasında
+  // yeniden çizilmesin diye.
+  const semaTuru = useRoadmapStore((state) => {
+    const liste = kind === 'orgchart' ? state.orgcharts : state.flowcharts;
+    const aktifId = kind === 'orgchart' ? state.activeOrgchartId : state.activeFlowchartId;
+    return (liste.find((x) => x.id === aktifId) || liste[0])?.type;
+  });
+
+  // Kanvasta boşluğa tıklamak / kaydırmak açık şeridi kapatır.
+  useEffect(() => {
+    if (!seritAcik) return;
+    const kapat = () => setSeritAcik(false);
+    document.addEventListener('close-menus', kapat);
+    return () => document.removeEventListener('close-menus', kapat);
+  }, [seritAcik]);
+
   const girdiSinifi = 'nodrag nopan text-center text-inherit bg-white/85 dark:bg-slate-900/80 rounded px-1 outline-none ring-1 ring-indigo-500';
 
   const Ikon = bicim.icon;
@@ -110,7 +135,38 @@ export default memo(function DiagramNode({ id, data, selected, kind }: DiagramNo
   return (
     <div
       className={`relative flex items-center justify-center min-h-[56px] transition-all ${bicim.boxClass} ${selected ? 'ring-4 ring-indigo-500/30' : ''}`}
+      onMouseEnter={() => setUzerinde(true)}
+      onMouseLeave={() => setUzerinde(false)}
     >
+      {/* Yeni kutu buradan ekleniyor: "+" şekil şeridini açıyor, şeritten
+          seçilen kutu bunun altına inip bağlanıyor ve adı yazma kipinde
+          açılıyor. */}
+      <NodeToolbar isVisible={seritAcik || uzerinde || !!selected} position={Position.Bottom} offset={14}>
+        {seritAcik ? (
+          <DiagramShapeStrip
+            kind={kind}
+            chartType={semaTuru}
+            onSec={(sekil, ad) => {
+              setSeritAcik(false);
+              kutuEkle(id, sekil, ad);
+            }}
+          />
+        ) : (
+          <button
+            type="button"
+            title={t(k.text.addBox)}
+            aria-label={t(k.text.addBox)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setSeritAcik(true);
+            }}
+            className="flex h-7 w-7 items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg shadow-indigo-600/25 transition-colors hover:bg-indigo-700"
+          >
+            <Plus size={16} className="stroke-[3]" />
+          </button>
+        )}
+      </NodeToolbar>
+
       <Handle type="target" position={Position.Top} style={tutamak('top')} className="w-3 h-3 bg-slate-300 dark:bg-slate-600 border-none" />
       <Handle type="target" position={Position.Left} id="left" style={tutamak('left')} className="w-3 h-3 bg-slate-300 dark:bg-slate-600 border-none" />
 

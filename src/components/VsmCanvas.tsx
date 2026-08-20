@@ -30,7 +30,6 @@ import type { VsmMenuHedefi } from './VsmContextMenu';
 import VsmTimelineOverlay from './VsmTimelineOverlay';
 import VsmMapsMenu from './VsmMapsMenu';
 import VsmSettingsPanel from './VsmSettingsPanel';
-import CanvasAddButton from './CanvasAddButton';
 import CanvasControls from './CanvasControls';
 import CanvasKarsilama from './CanvasKarsilama';
 import { useEkranaSigdir } from '../utils/ekranaSigdir';
@@ -155,25 +154,6 @@ export default function VsmCanvas() {
   useEkranaSigdir(harita?.id, harita?.nodes.length ?? 0, { padding: 0.2, duration: 600 });
 
   /**
-   * Alttaki "kutu ekle" düğmesi. Değer akışında kutunun türü (işlem, stok,
-   * müşteri, kaizen...) seçilmek zorunda; düğme boş kanvasa sağ tıklamakla
-   * aynı menüyü açıyor. Yeni kutu, kullanıcının o an baktığı yerin ortasına
-   * konuyor — düğmenin dibine değil.
-   */
-  const dugmeIleEkle = useCallback((yer: { x: number; y: number }) => {
-    const kutu = sarmalayici.current?.getBoundingClientRect();
-    const merkez = kutu
-      ? { x: kutu.left + kutu.width / 2, y: kutu.top + kutu.height / 2 }
-      : yer;
-    document.dispatchEvent(new Event('close-menus'));
-    setMenu({
-      hedef: { tur: 'pane', konum: screenToFlowPosition(merkez) },
-      top: yer.y,
-      left: yer.x,
-    });
-  }, [screenToFlowPosition]);
-
-  /**
    * Boş haritayı iskeletle doldurur: tedarikçi → stok → işlem → stok → müşteri.
    * Eskiden bir useEffect kanvas boşaldıkça tedarikçi kutusunu geri koyuyordu;
    * kullanıcı haritayı boşaltamıyor, boş VSM'i olan proje de gereksiz yere
@@ -255,14 +235,6 @@ export default function VsmCanvas() {
           </Panel>
 
           <VsmTimelineOverlay />
-
-          {harita.nodes.length > 0 && (
-            <CanvasAddButton
-              etiket={t('canvas_add_generic')}
-              ipucu={t('canvas_add_hint_menu')}
-              onClick={dugmeIleEkle}
-            />
-          )}
 
           {harita.nodes.length === 0 && (
             <Panel position="top-center" className="mt-28">

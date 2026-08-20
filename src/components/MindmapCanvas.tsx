@@ -17,7 +17,6 @@ import { metinAlaninda } from '../utils/metinAlaninda';
 import MindmapNode from './MindmapNode';
 import MindmapContextMenu from './MindmapContextMenu';
 import MindmapMapsMenu from './MindmapMapsMenu';
-import CanvasAddButton from './CanvasAddButton';
 import { DAL_RENKLERI, mindmapYerlesimi } from '../utils/mindmapLayout';
 import CanvasMiniMap from './CanvasMiniMap';
 import CanvasControls from './CanvasControls';
@@ -33,7 +32,7 @@ const BOS_KENARLAR: Edge[] = [];
 export default function MindmapCanvas() {
   const { t } = useTranslation();
   const {
-    mindmaps, activeMindmapId, mindmapSelectedId, onMindmapNodesChange, onMindmapEdgesChange,
+    mindmaps, activeMindmapId, onMindmapNodesChange, onMindmapEdgesChange,
     addMindmap, addMindmapChild, addMindmapSibling, deleteMindmapNode, toggleMindmapCollapse,
     setMindmapEditingLabel, setMindmapDescriptionId, toggleMindmapDone, setMindmapSelected,
     toggleMindmapHideDone, moveMindmapNode, resetMindmapLayout
@@ -313,18 +312,6 @@ export default function MindmapCanvas() {
 
   const kok = getMindmapRoot(mindmapNodes, mindmapEdges);
 
-  /**
-   * Alttaki "alt dal ekle" düğmesi. Tab tuşuyla aynı iş; klavye kısayolunu
-   * bilmeyen ve fareyle çalışan kullanıcının görünen yolu bu.
-   */
-  const dugmeIleEkle = useCallback(() => {
-    const hedef = mindmapSelectedId || kok?.id;
-    if (!hedef) return;
-    setMenu(null);
-    const yeni = addMindmapChild(hedef, t('mindmap_new_node'));
-    if (yeni) { setMindmapSelected(yeni); setMindmapEditingLabel(yeni); }
-  }, [mindmapSelectedId, kok?.id, addMindmapChild, setMindmapSelected, setMindmapEditingLabel, t]);
-
   return (
     <div className="flex-1 h-full w-full relative transition-colors bg-slate-50 dark:bg-slate-900">
       <ReactFlow
@@ -406,15 +393,6 @@ export default function MindmapCanvas() {
 
         <CanvasControls />
         <CanvasMiniMap nodeColor={(n) => DAL_RENKLERI[((n.data as any)?.branch ?? 0) % DAL_RENKLERI.length]} />
-
-        {/* Yalnız kök varken üstteki karşılama panelinde zaten düğme duruyor. */}
-        {aktifHarita && mindmapNodes.length > 1 && (
-          <CanvasAddButton
-            etiket={t('mindmap_add_child')}
-            ipucu={t('canvas_add_shortcut_tab')}
-            onClick={dugmeIleEkle}
-          />
-        )}
       </ReactFlow>
 
       {menu && (

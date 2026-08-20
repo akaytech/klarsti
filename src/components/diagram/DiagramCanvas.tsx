@@ -16,7 +16,7 @@ import DiagramNode from './DiagramNode';
 import DiagramContextMenu from './DiagramContextMenu';
 import DiagramTypePicker from './DiagramTypePicker';
 import DiagramChartsMenu from './DiagramChartsMenu';
-import CanvasAddButton from '../CanvasAddButton';
+import DiagramShapeStrip from './DiagramShapeStrip';
 import { useDiagram } from './useDiagram';
 import { DiagramEditingContext } from './diagramEditing';
 import { islemBasla, islemBitir } from '../../store/gecmis';
@@ -35,7 +35,6 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
   // ama hangi kutunun yazma kipinde olduğunu kanvas biliyor: yeni eklenen kutu
   // da doğrudan yazma kipinde açılıyor.
   const [editingId, setEditingId] = useState<string | null>(null);
-  const duzenleme = useMemo(() => ({ editingId, setEditingId }), [editingId]);
   const [yeniSemaAcik, setYeniSemaAcik] = useState(false);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   // Geçmişte açık bir sürükleme işlemi var mı? (bkz. onNodeDragStart)
@@ -136,19 +135,34 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
   }, []);
 
   /**
-   * Alttaki "kutu ekle" düğmesi. Şemada yeni kutunun şekli (adım, karar,
-   * başlangıç...) seçilmek zorunda; düğme doğrudan eklemiyor, kutuya sağ
-   * tıkınca açılan menünün aynısını düğmenin üstünde açıyor. Yeni kutu seçili
-   * kutunun altına iniyor, o yüzden seçim yokken düğme pasif.
+   * Yeni kutu: verilen kutunun altına iner, bağlantısı çizilir ve adı
+   * doğrudan yazma kipinde açılır. Kardeşler üst üste binmesin diye her yeni
+   * kutu bir öncekinin sağına konuyor.
    */
-  const secili = aktif?.nodes.filter((n) => n.selected) ?? [];
-  const seciliKutu = secili.length === 1 ? secili[0] : null;
+  const kutuEkle = useCallback((parentId: string, shape: string, label: string) => {
+    const ebeveyn = aktif?.nodes.find((n) => n.id === parentId);
+    const kardesSayisi = aktif?.edges.filter((e) => e.source === parentId).length ?? 0;
+    const yer = ebeveyn
+      ? { x: ebeveyn.position.x + kardesSayisi * 220, y: ebeveyn.position.y + 150 }
+      : { x: 0, y: 0 };
+    const yeniId = addNode(parentId, shape, label, yer);
+    setMenu(null);
+    setEditingId(yeniId);
+  }, [aktif, addNode]);
 
-  const dugmeIleEkle = useCallback((yer: { x: number; y: number }) => {
-    if (!seciliKutu) return;
-    document.dispatchEvent(new Event('close-menus'));
-    setMenu({ id: seciliKutu.id, top: yer.y, left: yer.x });
-  }, [seciliKutu]);
+  // Kutular bağlamı tüketiyor; bağlam her kutu taşındığında değişirse bütün
+  // kutular yeniden çiziliyor. İşlev sabit kalıyor, güncel hâli ref'te.
+  const kutuEkleRef = useRef(kutuEkle);
+  kutuEkleRef.current = kutuEkle;
+  const kutuEkleSabit = useCallback(
+    (parentId: string, shape: string, label: string) => kutuEkleRef.current(parentId, shape, label),
+    []
+  );
+
+  const duzenleme = useMemo(
+    () => ({ editingId, setEditingId, kutuEkle: kutuEkleSabit }),
+    [editingId, kutuEkleSabit]
+  );
 
   // Projede hiç şema yoksa doğrudan tür seçim ekranı çıkar.
   if (!aktif) {
@@ -206,13 +220,22 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
 
         <CanvasMiniMap nodeColor={(n) => k.getShape((n.data as any)?.shape).minimapColor} />
 
-        {aktif.nodes.length > 0 && (
-          <CanvasAddButton
-            etiket={t('canvas_add_generic')}
-            ipucu={seciliKutu ? t('canvas_add_hint_menu') : t('canvas_add_select_first')}
-            pasif={!seciliKutu}
-            onClick={dugmeIleEkle}
-          />
+        {/* Şema bomboşsa eklemeyi başlatacak bir kutu da yok; şerit ortada
+            duruyor, seçilen şekil ilk kutu oluyor. */}
+        {aktif.nodes.length === 0 && (
+          <Panel position="top-center" style={{ marginTop: 96 }}>
+            <div className="flex flex-col items-center gap-2">
+              <p className="text-sm font-bold text-slate-500 dark:text-slate-400">{t(k.text.addBox)}</p>
+              <DiagramShapeStrip
+                kind={kind}
+                chartType={aktif.type}
+                onSec={(sekil, ad) => {
+                  const yeniId = addNode(null, sekil, ad, { x: 0, y: 0 });
+                  setEditingId(yeniId);
+                }}
+              />
+            </div>
+          </Panel>
         )}
       </ReactFlow>
 
@@ -229,16 +252,6 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
           onEdit={() => {
             setMenu(null);
             setEditingId(menu.id);
-          }}
-          onAddNode={(shape, label) => {
-             // Yeni kutu üst kutunun altına konur.
-             const parentNode = aktif.nodes.find(n => n.id === menu.id);
-             const pos = parentNode ? { x: parentNode.position.x, y: parentNode.position.y + 150 } : { x: 0, y: 0 };
-             const yeniId = addNode(menu.id, shape, label, pos);
-             // Kutu eklenir eklenmez adı yazılsın diye menü kapanıp yeni
-             // kutunun kendisi yazma kipinde açılıyor.
-             setMenu(null);
-             setEditingId(yeniId);
           }}
           onUpdate={(data) => updateNode(menu.id, data)}
           onDelete={() => {

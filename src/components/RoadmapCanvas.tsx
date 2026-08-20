@@ -14,7 +14,6 @@ import { yolHaritasiYerlesimi } from '../utils/yolHaritasiYerlesimi';
 import { roadmapOrnegi } from '../utils/roadmapOrnek';
 import { metinAlaninda } from '../utils/metinAlaninda';
 import CanvasBackdrop from './CanvasBackdrop';
-import CanvasAddButton from './CanvasAddButton';
 import CanvasControls from './CanvasControls';
 import CanvasMiniMap from './CanvasMiniMap';
 import CanvasKarsilama from './CanvasKarsilama';
@@ -346,14 +345,6 @@ export default function RoadmapCanvas() {
 
         <CanvasControls />
         <CanvasMiniMap nodeColor={(n) => ((n.data as { tur?: string })?.tur === 'konu' ? KONU_RENGI : HAT_RENGI)} />
-
-        {aktifHarita && nodes.length > 1 && (
-          <CanvasAddButton
-            etiket={t('roadmap_add_step')}
-            ipucu={t('canvas_add_shortcut_enter')}
-            onClick={() => durakEkle('adim')}
-          />
-        )}
       </ReactFlow>
 
       {detayKutusu && (

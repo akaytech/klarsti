@@ -13,14 +13,13 @@ interface DiagramContextMenuProps {
   y: number;
   node: DiagramNode;
   onClose: () => void;
-  onAddNode: (shape: string, label: string) => void;
   onUpdate: (data: Partial<DiagramNodeData>) => void;
   onDelete: () => void;
   /** Adı kutunun içinde yazmaya açar (bkz. DiagramNode). */
   onEdit: () => void;
 }
 
-export default function DiagramContextMenu({ kind, x, y, node, onClose, onAddNode, onUpdate, onDelete, onEdit }: DiagramContextMenuProps) {
+export default function DiagramContextMenu({ kind, x, y, node, onClose, onUpdate, onDelete, onEdit }: DiagramContextMenuProps) {
   const { t } = useTranslation();
   const { ref: menuRef, style: menuStyle } = useClampedPosition(x, y);
 
@@ -73,25 +72,6 @@ export default function DiagramContextMenu({ kind, x, y, node, onClose, onAddNod
               <div className="h-px bg-slate-100 dark:bg-slate-700/50 my-1"></div>
             </>
           )}
-
-          <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t(k.text.addBox)}</div>
-
-          {/* Eklenebilecek kutular şema türüne göre değişiyor; liste katalogdan
-              geliyor, burada tür başına ayrı blok yok. */}
-          {tur.shapes.map((bicim) => {
-            const Ikon = bicim.icon;
-            return (
-              <button
-                key={bicim.id}
-                onClick={() => onAddNode(bicim.id, t(bicim.newLabelKey))}
-                className={`w-full px-4 py-1.5 text-start text-sm flex items-center gap-2 transition-colors ${bicim.menuClass}`}
-              >
-                <Ikon size={16} /> {t(bicim.addLabelKey)}
-              </button>
-            );
-          })}
-
-          <div className="h-px bg-slate-100 dark:bg-slate-700/50 my-1"></div>
 
           <button onClick={onDelete} className="w-full px-4 py-2 text-start text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2 transition-colors">
             <Trash2 size={16} /> {t(k.text.deleteNode)}

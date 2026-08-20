@@ -12,12 +12,11 @@ import { useRoadmapStore, getDescendants, getActiveWbsTree, isPristineWbs, WBS_N
 import { useShallow } from 'zustand/react/shallow';
 import { islem, islemBasla, islemBitir } from '../store/gecmis';
 import { getDepth } from '../utils/layout';
-import { altKutuAdi, altKutuEkleEtiketi } from '../utils/wbsSeviye';
+import { altKutuAdi } from '../utils/wbsSeviye';
 import { useTheme } from '../theme';
 import CanvasBackdrop from './CanvasBackdrop';
 import { metinAlaninda } from '../utils/metinAlaninda';
 import GoalNode from './GoalNode';
-import CanvasAddButton from './CanvasAddButton';
 import CanvasKarsilama from './CanvasKarsilama';
 import { useEkranaSigdir } from '../utils/ekranaSigdir';
 import PaneContextMenu from './PaneContextMenu';
@@ -299,41 +298,6 @@ export default function WbsCanvas({ onNodeSelect }: { onNodeSelect: (id: string 
     setEditingDescriptionId(null);
   }, [setContextMenuNodeId, setEditingDescriptionId]);
 
-  /**
-   * Alttaki ekleme düğmesi.
-   *
-   * Bir kırılım ağacında tek proje olur, o yüzden düğme asla ikinci bir proje
-   * açmıyor. Hedefi hep bellidir:
-   *   - ağaç boşsa → projenin kendisi
-   *   - bir kutu seçiliyse → onun altı (proje seçiliyse faz, gerisi iş paketi)
-   *   - seçim yoksa → projenin altına faz
-   * Yeni bir proje isteyen soldaki menüden yeni ağaç açıyor.
-   */
-  // Kök = kendisine gelen bir bağ olmayan kutu. Her kutu için getDepth
-  // çağırmak yerine hedefler bir kez kümeye alınıyor; yüz kutuluk bir ağaçta
-  // aradaki fark her boyamada hissediliyor.
-  const bagliHedefler = new Set(edges.map((e) => e.target));
-  const kokKutu = nodes.find((n) => !bagliHedefler.has(n.id)) ?? null;
-  const secililer = nodes.filter((n) => n.selected);
-  const hedefKutu = secililer.length === 1 ? secililer[0] : kokKutu;
-  const hedefDerinlik = hedefKutu ? getDepth(hedefKutu.id, edges) : -1;
-
-  const dugmeEtiketi = !hedefKutu ? t('wbs_add_project') : altKutuEkleEtiketi(t, hedefDerinlik);
-  const dugmeIpucu = !hedefKutu
-    ? t('wbs_hint_project')
-    : hedefDerinlik === 0
-      ? t('wbs_hint_phase')
-      : t('wbs_hint_package');
-
-  const dugmeIleEkle = useCallback(() => {
-    document.dispatchEvent(new Event('close-menus'));
-    if (!hedefKutu) {
-      addGoal(null, t('new_project_node'));
-      return;
-    }
-    addGoal(hedefKutu.id, altKutuAdi(t, hedefDerinlik));
-  }, [hedefKutu, hedefDerinlik, addGoal, t]);
-
   const onPaneClick = useCallback((event: React.MouseEvent) => {
     document.dispatchEvent(new Event('close-menus'));
     // Ctrl+tık yalnızca ağaç bomboşken projeyi açıyor. Proje varsa sessizce
@@ -409,15 +373,6 @@ export default function WbsCanvas({ onNodeSelect }: { onNodeSelect: (id: string 
         <CanvasControls />
         <CanvasMiniMap nodeColor={themeColors.minimapNode} maskColor={themeColors.minimapMask} />
         <CanvasBackdrop />
-
-        {/* Başlangıç paneli açıkken gizli: orada zaten iki büyük düğme var. */}
-        {!showStarterPanel && (
-          <CanvasAddButton
-            etiket={dugmeEtiketi}
-            ipucu={`${dugmeIpucu} ${t('canvas_add_shortcut_ctrl')}`}
-            onClick={dugmeIleEkle}
-          />
-        )}
 
         {showStarterPanel && (
           <Panel position="top-center" className="mt-20">

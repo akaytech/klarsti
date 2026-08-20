@@ -22,7 +22,6 @@ import FiveWhysNode from './FiveWhysNode';
 import FiveWhysContextMenu from './FiveWhysContextMenu';
 import PaneContextMenu from './PaneContextMenu';
 import CalismaMenusu from './CalismaMenusu';
-import CanvasAddButton from './CanvasAddButton';
 import CanvasKarsilama from './CanvasKarsilama';
 import { useEkranaSigdir } from '../utils/ekranaSigdir';
 import CanvasMiniMap from './CanvasMiniMap';
@@ -95,22 +94,6 @@ function FiveWhysCanvasInner() {
 
   // Analiz değişince ya da örnek yüklenince kamera içeriğe sığdırılıyor.
   useEkranaSigdir(aktifAnaliz?.id, fiveWhysNodes.length, { padding: 0.2 });
-
-  /**
-   * Alttaki "neden ekle" düğmesi. Ctrl+tık ile aynı iş: seçili kutunun altına
-   * bir neden açıyor. Seçim yokken yeni bir problem AÇMIYOR — kullanıcı düğmeye
-   * basıp nereden geldiği belirsiz ikinci bir kök bulmasın diye pasif kalıyor.
-   * Kök neden (solution) kutusunun altına da eklenmiyor; kısayol da eklemiyordu.
-   */
-  const secili = fiveWhysNodes.filter((n) => n.selected);
-  const seciliKutu = secili.length === 1 && secili[0].data?.type !== 'solution' ? secili[0] : null;
-
-  const dugmeIleEkle = useCallback(() => {
-    if (!seciliKutu) return;
-    setMenu(null);
-    setPaneMenu(null);
-    addFiveWhysNode(seciliKutu.id, 'why', t('whys_placeholder'));
-  }, [seciliKutu, addFiveWhysNode, t]);
 
   const onNodeContextMenu = useCallback(
     (event: React.MouseEvent, node: FiveWhysNodeType) => {
@@ -209,16 +192,6 @@ function FiveWhysCanvasInner() {
           <CanvasControls />
           <CanvasMiniMap nodeColor={themeColors.minimapNode} maskColor={themeColors.minimapMask} />
           <CanvasBackdrop />
-
-          {/* Boş tuvalde gizli: oradaki karşılama panelinde zaten iki düğme var. */}
-          {fiveWhysNodes.length > 0 && (
-            <CanvasAddButton
-              etiket={t('whys_add_cause')}
-              ipucu={seciliKutu ? t('canvas_add_shortcut_ctrl') : t('canvas_add_select_first')}
-              pasif={!seciliKutu}
-              onClick={dugmeIleEkle}
-            />
-          )}
 
           {aktifAnaliz && (
             <Panel position="top-left" style={{ marginTop: 68 }}>

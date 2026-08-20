@@ -1004,6 +1004,8 @@
   "menu_move_down": "Ниже",
   "diagram_add_box": "Добавить фигуру",
   "diagram_change_shape": "Тип фигуры",
+  "diagram_autolayout": "Автовыравнивание",
+  "diagram_autolayout_selected": "Выровнять выбранную фигуру",
   "flowchart_shape_start": "Начало",
   "flowchart_shape_end": "Конец",
   "flowchart_shape_process": "Процесс",

@@ -977,6 +977,8 @@
   "menu_move_down": "下移",
   "diagram_add_box": "添加图形",
   "diagram_change_shape": "图形类型",
+  "diagram_autolayout": "自动排列",
+  "diagram_autolayout_selected": "对齐所选图形",
   "flowchart_shape_start": "开始",
   "flowchart_shape_end": "结束",
   "flowchart_shape_process": "过程",

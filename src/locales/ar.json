@@ -1022,6 +1022,8 @@
   "menu_move_down": "تحريك لأسفل",
   "diagram_add_box": "إضافة شكل",
   "diagram_change_shape": "نوع الشكل",
+  "diagram_autolayout": "ترتيب تلقائي",
+  "diagram_autolayout_selected": "محاذاة الشكل المحدد",
   "flowchart_shape_start": "بداية",
   "flowchart_shape_end": "نهاية",
   "flowchart_shape_process": "عملية",

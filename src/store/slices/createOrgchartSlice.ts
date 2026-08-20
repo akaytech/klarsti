@@ -33,6 +33,8 @@ export interface OrgchartSlice {
   addOrgchartNode: (parentId: string | null, shape: OrgchartNodeType, label: string, position: { x: number, y: number }) => void;
   updateOrgchartNode: (id: string, data: Partial<OrgchartNodeData>) => void;
   deleteOrgchartNode: (id: string) => void;
+  /** Kutuları otomatik dizer; seçili kutu varsa yalnızca onu hizalar. */
+  autoLayoutOrgchart: () => void;
 }
 
 export function getActiveOrgchart(state: { orgcharts: Orgchart[]; activeOrgchartId: string | null }): Orgchart | undefined {
@@ -69,5 +71,6 @@ export const createOrgchartSlice: StateCreator<
     addOrgchartNode: ops.addNode as OrgchartSlice['addOrgchartNode'],
     updateOrgchartNode: ops.updateNode,
     deleteOrgchartNode: ops.deleteNode,
+    autoLayoutOrgchart: ops.autoLayout,
   };
 };

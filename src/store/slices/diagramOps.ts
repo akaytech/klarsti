@@ -6,6 +6,7 @@ import type { DiagramTypeDef } from '../../config/diagramShared';
 import { edgeStyle } from '../../config/diagramShared';
 import { islem, tiktaIslem, gecmisiTemizle } from '../gecmis';
 import { siraDegistir } from './siralama';
+import { altKutular, ebeveyneHizala, semayiDiz } from '../../utils/diagramLayout';
 
 // Akış diyagramları ve organizasyon şemaları aynı veri yapısını kullanıyor:
 // projede birden çok şema, her şemanın kendi türü, kutuları ve çizgileri.
@@ -248,6 +249,52 @@ export function createDiagramOps(cfg: DiagramOpsConfig, set: (fn: (state: any) =
         nodes: sema.nodes.filter((n) => n.id !== id),
         edges: sema.edges.filter((e) => e.source !== id && e.target !== id),
       })));
+    }),
+
+    /**
+     * Otomatik hizalama (bkz. utils/diagramLayout.ts).
+     *
+     * Seçili kutu yoksa bütün şema yukarıdan aşağıya baştan dizilir. Seçili
+     * kutu varsa şemanın geri kalanına dokunulmuyor: yalnızca o kutu — ve
+     * şekli bozulmasın diye altındaki bacak — bağlı olduğu üst kutunun
+     * altındaki yerine oturuyor.
+     */
+    autoLayout: () => islem(() => {
+      set((state) => aktifiGuncelle(state, (sema) => {
+        const secililer = sema.nodes.filter((n) => n.selected);
+
+        if (secililer.length === 0) {
+          const yerler = semayiDiz(sema.nodes, sema.edges);
+          return {
+            ...sema,
+            nodes: sema.nodes.map((n) => {
+              const yer = yerler.get(n.id);
+              return yer ? { ...n, position: yer } : n;
+            }),
+          };
+        }
+
+        // Birden çok kutu seçiliyse sırayla hizalanıyorlar; her biri bir
+        // öncekinin bıraktığı hâlin üstüne konuyor.
+        let nodes = sema.nodes;
+        for (const secili of secililer) {
+          const hedef = ebeveyneHizala(nodes, sema.edges, secili.id);
+          if (!hedef) continue;
+          const simdiki = nodes.find((n) => n.id === secili.id);
+          if (!simdiki) continue;
+          const dx = hedef.x - simdiki.position.x;
+          const dy = hedef.y - simdiki.position.y;
+          if (dx === 0 && dy === 0) continue;
+          // Kutunun altındaki bacak da aynı kadar kayıyor; şekli bozulmuyor.
+          const tasinacak = altKutular(sema.nodes, sema.edges, secili.id);
+          tasinacak.add(secili.id);
+          nodes = nodes.map((n) => (tasinacak.has(n.id)
+            ? { ...n, position: { x: n.position.x + dx, y: n.position.y + dy } }
+            : n));
+        }
+
+        return nodes === sema.nodes ? sema : { ...sema, nodes };
+      }));
     }),
   };
 }

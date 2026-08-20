@@ -986,6 +986,8 @@
   "menu_move_down": "Aşağı taşı",
   "diagram_add_box": "Kutu ekle",
   "diagram_change_shape": "Kutunun türü",
+  "diagram_autolayout": "Otomatik hizala",
+  "diagram_autolayout_selected": "Seçili kutuyu hizala",
   "flowchart_shape_start": "Başlangıç",
   "flowchart_shape_end": "Bitiş",
   "flowchart_shape_process": "İşlem",

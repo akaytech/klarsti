@@ -40,6 +40,8 @@ export interface FlowchartSlice {
   addFlowchartNode: (parentId: string | null, shape: FlowchartNodeType, label: string, position: { x: number, y: number }) => void;
   updateFlowchartNode: (id: string, data: Partial<FlowchartNodeData>) => void;
   deleteFlowchartNode: (id: string) => void;
+  /** Kutuları otomatik dizer; seçili kutu varsa yalnızca onu hizalar. */
+  autoLayoutFlowchart: () => void;
 }
 
 export function getActiveFlowchart(state: { flowcharts: Flowchart[]; activeFlowchartId: string | null }): Flowchart | undefined {
@@ -76,5 +78,6 @@ export const createFlowchartSlice: StateCreator<
     addFlowchartNode: ops.addNode as FlowchartSlice['addFlowchartNode'],
     updateFlowchartNode: ops.updateNode,
     deleteFlowchartNode: ops.deleteNode,
+    autoLayoutFlowchart: ops.autoLayout,
   };
 };

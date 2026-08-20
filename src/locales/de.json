@@ -986,6 +986,8 @@
   "menu_move_down": "Nach unten",
   "diagram_add_box": "Form hinzufügen",
   "diagram_change_shape": "Formtyp",
+  "diagram_autolayout": "Automatisch anordnen",
+  "diagram_autolayout_selected": "Ausgewählte Form ausrichten",
   "flowchart_shape_start": "Start",
   "flowchart_shape_end": "Ende",
   "flowchart_shape_process": "Prozess",

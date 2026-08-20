@@ -995,6 +995,8 @@
   "menu_move_down": "Descendre",
   "diagram_add_box": "Ajouter une forme",
   "diagram_change_shape": "Type de forme",
+  "diagram_autolayout": "Disposition automatique",
+  "diagram_autolayout_selected": "Aligner la forme sélectionnée",
   "flowchart_shape_start": "Début",
   "flowchart_shape_end": "Fin",
   "flowchart_shape_process": "Processus",

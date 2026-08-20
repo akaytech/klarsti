@@ -986,6 +986,8 @@
   "menu_move_down": "Move down",
   "diagram_add_box": "Add shape",
   "diagram_change_shape": "Shape type",
+  "diagram_autolayout": "Auto layout",
+  "diagram_autolayout_selected": "Align selected shape",
   "flowchart_shape_start": "Start",
   "flowchart_shape_end": "End",
   "flowchart_shape_process": "Process",

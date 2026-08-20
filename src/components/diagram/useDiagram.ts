@@ -24,6 +24,11 @@ export interface DiagramApi {
   addNode: (parentId: string | null, shape: string, label: string, position: { x: number; y: number }) => string;
   updateNode: (id: string, data: Partial<DiagramNodeData>) => void;
   deleteNode: (id: string) => void;
+  /**
+   * Otomatik hizalama. Seçili kutu yoksa bütün şemayı baştan dizer; seçili
+   * kutu varsa yalnızca onu bağlı olduğu kutunun altına oturtur.
+   */
+  autoLayout: () => void;
 }
 
 export function useDiagram(kind: DiagramKind): DiagramApi {
@@ -43,6 +48,7 @@ export function useDiagram(kind: DiagramKind): DiagramApi {
           addNode: s.addOrgchartNode as DiagramApi['addNode'],
           updateNode: s.updateOrgchartNode,
           deleteNode: s.deleteOrgchartNode,
+          autoLayout: s.autoLayoutOrgchart,
         }
       : {
           charts: s.flowcharts,
@@ -58,6 +64,7 @@ export function useDiagram(kind: DiagramKind): DiagramApi {
           addNode: s.addFlowchartNode as DiagramApi['addNode'],
           updateNode: s.updateFlowchartNode,
           deleteNode: s.deleteFlowchartNode,
+          autoLayout: s.autoLayoutFlowchart,
         }
   )));
 }

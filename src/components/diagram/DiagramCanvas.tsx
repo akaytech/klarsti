@@ -6,6 +6,7 @@ import {
 } from '@xyflow/react';
 import type { NodeMouseHandler } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
+import { LayoutGrid } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import CanvasBackdrop from '../CanvasBackdrop';
 import { metinAlaninda } from '../../utils/metinAlaninda';
@@ -28,8 +29,8 @@ import CanvasControls from '../CanvasControls';
 export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
   const { t } = useTranslation();
   const k = getDiagramKind(kind);
-  const { charts, activeId, onNodesChange, onEdgesChange, onConnect, addNode, updateNode, deleteNode } = useDiagram(kind);
-  const { setCenter, getZoom } = useReactFlow();
+  const { charts, activeId, onNodesChange, onEdgesChange, onConnect, addNode, updateNode, deleteNode, autoLayout } = useDiagram(kind);
+  const { setCenter, getZoom, fitView } = useReactFlow();
   const [menu, setMenu] = useState<{ id: string; top: number; left: number } | null>(null);
   // Adı yazılan kutu. Ad değiştirme kutunun içinde oluyor (bkz. DiagramNode),
   // ama hangi kutunun yazma kipinde olduğunu kanvas biliyor: yeni eklenen kutu
@@ -77,6 +78,22 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
   useEffect(() => {
     setEditingId(null);
   }, [aktif?.id]);
+
+  // Otomatik hizalama iki iş yapıyor (bkz. store/slices/diagramOps.autoLayout):
+  // seçili kutu varsa yalnızca o kutu yerine oturuyor, yoksa bütün şema baştan
+  // diziliyor. Bütün şema dizilince kamera da şemaya sığdırılıyor; yeni
+  // dizilim eskisinden geniş olabiliyor ve sonucu göremeden bakakalıyordun.
+  // Tek kutu hizalanırken kamera oynamıyor: kullanıcı zaten oraya bakıyor.
+  const seciliVar = aktif?.nodes.some((n) => n.selected) ?? false;
+  const hizala = useCallback(() => {
+    document.dispatchEvent(new Event('close-menus'));
+    setMenu(null);
+    autoLayout();
+    if (seciliVar) return;
+    // Kutuların yeni yerleri React Flow'a işlensin diye bir karelik gecikme;
+    // aynı anda çağrılınca kamera ESKİ dizilime sığdırıyor.
+    setTimeout(() => fitView({ duration: 600, maxZoom: 1.2 }), 60);
+  }, [autoLayout, seciliVar, fitView]);
 
   // Kutuya tıklayınca kanvas o kutuyu ortalıyor. Çift tıklamanın ikinci
   // vuruşunda ortalanmıyor: kutu ad yazma kutusunun altından kayıp gidiyordu.
@@ -208,6 +225,20 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
             ileri al düğmelerinin altına iniyor. */}
         <Panel position="top-left" style={{ marginTop: 68 }}>
           <DiagramChartsMenu kind={kind} aktif={aktif} onYeniSema={() => setYeniSemaAcik(true)} />
+
+          {/* Kutuları düzene sokan düğme. Yazısı seçime göre değişiyor: aynı
+              düğmenin iki ayrı iş yaptığı yoksa hiç anlaşılmıyor. Boş şemada
+              hizalanacak bir şey yok, düğme de çıkmıyor. */}
+          {aktif.nodes.length > 0 && (
+            <button
+              onClick={hizala}
+              className="mt-2 flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md px-3 py-2 text-sm font-bold text-slate-700 dark:text-slate-200 shadow-sm hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+              title={t(seciliVar ? 'diagram_autolayout_selected' : 'diagram_autolayout')}
+            >
+              <LayoutGrid size={16} className="text-indigo-500" />
+              <span>{t(seciliVar ? 'diagram_autolayout_selected' : 'diagram_autolayout')}</span>
+            </button>
+          )}
 
           {/* Kesik çizgili ikincil hattı olan türlerde bunun nasıl çizileceği
               kendiliğinden anlaşılmıyor; küçük bir ipucu bırakılıyor. */}

@@ -38,6 +38,9 @@ jobs:
       - run: npm ci
       # Testler derlemeden ONCE: bozuk bir kayit yolu yayina cikmasin.
       # Derleme gecse bile testler kalirsa is burada durur.
+      # Ceviri denetimi: anahtar/placeholder paritesi, gorunmez karakter,
+      # hitap bicimi, tirnak birligi, cogul kurallari (bkz. scripts/i18nLint.mjs).
+      - run: npm run i18n:lint
       - run: npm test
       - run: npm run build:firebase
         env:

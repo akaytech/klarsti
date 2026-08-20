@@ -195,8 +195,8 @@ export default function SharePanel({ onClose, projectId: istenenProje, tool, wor
         : t('share_work_status_off', { defaultValue: 'This work is not shared right now.' });
     }
     return isPublic
-      ? t('share_tool_status_on', { sayi: hedefKayitlar.length })
-      : t('share_tool_status_off', { sayi: hedefKayitlar.length });
+      ? t('share_tool_status_on', { sayi: hedefKayitlar.length, count: hedefKayitlar.length })
+      : t('share_tool_status_off', { sayi: hedefKayitlar.length, count: hedefKayitlar.length });
   };
 
   // Portal şart: düğmeyi taşıyan küme, kılavuz paneli açıkken transform

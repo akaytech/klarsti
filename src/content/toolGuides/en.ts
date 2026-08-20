@@ -2,7 +2,7 @@ import type { ToolGuideBundle } from './types';
 
 const guides: ToolGuideBundle = {
   mindmap: {
-    title: 'Mind Map',
+    title: 'Mind map',
     summary:
       'A free-association tool where ideas branch out from a single center. You never move the boxes yourself; the map re-arranges itself after every addition, so you stay focused on the content instead of the layout.',
     whenToUse: [
@@ -37,7 +37,7 @@ const guides: ToolGuideBundle = {
   },
 
   wbs: {
-    title: 'Work Breakdown Structure (WBS)',
+    title: 'Work breakdown structure',
     summary:
       'A tree with three levels: the PROJECT on top, PHASES under it, and WORK PACKAGES under the phases. Every box carries a status, a due date, working hours and a description. Unlike a mind map, here you are managing work, not ideas.',
     whenToUse: [
@@ -71,7 +71,7 @@ const guides: ToolGuideBundle = {
   },
 
   '5whys': {
-    title: '5 Whys',
+    title: '5 Whys analysis',
     summary:
       'Asking "and why did that happen?" over and over to get from the visible symptom down to the root cause. Five is not a rule but a rough measure: once your answers start repeating themselves, you have hit bottom.',
     whenToUse: [
@@ -162,7 +162,7 @@ const guides: ToolGuideBundle = {
   },
 
   swot: {
-    title: 'SWOT Analysis',
+    title: 'SWOT analysis',
     summary:
       'Reads an idea, project or organization through four windows: what is good and bad inside, what opportunities and threats exist outside. The point is not to produce four lists but to connect them into a strategy.',
     whenToUse: [
@@ -192,7 +192,7 @@ const guides: ToolGuideBundle = {
   },
 
   ishikawa: {
-    title: 'Fishbone Diagram',
+    title: 'Fishbone diagram',
     summary:
       'Collects the possible causes of a problem under six headings: Manpower, Machine, Material, Method, Measurement and Milieu. The fish head is the problem, the bones are cause groups. The point is to sweep every area rather than look for the cause in one place.',
     whenToUse: [
@@ -219,7 +219,7 @@ const guides: ToolGuideBundle = {
   },
 
   pdca: {
-    title: 'PDCA Cycle',
+    title: 'PDCA cycle',
     summary:
       'Plan, Do, Check, Act. Runs an improvement as a turning wheel rather than a one-off task: each round starts from the result of the previous one.',
     whenToUse: [
@@ -246,7 +246,7 @@ const guides: ToolGuideBundle = {
   },
 
   waterfall: {
-    title: 'Waterfall Model',
+    title: 'Waterfall model',
     summary:
       'Splits a project into six phases run in order: Requirements, High-Level Design, Low-Level Design, Implementation, Verification, Maintenance. The next phase does not open until the current one closes, and a closed phase is locked.',
     whenToUse: [
@@ -304,7 +304,7 @@ const guides: ToolGuideBundle = {
   },
 
   vsm: {
-    title: 'Value Stream Mapping (VSM)',
+    title: 'Value stream mapping',
     summary:
       'Draws the end-to-end flow of a product or a job together with the waiting and inventory in between. The point is to see how much of the total time actually adds value — usually far less than people assume.',
     whenToUse: [
@@ -334,7 +334,7 @@ const guides: ToolGuideBundle = {
   },
 
   pareto: {
-    title: 'Pareto Analysis',
+    title: 'Pareto analysis',
     summary:
       'Most of the effect comes from a few of the causes. Sorts categories by frequency from largest to smallest and draws a cumulative percentage curve on top, so the handful of items behind most of the problem becomes visible.',
     whenToUse: [

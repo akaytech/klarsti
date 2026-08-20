@@ -37,7 +37,7 @@ const guides: ToolGuideBundle = {
   },
 
   wbs: {
-    title: 'Estructura de Desglose del Trabajo (EDT)',
+    title: 'EDT (WBS)',
     summary:
       'Un árbol de tres niveles: arriba el PROYECTO, debajo las FASES y bajo ellas los PAQUETES DE TRABAJO. Cada cuadro lleva estado, fecha de fin, horas de trabajo y descripción. A diferencia de un mapa mental, aquí gestionas trabajo, no ideas.',
     whenToUse: [
@@ -71,7 +71,7 @@ const guides: ToolGuideBundle = {
   },
 
   '5whys': {
-    title: '5 Porqués',
+    title: 'Análisis de los 5 Porqués',
     summary:
       'Preguntar "¿y por qué pasó eso?" una y otra vez para bajar del síntoma visible a la causa raíz. Cinco no es una regla sino una medida: cuando tus respuestas empiezan a repetirse, has llegado al fondo.',
     whenToUse: [
@@ -192,7 +192,7 @@ const guides: ToolGuideBundle = {
   },
 
   ishikawa: {
-    title: 'Diagrama de Espina de Pescado',
+    title: 'Diagrama de espina de pescado',
     summary:
       'Reúne las causas posibles de un problema bajo seis encabezados: Personas, Máquina, Material, Método, Medición y Medio. La cabeza del pez es el problema y las espinas son grupos de causas. La idea es barrer todas las áreas en vez de buscar en una sola.',
     whenToUse: [
@@ -246,7 +246,7 @@ const guides: ToolGuideBundle = {
   },
 
   waterfall: {
-    title: 'Modelo en cascada',
+    title: 'Modelo cascada',
     summary:
       'Divide el proyecto en seis fases y las recorre en orden: Requisitos, Diseño de alto nivel, Diseño de bajo nivel, Implementación, Verificación y Mantenimiento. La siguiente fase no se abre hasta cerrar la actual, y la cerrada queda bloqueada.',
     whenToUse: [
@@ -304,7 +304,7 @@ const guides: ToolGuideBundle = {
   },
 
   vsm: {
-    title: 'Mapeo del Flujo de Valor (VSM)',
+    title: 'Mapeo de flujo de valor',
     summary:
       'Dibuja el flujo completo de un producto o trabajo junto con las esperas e inventarios intermedios. El objetivo es ver cuánto del tiempo total realmente agrega valor: casi siempre mucho menos de lo que se cree.',
     whenToUse: [

@@ -37,7 +37,7 @@ const guides: ToolGuideBundle = {
   },
 
   wbs: {
-    title: 'Organigramme des tâches (OTP)',
+    title: 'Organigramme des tâches',
     summary:
       'Un arbre à trois niveaux : le PROJET en haut, les PHASES en dessous, et les LOTS DE TRAVAIL sous les phases. Chaque case porte un statut, une échéance, des heures de travail et une description. Contrairement à une carte mentale, ici tu pilotes du travail, pas des idées.',
     whenToUse: [
@@ -71,7 +71,7 @@ const guides: ToolGuideBundle = {
   },
 
   '5whys': {
-    title: '5 Pourquoi',
+    title: 'Analyse des 5 Pourquoi',
     summary:
       'Demander « et pourquoi cela est-il arrivé ? » encore et encore pour descendre du symptôme visible à la cause racine. Cinq n\'est pas une règle mais un repère : quand les réponses se répètent, tu as touché le fond.',
     whenToUse: [
@@ -104,7 +104,7 @@ const guides: ToolGuideBundle = {
   },
 
   flowchart: {
-    title: 'Logigrammes',
+    title: 'Diagrammes de flux',
     summary:
       'Dessine les étapes, les points de décision et le sens d\'un processus. Trois types de schémas existent : flux de travail, flux de processus et flux de données. Le type choisi détermine les formes de boîtes disponibles.',
     whenToUse: [
@@ -192,7 +192,7 @@ const guides: ToolGuideBundle = {
   },
 
   ishikawa: {
-    title: 'Diagramme en Arête de Poisson',
+    title: 'Diagramme en arête de poisson',
     summary:
       'Rassemble les causes possibles d\'un problème sous six en-têtes : Main-d\'œuvre, Machine, Matière, Méthode, Mesure et Milieu. La tête du poisson est le problème, les arêtes sont des familles de causes. Le but est de balayer tous les domaines plutôt qu\'un seul.',
     whenToUse: [
@@ -304,7 +304,7 @@ const guides: ToolGuideBundle = {
   },
 
   vsm: {
-    title: 'Cartographie de la Chaîne de Valeur (VSM)',
+    title: 'Cartographie de la chaîne de valeur',
     summary:
       'Dessine le flux complet d\'un produit ou d\'un travail avec les attentes et les stocks intermédiaires. Le but est de voir quelle part du temps total crée réellement de la valeur — bien moins qu\'on ne le croit.',
     whenToUse: [

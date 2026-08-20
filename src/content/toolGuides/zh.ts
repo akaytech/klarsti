@@ -162,7 +162,7 @@ const guides: ToolGuideBundle = {
   },
 
   swot: {
-    title: 'SWOT 分析',
+    title: 'SWOT分析',
     summary:
       '从四扇窗户看一个想法、项目或组织：内部什么好什么差，外部有哪些机会和威胁。目的不是列出四张清单，而是把它们连起来变成策略。',
     whenToUse: [
@@ -219,7 +219,7 @@ const guides: ToolGuideBundle = {
   },
 
   pdca: {
-    title: 'PDCA 循环',
+    title: 'PDCA循环',
     summary:
       '计划、执行、检查、处理。把改进当作转动的轮子而不是一次性任务：每一圈都从上一圈的结果开始。',
     whenToUse: [
@@ -304,7 +304,7 @@ const guides: ToolGuideBundle = {
   },
 
   vsm: {
-    title: '价值流图 (VSM)',
+    title: '价值流图',
     summary:
       '把一个产品或一项工作从头到尾的流动，连同其间的等待和库存一起画出来。目的是看清总时间里究竟有多少真正创造价值——通常远比人们以为的少。',
     whenToUse: [

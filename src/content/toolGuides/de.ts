@@ -37,7 +37,7 @@ const guides: ToolGuideBundle = {
   },
 
   wbs: {
-    title: 'Projektstrukturplan (PSP)',
+    title: 'Projektstrukturplan',
     summary:
       'Ein Baum mit drei Ebenen: oben das PROJEKT, darunter die PHASEN, darunter die ARBEITSPAKETE. Jedes Kästchen trägt Status, Fälligkeitsdatum, Arbeitszeit und Beschreibung. Anders als in der Mindmap steuerst du hier Arbeit, nicht Ideen.',
     whenToUse: [
@@ -304,7 +304,7 @@ const guides: ToolGuideBundle = {
   },
 
   vsm: {
-    title: 'Wertstromanalyse (VSM)',
+    title: 'Wertstromanalyse',
     summary:
       'Zeichnet den Fluss eines Produkts oder Auftrags von Anfang bis Ende, samt Wartezeiten und Beständen dazwischen. Ziel ist zu sehen, wie viel der Gesamtzeit tatsächlich Wert schafft — meist deutlich weniger als angenommen.',
     whenToUse: [

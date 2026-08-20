@@ -42,7 +42,7 @@ const guides: ToolGuideBundle = {
   },
 
   wbs: {
-    title: 'Struttura di scomposizione del lavoro (WBS)',
+    title: 'Struttura di scomposizione del lavoro',
     summary:
       'Un albero su tre livelli: in cima il PROGETTO, sotto le FASI e sotto ancora i PACCHETTI DI LAVORO. Ogni riquadro porta stato, data di fine, ore di lavoro e descrizione. A differenza di una mappa mentale, qui gestisci lavoro, non idee.',
     whenToUse: [
@@ -76,7 +76,7 @@ const guides: ToolGuideBundle = {
   },
 
   "5whys": {
-    title: "5 perché",
+    title: "Analisi dei 5 perché",
     summary:
       "Chiedere «e perché è successo?» più volte di seguito per passare dal sintomo visibile alla causa profonda. Cinque non è una regola ma una misura approssimativa: quando le risposte iniziano a ripetersi, sei arrivato in fondo.",
     whenToUse: [
@@ -309,7 +309,7 @@ const guides: ToolGuideBundle = {
   },
 
   vsm: {
-    title: "Mappatura del flusso di valore (VSM)",
+    title: "Mappatura del flusso di valore",
     summary:
       "Disegna il flusso completo di un prodotto o di un lavoro insieme alle attese e alle scorte che stanno in mezzo. Il punto è vedere quanta parte del tempo totale crea davvero valore: di solito molta meno di quanto si creda.",
     whenToUse: [

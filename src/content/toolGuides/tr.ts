@@ -37,7 +37,7 @@ const kilavuzlar: ToolGuideBundle = {
   },
 
   wbs: {
-    title: 'İş Kırılım Yapısı (WBS)',
+    title: 'İş Kırılım Yapısı',
     summary:
       'Bir işi üç seviyede bölen ağaç: en üstte PROJE, onun altında FAZLAR, fazların altında İŞ PAKETLERİ. Her kutu durum, bitiş tarihi, çalışma saati ve açıklama taşır. Zihin haritasından farkı, burada fikir değil iş yönetiyor olman.',
     whenToUse: [
@@ -304,7 +304,7 @@ const kilavuzlar: ToolGuideBundle = {
   },
 
   vsm: {
-    title: 'Değer Akışı Haritalama (VSM)',
+    title: 'Değer Akışı Haritalama',
     summary:
       'Bir ürünün ya da işin baştan sona akışını, aradaki bekleme ve stoklarla birlikte çizer. Amaç toplam sürenin ne kadarının gerçekten değer kattığını görmek — genelde sanılandan çok daha azıdır.',
     whenToUse: [

@@ -37,7 +37,7 @@ const guides: ToolGuideBundle = {
   },
 
   wbs: {
-    title: 'Estrutura Analítica do Projeto (EAP)',
+    title: 'EAP',
     summary:
       'Uma árvore em três níveis: no topo o PROJETO, abaixo as FASES e sob elas os PACOTES DE TRABALHO. Cada caixa carrega status, data de fim, horas de trabalho e descrição. Diferente de um mapa mental, aqui você gerencia trabalho, não ideias.',
     whenToUse: [
@@ -192,7 +192,7 @@ const guides: ToolGuideBundle = {
   },
 
   ishikawa: {
-    title: 'Diagrama de Espinha de Peixe',
+    title: 'Diagrama de espinha de peixe',
     summary:
       'Reúne as causas possíveis de um problema sob seis títulos: Mão de obra, Máquina, Material, Método, Medição e Meio ambiente. A cabeça do peixe é o problema e as espinhas são grupos de causas. A ideia é varrer todas as áreas em vez de procurar em uma só.',
     whenToUse: [
@@ -304,7 +304,7 @@ const guides: ToolGuideBundle = {
   },
 
   vsm: {
-    title: 'Mapeamento do Fluxo de Valor (VSM)',
+    title: 'Mapeamento do fluxo de valor',
     summary:
       'Desenha o fluxo de ponta a ponta de um produto ou trabalho junto com as esperas e estoques no meio. O objetivo é ver quanto do tempo total realmente agrega valor — normalmente bem menos do que se imagina.',
     whenToUse: [

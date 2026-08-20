@@ -54,15 +54,31 @@ export default memo(function DiagramNode({ id, data, selected, kind }: DiagramNo
 
   // Yazı hazır seçili geliyor: yeni kutudaki varsayılan ad ("Yeni işlem") ilk
   // tuşta silinsin, kullanıcı elle temizlemesin diye.
+  //
+  // Odak tek denemede oturmuyor: React Flow yeni eklenen kutuyu ölçene kadar
+  // görünmez tutuyor, görünmeyen bir alan da odak alamıyor. Ölçüm bitene
+  // kadar her karede yeniden deneniyor; yoksa kutu yazma kipinde açılıyor ama
+  // yazdıkların hiçbir yere gitmiyordu.
   useEffect(() => {
     if (!duzenleniyor) return;
     vazgecildi.current = false;
     setTaslak(label);
     setAltTaslak(subtitle || '');
-    const el = girdiRef.current;
-    if (!el) return;
-    el.focus();
-    el.select();
+
+    let kalanDeneme = 30;
+    let kare = 0;
+    const dene = () => {
+      const el = girdiRef.current;
+      if (!el) return;
+      el.focus();
+      if (document.activeElement === el) {
+        el.select();
+        return;
+      }
+      if (kalanDeneme-- > 0) kare = requestAnimationFrame(dene);
+    };
+    dene();
+    return () => cancelAnimationFrame(kare);
   }, [duzenleniyor, label, subtitle]);
 
   const kaydet = () => {
@@ -160,7 +176,8 @@ export default memo(function DiagramNode({ id, data, selected, kind }: DiagramNo
               e.stopPropagation();
               setSeritAcik(true);
             }}
-            className="flex h-7 w-7 items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg shadow-indigo-600/25 transition-colors hover:bg-indigo-700"
+            onMouseDown={(e) => e.stopPropagation()}
+            className="nodrag nopan flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg shadow-indigo-600/25 transition-colors hover:bg-indigo-700"
           >
             <Plus size={16} className="stroke-[3]" />
           </button>

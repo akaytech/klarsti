@@ -202,7 +202,10 @@ export default function CalismaMenusu({
 
       {acik && (
         <div
-          className="absolute start-0 top-12 rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl dark:border-slate-700 dark:bg-slate-800"
+          // z-20: menü aşağı doğru açılıyor ve altında başka düğmeler
+          // olabiliyor (akış şemasındaki "Otomatik hizala" gibi). Sıra numarası
+          // olmayınca menü onların ALTINDA kalıyor, yarısı görünmüyordu.
+          className="absolute start-0 top-12 z-20 rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl dark:border-slate-700 dark:bg-slate-800"
           style={{ width: listeGenisligi }}
         >
           <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">

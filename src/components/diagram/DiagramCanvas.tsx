@@ -225,8 +225,8 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
   );
 
   const duzenleme = useMemo(
-    () => ({ editingId, setEditingId, kutuEkle: kutuEkleSabit }),
-    [editingId, kutuEkleSabit]
+    () => ({ editingId, setEditingId, kutuEkle: kutuEkleSabit, hazirlaniyor: ornekBekliyor }),
+    [editingId, kutuEkleSabit, ornekBekliyor]
   );
 
   // Projede hiç şema yoksa doğrudan tür seçim ekranı çıkar.

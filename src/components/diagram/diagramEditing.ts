@@ -8,12 +8,19 @@ interface DiagramEditing {
   setEditingId: (id: string | null) => void;
   /** Verilen kutunun altına yeni kutu ekler ve adını yazmaya açar. */
   kutuEkle: (parentId: string, shape: string, label: string) => void;
+  /**
+   * Örnek şablon yüklendi ama kutular daha ölçülüp hizaya sokulmadı. Bu
+   * aralıkta kutular saydam duruyor: ölçüldükten sonra yerlerine geçerken
+   * ekranda kıpırdadıkları görülüyordu. Yer değiştirme bitince görünüyorlar.
+   */
+  hazirlaniyor: boolean;
 }
 
 export const DiagramEditingContext = createContext<DiagramEditing>({
   editingId: null,
   setEditingId: () => {},
   kutuEkle: () => {},
+  hazirlaniyor: false,
 });
 
 export const useDiagramEditing = () => useContext(DiagramEditingContext);

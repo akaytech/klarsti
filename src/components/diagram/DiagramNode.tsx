@@ -40,7 +40,7 @@ export default memo(function DiagramNode({ id, data, selected, kind }: DiagramNo
   // ayrı bir menü kutusu açılıyordu; kullanıcı adını değiştirdiği kutuya
   // bakarken yazıyı bambaşka bir yerde yazıyordu.
   const updateNode = useRoadmapStore((s) => (kind === 'orgchart' ? s.updateOrgchartNode : s.updateFlowchartNode));
-  const { editingId, setEditingId, kutuEkle } = useDiagramEditing();
+  const { editingId, setEditingId, kutuEkle, hazirlaniyor } = useDiagramEditing();
   const duzenleniyor = editingId === id;
   const [taslak, setTaslak] = useState(label);
   // Organizasyon şemasında kutuda ad ve unvan diye iki satır var; ikisi de
@@ -150,7 +150,8 @@ export default memo(function DiagramNode({ id, data, selected, kind }: DiagramNo
 
   return (
     <div
-      className={`relative flex items-center justify-center min-h-[56px] transition-all ${bicim.boxClass} ${selected ? 'ring-4 ring-indigo-500/30' : ''}`}
+      // Şablon hizaya sokulana kadar saydam (bkz. diagramEditing.hazirlaniyor).
+      className={`relative flex items-center justify-center min-h-[56px] transition-all ${bicim.boxClass} ${selected ? 'ring-4 ring-indigo-500/30' : ''} ${hazirlaniyor ? 'opacity-0' : ''}`}
       onMouseEnter={() => setUzerinde(true)}
       onMouseLeave={() => setUzerinde(false)}
     >

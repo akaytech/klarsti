@@ -1,9 +1,11 @@
-import { memo } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { Handle, Position } from '@xyflow/react';
+import { useTranslation } from 'react-i18next';
 import { useRoadmapStore } from '../../store/useRoadmapStore';
 import type { DiagramNodeData } from '../../store/slices/diagramOps';
 import { getDiagramKind, type DiagramKind } from '../../config/diagramKinds';
+import { useDiagramEditing } from './diagramEditing';
 
 interface DiagramNodeProps {
   id: string;
@@ -13,6 +15,7 @@ interface DiagramNodeProps {
 }
 
 export default memo(function DiagramNode({ id, data, selected, kind }: DiagramNodeProps) {
+  const { t } = useTranslation();
   const { label, shape, subtitle } = data;
   const k = getDiagramKind(kind);
   const bicim = k.getShape(shape);
@@ -29,6 +32,38 @@ export default memo(function DiagramNode({ id, data, selected, kind }: DiagramNo
     const sira = sema.nodes.filter((n) => n.data.shape === bicim.id).findIndex((n) => n.id === id);
     return sira < 0 ? null : `${onEk}${sira + 1}`;
   });
+
+  // Ad değiştirme kutunun İÇİNDE oluyor (kırılım ağacındaki gibi): çift
+  // tıklayınca yazının yerini bir yazma alanı alıyor. Eskiden imlecin yanında
+  // ayrı bir menü kutusu açılıyordu; kullanıcı adını değiştirdiği kutuya
+  // bakarken yazıyı bambaşka bir yerde yazıyordu.
+  const updateNode = useRoadmapStore((s) => (kind === 'orgchart' ? s.updateOrgchartNode : s.updateFlowchartNode));
+  const { editingId, setEditingId } = useDiagramEditing();
+  const duzenleniyor = editingId === id;
+  const [taslak, setTaslak] = useState(label);
+  const girdiRef = useRef<HTMLInputElement>(null);
+  // Esc ile çıkılınca yazma alanı ekrandan kalkıyor; arkasından gelebilecek
+  // blur'un yazılanı kaydetmemesi için.
+  const vazgecildi = useRef(false);
+
+  // Yazı hazır seçili geliyor: yeni kutudaki varsayılan ad ("Yeni işlem") ilk
+  // tuşta silinsin, kullanıcı elle temizlemesin diye.
+  useEffect(() => {
+    if (!duzenleniyor) return;
+    vazgecildi.current = false;
+    setTaslak(label);
+    const el = girdiRef.current;
+    if (!el) return;
+    el.focus();
+    el.select();
+  }, [duzenleniyor, label]);
+
+  const kaydet = () => {
+    if (vazgecildi.current) return;
+    const yeni = taslak.trim();
+    if (yeni && yeni !== label) updateNode(id, { label: yeni });
+    setEditingId(null);
+  };
 
   const Ikon = bicim.icon;
 
@@ -60,7 +95,51 @@ export default memo(function DiagramNode({ id, data, selected, kind }: DiagramNo
         {bicim.withIcon && <Ikon size={16} className="shrink-0 opacity-70" />}
         <div className="flex flex-col items-center leading-tight">
           {numara && <span className="text-[10px] font-black opacity-60">{numara}</span>}
-          <span>{label}</span>
+          {duzenleniyor ? (
+            <input
+              ref={girdiRef}
+              // nodrag/nopan: yazıyı fareyle seçerken kutu sürükleniyor,
+              // kanvas kayıyordu.
+              // data-kutu-basligi: kanvas tıklamanın yazıya gelip gelmediğine
+              // bakıyor (bkz. DiagramCanvas onNodeClick).
+              className="nodrag nopan text-center font-bold text-inherit bg-white/85 dark:bg-slate-900/80 rounded px-1 outline-none ring-1 ring-indigo-500"
+              data-kutu-basligi
+              style={{
+                // Yazma alanı kutuyu şişirmesin diye genişlik yazı kadar,
+                // en fazla kutunun içi kadar (baklava gibi sabit ölçülü
+                // kutularda taşmasın).
+                width: `${Math.max(8, taslak.length + 1)}ch`,
+                maxWidth: '100%',
+                fontSize: 'inherit',
+                lineHeight: 'inherit',
+              }}
+              value={taslak}
+              onChange={(e) => setTaslak(e.target.value)}
+              onBlur={kaydet}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  kaydet();
+                }
+                if (e.key === 'Escape') {
+                  e.preventDefault();
+                  vazgecildi.current = true;
+                  setEditingId(null);
+                }
+              }}
+              placeholder={t(k.text.inputPlaceholder)}
+              aria-label={t(k.text.inputPlaceholder)}
+            />
+          ) : (
+            <span
+              data-kutu-basligi
+              onDoubleClick={() => setEditingId(id)}
+              className="cursor-text"
+              title={t('double_click_edit')}
+            >
+              {label}
+            </span>
+          )}
           {bicim.withSubtitle && subtitle && (
             <span className="text-xs font-medium opacity-60 mt-0.5">{subtitle}</span>
           )}

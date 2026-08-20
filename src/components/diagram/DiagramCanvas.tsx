@@ -18,6 +18,7 @@ import DiagramTypePicker from './DiagramTypePicker';
 import DiagramChartsMenu from './DiagramChartsMenu';
 import CanvasAddButton from '../CanvasAddButton';
 import { useDiagram } from './useDiagram';
+import { DiagramEditingContext } from './diagramEditing';
 import { islemBasla, islemBitir } from '../../store/gecmis';
 import CanvasMiniMap from '../CanvasMiniMap';
 import CanvasControls from '../CanvasControls';
@@ -29,9 +30,12 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
   const k = getDiagramKind(kind);
   const { charts, activeId, onNodesChange, onEdgesChange, onConnect, addNode, updateNode, deleteNode } = useDiagram(kind);
   const { setCenter, getZoom } = useReactFlow();
-  // `duzenle`: menü doğrudan ad yazma kutusuyla mı açılsın (çift tıklama ve
-  // yeni eklenen kutu) yoksa satır listesiyle mi (sağ tık).
-  const [menu, setMenu] = useState<{ id: string; top: number; left: number; duzenle?: boolean } | null>(null);
+  const [menu, setMenu] = useState<{ id: string; top: number; left: number } | null>(null);
+  // Adı yazılan kutu. Ad değiştirme kutunun içinde oluyor (bkz. DiagramNode),
+  // ama hangi kutunun yazma kipinde olduğunu kanvas biliyor: yeni eklenen kutu
+  // da doğrudan yazma kipinde açılıyor.
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const duzenleme = useMemo(() => ({ editingId, setEditingId }), [editingId]);
   const [yeniSemaAcik, setYeniSemaAcik] = useState(false);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   // Geçmişte açık bir sürükleme işlemi var mı? (bkz. onNodeDragStart)
@@ -69,11 +73,21 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
 
   const aktif = getActiveChart(charts, activeId);
 
+  // Başka bir şemaya geçilince yarım kalan ad yazma kipi kapanır; yoksa yeni
+  // şemada aynı kimlikli kutu varsa onun içinde açılıyor.
+  useEffect(() => {
+    setEditingId(null);
+  }, [aktif?.id]);
+
   // Kutuya tıklayınca kanvas o kutuyu ortalıyor. Çift tıklamanın ikinci
   // vuruşunda ortalanmıyor: kutu ad yazma kutusunun altından kayıp gidiyordu.
+  //
+  // Kutunun yazısına tıklamak da kamerayı oynatmıyor: adını değiştirmek için
+  // çift tıklayan kullanıcının altından kutu kayıp gidiyordu.
   const onNodeClick: NodeMouseHandler = useCallback((event, node) => {
     document.dispatchEvent(new Event('close-menus'));
     if (event.detail > 1) return;
+    if ((event.target as HTMLElement)?.closest?.('[data-kutu-basligi]')) return;
     setCenter(node.position.x + 90, node.position.y + 40, { zoom: getZoom(), duration: 800 });
   }, [setCenter, getZoom]);
 
@@ -94,12 +108,13 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
     []
   );
 
-  // Kutuya çift tıklamak doğrudan adını değiştirmeye açar: kullanıcının
+  // Kutuya çift tıklamak adını kutunun içinde değiştirmeye açar: kullanıcının
   // kutuyla ilk işi zaten adını yazmak, sağ tık menüsünden geçmesi gereksiz.
   const onNodeDoubleClick = useCallback(
-    (event: React.MouseEvent, node: any) => {
+    (_event: React.MouseEvent, node: any) => {
       document.dispatchEvent(new Event('close-menus'));
-      setMenu({ id: node.id, top: event.clientY, left: event.clientX, duzenle: true });
+      setMenu(null);
+      setEditingId(node.id);
     },
     []
   );
@@ -107,6 +122,7 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
   const onPaneClick = useCallback(() => {
     document.dispatchEvent(new Event('close-menus'));
     setMenu(null);
+    setEditingId(null);
   }, []);
 
   // Kanvası KULLANICI kaydırırsa menüler kapanır (kutuya yapışık menü kanvasla
@@ -142,6 +158,7 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
   const tur = k.getType(aktif.type);
 
   return (
+    <DiagramEditingContext.Provider value={duzenleme}>
     <div className="flex-1 h-full w-full relative transition-colors bg-slate-50 dark:bg-slate-900" ref={reactFlowWrapper}>
       <ReactFlow
         key={aktif.id}
@@ -201,13 +218,10 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
 
       {menu && aktif.nodes.some((n) => n.id === menu.id) && (
         <DiagramContextMenu
-          // Menü açıkken başka bir kutuya geçilebiliyor (yeni kutu eklenince);
-          // anahtar olmadan içerideki yazı eski kutununki kalırdı.
-          key={`${menu.id}-${menu.duzenle ? 'd' : 'l'}`}
+          key={menu.id}
           kind={kind}
           x={menu.left}
           y={menu.top}
-          duzenleBaslat={menu.duzenle}
           node={aktif.nodes.find((n) => n.id === menu.id)!}
           onClose={() => setMenu(null)}
           onAddNode={(shape, label) => {
@@ -215,9 +229,10 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
              const parentNode = aktif.nodes.find(n => n.id === menu.id);
              const pos = parentNode ? { x: parentNode.position.x, y: parentNode.position.y + 150 } : { x: 0, y: 0 };
              const yeniId = addNode(menu.id, shape, label, pos);
-             // Kutu eklenir eklenmez adı yazılsın diye menü yeni kutunun
-             // üstünde, yazma kipinde açık kalıyor.
-             setMenu({ id: yeniId, top: menu.top, left: menu.left, duzenle: true });
+             // Kutu eklenir eklenmez adı yazılsın diye menü kapanıp yeni
+             // kutunun kendisi yazma kipinde açılıyor.
+             setMenu(null);
+             setEditingId(yeniId);
           }}
           onUpdate={(data) => updateNode(menu.id, data)}
           onDelete={() => {
@@ -233,5 +248,6 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
         </div>
       )}
     </div>
+    </DiagramEditingContext.Provider>
   );
 }

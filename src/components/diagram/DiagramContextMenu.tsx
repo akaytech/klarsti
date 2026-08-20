@@ -17,13 +17,13 @@ interface DiagramContextMenuProps {
   onAddNode: (shape: string, label: string) => void;
   onUpdate: (data: Partial<DiagramNodeData>) => void;
   onDelete: () => void;
-  /** Menü doğrudan ad yazma kutusuyla açılsın (çift tıklama, yeni kutu). */
-  duzenleBaslat?: boolean;
 }
 
-export default function DiagramContextMenu({ kind, x, y, node, onClose, onAddNode, onUpdate, onDelete, duzenleBaslat = false }: DiagramContextMenuProps) {
+export default function DiagramContextMenu({ kind, x, y, node, onClose, onAddNode, onUpdate, onDelete }: DiagramContextMenuProps) {
   const { t } = useTranslation();
-  const [isEditing, setIsEditing] = useState(duzenleBaslat);
+  // Ad değiştirme artık kutunun içinde (bkz. DiagramNode); menüdeki satır,
+  // kutuda yeri olmayan alanlar için duruyor (organizasyon şemasında unvan).
+  const [isEditing, setIsEditing] = useState(false);
   const [editLabel, setEditLabel] = useState(node.data.label);
   const [editSubtitle, setEditSubtitle] = useState(node.data.subtitle || '');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -55,12 +55,7 @@ export default function DiagramContextMenu({ kind, x, y, node, onClose, onAddNod
     onClose();
   };
 
-  // Çift tıklamayla ya da yeni kutuyla açıldıysa arkada menü yok; vazgeçmek
-  // menüyü büsbütün kapatır. Sağ tık menüsünden girildiyse listeye dönülür.
-  const handleCancel = () => {
-    if (duzenleBaslat) onClose();
-    else setIsEditing(false);
-  };
+  const handleCancel = () => setIsEditing(false);
 
   // Kutunun türünü değiştirir: yazı ve bağlantılar durur, yalnızca şekil
   // değişir. Aynı türden şemada kullanılabilen bütün kutular listeleniyor.

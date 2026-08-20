@@ -10,6 +10,7 @@ import type { Connection, Edge, NodeMouseHandler } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { LayoutGrid } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '../../theme';
 import CanvasBackdrop from '../CanvasBackdrop';
 import CanvasKarsilama from '../CanvasKarsilama';
 import { useEkranaSigdir } from '../../utils/ekranaSigdir';
@@ -35,6 +36,7 @@ import CanvasControls from '../CanvasControls';
 export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
   const { t } = useTranslation();
   const k = getDiagramKind(kind);
+  const tema = useTheme();
   const { charts, activeId, onNodesChange, onEdgesChange, onConnect, addNode, updateNode, deleteNode, setEdgeLabel, deleteEdge, reconnectEdge, autoLayout, loadExample, normalizeLayout } = useDiagram(kind);
   const { setCenter, getZoom, fitView } = useReactFlow();
   const [menu, setMenu] = useState<{ id: string; top: number; left: number } | null>(null);
@@ -103,8 +105,16 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
 
   /**
    * Bütün çizgilerin ortak ayarları. Kayda geçmiyor, her boyamada buradan
-   * veriliyor: şemanın türü değişince ya da ok başı ayarı değişince eski
-   * çizgiler de yeni haline geçiyor.
+   * veriliyor: şemanın türü değişince, tema değişince ya da ok başı ayarı
+   * değişince eski çizgiler de yeni haline geçiyor.
+   *
+   * ÇİZGİ YAZISININ RENGİ VE PUNTOSU BURADA, stil dosyasında DEĞİL. Sebebi
+   * dışa aktarma: PNG üretilirken sayfa kopyalanıyor ama SVG'nin içindeki
+   * öğelere hesaplanmış stiller işlenmiyor (bkz. html-to-image, cloneChildren
+   * SVG'yi olduğu gibi bırakıyor). Stil dosyasından gelen renk kopyaya
+   * geçmediği için yazının zemini SVG'nin varsayılanına, yani SİYAHA
+   * düşüyordu: indirilen resimde yazıların üstü siyah boyanmış çıkıyordu.
+   * Satır içi verilen stil kopyayla birlikte gidiyor.
    */
   const varsayilanCizgi = useMemo(() => ({
     type: tur.edge.type,
@@ -113,12 +123,14 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
     // Çizgiler artık her tutamaktan her tutamağa gidebiliyor; yukarı ya da
     // yana giden bir çizgide yön yalnız ok başından anlaşılıyor.
     markerEnd: { type: MarkerType.ArrowClosed, color: tur.edge.stroke },
-    // Çizginin üstündeki yazının zemini; rengi koyu/açık temaya göre
-    // stil dosyasından geliyor (bkz. index.css, react-flow__edge-textbg).
     labelShowBg: true,
-    labelBgPadding: [6, 3] as [number, number],
+    // Zemin tuvalin rengiyle aynı: yazı çizginin üstünü kapatıyor, çizgi de
+    // yazının arkasından geçmiyor.
+    labelBgStyle: { fill: tema.exportBg },
+    labelStyle: { fill: tema.isDark ? '#e2e8f0' : '#334155', fontSize: 16, fontWeight: 700 },
+    labelBgPadding: [8, 4] as [number, number],
     labelBgBorderRadius: 6,
-  }), [tur]);
+  }), [tur, tema]);
 
   // Örnek şablon yüklenince ya da başka bir şemaya geçilince kamera içeriğe
   // sığdırılıyor; yoksa on kutuluk örnek ekranın dışında açılıyor. Gecikme

@@ -4,7 +4,7 @@ const guides: ToolGuideBundle = {
   mindmap: {
     title: 'Mind Map',
     summary:
-      'A free-association tool where ideas branch out from a single centre. You never move the boxes yourself; the map re-arranges itself after every addition, so you stay focused on the content instead of the layout.',
+      'A free-association tool where ideas branch out from a single center. You never move the boxes yourself; the map re-arranges itself after every addition, so you stay focused on the content instead of the layout.',
     whenToUse: [
       'Brainstorming, when you want ideas out fast and the hierarchy is not clear yet.',
       'Breaking a topic into sub-headings to see its full scope.',
@@ -31,7 +31,7 @@ const guides: ToolGuideBundle = {
     ],
     tips: [
       'Boxes cannot be dragged; the layout is automatic. To move a branch elsewhere, delete it and recreate it in the right place.',
-      'Branch colours follow the main branch coming off the root, so the same colour means the same top-level heading.',
+      'Branch colors follow the main branch coming off the root, so the same color means the same top-level heading.',
       'Delete and F2 do not fire while you are inside a text field; finish with Enter or Esc first.'
     ]
   },
@@ -49,7 +49,7 @@ const guides: ToolGuideBundle = {
       'A tree holds one project box. For a second project, open a new tree from the "Trees" menu on the left.',
       'The add button at the bottom follows your selection: with the project selected it says "Add phase", with a phase or work package selected it says "Add work package". With nothing selected it adds a phase under the project.',
       'To do the same with the keyboard, Ctrl-click a box: it opens a new one underneath.',
-      'A plain click only selects the box. To expand or collapse the branches below it, DOUBLE-click the box; the camera centres on it too. (Double-clicking the name edits the name instead.)',
+      'A plain click only selects the box. To expand or collapse the branches below it, DOUBLE-click the box; the camera centers on it too. (Double-clicking the name edits the name instead.)',
       'Right-click a box to set its name, due date, start and end time, description and status (To Do / In Progress / Done / Failed).',
       'The same menu has "Add to Agenda", which moves the item into your agenda on the chosen date. It warns you if the date is already in the past.',
       'Mark an item as Failed and the menu offers "analyze root cause"; one click sends it to the 5 Whys tool as a problem.'
@@ -109,7 +109,7 @@ const guides: ToolGuideBundle = {
       'Draw the steps, decision points and direction of a process. There are three chart types: workflow, process flow and data flow. The type you pick determines which box shapes are available.',
     whenToUse: [
       'Workflow chart: to show tasks, decisions, approvals and who performs them.',
-      'Process flow chart: to analyse a production or service process through operation, transport, inspection, delay and storage steps.',
+      'Process flow chart: to analyze a production or service process through operation, transport, inspection, delay and storage steps.',
       'Data flow chart: to map how data moves between external entities, processes and data stores.'
     ],
     steps: [
@@ -133,12 +133,12 @@ const guides: ToolGuideBundle = {
   },
 
   orgchart: {
-    title: 'Organisation Charts',
+    title: 'Organization charts',
     summary:
       'Shows who reports to whom and where each unit sits. There are seven chart types: hierarchical, functional, divisional, matrix, flat, team-based and network. The type determines both the available box kinds and how connections are drawn.',
     whenToUse: [
       'Recording the current structure and spotting vacancies and duplication.',
-      'Discussing a reorganisation by drawing the same team in different chart types and comparing them.',
+      'Discussing a reorganization by drawing the same team in different chart types and comparing them.',
       'Making dual reporting explicit in a matrix chart, or outside partners visible in a network chart.'
     ],
     steps: [
@@ -164,7 +164,7 @@ const guides: ToolGuideBundle = {
   swot: {
     title: 'SWOT Analysis',
     summary:
-      'Reads an idea, project or organisation through four windows: what is good and bad inside, what opportunities and threats exist outside. The point is not to produce four lists but to connect them into a strategy.',
+      'Reads an idea, project or organization through four windows: what is good and bad inside, what opportunities and threats exist outside. The point is not to produce four lists but to connect them into a strategy.',
     whenToUse: [
       'Getting a complete picture of where you stand before committing to something.',
       'Assessing your current position ahead of an annual plan or budget.',
@@ -467,13 +467,13 @@ const guides: ToolGuideBundle = {
       "To lay a subject out in learning order and keep track of where you left off.",
       "To plan a new hire’s first months step by step.",
       "To show on one screen which stages a piece of work goes through.",
-      "To break a training programme into topics and attach the material to each."
+      "To break a training program into topics and attach the material to each."
     ],
     steps: [
       "A folder can hold several roadmaps. Open a new one from the menu at the top left and switch between them there.",
       "The main track runs from start to finish. Select a step and press Enter to add the next one after it.",
       "With a step selected, Tab hangs a topic off it. On a topic, Tab adds a sub-topic and Enter adds a sibling.",
-      "The circle at the start of a box changes its status: Not started → In progress → Done → Skipped. The box changes colour with it.",
+      "The circle at the start of a box changes its status: Not started → In progress → Done → Skipped. The box changes color with it.",
       "Right-click a box and choose \"Details\" to open the side panel: notes, an estimated time and links go there.",
       "To break a long roadmap up, add a section heading from the right-click menu (Beginner / Intermediate / Advanced, say).",
       "Make a topic optional and it is joined with a dashed line and left out of the progress percentage.",

@@ -98,23 +98,30 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
   // kutuların yerine oturmasını izlemiyor.
   const [ornekBekliyor, setOrnekBekliyor] = useState(false);
 
+  // Hızlı yol: kutuların hepsi ölçülür ölçülmez dizilim çalışır ve kutular
+  // görünür olur. Olağan halde ölçüm ilk boyamayla geldiği için bu bir kare
+  // sürüyor, kullanıcı bekleme fark etmiyor.
   useEffect(() => {
     if (!ornekBekliyor) return;
     const kutular = aktif?.nodes ?? [];
-    if (kutular.length > 0 && kutular.every((n) => n.measured?.width)) {
-      setOrnekBekliyor(false);
-      normalizeLayout();
-      return;
-    }
-    // Ölçüm hiç gelmezse şablon ince ayarsız kalmasın: en geç yarım saniye
-    // sonra eldeki ölçülerle diziliyor. Olağan halde üstteki hızlı yol
-    // çalışıyor ve bu zamanlayıcıya sıra gelmiyor.
+    if (kutular.length === 0 || !kutular.every((n) => n.measured?.width)) return;
+    setOrnekBekliyor(false);
+    normalizeLayout();
+  }, [ornekBekliyor, aktif?.nodes, normalizeLayout]);
+
+  // Emniyet süresi: ölçüm gelmezse kutular sonsuza kadar saydam kalmasın.
+  //
+  // Bu zamanlayıcı BİLEREK yalnızca bayrağa bağlı. Kutulara da bağlıyken her
+  // kutu yazmasında sıfırlanıyor ve hiç dolmuyordu: şablon yükleniyor ama
+  // kutular hiç görünmüyordu.
+  useEffect(() => {
+    if (!ornekBekliyor) return;
     const zamanlayici = setTimeout(() => {
       setOrnekBekliyor(false);
       normalizeLayout();
     }, 500);
     return () => clearTimeout(zamanlayici);
-  }, [ornekBekliyor, aktif?.nodes, normalizeLayout]);
+  }, [ornekBekliyor, normalizeLayout]);
 
   const ornekYukle = useCallback(() => {
     loadExample?.();

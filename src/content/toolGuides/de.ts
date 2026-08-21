@@ -40,7 +40,79 @@ const guides: ToolGuideBundle = {
       description:
         'Setze ein Thema in die Mitte und verzweige es; die Anordnung übernimmt das Programm. Zum Sammeln von Ideen, kostenlos.',
       keywords: 'mindmap erstellen, mindmap online, mind map kostenlos, gedankenkarte, mindmap beispiel'
-    }
+    },
+    example: {
+      title: 'Beispiel: ein internes Schulungsprogramm aufsetzen',
+      intro:
+        'Ein HR-Team soll die Einarbeitung neu aufbauen und weiß nicht, wo es anfangen soll. Bevor irgendetwas entschieden wird, kommt alles, was im Kopf ist, auf eine einzige Karte.',
+      blocks: [
+        {
+          heading: 'Wer nimmt teil',
+          items: [
+            'Neue Mitarbeitende',
+            'Teamleitungen',
+            'Remote-Beschäftigte',
+            'Außendienst',
+          ]
+        },
+        {
+          heading: 'Was wir vermitteln',
+          items: [
+            'Produktwissen',
+            'Interne Systeme',
+            'Umgang mit Kunden',
+            'Sicherheitsregeln',
+          ]
+        },
+        {
+          heading: 'Wie wir es vermitteln',
+          items: [
+            'Präsenzworkshop',
+            'Aufgezeichnetes Video',
+            'Kurze Wocheneinheit',
+            'Begleitung durch erfahrene Kollegen',
+          ]
+        },
+        {
+          heading: 'Wie wir es messen',
+          items: [
+            'Kurzer Test am Ende',
+            'Rückmeldung der Führungskraft nach drei Monaten',
+            'Zeit bis zur ersten eigenständigen Aufgabe',
+            'Teilnahmequote',
+          ]
+        },
+      ],
+      outcome:
+        'Mit vier Ästen auf der Karte springt die Lücke ins Auge: der Ast zur Messung ist deutlich dünner als die anderen. Das Team geht dorthin zurück, bevor eine einzige Folie geschrieben wird. Genau dafür ist eine Mindmap da — sie zeigt, welche Seite leer ist.'
+    },
+    faq: [
+      {
+        q: 'Was ist eine Mindmap?',
+        a:
+          'Eine Art, Ideen zu sammeln: ein Thema in die Mitte, von dort verzweigt es sich nach außen. Der Unterschied zu einer Liste ist, dass eine Liste dich zwingt, der Reihe nach zu denken, während die Karte jeden Gedanken an den Ast lässt, zu dem er gehört. Deshalb funktioniert sie besser, um wirres Denken zu ordnen.'
+      },
+      {
+        q: 'Was ist der Unterschied zwischen Mindmap und Projektstrukturplan?',
+        a:
+          'Eine Mindmap sammelt Ideen; es gibt keine Verantwortlichen, Termine oder Reihenfolge. Ein Projektstrukturplan steuert Arbeit: jedes Kästchen hat Status, Termin und Aufwand. Die übliche Reihenfolge ist erst Mindmap, dann PSP, sobald der Umfang steht.'
+      },
+      {
+        q: 'Kann ich die Kästchen verschieben?',
+        a:
+          'Nein, die Anordnung ist automatisch. Um einen Ast zu verschieben, lösch ihn und leg ihn an der richtigen Stelle neu an. Das ist Absicht: Zeit fürs Ausrichten von Kästchen fehlt beim Denken.'
+      },
+      {
+        q: 'Wie viele Äste sollte eine Mindmap haben?',
+        a:
+          'Es gibt keine Grenze, aber mehr als sieben oder acht auf derselben Ebene lässt sich nicht mehr lesen. Wenn du dort ankommst, fasse ähnliche Äste unter einem neuen zusammen, dann wird die Karte wieder lesbar.'
+      },
+      {
+        q: 'Ist es kostenlos?',
+        a:
+          'Ja. Klarsti ist derzeit kostenlos und werbefrei. Für die Mindmap brauchst du nicht einmal ein Konto.'
+      },
+    ]
   },
 
   wbs: {
@@ -81,7 +153,70 @@ const guides: ToolGuideBundle = {
       description:
         'Zerlege dein Projekt in Phasen und Arbeitspakete, mit Status, Termin und Aufwand je Paket. Mit ausgefülltem Beispiel, kostenlos.',
       keywords: 'projektstrukturplan, psp erstellen, work breakdown structure, projektstrukturplan beispiel, arbeitspakete'
-    }
+    },
+    example: {
+      title: 'Beispiel: ein Café eröffnen',
+      intro:
+        'Sechs Monate bis zur Eröffnung. Die Aufgabe wirkt riesig und es gibt keinen offensichtlichen Punkt, an dem man sie anfasst. In drei Phasen zerlegt liefert jede Phase konkrete Pakete, die eine Person übernehmen kann.',
+      blocks: [
+        {
+          heading: '1. Standort und Genehmigungen',
+          items: [
+            'Mieten in drei Vierteln vergleichen',
+            'Mietvertrag unterschreiben',
+            'Gewerbeanmeldung',
+            'Lebensmittelrechtliche Erlaubnis',
+          ]
+        },
+        {
+          heading: '2. Ausbau',
+          items: [
+            'Umbauplanung',
+            'Bauarbeiten',
+            'Espressomaschine und Mühle',
+            'Tische, Stühle, Theke',
+          ]
+        },
+        {
+          heading: '3. Eröffnung',
+          items: [
+            'Zwei Baristas einstellen',
+            'Karte und Preise',
+            'Lieferantenverträge',
+            'Eröffnungsankündigung',
+          ]
+        },
+      ],
+      outcome:
+        'Zwölf Arbeitspakete. Der Umfang steht damit fest: Arbeit, die nicht im Baum steht, gehört nicht zum Projekt. Auch die Reihenfolge wird sichtbar — der Ausbau kann ohne Genehmigung nicht starten, und damit ist die erste Phase die riskante.'
+    },
+    faq: [
+      {
+        q: 'Was ist ein Projektstrukturplan (PSP)?',
+        a:
+          'Ein Baum, der ein Projekt zerlegt, bis jedes Stück klein genug ist, um es einer Person zu geben. Oben das Projekt, darunter die Phasen, darunter die Arbeitspakete. Sein Zweck ist nicht, die Arbeit zu verkleinern, sondern den Umfang sichtbar zu machen: was nicht im Baum steht, gehört nicht zum Projekt.'
+      },
+      {
+        q: 'Wie viele Ebenen sollte ein PSP haben?',
+        a:
+          'Drei Ebenen reichen für fast alles: Projekt, Phase, Arbeitspaket. Die Faustregel ist einfach — wenn du bei einem Kästchen sagen kannst, wer es macht und wie lange es dauert, hör auf zu zerlegen. Wenn nicht, geh eine Ebene tiefer.'
+      },
+      {
+        q: 'Was ist der Unterschied zum Gantt-Diagramm?',
+        a:
+          'Der PSP beantwortet «was ist zu tun», das Gantt-Diagramm «wann». Die richtige Reihenfolge ist erst Strukturplan, dann Kalender. Ein Gantt-Diagramm ohne vorherige Zerlegung ist eine halb erinnerte Aufgabenliste auf einer Zeitachse.'
+      },
+      {
+        q: 'Wie groß sollte ein Arbeitspaket sein?',
+        a:
+          'Ein gängiges Maß ist das, was eine Person in ein bis zwei Wochen schafft. Größer, und du kannst den Fortschritt nicht verfolgen; kleiner, und der Baum füllt sich mit Rauschen.'
+      },
+      {
+        q: 'Ist es kostenlos?',
+        a:
+          'Ja. Klarsti ist derzeit kostenlos und werbefrei, und du brauchst kein Konto, um einen Projektstrukturplan zu bauen.'
+      },
+    ]
   },
 
   '5whys': {
@@ -121,7 +256,73 @@ const guides: ToolGuideBundle = {
       description:
         'Frage fünfmal warum und komme vom Symptom zur eigentlichen Ursache. Schritt für Schritt erklärt, mit echtem Beispiel, kostenlos.',
       keywords: '5 why methode, 5 warum, ursachenanalyse, root cause analyse, 5 why beispiel'
-    }
+    },
+    example: {
+      title: 'Beispiel: Bestellbestätigungen kommen nicht an',
+      intro:
+        'Der Support hat seit drei Tagen dieselbe Beschwerde. Der erste Reflex ist «wir wechseln den E-Mail-Anbieter». Fünfmal warum zu fragen zeigt, dass das Problem ganz woanders liegt.',
+      blocks: [
+        {
+          heading: 'Problem',
+          items: [
+            'Kunden erhalten die Bestellbestätigung nicht.',
+          ]
+        },
+        {
+          heading: 'Die Kette',
+          items: [
+            'Warum? Die Mails landen im Spam.',
+            'Warum? Unsere Absenderdomain gilt als nicht verifiziert.',
+            'Warum? Ein Verifizierungseintrag fehlt im DNS.',
+            'Warum? Er wurde beim Serverumzug nicht mitkopiert.',
+            'Warum? In der Umzugs-Checkliste steht diese Zeile nicht.',
+          ]
+        },
+        {
+          heading: 'Grundursache',
+          items: [
+            'Die Checkliste für den Serverumzug ist unvollständig.',
+          ]
+        },
+        {
+          heading: 'Maßnahmen',
+          items: [
+            'Fehlender Eintrag ergänzt (das heutige Problem ist gelöst).',
+            'Domainverifizierung in die Umzugs-Checkliste aufgenommen.',
+            'Die Checkliste hängt nicht mehr davon ab, wer den Umzug macht.',
+          ]
+        },
+      ],
+      outcome:
+        'Der erste Reflex war ein Anbieterwechsel: Geld ausgegeben, Problem bleibt. Die wirkliche Ursache war eine fehlende Zeile in einer Checkliste. Diesen Unterschied sichtbar zu machen ist die ganze Arbeit der 5-Why-Methode.'
+    },
+    faq: [
+      {
+        q: 'Was ist die 5-Why-Methode?',
+        a:
+          'Eine Technik, um vom sichtbaren Symptom zur eigentlichen Ursache zu kommen, indem man wiederholt «warum» fragt. Sie stammt von Toyota. Der Sinn ist, das zu reparieren, was das Symptom erzeugt, statt das Symptom selbst — damit das Problem nicht wiederkommt.'
+      },
+      {
+        q: 'Warum genau fünf?',
+        a:
+          'Fünf ist eine Gewohnheit, keine Regel. In der Praxis landen die meisten Probleme zwischen der vierten und der sechsten Frage. Wenn du es bei der dritten findest, hör auf. Wenn du bei der siebten immer noch nirgends bist, hast du das Problem wahrscheinlich falsch beschrieben.'
+      },
+      {
+        q: 'Woran erkenne ich die Grundursache?',
+        a:
+          'An zwei Zeichen. Das nächste «warum» zeigt auf etwas außerhalb deines Einflusses, und du bist überzeugt, dass das Beseitigen des Gefundenen die Wiederholung verhindern würde.'
+      },
+      {
+        q: '5 Why oder Ishikawa-Diagramm?',
+        a:
+          '5 Why folgt einer einzigen Kette nach unten. Das Ishikawa verteilt dasselbe Problem über Kategorien: Mensch, Methode, Maschine, Material, Messung, Mitwelt. Wenn die Ursache an einer Stelle zu sitzen scheint, nimm 5 Why; wenn sie verstreut ist, zeichne zuerst die Gräte.'
+      },
+      {
+        q: 'Ist es kostenlos?',
+        a:
+          'Ja. Klarsti ist derzeit kostenlos und werbefrei, und du brauchst kein Konto für eine 5-Why-Analyse.'
+      },
+    ]
   },
 
   flowchart: {
@@ -157,7 +358,63 @@ const guides: ToolGuideBundle = {
       description:
         'Zeichne Prozessschritte, Entscheidungspunkte und Verzweigungen. Mit Erklärung der Symbole und einem Beispiel, kostenlos.',
       keywords: 'flussdiagramm erstellen, flussdiagramm symbole, ablaufdiagramm, prozessdiagramm, flussdiagramm beispiel'
-    }
+    },
+    example: {
+      title: 'Beispiel: wie ein Urlaubsantrag bearbeitet wird',
+      intro:
+        'Jeder im Unternehmen hat eine leicht andere Version dieses Ablaufs im Kopf. Wer genehmigt, wann wird abgelehnt, wann kommt HR ins Spiel — nichts davon steht irgendwo. Aufgezeichnet schrumpft die Diskussion auf ein einziges Kästchen.',
+      blocks: [
+        {
+          heading: 'Schritte',
+          items: [
+            'Start: Mitarbeitende stellen einen Urlaubsantrag',
+            'Prozess: System berechnet die Resttage',
+            'Entscheidung: Sind genug Tage übrig?',
+            'Nein → Antrag abgelehnt, Begründung wird erfasst',
+            'Ja → Prozess: Antrag geht an die Führungskraft',
+          ]
+        },
+        {
+          heading: 'Fortsetzung',
+          items: [
+            'Entscheidung: Genehmigt die Führungskraft?',
+            'Nein → Begründung geht zurück, Vorgang endet',
+            'Ja → Prozess: HR trägt es in den Kalender ein',
+            'Prozess: Teamkalender wird aktualisiert',
+            'Ende: Bestätigung geht raus',
+          ]
+        },
+      ],
+      outcome:
+        'Nach dem Zeichnen fiel eines auf: Es gab überhaupt keinen Schritt, der bei abgelehnten Anträgen eine Begründung zurückgibt. Solange der Ablauf in den Köpfen lebte, merkte das niemand. In Kästchen gebracht, zeigte sich die Lücke von selbst.'
+    },
+    faq: [
+      {
+        q: 'Was ist ein Flussdiagramm?',
+        a:
+          'Ein Diagramm, das zeigt, welche Schritte ein Prozess von Anfang bis Ende durchläuft, wo entschieden wird und wo sich der Weg teilt. Ein Prozess, dessen mündliche Erklärung fünf Minuten dauert, lässt sich gezeichnet meist in fünf Sekunden lesen.'
+      },
+      {
+        q: 'Was bedeuten die Symbole?',
+        a:
+          'Das abgerundete Kästchen ist Start oder Ende, das Rechteck ein Prozessschritt, die Raute eine Entscheidung. Aus einer Entscheidung führen immer mindestens zwei Pfeile, meist ja und nein. Diese Verzweigung lässt dem Lesenden genau eine Deutung.'
+      },
+      {
+        q: 'Ist ein Flussdiagramm dasselbe wie eine Prozesslandkarte?',
+        a:
+          'Verwandt, aber nicht dasselbe. Das Flussdiagramm zeigt die Reihenfolge der Schritte. Eine Prozesslandkarte ist meist breiter: sie zeigt auch, wer für welchen Schritt zuständig ist und wo Arbeit von einem Team zum nächsten wandert.'
+      },
+      {
+        q: 'Wo fange ich an zu zeichnen?',
+        a:
+          'Am Ende. Schreib auf, wie der Prozess ausgeht, und arbeite dich rückwärts mit der Frage «was muss davor passieren». Von vorne anzufangen erzeugt meist den idealen statt den tatsächlichen Prozess.'
+      },
+      {
+        q: 'Ist es kostenlos?',
+        a:
+          'Ja. Klarsti ist derzeit kostenlos und werbefrei, und du brauchst kein Konto, um ein Flussdiagramm zu zeichnen.'
+      },
+    ]
   },
 
   orgchart: {
@@ -193,7 +450,75 @@ const guides: ToolGuideBundle = {
       description:
         'Zeige auf einer Seite, wer an wen berichtet, und finde unbesetzte Rollen. Mit einem echten Beispiel aus 20 Personen.',
       keywords: 'organigramm erstellen, organigramm kostenlos, organisationsstruktur, firmen organigramm, organigramm vorlage'
-    }
+    },
+    example: {
+      title: 'Beispiel: ein Softwareunternehmen mit 20 Personen',
+      intro:
+        'Das Unternehmen ist in zwei Jahren von 6 auf 20 Personen gewachsen. Wer an wen berichtet, weiß man vom Hörensagen, aber es steht nirgends — also stellt jede neue Person dieselben Fragen.',
+      blocks: [
+        {
+          heading: 'Geschäftsführung',
+          items: [
+            'Leitung Produkt',
+            'Leitung Entwicklung',
+            'Leitung Vertrieb',
+            'Verantwortung HR und Finanzen',
+          ]
+        },
+        {
+          heading: 'Unter Entwicklung',
+          items: [
+            'Frontend-Team (3)',
+            'Backend-Team (4)',
+            'Qualitätssicherung',
+            'Systemadministration',
+          ]
+        },
+        {
+          heading: 'Unter Produkt',
+          items: [
+            'Design (2)',
+            'Produktanalyse',
+          ]
+        },
+        {
+          heading: 'Unter Vertrieb',
+          items: [
+            'Außendienst (2)',
+            'Kundensupport (2)',
+          ]
+        },
+      ],
+      outcome:
+        'Beim Zeichnen fiel eines sofort auf: Die Qualitätssicherung ist eine einzelne Person, die direkt an die Entwicklungsleitung berichtet — im Urlaub vertritt sie niemand. Genau hier verdient ein Organigramm sein Geld: Es zeigt die Lücken mit Namen.'
+    },
+    faq: [
+      {
+        q: 'Was ist ein Organigramm?',
+        a:
+          'Ein Schaubild, wie Personen und Teams einer Organisation zusammenhängen. Es zeigt Berichtslinien und wo jede Einheit sitzt. Für alle, die neu anfangen, ist es die schnellste Landkarte des Hauses.'
+      },
+      {
+        q: 'Namen oder Funktionen?',
+        a:
+          'Am besten beides: die Funktion erklärt die Struktur, der Name sagt dir, an wen du dich wendest. Nur Namen machen das Organigramm sinnlos, sobald jemand geht; nur Funktionen lassen dich ratlos, wen du fragen sollst.'
+      },
+      {
+        q: 'Wie viele Personen passen auf ein Organigramm?',
+        a:
+          'Bis etwa fünfzig bleibt es auf einer Seite lesbar. Darüber zeigt man die obere Ebene getrennt und gibt jeder Einheit ein eigenes Schaubild. Eine große Organisation auf eine Seite zu quetschen ergibt ein Organigramm, das niemand liest.'
+      },
+      {
+        q: 'Wie oft muss es aktualisiert werden?',
+        a:
+          'Bei jeder Einstellung und jedem Austritt. Ein veraltetes Organigramm ist schlimmer als gar keines, weil es Leute mit voller Überzeugung zur falschen Person schickt.'
+      },
+      {
+        q: 'Ist es kostenlos?',
+        a:
+          'Ja. Klarsti ist derzeit kostenlos und werbefrei, und du brauchst kein Konto für ein Organigramm.'
+      },
+    ]
   },
 
   swot: {
@@ -230,7 +555,79 @@ const guides: ToolGuideBundle = {
       description:
         'Stelle Stärken und Schwächen den Chancen und Risiken gegenüber und lies die vier Felder zusammen. Mit ausgefülltem Beispiel.',
       keywords: 'swot analyse, swot analyse erstellen, swot analyse beispiel, stärken schwächen analyse, swot vorlage'
-    }
+    },
+    example: {
+      title: 'Beispiel: eine kleine Steuerkanzlei',
+      intro:
+        'Eine Kanzlei mit fünf Personen will wachsen, weiß aber nicht, wohin sie drücken soll. Die vier Felder auszufüllen holt das Gespräch aus dem Bauchgefühl und stellt es auf konkrete Zeilen.',
+      blocks: [
+        {
+          heading: 'Stärken',
+          items: [
+            'Mandate seit fünfzehn Jahren',
+            'So gut wie keine Abwanderung',
+            'Beide Partner sind Steuerberater',
+            'Keine Schulden',
+          ]
+        },
+        {
+          heading: 'Schwächen',
+          items: [
+            'Alles hängt an den beiden Partnern',
+            'Kein digitaler Ablauf, alles auf Papier',
+            'Kein Marketing',
+            'Neue Mandate kommen nur über Empfehlung',
+          ]
+        },
+        {
+          heading: 'Chancen',
+          items: [
+            'Die E-Rechnungspflicht bringt kleine Betriebe zum Suchen',
+            'Viele neue kleine Betriebe in der Umgebung',
+            'Betreuung aus der Ferne ist inzwischen akzeptiert',
+            'Buchhaltungssoftware ist günstig geworden',
+          ]
+        },
+        {
+          heading: 'Risiken',
+          items: [
+            'Billige Online-Buchhaltungsdienste',
+            'Ein Partner geht bald in Rente',
+            'Das Recht ändert sich häufig',
+            'Junge Fachkräfte sind schwer zu finden',
+          ]
+        },
+      ],
+      outcome:
+        'Die Tabelle sagt etwas Konkretes: Die größte Chance (E-Rechnung) liegt genau auf der größten Schwäche (kein digitaler Ablauf). Die Entscheidung schreibt sich selbst — nicht wachsen, sondern zuerst die eigene Arbeit digitalisieren.'
+    },
+    faq: [
+      {
+        q: 'Was ist eine SWOT-Analyse?',
+        a:
+          'Eine Methode, die die Lage einer Organisation oder einer Entscheidung in vier Feldern sammelt: Stärken, Schwächen, Chancen und Risiken. Stärken und Schwächen sind innen, Chancen und Risiken außen. Diese Trennung gibt der Methode ihren Namen und wird am häufigsten falsch gemacht.'
+      },
+      {
+        q: 'Wie macht man eine SWOT-Analyse?',
+        a:
+          'Schreib zuerst in einem Satz auf, was du analysierst: «unser Unternehmen» ist zu weit, «sollen wir die zweite Filiale eröffnen» nicht. Dann füllst du die vier Felder. Der letzte Schritt zählt am meisten: die Felder verknüpfen. Welche Stärke greift welche Chance, welche Schwäche macht dich anfällig für welches Risiko.'
+      },
+      {
+        q: 'Wie unterscheide ich Stärke und Chance?',
+        a:
+          'Ein einfacher Test: Kann deine eigene Entscheidung es ändern, ist es intern; kann sie es nicht, ist es extern. Ein erfahrenes Team ist eine Stärke, ein wachsender Markt eine Chance. Werden die Felder vermischt, ist die Analyse unbrauchbar.'
+      },
+      {
+        q: 'Wie viele Punkte gehören in ein Feld?',
+        a:
+          'Drei bis sechs funktionieren gut. Fünfzehn Punkte in einem Feld sind eine Bestandsaufnahme, keine Analyse. Die wenigen auszuwählen, die wirklich entscheiden, ist das, was die Schlussfolgerung von selbst aus der Tabelle fallen lässt.'
+      },
+      {
+        q: 'Ist es kostenlos?',
+        a:
+          'Ja. Klarsti ist derzeit kostenlos und werbefrei, und du brauchst kein Konto für eine SWOT-Analyse.'
+      },
+    ]
   },
 
   ishikawa: {
@@ -264,7 +661,72 @@ const guides: ToolGuideBundle = {
       description:
         'Sortiere mögliche Ursachen nach Mensch, Methode, Maschine und Material und sieh, wo du anfangen solltest. Mit Beispiel, kostenlos.',
       keywords: 'ishikawa diagramm, fischgrätendiagramm, ursache wirkungs diagramm, 6m methode, ishikawa beispiel'
-    }
+    },
+    example: {
+      title: 'Beispiel: die Ausschussquote ist gestiegen',
+      intro:
+        'In einer Möbeltischlerei stieg der Anteil fehlerhafter Teile in zwei Monaten von 3 % auf 9 %. Statt einer einzigen Ursache nachzujagen, werden alle Kandidaten unter sechs Überschriften nebeneinandergelegt.',
+      blocks: [
+        {
+          heading: 'Mensch',
+          items: [
+            'Zwei erfahrene Tischler haben gekündigt',
+            'Die Neuen wurden nicht eingearbeitet',
+            'Keine Übergabe zwischen den Schichten',
+          ]
+        },
+        {
+          heading: 'Methode',
+          items: [
+            'Zuschnittmaße sind nicht schriftlich festgehalten',
+            'Qualität wird nur am Ende der Linie geprüft',
+          ]
+        },
+        {
+          heading: 'Maschine',
+          items: [
+            'Die Säge ist seit sechs Monaten ohne Wartung',
+            'Die Schleifmaschine verstellt sich',
+          ]
+        },
+        {
+          heading: 'Material',
+          items: [
+            'Der Lieferant hat gewechselt',
+            'Die Feuchtigkeit der neuen Platten wird nicht gemessen',
+          ]
+        },
+      ],
+      outcome:
+        'Mit gefüllten Gräten sind zwei Überschriften sichtbar voller als die übrigen: Mensch und Material. Dort fängt das Team an. Die Gräte findet die Ursache nicht — sie sagt dir, wo du zu suchen anfängst.'
+    },
+    faq: [
+      {
+        q: 'Was ist ein Ishikawa-Diagramm?',
+        a:
+          'Ein Diagramm, das mögliche Ursachen eines Problems in Kategorien sortiert und nebeneinanderstellt. Wegen der Form heißt es auch Fischgrätendiagramm, außerdem Ursache-Wirkungs-Diagramm.'
+      },
+      {
+        q: 'Was sind die 6M?',
+        a:
+          'Die sechs klassischen Kategorien: Mensch, Methode, Maschine, Material, Messung und Mitwelt. Ziel ist nicht, alle zu füllen, sondern den Blick in sechs Richtungen zu zwingen statt in die eine, die man ohnehin schon im Kopf hatte. In Dienstleistungen dürfen und sollen diese Überschriften geändert werden.'
+      },
+      {
+        q: 'Lässt sich das mit 5 Why kombinieren?',
+        a:
+          'Ja, und das ist die wirksamste Art, beides zu nutzen. Verteile die Kandidaten mit der Gräte, wähle den stärksten Ast und geh mit 5 Why darin in die Tiefe. Das eine gibt Breite, das andere Tiefe.'
+      },
+      {
+        q: 'Findet die Gräte die Ursache?',
+        a:
+          'Nicht direkt — sie liefert Kandidaten. Wenn das Diagramm fertig ist, hast du eine Liste zum Prüfen, keine bewiesene Ursache. Der nächste Schritt ist der Abgleich mit Daten, und dort passt die Pareto-Analyse gut.'
+      },
+      {
+        q: 'Ist es kostenlos?',
+        a:
+          'Ja. Klarsti ist derzeit kostenlos und werbefrei, und du brauchst kein Konto für ein Ishikawa-Diagramm.'
+      },
+    ]
   },
 
   pdca: {
@@ -298,7 +760,77 @@ const guides: ToolGuideBundle = {
       description:
         'Plan, Do, Check, Act: kleine Versuche durchführen und das Ergebnis messen. Mit einem vollständigen Zyklus als Beispiel.',
       keywords: 'pdca zyklus, demingkreis, kontinuierliche verbesserung, kvp, pdca beispiel'
-    }
+    },
+    example: {
+      title: 'Beispiel: die Erstreaktionszeit im Support senken',
+      intro:
+        'Das Support-Team antwortet im Schnitt nach 14 Stunden. Das Ziel sind 4. Bevor jemand eingestellt wird, läuft ein einziger Zyklus.',
+      blocks: [
+        {
+          heading: 'Plan',
+          items: [
+            'Ziel: durchschnittliche Erstreaktion unter 4 Stunden',
+            'Annahme: Tickets stauen sich morgens und niemand übernimmt sie',
+            'Versuch: eine Person hat von 09:00 bis 11:00 Dienst',
+            'Dauer: zwei Wochen',
+          ]
+        },
+        {
+          heading: 'Do',
+          items: [
+            'Dienstplan im Team geteilt',
+            'Wer Dienst hat, bekommt in diesen zwei Stunden keine andere Arbeit',
+            'Erstreaktionszeit für jedes Ticket erfasst',
+          ]
+        },
+        {
+          heading: 'Check',
+          items: [
+            'Der Durchschnitt fiel von 14 auf 5 Stunden',
+            'Morgens eingehende Tickets fielen auf 2 Stunden',
+            'Abends eingehende Tickets änderten sich nicht',
+            'Wer Dienst hatte, kam mit der eigenen Arbeit in Verzug',
+          ]
+        },
+        {
+          heading: 'Act',
+          items: [
+            'Der Morgendienst wird dauerhaft',
+            'Arbeitslast an Diensttagen reduziert',
+            'Neuer Zyklus für die Abendstunden eröffnet',
+          ]
+        },
+      ],
+      outcome:
+        'Ein einziger Zyklus drittelte die Zeit und lieferte die nächste Frage gleich mit: die Abendtickets. So soll PDCA laufen — jeder Zyklus übergibt das Thema des nächsten.'
+    },
+    faq: [
+      {
+        q: 'Was ist der PDCA-Zyklus?',
+        a:
+          'Eine Schleife aus vier Schritten für kontinuierliche Verbesserung: Plan, Do, Check, Act. Auch als Demingkreis bekannt. Der Gedanke ist, statt einer großen Veränderung kleine Versuche zu machen, deren Ergebnis man tatsächlich misst.'
+      },
+      {
+        q: 'Wie lang sollte ein Zyklus sein?',
+        a:
+          'So kurz, wie du das Ergebnis noch messen kannst. Ein bis vier Wochen passen für die meiste Büroarbeit. Ein Halbjahreszyklus ist kein Zyklus: Bis du hinschaust, haben sich die Bedingungen verändert, und du weißt nicht, was was verursacht hat.'
+      },
+      {
+        q: 'Was wird im Check gemessen?',
+        a:
+          'Das, was du im Plan aufgeschrieben hast. Deshalb muss das Ziel eine Zahl sein: «schneller antworten» lässt sich nicht prüfen, «durchschnittliche Erstreaktion unter 4 Stunden» schon. Ohne vorher notierte Zahl wird aus Check eine Meinung.'
+      },
+      {
+        q: 'Was, wenn der Versuch scheitert?',
+        a:
+          'Ein gescheiterter Zyklus ist auch ein Ergebnis und wird nicht weggeworfen. Im Act-Schritt schreibst du auf, warum die Annahme nicht trug, und der nächste Zyklus startet damit. Die einzige echte Verschwendung bei PDCA ist, etwas Neues zu versuchen, ohne festzuhalten, was passiert ist.'
+      },
+      {
+        q: 'Ist es kostenlos?',
+        a:
+          'Ja. Klarsti ist derzeit kostenlos und werbefrei, und du brauchst kein Konto für einen PDCA-Zyklus.'
+      },
+    ]
   },
 
   waterfall: {
@@ -333,7 +865,76 @@ const guides: ToolGuideBundle = {
       description:
         'Anforderung, Design, Umsetzung, Test und Übergabe der Reihe nach. Mit Beispiel und dem Unterschied zu agilen Methoden.',
       keywords: 'wasserfallmodell, wasserfallmodell phasen, wasserfall vs agil, projektmanagement methoden, wasserfallmodell beispiel'
-    }
+    },
+    example: {
+      title: 'Beispiel: ein Berichtsmodul an eine Bank liefern',
+      intro:
+        'Umfang vertraglich festgelegt, Liefertermin fest, schriftliche Abnahme des Kunden am Ende jeder Phase. Solche Arbeit läuft der Reihe nach durch die Phasen.',
+      blocks: [
+        {
+          heading: 'Anforderungen',
+          items: [
+            'Berichtstypen aufgelistet',
+            'Berechtigungsregeln festgehalten',
+            'Abnahme des Kunden',
+          ]
+        },
+        {
+          heading: 'Entwurf',
+          items: [
+            'Datenmodell',
+            'Bildschirmentwürfe',
+            'Leistungsgrenzen vereinbart',
+          ]
+        },
+        {
+          heading: 'Umsetzung',
+          items: [
+            'Berichtsmodul',
+            'Berechtigungen',
+            'Export',
+          ]
+        },
+        {
+          heading: 'Test und Übergabe',
+          items: [
+            'Interne Tests',
+            'Abnahmetest des Kunden',
+            'Produktivsetzung',
+            'Anwenderschulung',
+          ]
+        },
+      ],
+      outcome:
+        'Stärke und Schwäche des Wasserfalls sind hier gleichzeitig sichtbar: Weil der Umfang von Anfang an feststeht, ist der Fortschritt leicht zu messen — aber eine Anforderung, die sich während der Umsetzung ändert, wirft den ganzen Plan zurück.'
+    },
+    faq: [
+      {
+        q: 'Was ist das Wasserfallmodell?',
+        a:
+          'Eine Methode, die ein Projekt in aufeinanderfolgende Phasen teilt und keine beginnt, bevor die vorige abgeschlossen ist: Anforderungen, Entwurf, Umsetzung, Test, Übergabe. Der Name kommt vom Wasser, das eine Treppe hinunterfällt.'
+      },
+      {
+        q: 'Wasserfall oder agil?',
+        a:
+          'Wenn der Umfang von Anfang an bekannt ist und sich kaum bewegen wird, bringt der Wasserfall weniger Verwaltungsaufwand: Bau, regulatorische Arbeit und Festpreislieferungen passen. Wenn sich der Umfang erst unterwegs klärt, wird Wasserfall teuer und agile Methoden passen besser.'
+      },
+      {
+        q: 'Kann man in eine frühere Phase zurück?',
+        a:
+          'Man kann, aber es kostet, und das Modell ist nicht dafür gebaut. Wenn du oft zurückgehst, war der Umfang von Anfang an nicht klar genug — und dann lautet die eigentliche Frage, ob Wasserfall die richtige Wahl war.'
+      },
+      {
+        q: 'Was passiert zwischen den Phasen?',
+        a:
+          'Jede Phase endet mit einem Ergebnis und einer Abnahme, und die Abnahme sollte schriftlich sein. Die ganze Sicherheit, die der Wasserfall bietet, beruht darauf, dass beide Seiten im selben Moment zustimmen, dass eine Phase geschlossen ist.'
+      },
+      {
+        q: 'Ist es kostenlos?',
+        a:
+          'Ja. Klarsti ist derzeit kostenlos und werbefrei, und du brauchst kein Konto für ein Wasserfallprojekt.'
+      },
+    ]
   },
 
   fta: {
@@ -370,7 +971,73 @@ const guides: ToolGuideBundle = {
       description:
         'Setze das unerwünschte Ereignis nach oben und löse mit UND/ODER-Gattern auf, welche Ausfälle zusammentreffen müssen. Kostenlos.',
       keywords: 'fehlerbaumanalyse, fta analyse, fehlerbaum erstellen, und oder gatter, fehlerbaumanalyse beispiel'
-    }
+    },
+    example: {
+      title: 'Beispiel: das Kühlhaus überschritt die Temperaturgrenze',
+      intro:
+        'In einem Lebensmittellager lag die Temperatur zwei Stunden über der Grenze und die Ware musste vernichtet werden. Das unerwünschte Ereignis steht oben, und der Baum arbeitet sich über Logikgatter nach unten, welche Ausfälle zusammentreffen mussten.',
+      blocks: [
+        {
+          heading: 'Top-Ereignis',
+          items: [
+            'Kühlhaus zwei Stunden über der Temperaturgrenze',
+          ]
+        },
+        {
+          heading: 'ODER-Gatter — eines genügt',
+          items: [
+            'Die Kühlung fiel aus',
+            'Wärme kam herein',
+            'Der Alarm ging nicht los und niemand merkte es',
+          ]
+        },
+        {
+          heading: 'Unter «Kühlung fiel aus» (ODER)',
+          items: [
+            'Kompressorausfall',
+            'Stromausfall',
+            'Thermostat falsch eingestellt',
+          ]
+        },
+        {
+          heading: 'Unter «Alarm ging nicht los» (UND)',
+          items: [
+            'Sensor defekt',
+            'Ersatzsensor nie eingebaut',
+            'Fernmeldungen abgeschaltet',
+          ]
+        },
+      ],
+      outcome:
+        'Der Baum zeigt: Ein Kühlungsausfall allein reicht nicht, auch der Alarm musste versagen. Die billigste Maßnahme ist also kein neuer Kompressor, sondern der Einbau des Ersatzsensors. Genau hier lenkt die Fehlerbaumanalyse das Geld an die richtige Stelle.'
+    },
+    faq: [
+      {
+        q: 'Was ist die Fehlerbaumanalyse (FTA)?',
+        a:
+          'Eine Methode, die ein unerwünschtes Ereignis an die Spitze setzt und sich über Logikgatter nach unten arbeitet, um zu zeigen, welche Kombinationen von Ausfällen es erzeugen würden. Sie stammt aus Luftfahrt und Kerntechnik und wird heute allgemein in Sicherheits- und Prozessanalysen eingesetzt.'
+      },
+      {
+        q: 'Was ist der Unterschied zwischen UND- und ODER-Gatter?',
+        a:
+          'Unter einem ODER-Gatter genügt eines der darunterliegenden Ereignisse. Unter einem UND-Gatter müssen alle gleichzeitig eintreten. Diese Unterscheidung ist das Herz der Methode: UND-Gatter zeigen, wo sich das System selbst schützt.'
+      },
+      {
+        q: 'Fehlerbaum oder 5 Why?',
+        a:
+          '5 Why verfolgt eine einzelne Kette rückwärts von etwas, das bereits passiert ist. Der Fehlerbaum kartiert alle Wege zu einem Ereignis, das noch nicht passiert ist. Das eine schaut zurück, das andere nach vorn.'
+      },
+      {
+        q: 'Wie tief muss der Baum gehen?',
+        a:
+          'Bis zu Ereignissen, die du nicht weiter zerlegen kannst und gegen die du direkt handeln kannst. «Sensor defekt» ist tief genug, weil man dagegen eine Maßnahme schreiben kann. «Das System funktioniert nicht» ist es nicht.'
+      },
+      {
+        q: 'Ist es kostenlos?',
+        a:
+          'Ja. Klarsti ist derzeit kostenlos und werbefrei, und du brauchst kein Konto für eine Fehlerbaumanalyse.'
+      },
+    ]
   },
 
   vsm: {
@@ -407,7 +1074,64 @@ const guides: ToolGuideBundle = {
       description:
         'Stelle Bearbeitungszeit und Wartezeit je Schritt gegenüber und sieh, wo die Zeit verloren geht. Mit Zahlenbeispiel, kostenlos.',
       keywords: 'wertstromanalyse, value stream mapping, wertstromdesign, lean management, wertstromanalyse beispiel'
-    }
+    },
+    example: {
+      title: 'Beispiel: vom Auftragseingang bis zum Warenversand',
+      intro:
+        'Ein Hersteller misst die Zeit zwischen Auftragseingang und dem Moment, in dem die Ware auf den Lkw geht. Die tatsächliche Bearbeitungszeit jedes Schritts wird getrennt von der Wartezeit dazwischen notiert. Der Unterschied dreht das Bild um.',
+      blocks: [
+        {
+          heading: 'Schritte und Bearbeitungszeit',
+          items: [
+            'Auftragserfassung — 10 Minuten',
+            'Bonitätsprüfung — 15 Minuten',
+            'Aufnahme in den Produktionsplan — 30 Minuten',
+            'Produktion — 4 Stunden',
+            'Qualitätsprüfung — 20 Minuten',
+            'Verpacken und Versand — 40 Minuten',
+          ]
+        },
+        {
+          heading: 'Wartezeit zwischen den Schritten',
+          items: [
+            'Nach der Erfassung — 1 Tag',
+            'Nach der Bonitätsprüfung — 2 Tage',
+            'Nach der Planaufnahme — 3 Tage',
+            'Nach der Produktion — 1 Tag',
+            'Nach der Qualitätsprüfung — 2 Tage',
+          ]
+        },
+      ],
+      outcome:
+        'Die Bearbeitungszeit summiert sich auf rund 6 Stunden, die Gesamtdurchlaufzeit auf 9 Tage. Also sind 99 % der Zeit Warten. Die längste Wartezeit sind die drei Tage nach der Planaufnahme. Die Antwort ist eindeutig: Die Produktion zu beschleunigen bringt nichts, das Problem ist die Warteschlange.'
+    },
+    faq: [
+      {
+        q: 'Was ist eine Wertstromanalyse (VSM)?',
+        a:
+          'Eine Karte aller Schritte, die ein Produkt oder eine Anfrage durchläuft, mit der Dauer jedes Schritts und der Wartezeit dazwischen. Sie stammt aus der schlanken Produktion. Ihr Zweck ist nicht schneller zu werden, sondern zu zeigen, wo die Zeit tatsächlich hingeht.'
+      },
+      {
+        q: 'Was ist wertschöpfend und was nicht?',
+        a:
+          'Alles, wofür der Kunde bereitwillig zahlen würde, schöpft Wert: die Schritte, die das Produkt wirklich verändern. Warten, Transportieren und wiederholtes Prüfen nicht. In den meisten Prozessen sind über 90 % der Gesamtzeit nicht wertschöpfend.'
+      },
+      {
+        q: 'Was ist der Unterschied zum Flussdiagramm?',
+        a:
+          'Das Flussdiagramm zeigt die Reihenfolge der Schritte und die Entscheidungspunkte, ohne Dauer. In der Wertstromanalyse ist die Dauer alles: Bearbeitungs- und Wartezeit werden je Schritt getrennt notiert und dann verglichen.'
+      },
+      {
+        q: 'Wo fange ich an?',
+        a:
+          'Beim Ist-Zustand, genau so, wie er ist. Der häufigste Fehler ist, den Prozess so zu zeichnen, wie er funktionieren soll. Zeigt die Karte nicht die Wirklichkeit, verbessert man einen Prozess, den es nicht gibt. Die echten Zeiten müssen vor Ort gemessen werden.'
+      },
+      {
+        q: 'Ist es kostenlos?',
+        a:
+          'Ja. Klarsti ist derzeit kostenlos und werbefrei, und du brauchst kein Konto für eine Wertstromanalyse.'
+      },
+    ]
   },
 
   pareto: {
@@ -440,7 +1164,64 @@ const guides: ToolGuideBundle = {
       description:
         'Sortiere Ursachen nach Häufigkeit und finde die wenigen, die den Großteil des Problems ausmachen. Mit Beispiel, kostenlos.',
       keywords: 'pareto analyse, pareto diagramm, 80 20 regel, pareto prinzip, pareto analyse beispiel'
-    }
+    },
+    example: {
+      title: 'Beispiel: woher die Kundenbeschwerden kommen',
+      intro:
+        'Ein Onlineshop erhielt in drei Monaten 480 Beschwerden. Das Team hatte für jeden Beschwerdetyp eine eigene Lösung diskutiert. Zählen und absteigend sortieren verändert das Gespräch.',
+      blocks: [
+        {
+          heading: 'Beschwerdeart und Anzahl',
+          items: [
+            'Lieferung zu spät — 196',
+            'Artikel wich von der Beschreibung ab — 121',
+            'Rücksendung zu langsam — 62',
+            'Artikel beschädigt — 48',
+            'Falscher Artikel — 29',
+            'Sonstiges — 24',
+          ]
+        },
+        {
+          heading: 'Kumulierter Anteil',
+          items: [
+            'Verspätete Lieferung — 41 %',
+            '+ Beschreibung — 66 %',
+            '+ Rücksendungen — 79 %',
+            '+ Beschädigungen — 89 %',
+            'Die drei restlichen — 100 %',
+          ]
+        },
+      ],
+      outcome:
+        'Die ersten beiden machen zwei Drittel von allem aus. Statt sechs Probleme gleichzeitig zu jagen, beseitigt das Beheben von Lieferzeiten und Produktbeschreibungen 66 % der Unzufriedenheit. Diese Reihenfolge sichtbar zu machen ist die ganze Aufgabe der Pareto-Analyse.'
+    },
+    faq: [
+      {
+        q: 'Was ist eine Pareto-Analyse?',
+        a:
+          'Eine Methode, die Probleme nach Häufigkeit absteigend sortiert und zeigt, welche wenigen den größten Teil der Summe ausmachen. Sie beruht auf einer einfachen Beobachtung: Etwa 80 % der Wirkungen kommen von etwa 20 % der Ursachen.'
+      },
+      {
+        q: 'Gilt die 80/20-Regel immer?',
+        a:
+          'Nicht exakt, und das muss sie auch nicht. Manchmal kommt 70/30 heraus, manchmal 90/10. Wichtig ist nicht das Verhältnis, sondern dass die Verteilung ungleich ist: Wenn wenige Positionen den Großteil tragen, hilft die Pareto-Analyse.'
+      },
+      {
+        q: 'Nach Anzahl oder nach Kosten sortieren?',
+        a:
+          'Nach dem, wovon deine Entscheidung abhängt. Die Anzahl zeigt, welches Problem am häufigsten auftritt, die Kosten zeigen, welches am meisten wehtut. Oft widersprechen sie sich: Ein seltenes, aber teures Problem steht in einer Anzahlliste ganz unten.'
+      },
+      {
+        q: 'Wie viele Kategorien sollte eine Pareto-Analyse haben?',
+        a:
+          'Fünf bis zehn lesen sich am besten. Eine Analyse mit dreißig Kategorien ist immer noch eine Liste und gibt keinen Fokus. Wenige, wirklich verschiedene Kategorien zu wählen ist die halbe Arbeit.'
+      },
+      {
+        q: 'Ist es kostenlos?',
+        a:
+          'Ja. Klarsti ist derzeit kostenlos und werbefrei, und du brauchst kein Konto für eine Pareto-Analyse.'
+      },
+    ]
   },
 
   histogram: {
@@ -475,7 +1256,63 @@ const guides: ToolGuideBundle = {
       description:
         'Teile Messwerte in Klassen und sieh, was der Mittelwert verbirgt. Erklärt, was zwei Gipfel bedeuten. Kostenlos.',
       keywords: 'histogramm erstellen, histogramm, häufigkeitsverteilung, histogramm beispiel, verteilung darstellen'
-    }
+    },
+    example: {
+      title: 'Beispiel: Lieferzeiten',
+      intro:
+        'Die durchschnittliche Lieferzeit wird mit 3 Tagen berichtet und sieht ordentlich aus. Trotzdem kommen weiter Beschwerden. Die einzelnen Zeiten zu gruppieren zeigt, was der Durchschnitt verdeckt hat.',
+      blocks: [
+        {
+          heading: 'Verteilung der Lieferzeit (500 Bestellungen)',
+          items: [
+            '1 Tag — 140 Bestellungen',
+            '2 Tage — 165 Bestellungen',
+            '3 Tage — 95 Bestellungen',
+            '4 Tage — 30 Bestellungen',
+            '5 Tage — 12 Bestellungen',
+            '6 Tage und mehr — 58 Bestellungen',
+          ]
+        },
+        {
+          heading: 'Wie man es liest',
+          items: [
+            '60 % kommen innerhalb von zwei Tagen an',
+            'Eine kleine, aber deutliche Gruppe liegt bei sechs Tagen und mehr',
+            'Die Form hat zwei Gipfel, nicht einen',
+            'Drei Tage — der Durchschnitt — ist einer der seltensten Werte',
+          ]
+        },
+      ],
+      outcome:
+        'Der Durchschnitt sagt drei Tage, tatsächlich gibt es aber zwei verschiedene Kundenerfahrungen: Die meisten bekommen die Ware in zwei Tagen, ein Teil wartet eine Woche. Eine zweigipflige Verteilung bedeutet immer dasselbe: Das ist nicht ein Prozess, das sind zwei. Die nächste Frage lautet, aus welcher Region oder welchem Lager diese 58 Bestellungen kamen.'
+    },
+    faq: [
+      {
+        q: 'Was ist ein Histogramm?',
+        a:
+          'Ein Diagramm, das Messwerte in Klassen einteilt und zeigt, wie viele in jede fallen. Es macht sichtbar, was der Durchschnitt verbirgt: wie sich die Werte verteilen.'
+      },
+      {
+        q: 'Was ist der Unterschied zum Balkendiagramm?',
+        a:
+          'Ein Balkendiagramm zeigt Kategorien, deren Reihenfolge man ändern kann — Städte, Produkte. Ein Histogramm hat eine numerische Achse, die Reihenfolge liegt fest und die Balken berühren sich. Welches du brauchst, entscheidet die Art der Daten.'
+      },
+      {
+        q: 'Wie viele Klassen soll ich nehmen?',
+        a:
+          'Ein üblicher Startpunkt ist ungefähr die Wurzel aus der Anzahl der Messwerte — etwa zehn bei 100 Werten. Zu wenige Klassen löschen die Form, zu viele machen aus Rauschen scheinbare Struktur. Probiere ein paar Werte und behalte den, bei dem die Form stabil bleibt.'
+      },
+      {
+        q: 'Was bedeutet ein Histogramm mit zwei Gipfeln?',
+        a:
+          'Fast immer, dass die Daten nicht aus einem einzigen Prozess stammen — zwei Schichten, zwei Maschinen, zwei Regionen. Wenn du diese Form siehst, teilst du die Daten zuerst auf und schaust dir jeden Teil einzeln an.'
+      },
+      {
+        q: 'Ist es kostenlos?',
+        a:
+          'Ja. Klarsti ist derzeit kostenlos und werbefrei, und du brauchst kein Konto für ein Histogramm.'
+      },
+    ]
   },
 
   decision: {
@@ -509,7 +1346,69 @@ const guides: ToolGuideBundle = {
       description:
         'Bewerte Optionen nach gewichteten Kriterien und mache sichtbar, worauf die Entscheidung wirklich beruht. Mit Beispiel, kostenlos.',
       keywords: 'entscheidungsmatrix, nutzwertanalyse, entscheidungsmatrix beispiel, gewichtete bewertung, entscheidungshilfe'
-    }
+    },
+    example: {
+      title: 'Beispiel: welche Lagerhalle sollen wir mieten?',
+      intro:
+        'Drei Kandidaten, und jeder hat einen anderen Favoriten. Die Diskussion läuft über «ich finde». Kriterien zu gewichten und jede Option auf einer Zehnerskala zu bewerten bringt sie auf Zahlen.',
+      blocks: [
+        {
+          heading: 'Kriterien und Gewicht',
+          items: [
+            'Monatliche Kosten — Gewicht 5',
+            'Nähe zu den Kunden — Gewicht 4',
+            'Platz zum Wachsen — Gewicht 3',
+            'Anbindung an Straße und Hafen — Gewicht 3',
+            'Aufwand des Umzugs — Gewicht 1',
+          ]
+        },
+        {
+          heading: 'Bewertungen (1-10)',
+          items: [
+            'Halle A: 8 / 4 / 6 / 5 / 7',
+            'Halle B: 5 / 9 / 4 / 8 / 5',
+            'Halle C: 6 / 7 / 9 / 6 / 3',
+          ]
+        },
+        {
+          heading: 'Gewichtete Summe',
+          items: [
+            'Halle A — 100',
+            'Halle B — 114',
+            'Halle C — 114',
+          ]
+        },
+      ],
+      outcome:
+        'A ist raus. B und C liegen gleichauf, die Matrix hat also nicht entschieden — aber sie hat die Diskussion von fünf Kriterien auf eines verkleinert. Übrig bleibt nur die Frage, ob Nähe mehr wiegt als Platz zum Wachsen. Das ist meist der eigentliche Nutzen einer Entscheidungsmatrix: Sie wählt nicht, sie engt ein.'
+    },
+    faq: [
+      {
+        q: 'Was ist eine Entscheidungsmatrix?',
+        a:
+          'Eine Tabelle, die mehrere Optionen nach denselben Kriterien bewertet und jede Bewertung mit der Wichtigkeit dieses Kriteriums multipliziert. Ihr Zweck ist nicht, die Entscheidung zu automatisieren, sondern die Annahmen dahinter sichtbar zu machen.'
+      },
+      {
+        q: 'Wie lege ich die Gewichte fest?',
+        a:
+          'Vor dem Bewerten und ohne auf die Optionen zu schauen. Andersherum schrauben Menschen unbemerkt so lange an den Gewichten, bis ihr Favorit gewinnt. Die Gewichte zuerst aufzuschreiben und festzuzurren ist das Einzige, was die Matrix überhaupt wertvoll macht.'
+      },
+      {
+        q: 'Was, wenn das Ergebnis nicht meine Wunschoption ist?',
+        a:
+          'Das ist der wertvollste Moment der Matrix. Es gibt zwei Möglichkeiten: Entweder hast du ein Kriterium falsch gewichtet, oder in der Tabelle fehlt ein Kriterium. Beides behebt man, indem man das Fehlende aufschreibt, nicht indem man an den Zahlen dreht.'
+      },
+      {
+        q: 'Wie viele Kriterien sollte ich nehmen?',
+        a:
+          'Vier bis sieben funktionieren gut. Unter drei hättest du auch aus dem Bauch entscheiden können; über sieben nähern sich die Gewichte an und die Summen kleben bedeutungslos beieinander.'
+      },
+      {
+        q: 'Ist es kostenlos?',
+        a:
+          'Ja. Klarsti ist derzeit kostenlos und werbefrei, und du brauchst kein Konto für eine Entscheidungsmatrix.'
+      },
+    ]
   },
 
   notepad: {
@@ -540,7 +1439,68 @@ const guides: ToolGuideBundle = {
       description:
         'Schreib den Tag morgens auf und geh ihn abends durch. Dein Planer bleibt privat und wird beim Teilen eines Projekts nicht mitgeteilt.',
       keywords: 'tagesplaner, tagesrückblick, tagesplanung, to do liste, tagesplaner online'
-    }
+    },
+    example: {
+      title: 'Beispiel: ein voller Dienstag',
+      intro:
+        'Drei Termine, eine Abgabe und alles andere dazwischengequetscht. Fünf Minuten am Morgen, um den Tag aufzuschreiben, ersparen den Abend, an dem man mit sich selbst darüber streitet, was eigentlich erledigt wurde.',
+      blocks: [
+        {
+          heading: 'Heute unbedingt',
+          items: [
+            'Kundenpräsentation fertigstellen (vor dem Termin um 14:00)',
+            'Rechnungsfreigaben verschicken',
+            'Zugänge für die neue Kollegin einrichten',
+          ]
+        },
+        {
+          heading: 'Schön, wenn es klappt',
+          items: [
+            'Bericht der letzten Woche lesen',
+            'Beim Lieferanten anrufen',
+            'Schreibtisch aufräumen',
+          ]
+        },
+        {
+          heading: 'Tagesrückblick',
+          items: [
+            'Präsentation fertig — aber erst um 13:50, zu knapp',
+            'Rechnungsfreigaben vergessen — morgen als Erstes',
+            'Am Nachmittag zwei Stunden ohne Unterbrechung geschafft',
+            'Morgen lege ich die Termine hinter den Mittag',
+          ]
+        },
+      ],
+      outcome:
+        'Der Wert liegt nicht in der Liste, sondern im Rückblick. Nach einer Woche taucht dieselbe Zeile immer wieder auf: Die Arbeit wird zwischen Termine gequetscht. Das lässt sich nicht beheben, bevor man es bemerkt.'
+    },
+    faq: [
+      {
+        q: 'Wofür ist der Tagesplaner da?',
+        a:
+          'Um den Tag am Anfang aufzuschreiben und am Ende durchzugehen. Er hat zwei Hälften: den Plan und den Tagesrückblick. Ohne die zweite wird daraus eine To-do-Liste; der Wert liegt darin zu bemerken, dass sich derselbe Fehler wiederholt.'
+      },
+      {
+        q: 'Kann jemand anderes meinen Planer sehen?',
+        a:
+          'Nein. Planer und Tagesrückblick sind persönlich. Sie liegen nicht in deinen Projekten, sondern in deinem eigenen Datensatz — ein Projekt mit dem Team zu teilen teilt deinen Planer also nicht mit.'
+      },
+      {
+        q: 'Wie viele Punkte sollte ich aufschreiben?',
+        a:
+          'Höchstens drei in der Muss-Liste. Längere Listen enden jeden Tag unfertig, und irgendwann schaust du gar nicht mehr hin. Alles andere kommt in die zweite Gruppe: schön, wenn es klappt, und der Tag ist kein Misserfolg, wenn nicht.'
+      },
+      {
+        q: 'Was gehört in den Tagesrückblick?',
+        a:
+          'Nicht, was du getan hast, sondern was dir aufgefallen ist. «Präsentation fertig» trägt keine Information; «die Präsentation wurde knapp, weil der Vormittagstermin überzogen hat» hilft dir nächste Woche.'
+      },
+      {
+        q: 'Ist es kostenlos?',
+        a:
+          'Ja. Klarsti ist derzeit kostenlos und werbefrei.'
+      },
+    ]
   },
   gantt: {
     title: "Gantt-Diagramm",
@@ -569,7 +1529,63 @@ const guides: ToolGuideBundle = {
       description:
         'Lege Aufgaben auf den Kalender und sieh, was gleichzeitig läuft und wo der Puffer fehlt. Mit Achtwochenbeispiel, kostenlos.',
       keywords: 'gantt diagramm erstellen, gantt chart, projektplan, balkendiagramm projekt, gantt diagramm beispiel'
-    }
+    },
+    example: {
+      title: 'Beispiel: eine Website neu bauen',
+      intro:
+        'Die Arbeit muss in acht Wochen passen. Wer wann anfängt und welche Aufgabe auf welche wartet, ist unklar. Die Aufgaben auf einen Kalender zu legen macht die Kollisionen sichtbar.',
+      blocks: [
+        {
+          heading: 'Aufgaben und Wochen',
+          items: [
+            'Inhaltsinventur — Woche 1',
+            'Design — Wochen 2 und 3',
+            'Texte — Wochen 2 bis 5',
+            'Umsetzung — Wochen 4 bis 7',
+            'Inhalte einpflegen — Wochen 6 und 7',
+            'Test und Livegang — Woche 8',
+          ]
+        },
+        {
+          heading: 'Aufgeworfene Fragen',
+          items: [
+            'Die Umsetzung startet in Woche 4, das Design endet in Woche 3: kein Puffer',
+            'Das Einpflegen wartet auf die Texte, die in Woche 5 enden: knapp',
+            'Nur eine Woche für Tests, jeder Fehler verschiebt also den Livegang',
+            'Sind Texte und Design dieselbe Person?',
+          ]
+        },
+      ],
+      outcome:
+        'Was das Diagramm hervorgebracht hat, war kein Plan, sondern die Risiken des Plans. Acht Wochen gehen auf dem Papier auf, aber es gibt nirgends Luft. Ein Gantt-Diagramm ist nicht dazu da, Dauern zu erfinden — es zeigt dir, wo der Puffer fehlt.'
+    },
+    faq: [
+      {
+        q: 'Was ist ein Gantt-Diagramm?',
+        a:
+          'Ein Diagramm, das Aufgaben als waagerechte Balken auf einen Kalender legt. Die Länge des Balkens ist die Dauer, seine Lage der Zeitpunkt. Auf einen Blick sieht man, welche Aufgaben gleichzeitig laufen.'
+      },
+      {
+        q: 'Wie erstellt man ein Gantt-Diagramm?',
+        a:
+          'Erst die Aufgaben ermitteln, dann in den Kalender legen. Die richtige Reihenfolge ist: Projektstrukturplan bauen, jeden Punkt schätzen, Abhängigkeiten notieren, dann zeichnen. Ein Gantt-Diagramm ohne vorherige Zerlegung lässt eine unvollständige Liste nur ordentlich aussehen.'
+      },
+      {
+        q: 'Was ist eine Abhängigkeit?',
+        a:
+          'Wenn eine Aufgabe nicht starten kann, bevor eine andere fertig ist, besteht zwischen ihnen eine Abhängigkeit. Im Gantt-Diagramm bilden sie Ketten, und die längste Kette bestimmt die tatsächliche Projektdauer: Jede Verzögerung dort verschiebt den Liefertermin direkt.'
+      },
+      {
+        q: 'Was ist der Unterschied zu einer Roadmap?',
+        a:
+          'Ein Gantt-Diagramm bindet Aufgaben an Tage und Wochen und ist für das umsetzende Team. Eine Roadmap ist gröber — Quartale oder Monate — und vermittelt Absicht; sie geht meist an Leitung oder Kunden, nicht an das Team.'
+      },
+      {
+        q: 'Ist es kostenlos?',
+        a:
+          'Ja. Klarsti ist derzeit kostenlos und werbefrei, und du brauchst kein Konto für ein Gantt-Diagramm.'
+      },
+    ]
   },
 
   roadmap: {
@@ -614,7 +1630,75 @@ const guides: ToolGuideBundle = {
       description:
         'Teile die kommende Zeit in Etappen und schreib auch auf, was ihr bewusst nicht macht. Mit Sechsmonatsbeispiel, kostenlos.',
       keywords: 'roadmap erstellen, produkt roadmap, projekt roadmap, roadmap vorlage, roadmap beispiel'
-    }
+    },
+    example: {
+      title: 'Beispiel: Sechsmonats-Roadmap für eine App',
+      intro:
+        'Das Team schwenkt bei jeder neuen Idee um, und die Leitung weiß nicht, was wann kommt. Sechs Monate werden in drei grobe Etappen geteilt. Ziel ist nicht, Termine zu versprechen, sondern die Reihenfolge festzulegen.',
+      blocks: [
+        {
+          heading: 'Etappe 1 — Fundament festigen',
+          items: [
+            'Startzeit der App halbieren',
+            'Abstürzende Bildschirme reparieren',
+            'Registrierung vereinfachen',
+          ]
+        },
+        {
+          heading: 'Etappe 2 — Menschen halten',
+          items: [
+            'Benachrichtigungseinstellungen',
+            'Offline-Betrieb',
+            'Rückmeldung in der App',
+          ]
+        },
+        {
+          heading: 'Etappe 3 — Wachsen',
+          items: [
+            'Freunde einladen',
+            'Zweite Sprache',
+            'Grundlage für den Bezahlplan',
+          ]
+        },
+        {
+          heading: 'Bewusst nicht auf der Liste',
+          items: [
+            'Tablet-Layout',
+            'Desktop-Version',
+            'KI-Funktionen',
+          ]
+        },
+      ],
+      outcome:
+        'Das nützlichste Feld der Roadmap ist das letzte. Aufzuschreiben, was ihr tun werdet, beendet die Diskussion nicht; aufzuschreiben, was ihr in diesem Zeitraum nicht tut, schon.'
+    },
+    faq: [
+      {
+        q: 'Was ist eine Produkt-Roadmap?',
+        a:
+          'Ein Plan auf hoher Flughöhe, der zeigt, wohin ein Produkt oder eine Arbeit im kommenden Zeitraum geht und in welcher Reihenfolge. Sie ist keine Aufgabenliste, sie vermittelt Absicht und Abfolge.'
+      },
+      {
+        q: 'Gehören Termine in eine Roadmap?',
+        a:
+          'Genaue Termine richten meist Schaden an: Verfehlst du einen, geht die Glaubwürdigkeit der ganzen Roadmap mit. Quartale oder eine Struktur aus «jetzt / als Nächstes / später» halten weit besser. Brauchst du wirklich einen genauen Termin, gehört dieser Punkt in ein Gantt-Diagramm, nicht in eine Roadmap.'
+      },
+      {
+        q: 'Wie oft sollte eine Roadmap aktualisiert werden?',
+        a:
+          'Einmal im Monat durchzugehen passt für die meisten Teams. Eine Roadmap, die sich wöchentlich ändert, ist keine; eine, die sich nie ändert, hat den Bezug zur Wirklichkeit verloren. Wichtig ist nicht die Änderung, sondern aufzuschreiben, warum sie kam.'
+      },
+      {
+        q: 'Warum brauche ich eine Nicht-Liste?',
+        a:
+          'Weil fast jede Frage an eine Roadmap die Form «und was ist mit X» hat. Aufzulisten, was du bewusst weggelassen hast, beantwortet sie im Voraus und erspart dem Team, jede Woche dieselbe Diskussion zu führen.'
+      },
+      {
+        q: 'Ist es kostenlos?',
+        a:
+          'Ja. Klarsti ist derzeit kostenlos und werbefrei, und du brauchst kein Konto für eine Roadmap.'
+      },
+    ]
   }
 };
 

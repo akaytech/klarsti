@@ -19,7 +19,6 @@ import MindmapContextMenu from './MindmapContextMenu';
 import MindmapMapsMenu from './MindmapMapsMenu';
 import { DAL_RENKLERI, mindmapYerlesimi } from '../utils/mindmapLayout';
 import CanvasMiniMap from './CanvasMiniMap';
-import CanvasControls from './CanvasControls';
 import CanvasKarsilama from './CanvasKarsilama';
 
 const nodeTypes = {
@@ -391,7 +390,6 @@ export default function MindmapCanvas() {
           </Panel>
         )}
 
-        <CanvasControls />
         <CanvasMiniMap nodeColor={(n) => DAL_RENKLERI[((n.data as any)?.branch ?? 0) % DAL_RENKLERI.length]} />
       </ReactFlow>
 

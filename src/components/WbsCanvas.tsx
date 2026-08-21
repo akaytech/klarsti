@@ -24,7 +24,6 @@ import SelectionContextMenu from './SelectionContextMenu';
 import WbsTreesMenu from './WbsTreesMenu';
 import { useTranslation } from 'react-i18next';
 import CanvasMiniMap from './CanvasMiniMap';
-import CanvasControls from './CanvasControls';
 import { useSilTusu } from '../utils/useSilTusu';
 
 const nodeTypes = {
@@ -370,7 +369,6 @@ export default function WbsCanvas({ onNodeSelect }: { onNodeSelect: (id: string 
           )}
         </Panel>
 
-        <CanvasControls />
         <CanvasMiniMap nodeColor={themeColors.minimapNode} maskColor={themeColors.minimapMask} />
         <CanvasBackdrop />
 

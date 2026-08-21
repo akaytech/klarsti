@@ -30,7 +30,6 @@ import type { VsmMenuHedefi } from './VsmContextMenu';
 import VsmTimelineOverlay from './VsmTimelineOverlay';
 import VsmMapsMenu from './VsmMapsMenu';
 import VsmSettingsPanel from './VsmSettingsPanel';
-import CanvasControls from './CanvasControls';
 import CanvasKarsilama from './CanvasKarsilama';
 import { useEkranaSigdir } from '../utils/ekranaSigdir';
 import ConfirmModal from './ConfirmModal';
@@ -222,7 +221,6 @@ export default function VsmCanvas() {
           defaultEdgeOptions={{ type: 'vsmPush' }}
         >
           <CanvasBackdrop gap={20} size={1} />
-          <CanvasControls />
 
           <Panel position="top-left" style={{ marginTop: 68 }}>
             <VsmMapsMenu aktif={harita} />

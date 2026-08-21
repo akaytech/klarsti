@@ -25,7 +25,6 @@ import CalismaMenusu from './CalismaMenusu';
 import CanvasKarsilama from './CanvasKarsilama';
 import { useEkranaSigdir } from '../utils/ekranaSigdir';
 import CanvasMiniMap from './CanvasMiniMap';
-import CanvasControls from './CanvasControls';
 import { useSilTusu } from '../utils/useSilTusu';
 import { islem } from '../store/gecmis';
 
@@ -189,7 +188,6 @@ function FiveWhysCanvasInner() {
           }}
           proOptions={{ hideAttribution: true }}
         >
-          <CanvasControls />
           <CanvasMiniMap nodeColor={themeColors.minimapNode} maskColor={themeColors.minimapMask} />
           <CanvasBackdrop />
 

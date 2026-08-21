@@ -29,7 +29,6 @@ import { useDiagram } from './useDiagram';
 import { DiagramEditingContext } from './diagramEditing';
 import { islemBasla, islemBitir } from '../../store/gecmis';
 import CanvasMiniMap from '../CanvasMiniMap';
-import CanvasControls from '../CanvasControls';
 
 // Akış diyagramları ve organizasyon şemaları bu kanvası paylaşıyor; hangi
 // katalogla çalışacağını `kind` belirliyor (bkz. config/diagramKinds.ts).
@@ -365,7 +364,6 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
         proOptions={{ hideAttribution: true }}
       >
         <CanvasBackdrop />
-        <CanvasControls />
 
         {/* Şema menüsü. React Flow'un kendi stil dosyası panele margin veriyor
             ve Tailwind sınıfı ona yeniliyor, o yüzden satır içi stil: geri al /

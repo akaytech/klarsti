@@ -23,7 +23,6 @@ import { useEkranaSigdir } from '../utils/ekranaSigdir';
 import { calculateProbability, FtaProbabilityContext } from '../utils/ftaProbability';
 import CalismaMenusu from './CalismaMenusu';
 import CanvasMiniMap from './CanvasMiniMap';
-import CanvasControls from './CanvasControls';
 import { useSilTusu } from '../utils/useSilTusu';
 import { islem } from '../store/gecmis';
 
@@ -141,7 +140,6 @@ export default function FtaCanvas() {
         }}
         proOptions={{ hideAttribution: true }}
       >
-        <CanvasControls />
         <CanvasMiniMap nodeColor={themeColors.minimapNode} maskColor={themeColors.minimapMask} />
         {aktifAgac && (
           <Panel position="top-left" style={{ marginTop: 68 }}>

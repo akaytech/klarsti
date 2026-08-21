@@ -239,12 +239,11 @@ const guides: ToolGuideBundle = {
       "Ctrl + clic su un riquadro apre sotto di esso un nuovo riquadro «perché». Scrivi lì la risposta, poi ripeti l'operazione su quel riquadro.",
       "Quando non riesci più a scendere, Shift + clic su quel riquadro crea un riquadro di causa profonda. I riquadri di causa profonda non accettano figli: la catena finisce lì.",
       "Clic destro sui riquadri per modificarli o eliminarli.",
-      "Ctrl + clic su spazio vuoto avvia una seconda catena di problema, indipendente, sulla stessa tela."
+      "Un'analisi contiene un solo problema principale. Per esaminarne un secondo, crea una nuova analisi dal menu in alto a sinistra."
     ],
     shortcuts: [
       { keys: ["Mod", "Clic"], desc: "Su un riquadro: aggiungi un nuovo perché sotto" },
       { keys: ["Shift", "Clic"], desc: "Su un riquadro: crea un riquadro di causa profonda" },
-      { keys: ["Mod", "Clic"], desc: "Su spazio vuoto: nuovo problema" },
       { keys: ["Canc"], desc: "Elimina il riquadro selezionato" },
       { keys: ["Mod", "Z"], desc: "Annulla" },
       { keys: ["Mod", "Y"], desc: "Ripeti" }

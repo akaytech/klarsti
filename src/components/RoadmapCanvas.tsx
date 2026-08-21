@@ -16,6 +16,7 @@ import { metinAlaninda } from '../utils/metinAlaninda';
 import CanvasBackdrop from './CanvasBackdrop';
 import CanvasMiniMap from './CanvasMiniMap';
 import CanvasKarsilama from './CanvasKarsilama';
+import KarsilamaPaneli from './KarsilamaPaneli';
 import RoadmapNode from './RoadmapNode';
 import RoadmapMapsMenu from './RoadmapMapsMenu';
 import RoadmapContextMenu from './RoadmapContextMenu';
@@ -318,7 +319,7 @@ export default function RoadmapCanvas() {
 
         {/* Bütün haritalar silinmişse kanvas boş kalır; buradan yenisi kurulur. */}
         {!aktifHarita && (
-          <Panel position="top-center" className="mt-24">
+          <KarsilamaPaneli ekBosluk={52}>
             <CanvasKarsilama
               simge={<Route size={18} />}
               aciklama={t('roadmap_no_map_hint')}
@@ -327,11 +328,11 @@ export default function RoadmapCanvas() {
                 onClick: () => addRoadmap(t('roadmap_map_name_n', { sira: 1 }), t('roadmap_first_step'))
               }}
             />
-          </Panel>
+          </KarsilamaPaneli>
         )}
 
         {aktifHarita && nodes.length <= 1 && !karsilamaKapandi && (
-          <Panel position="top-center" className="mt-24">
+          <KarsilamaPaneli ekBosluk={52}>
             <CanvasKarsilama
               simge={<Route size={18} />}
               aciklama={t('roadmap_start_hint')}
@@ -339,7 +340,7 @@ export default function RoadmapCanvas() {
               ikincil={{ etiket: t('roadmap_load_example'), onClick: ornegiYukle }}
               onKapat={() => setKarsilamaKapandi(true)}
             />
-          </Panel>
+          </KarsilamaPaneli>
         )}
 
         <CanvasMiniMap nodeColor={(n) => ((n.data as { tur?: string })?.tur === 'konu' ? KONU_RENGI : HAT_RENGI)} />

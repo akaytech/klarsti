@@ -18,6 +18,7 @@ import CanvasBackdrop from './CanvasBackdrop';
 import { metinAlaninda } from '../utils/metinAlaninda';
 import GoalNode from './GoalNode';
 import CanvasKarsilama from './CanvasKarsilama';
+import KarsilamaPaneli from './KarsilamaPaneli';
 import { useEkranaSigdir } from '../utils/ekranaSigdir';
 import PaneContextMenu from './PaneContextMenu';
 import SelectionContextMenu from './SelectionContextMenu';
@@ -373,7 +374,7 @@ export default function WbsCanvas({ onNodeSelect }: { onNodeSelect: (id: string 
         <CanvasBackdrop />
 
         {showStarterPanel && (
-          <Panel position="top-center" className="mt-20">
+          <KarsilamaPaneli>
             <CanvasKarsilama
               simge={<Network size={18} />}
               baslik={t('wbs_empty')}
@@ -389,7 +390,7 @@ export default function WbsCanvas({ onNodeSelect }: { onNodeSelect: (id: string 
               ikincil={{ etiket: t('load_example'), onClick: () => loadWbsExample() }}
               onKapat={() => setStarterDismissed(true)}
             />
-          </Panel>
+          </KarsilamaPaneli>
         )}
       </ReactFlow>
 

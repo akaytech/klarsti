@@ -234,12 +234,11 @@ const guides: ToolGuideBundle = {
       'Strg-Klick auf ein Kästchen öffnet darunter ein neues "Warum". Schreib die Antwort hinein und wiederhole das Gleiche dort.',
       'Kommst du nicht tiefer, erzeugt Shift-Klick auf dieses Kästchen ein Ursachen-Kästchen. Darunter lässt sich nichts mehr anhängen, die Kette endet dort.',
       'Per Rechtsklick bearbeitest oder löschst du Kästchen.',
-      'Strg-Klick auf die leere Fläche startet eine zweite, unabhängige Problemkette auf derselben Zeichenfläche.'
+      'Eine Analyse hat genau ein Hauptproblem. Für ein zweites Problem legst du über das Menü oben links eine neue Analyse an.'
     ],
     shortcuts: [
       { keys: ['Mod', 'Klick'], desc: 'Auf einem Kästchen: neues Warum darunter' },
       { keys: ['Shift', 'Klick'], desc: 'Auf einem Kästchen: Ursachen-Kästchen' },
-      { keys: ['Mod', 'Klick'], desc: 'Auf leerer Fläche: neues Problem' },
       { keys: ['Delete'], desc: 'Ausgewähltes Kästchen löschen' },
       { keys: ['Mod', 'Z'], desc: 'Rückgängig' },
       { keys: ['Mod', 'Y'], desc: 'Wiederholen' }

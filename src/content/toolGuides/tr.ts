@@ -234,12 +234,11 @@ const kilavuzlar: ToolGuideBundle = {
       'Bir kutuya Ctrl basılı tıkla: altına yeni bir "neden" kutusu açılır. Cevabı oraya yaz, sonra aynı şeyi o kutuya uygula.',
       'Daha fazla inemediğin noktada o kutuya Shift basılı tıkla: kök neden kutusu açılır. Kök neden kutusunun altına yeni dal eklenmez, zincir orada biter.',
       'Kutulara sağ tıklayarak metni düzenler ya da silersin.',
-      'Boş alana Ctrl basılı tıklarsan aynı kanvasta ikinci bir bağımsız problem zinciri başlatabilirsin.'
+      'Bir analizde tek bir ana sorun bulunur. İkinci bir problemi incelemek için sol üstteki menüden yeni bir analiz aç.'
     ],
     shortcuts: [
       { keys: ['Mod', 'Tık'], desc: 'Kutu üzerinde: altına yeni neden' },
       { keys: ['Shift', 'Tık'], desc: 'Kutu üzerinde: kök neden kutusu' },
-      { keys: ['Mod', 'Tık'], desc: 'Boş alanda: yeni problem' },
       { keys: ['Delete'], desc: 'Seçili kutuyu sil' },
       { keys: ['Mod', 'Z'], desc: 'Geri al' },
       { keys: ['Mod', 'Y'], desc: 'İleri al' }

@@ -220,12 +220,11 @@ const guides: ToolGuideBundle = {
       'Ctrl-click a box to open a new "why" box under it. Write the answer there, then do the same on that box.',
       'When you cannot go deeper, Shift-click that box to create a root-cause box. Root-cause boxes take no children; the chain ends there.',
       'Right-click boxes to edit or delete them.',
-      'Ctrl-click empty space to start a second, independent problem chain on the same canvas.'
+      'An analysis holds a single main problem. To look into a second problem, open a new analysis from the menu at the top left.'
     ],
     shortcuts: [
       { keys: ['Mod', 'Click'], desc: 'On a box: add a new why beneath it' },
       { keys: ['Shift', 'Click'], desc: 'On a box: create a root-cause box' },
-      { keys: ['Mod', 'Click'], desc: 'On empty space: new problem' },
       { keys: ['Delete'], desc: 'Delete the selected box' },
       { keys: ['Mod', 'Z'], desc: 'Undo' },
       { keys: ['Mod', 'Y'], desc: 'Redo' }

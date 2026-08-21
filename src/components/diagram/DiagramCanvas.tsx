@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../theme';
 import CanvasBackdrop from '../CanvasBackdrop';
 import CanvasKarsilama from '../CanvasKarsilama';
+import KarsilamaPaneli from '../KarsilamaPaneli';
 import { useEkranaSigdir } from '../../utils/ekranaSigdir';
 import { metinAlaninda } from '../../utils/metinAlaninda';
 import { getDiagramKind, type DiagramKind } from '../../config/diagramKinds';
@@ -400,7 +401,7 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
             bir örnekle başlarsın. Yalnızca örneği olan araçta (akış şeması)
             çıkıyor; organizasyon şeması zaten dolu bir iskeletle açılıyor. */}
         {loadExample && elDegmemis && !karsilamaKapandi ? (
-          <Panel position="top-center" style={{ marginTop: 96 }}>
+          <KarsilamaPaneli>
             <CanvasKarsilama
               simge={<TurIkonu size={18} />}
               baslik={t('flowchart_empty')}
@@ -409,11 +410,11 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
               ikincil={{ etiket: t('load_example'), onClick: ornekYukle }}
               onKapat={() => setKarsilamaKapandi(true)}
             />
-          </Panel>
+          </KarsilamaPaneli>
         ) : aktif.nodes.length === 0 && (
           /* Şema bomboşsa eklemeyi başlatacak bir kutu da yok; şerit ortada
              duruyor, seçilen şekil ilk kutu oluyor. */
-          <Panel position="top-center" style={{ marginTop: 96 }}>
+          <KarsilamaPaneli>
             <div className="flex flex-col items-center gap-2">
               <p className="text-sm font-bold text-slate-500 dark:text-slate-400">{t(k.text.addBox)}</p>
               <DiagramShapeStrip
@@ -425,7 +426,7 @@ export default function DiagramCanvas({ kind }: { kind: DiagramKind }) {
                 }}
               />
             </div>
-          </Panel>
+          </KarsilamaPaneli>
         )}
       </ReactFlow>
 

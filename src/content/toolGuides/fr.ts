@@ -234,12 +234,11 @@ const guides: ToolGuideBundle = {
       'Ctrl+clic sur une boîte ouvre un nouveau « pourquoi » en dessous. Écris-y la réponse, puis recommence sur cette boîte.',
       'Quand tu ne peux plus descendre, Shift+clic sur cette boîte crée une boîte de cause racine. Elle n\'accepte pas d\'enfant : la chaîne s\'arrête là.',
       'Le clic droit permet de modifier ou de supprimer les boîtes.',
-      'Ctrl+clic dans le vide démarre une seconde chaîne de problème, indépendante, sur le même canevas.'
+      'Une analyse ne contient qu\'un seul problème principal. Pour en examiner un second, crée une nouvelle analyse depuis le menu en haut à gauche.'
     ],
     shortcuts: [
       { keys: ['Mod', 'Clic'], desc: 'Sur une boîte : nouveau pourquoi en dessous' },
       { keys: ['Shift', 'Clic'], desc: 'Sur une boîte : boîte de cause racine' },
-      { keys: ['Mod', 'Clic'], desc: 'Dans le vide : nouveau problème' },
       { keys: ['Suppr'], desc: 'Supprimer la boîte sélectionnée' },
       { keys: ['Mod', 'Z'], desc: 'Annuler' },
       { keys: ['Mod', 'Y'], desc: 'Rétablir' }

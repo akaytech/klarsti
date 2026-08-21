@@ -2,8 +2,7 @@ import { useState, useCallback, useRef } from 'react';
 import {
   ReactFlow,
   Panel,
-  ReactFlowProvider,
-  useReactFlow
+  ReactFlowProvider
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useRoadmapStore, getActiveFiveWhys } from '../store/useRoadmapStore';
@@ -20,9 +19,9 @@ import CanvasBackdrop from './CanvasBackdrop';
 import { metinAlaninda } from '../utils/metinAlaninda';
 import FiveWhysNode from './FiveWhysNode';
 import FiveWhysContextMenu from './FiveWhysContextMenu';
-import PaneContextMenu from './PaneContextMenu';
 import CalismaMenusu from './CalismaMenusu';
 import CanvasKarsilama from './CanvasKarsilama';
+import KarsilamaPaneli from './KarsilamaPaneli';
 import { useEkranaSigdir } from '../utils/ekranaSigdir';
 import CanvasMiniMap from './CanvasMiniMap';
 import { useSilTusu } from '../utils/useSilTusu';
@@ -42,7 +41,6 @@ function FiveWhysCanvasInner() {
   const { t } = useTranslation();
   const themeColors = useTheme();
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
-  const { screenToFlowPosition } = useReactFlow();
 
   // Delete tuşu depo üzerinden siliyor; React Flow'un kendi silmesi kapalı,
   // çünkü o kutuyu silmeden önce çizgileri kaldırıp alt nedenleri öksüz
@@ -51,7 +49,6 @@ function FiveWhysCanvasInner() {
     islem(() => idler.forEach((id) => useRoadmapStore.getState().deleteFiveWhysNode(id)));
   }, []));
   const [menu, setMenu] = useState<{ id: string; top: number; left: number } | null>(null);
-  const [paneMenu, setPaneMenu] = useState<{ top: number; left: number; clientX: number; clientY: number } | null>(null);
   // Karşılama şeridi kapatılabilsin diye: eskiden kaldırmanın tek yolu
   // düğmelerden birine basmaktı, sadece tuvale bakmak isteyen sıkışıyordu.
   const [karsilamaKapandi, setKarsilamaKapandi] = useState(false);
@@ -109,39 +106,18 @@ function FiveWhysCanvasInner() {
         top: event.clientY,
         left: event.clientX,
       });
-      setPaneMenu(null);
     },
     []
   );
 
-  const onPaneContextMenu = useCallback(
-    (event: React.MouseEvent | MouseEvent) => {
-      if (metinAlaninda(event.target)) return;
-      event.preventDefault();
-      event.stopPropagation();
-      setPaneMenu({
-        top: event.clientY,
-        left: event.clientX,
-        clientX: event.clientX,
-        clientY: event.clientY,
-      });
-      setMenu(null);
-    },
-    []
-  );
-
-  const onPaneClick = useCallback((event: React.MouseEvent) => {
+  // Boş alana Ctrl+tık ve boş alan sağ tık menüsü kaldırıldı: ikisi de aynı
+  // kanvasa ikinci, üçüncü bir ana sorun kutusu koyuyordu. Bir 5 Neden
+  // analizinin tek bir problemi olur; ikinci problem ayrı bir analizdir
+  // (sol üstteki menüden "Yeni analiz"). Ana sorun artık yalnızca kanvas
+  // bomboşken çıkan karşılama şeridinden ekleniyor.
+  const onPaneClick = useCallback(() => {
     setMenu(null);
-    setPaneMenu(null);
-    
-    if (event.ctrlKey || event.metaKey) {
-      const pos = screenToFlowPosition({
-        x: event.clientX,
-        y: event.clientY,
-      });
-      addFiveWhysNode(null, 'problem', t('whys_placeholder') || 'Neden?', pos);
-    }
-  }, [addFiveWhysNode, screenToFlowPosition, t]);
+  }, []);
 
   const onNodeClick = useCallback(
     (event: React.MouseEvent, node: FiveWhysNodeType) => {
@@ -162,7 +138,7 @@ function FiveWhysCanvasInner() {
   );
 
   return (
-    <div className="h-full w-full relative bg-slate-50 dark:bg-slate-900 transition-colors" ref={reactFlowWrapper} onContextMenu={onPaneContextMenu as any}>
+    <div className="h-full w-full relative bg-slate-50 dark:bg-slate-900 transition-colors" ref={reactFlowWrapper}>
       <ReactFlow
           nodes={fiveWhysNodes}
           edges={fiveWhysEdges}
@@ -215,7 +191,7 @@ function FiveWhysCanvasInner() {
           )}
           
           {fiveWhysNodes.length === 0 && !karsilamaKapandi && (
-             <Panel position="top-center" className="mt-20">
+             <KarsilamaPaneli>
                <CanvasKarsilama
                  simge={<Activity size={18} />}
                  baslik={t('whys_empty')}
@@ -224,7 +200,7 @@ function FiveWhysCanvasInner() {
                  ikincil={{ etiket: t('load_example'), onClick: () => loadFiveWhysExample() }}
                  onKapat={() => setKarsilamaKapandi(true)}
                />
-             </Panel>
+             </KarsilamaPaneli>
           )}
         </ReactFlow>
 
@@ -246,22 +222,6 @@ function FiveWhysCanvasInner() {
           />
         )}
 
-        {paneMenu && (
-          <PaneContextMenu
-            x={paneMenu.left}
-            y={paneMenu.top}
-            onClose={() => setPaneMenu(null)}
-            addLabel={t('whys_add_root') || 'Yeni Problem Ekle'}
-            onAddRootGoal={() => {
-              const pos = screenToFlowPosition({
-                x: paneMenu.clientX,
-                y: paneMenu.clientY,
-              });
-              addFiveWhysNode(null, 'problem', t('whys_placeholder') || 'Neden?', pos);
-              setPaneMenu(null);
-            }}
-          />
-        )}
     </div>
   );
 }

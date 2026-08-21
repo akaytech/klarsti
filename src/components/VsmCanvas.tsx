@@ -31,6 +31,7 @@ import VsmTimelineOverlay from './VsmTimelineOverlay';
 import VsmMapsMenu from './VsmMapsMenu';
 import VsmSettingsPanel from './VsmSettingsPanel';
 import CanvasKarsilama from './CanvasKarsilama';
+import KarsilamaPaneli from './KarsilamaPaneli';
 import { useEkranaSigdir } from '../utils/ekranaSigdir';
 import ConfirmModal from './ConfirmModal';
 import { vsmHesapla, saniyeBicimle, sayiBicimle } from '../utils/vsmHesap';
@@ -235,7 +236,7 @@ export default function VsmCanvas() {
           <VsmTimelineOverlay />
 
           {harita.nodes.length === 0 && (
-            <Panel position="top-center" className="mt-28">
+            <KarsilamaPaneli>
               <CanvasKarsilama
                 simge={<Workflow size={18} />}
                 aciklama={t('vsm_start_hint')}
@@ -245,7 +246,7 @@ export default function VsmCanvas() {
                   onClick: () => addVsmNode('vsmProcess', t('vsm_untitled_process'), { x: 0, y: 0 })
                 }}
               />
-            </Panel>
+            </KarsilamaPaneli>
           )}
         </ReactFlow>
 

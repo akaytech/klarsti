@@ -20,6 +20,7 @@ import MindmapMapsMenu from './MindmapMapsMenu';
 import { DAL_RENKLERI, mindmapYerlesimi } from '../utils/mindmapLayout';
 import CanvasMiniMap from './CanvasMiniMap';
 import CanvasKarsilama from './CanvasKarsilama';
+import KarsilamaPaneli from './KarsilamaPaneli';
 
 const nodeTypes = {
   mindmapNode: MindmapNode,
@@ -354,7 +355,7 @@ export default function MindmapCanvas() {
 
         {/* Bütün haritalar silinmişse kanvas boş kalır; buradan yenisi kurulur. */}
         {!aktifHarita && (
-          <Panel position="top-center" className="mt-24">
+          <KarsilamaPaneli>
             {/* Harita yokken kapatma yok: kapatılınca ekranda hiçbir şey
                 kalmıyor ve kullanıcının harita açmak için tutunacağı yer
                 olmuyor. */}
@@ -367,11 +368,11 @@ export default function MindmapCanvas() {
                 onClick: () => addMindmap(t('mindmap_map_name_n', { sira: 1 }), t('mindmap_root'))
               }}
             />
-          </Panel>
+          </KarsilamaPaneli>
         )}
 
         {aktifHarita && mindmapNodes.length <= 1 && !karsilamaKapandi && (
-          <Panel position="top-center" className="mt-24">
+          <KarsilamaPaneli>
             <CanvasKarsilama
               simge={<Brain size={18} />}
               aciklama={t('mindmap_start_hint')}
@@ -387,7 +388,7 @@ export default function MindmapCanvas() {
               }}
               onKapat={() => setKarsilamaKapandi(true)}
             />
-          </Panel>
+          </KarsilamaPaneli>
         )}
 
         <CanvasMiniMap nodeColor={(n) => DAL_RENKLERI[((n.data as any)?.branch ?? 0) % DAL_RENKLERI.length]} />

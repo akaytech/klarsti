@@ -19,6 +19,7 @@ import { metinAlaninda } from '../utils/metinAlaninda';
 import FtaNode from './FtaNode';
 import FtaContextMenu from './FtaContextMenu';
 import CanvasKarsilama from './CanvasKarsilama';
+import KarsilamaPaneli from './KarsilamaPaneli';
 import { useEkranaSigdir } from '../utils/ekranaSigdir';
 import { calculateProbability, FtaProbabilityContext } from '../utils/ftaProbability';
 import CalismaMenusu from './CalismaMenusu';
@@ -167,7 +168,7 @@ export default function FtaCanvas() {
         <CanvasBackdrop />
 
         {showStarterPanel && (
-          <Panel position="top-center" className="mt-20">
+          <KarsilamaPaneli>
             <CanvasKarsilama
               simge={<GitBranch size={18} />}
               baslik={t('fta_empty')}
@@ -182,7 +183,7 @@ export default function FtaCanvas() {
               ikincil={{ etiket: t('load_example'), onClick: () => loadFtaExample() }}
               onKapat={() => setStarterDismissed(true)}
             />
-          </Panel>
+          </KarsilamaPaneli>
         )}
       </ReactFlow>
 

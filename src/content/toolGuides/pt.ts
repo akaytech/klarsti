@@ -234,12 +234,11 @@ const guides: ToolGuideBundle = {
       'Ctrl+clique numa caixa abre um novo "porquê" abaixo. Escreva a resposta ali e repita a operação nessa caixa.',
       'Quando não der para descer mais, Shift+clique nessa caixa cria uma caixa de causa raiz. Ela não aceita filhos: a cadeia termina ali.',
       'Com o botão direito você edita ou exclui as caixas.',
-      'Ctrl+clique em espaço livre inicia uma segunda cadeia de problema, independente, na mesma tela.'
+      'Cada análise tem um único problema principal. Para examinar um segundo problema, crie uma nova análise pelo menu no canto superior esquerdo.'
     ],
     shortcuts: [
       { keys: ['Mod', 'Clique'], desc: 'Sobre uma caixa: novo porquê abaixo' },
       { keys: ['Shift', 'Clique'], desc: 'Sobre uma caixa: caixa de causa raiz' },
-      { keys: ['Mod', 'Clique'], desc: 'Em espaço livre: novo problema' },
       { keys: ['Delete'], desc: 'Excluir a caixa selecionada' },
       { keys: ['Mod', 'Z'], desc: 'Desfazer' },
       { keys: ['Mod', 'Y'], desc: 'Refazer' }

@@ -75,22 +75,35 @@ if (oturumIziVar || authRotasi) {
 }
 
 /**
+ * Kendi bilgisayarımızdaki geliştirme sunucusu. Buradan çıkan hatalar arıza
+ * değil, kod yazarken geçilen yarım anlar: parça henüz sayfaya bağlanmamış,
+ * isim daha tanımlanmamış. Bir sonraki kayıtta kendiliğinden geçiyorlar ve
+ * zaten konsolda gözümüzün önündeler. Sentry'ye gönderildiklerinde tek
+ * yaptıkları, gerçek kullanıcının yaşadığı hatanın yanında yer kaplamak.
+ */
+const kendiBilgisayarimMi = () => {
+  const adres = location.hostname;
+  return adres === 'localhost' || adres === '127.0.0.1';
+};
+
+/**
  * Hatanın hangi adresten geldiği. Aynı kod üç yerde birden yayında:
  * klarsti.com asıl site, klarsti.web.app ve klarsti.firebaseapp.com ise
  * Firebase'in silinemeyen sistem adresleri (bkz. index.html'deki canonical).
  * Hepsi tek Sentry projesine yazıyor ve ayırt edilemiyorlardı; artık gerçek
- * kullanıcının yaşadığı hata ile kendi denememiz karışmıyor.
+ * kullanıcının yaşadığı hata ile önizlemedeki denememiz karışmıyor.
  */
 const sentryOrtami = () => {
   const adres = location.hostname;
   if (adres === 'klarsti.com' || adres === 'www.klarsti.com') return 'production';
-  if (adres === 'localhost' || adres === '127.0.0.1') return 'development';
   // klarsti.web.app, klarsti.firebaseapp.com ve PR önizleme adresleri.
+  // (localhost buraya hiç gelmiyor, yukarıda eleniyor.)
   return 'preview';
 };
 
 // Asenkron Sentry başlatma (Ana render'ı bloke etmemesi için gecikmeli)
 setTimeout(() => {
+  if (kendiBilgisayarimMi()) return;
   import('@sentry/react').then((Sentry) => {
     Sentry.init({
       dsn: "https://0942b4d0d1d1208b089ff3528ea7f024@o4511775904366592.ingest.de.sentry.io/4511775925862480",
@@ -131,6 +144,9 @@ class ErrorBoundary extends Component<{children: ReactNode, fallback: ReactNode}
   componentDidCatch(error: any, info: any) {
     // Sayfa tazelenmek üzereyse hata gerçek değil, tazelemenin gölgesi.
     if (tazelemeBekleniyorMu()) return;
+    // Geliştirme sunucusunda Sentry hiç başlatılmıyor; paketi buradan da
+    // indirtmenin anlamı yok, hata konsolda zaten duruyor.
+    if (kendiBilgisayarimMi()) return;
     import('@sentry/react').then(Sentry => Sentry.captureException(error, { contexts: { react: { componentStack: info?.componentStack } } })).catch(console.error);
   }
   render() {

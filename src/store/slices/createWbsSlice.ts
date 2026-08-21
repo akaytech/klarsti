@@ -390,6 +390,26 @@ export const createWbsSlice: StateCreator<
     return { ...state, wbsTrees: state.wbsTrees.map((a) => (a.id === hedef.id ? degistir(a) : a)) };
   };
 
+  /**
+   * Hiç ağaç kalmamışsa boş bir tane kurar ve açar.
+   *
+   * Menü son ağacın silinmesini engelliyor ama çalışmalar panelinde böyle bir
+   * kısıt yok; oradan silinince kanvas çıkışı olmayan bir ekrana dönüyordu.
+   * Kutu ekleyen yollar açık ağaç bulamayınca sessizce hiçbir şey yapıyor,
+   * ağaç menüsü de aynı sebeple gizleniyordu.
+   */
+  const agaciSagla = () => {
+    if (getActiveWbsTree(get())) return;
+    const bos: WbsTree = {
+      id: uuidv4(),
+      name: i18n.t('wbs_default_tree_name'),
+      nodes: [],
+      edges: [],
+      createdAt: Date.now(),
+    };
+    set((s) => ({ ...s, wbsTrees: [...s.wbsTrees, bos], activeWbsTreeId: bos.id }));
+  };
+
   /** Kutular değiştikten sonra görünürlük ve dizilim hep birlikte geçer. */
   const yenidenDiz = (nodes: GoalNode[], edges: Edge[]) => {
     const { nodes: updatedNodes, edges: updatedEdges } = computeVisibility(nodes, edges);
@@ -514,6 +534,9 @@ export const createWbsSlice: StateCreator<
     logAppEvent('node_created', { tool: 'wbs', label });
     const id = uuidv4();
     const newPos = position || { x: 0, y: 0 };
+    // Kök ekleniyorsa ağaç yoksa da kurulabilmeli; alt kutu için zaten
+    // ebeveynin ağacı var demektir.
+    if (!parentId) agaciSagla();
     const state = get();
 
     const hedefAgac = parentId
@@ -774,7 +797,8 @@ export const createWbsSlice: StateCreator<
   loadWbsExample: () => islem(() => {
     // El değmemiş tuvalde varsayılan kök düğümün yerine geçer; dolu tuvale dokunmaz.
     const acikAgac = getActiveWbsTree(get());
-    if (!acikAgac || !isPristineWbs(acikAgac.nodes, acikAgac.edges)) return;
+    if (acikAgac && !isPristineWbs(acikAgac.nodes, acikAgac.edges)) return;
+    agaciSagla();
     logAppEvent('example_loaded', { tool: 'wbs' });
 
     const mk = (labelKey: string, status: GoalStatus): GoalNode => ({

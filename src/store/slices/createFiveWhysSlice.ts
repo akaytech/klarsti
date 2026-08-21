@@ -119,6 +119,42 @@ export const createFiveWhysSlice: StateCreator<RoadmapState, [], [], FiveWhysSli
     };
   };
 
+  /**
+   * Açık analizi verir; hiç analiz yoksa boş bir tane kurar.
+   *
+   * Son analizini silen kullanıcı çıkışı olmayan bir ekranda kalıyordu: kutu
+   * ekleyen bütün yollar (karşılama şeridi, boş alana Ctrl+tık, sağ tık
+   * menüsü) aktifiGuncelle'den geçiyor, o da değiştirecek analiz bulamayınca
+   * sessizce hiçbir şey yapmıyordu. Analizler menüsü de açık analiz istediği
+   * için gizleniyordu, yani yeni analiz açılacak yer de kalmıyordu. Üstelik
+   * sayfa yenilemek kurtarmıyordu: kayıtlı boş liste "kayıt yok" sayılmadığı
+   * için başlangıç analizi de kurulmuyordu.
+   */
+  const analiziSagla = (state: RoadmapState): { state: RoadmapState; aktif: FiveWhysAnalysis } => {
+    const aktif = getActiveFiveWhys(state);
+    if (aktif) return { state, aktif };
+    const yeni: FiveWhysAnalysis = {
+      id: uuidv4(),
+      name: i18n.t('whys_default_analysis_name'),
+      nodes: [],
+      edges: [],
+      createdAt: Date.now(),
+    };
+    return {
+      state: { ...state, fiveWhysAnalyses: [...state.fiveWhysAnalyses, yeni], activeFiveWhysId: yeni.id },
+      aktif: yeni,
+    };
+  };
+
+  /** aktifiGuncelle'nin analiz yoksa kuran hali; yalnızca ekleme yollarında. */
+  const kurupGuncelle = (state: RoadmapState, degistir: (a: FiveWhysAnalysis) => FiveWhysAnalysis) => {
+    const { state: yeniDurum, aktif } = analiziSagla(state);
+    return {
+      ...yeniDurum,
+      fiveWhysAnalyses: yeniDurum.fiveWhysAnalyses.map((a) => (a.id === aktif.id ? degistir(a) : a)),
+    };
+  };
+
   /** Kutu ve çizgi değişikliklerinden sonra dizilim hep yenilenir. */
   const diz = (analiz: FiveWhysAnalysis, nodes: FiveWhysNode[], edges: Edge[]): FiveWhysAnalysis => {
     const { layoutedNodes, layoutedEdges } = getFiveWhysLayoutedElements(nodes, edges);
@@ -210,7 +246,7 @@ export const createFiveWhysSlice: StateCreator<RoadmapState, [], [], FiveWhysSli
 
     addFiveWhysNode: (parentId, type, label, position) => islem(() => {
       logAppEvent('node_created', { tool: '5whys', type });
-      set((state) => aktifiGuncelle(state, (a) => {
+      set((state) => kurupGuncelle(state, (a) => {
         const ebeveyn = parentId ? a.nodes.find((n) => n.id === parentId) : null;
         const depth = ebeveyn ? ebeveyn.data.depth + 1 : 0;
         const yeni: FiveWhysNode = {
@@ -244,7 +280,7 @@ export const createFiveWhysSlice: StateCreator<RoadmapState, [], [], FiveWhysSli
     }),
 
     loadFiveWhysExample: () => islem(() => {
-      set((state) => aktifiGuncelle(state, (a) => {
+      set((state) => kurupGuncelle(state, (a) => {
         const kimlikler = Array.from({ length: 6 }, () => uuidv4());
         const etiketler = ['whys_example_problem', 'whys_example_w1', 'whys_example_w2', 'whys_example_w3', 'whys_example_w4', 'whys_example_solution'];
         const tipler: FiveWhysNodeType[] = ['problem', 'why', 'why', 'why', 'why', 'solution'];

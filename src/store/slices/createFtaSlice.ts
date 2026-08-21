@@ -161,6 +161,37 @@ export const createFtaSlice: StateCreator<RoadmapState, [], [], FtaSlice> = (set
     };
   };
 
+  /**
+   * Açık ağacı verir; hiç analiz yoksa boş bir tane kurar. Son analizini
+   * silen kullanıcı yoksa çıkışı olmayan bir ekranda kalıyordu: tepe olay
+   * ekleyen de örnek yükleyen de açık analiz bulamayınca sessizce hiçbir şey
+   * yapmıyordu, analiz menüsü de aynı sebeple gizleniyordu.
+   */
+  const analiziSagla = (state: RoadmapState): { state: RoadmapState; aktif: FtaAnalysis } => {
+    const aktif = getActiveFta(state);
+    if (aktif) return { state, aktif };
+    const yeni: FtaAnalysis = {
+      id: uuidv4(),
+      name: i18n.t('fta_default_analysis_name'),
+      nodes: [],
+      edges: [],
+      createdAt: Date.now(),
+    };
+    return {
+      state: { ...state, ftaAnalyses: [...state.ftaAnalyses, yeni], activeFtaId: yeni.id },
+      aktif: yeni,
+    };
+  };
+
+  /** aktifiGuncelle'nin analiz yoksa kuran hali; yalnızca kurma yollarında. */
+  const kurupGuncelle = (state: RoadmapState, degistir: (a: FtaAnalysis) => FtaAnalysis) => {
+    const { state: yeniDurum, aktif } = analiziSagla(state);
+    return {
+      ...yeniDurum,
+      ftaAnalyses: yeniDurum.ftaAnalyses.map((a) => (a.id === aktif.id ? degistir(a) : a)),
+    };
+  };
+
   const diz = (analiz: FtaAnalysis, nodes: FtaNode[], edges: Edge[]): FtaAnalysis => {
     const { nodes: layoutedNodes, edges: layoutedEdges } = getFtaLayoutedElements(nodes, edges);
     return { ...analiz, nodes: layoutedNodes, edges: layoutedEdges };
@@ -269,8 +300,8 @@ export const createFtaSlice: StateCreator<RoadmapState, [], [], FtaSlice> = (set
 
     addFtaRoot: () => {
       const aktif = getActiveFta(get());
-      if (!aktif || aktif.nodes.length > 0) return;
-      set((state) => aktifiGuncelle(state, (a) => ({
+      if (aktif && aktif.nodes.length > 0) return;
+      set((state) => kurupGuncelle(state, (a) => ({
         ...a,
         nodes: [{ id: 'root', type: 'ftaNode', position: { x: 0, y: 0 }, data: { label: i18n.t('fta_top_event'), type: 'topEvent' } }],
         edges: [],
@@ -281,7 +312,7 @@ export const createFtaSlice: StateCreator<RoadmapState, [], [], FtaSlice> = (set
     // Tepe olay 'root' id'sini korur, böylece silinemez düğüm kuralı bozulmaz.
     loadFtaExample: () => islem(() => {
       const aktif = getActiveFta(get());
-      if (!aktif || !isPristineFta(aktif.nodes, aktif.edges)) return;
+      if (aktif && !isPristineFta(aktif.nodes, aktif.edges)) return;
       logAppEvent('example_loaded', { tool: 'fta' });
 
       const mk = (labelKey: string, type: FtaNodeType, probability?: number): FtaNode => ({
@@ -319,7 +350,7 @@ export const createFtaSlice: StateCreator<RoadmapState, [], [], FtaSlice> = (set
       link(noStaff, [andStaff]);
       link(andStaff, [sick, noBackup]);
 
-      set((state) => aktifiGuncelle(state, (a) => diz(a, nodes, edges)));
+      set((state) => kurupGuncelle(state, (a) => diz(a, nodes, edges)));
     }),
   };
 };

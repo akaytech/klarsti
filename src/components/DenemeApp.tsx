@@ -4,6 +4,8 @@ import { denemeKipiniAc, denemeKipiKapat } from '../utils/denemeKipi';
 import { denemeyiKaydetmeyeBasla, denemeyiYukle } from '../store/denemeDeposu';
 import { gecikmeliEkran } from '../utils/surumTazeleme';
 import { PROJECT_TOOLS } from '../config/tools';
+import { useRoadmapStore } from '../store/useRoadmapStore';
+import { useSekmeBasligi } from '../utils/sekmeBasligi';
 
 const Workspace = gecikmeliEkran(() => import('./Workspace'));
 
@@ -55,6 +57,11 @@ const olcumuGonder = () => {
  */
 export default function DenemeApp({ arac }: { arac?: string | null }) {
   const [hazir, setHazir] = useState(false);
+
+  // Sekme başlığı burada da açık araca göre yazılıyor; yoksa tanıtım
+  // sayfasından denemeye geçen kullanıcının sekmesinde o sayfanın başlığı
+  // asılı kalıyor (bkz. sekmeBasligi.ts).
+  useSekmeBasligi(useRoadmapStore((s) => s.activeTool));
 
   useEffect(() => {
     denemeKipiniAc();

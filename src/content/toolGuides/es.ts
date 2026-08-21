@@ -40,7 +40,79 @@ const guides: ToolGuideBundle = {
       description:
         'Pon un tema en el centro y ramifícalo; del orden se encarga el programa. Para reunir ideas rápido, gratis.',
       keywords: 'mapa mental, crear mapa mental, mapa mental online, mind map gratis, mapa mental ejemplo'
-    }
+    },
+    example: {
+      title: 'Ejemplo: preparar un plan de formación interna',
+      intro:
+        'Un equipo de RR. HH. tiene que montar la formación de bienvenida y no sabe por dónde empezar. Antes de decidir nada, vuelca todo lo que tiene en la cabeza en un solo mapa.',
+      blocks: [
+        {
+          heading: 'Quién asiste',
+          items: [
+            'Nuevas incorporaciones',
+            'Responsables de equipo',
+            'Personal en remoto',
+            'Equipo de campo',
+          ]
+        },
+        {
+          heading: 'Qué enseñamos',
+          items: [
+            'Conocimiento del producto',
+            'Sistemas internos',
+            'Trato con el cliente',
+            'Normas de seguridad',
+          ]
+        },
+        {
+          heading: 'Cómo lo damos',
+          items: [
+            'Taller presencial',
+            'Vídeo grabado',
+            'Sesión corta semanal',
+            'Acompañamiento de un veterano',
+          ]
+        },
+        {
+          heading: 'Cómo lo medimos',
+          items: [
+            'Prueba corta al final',
+            'Opinión del responsable a los tres meses',
+            'Tiempo hasta la primera tarea en solitario',
+            'Asistencia',
+          ]
+        },
+      ],
+      outcome:
+        'Con las cuatro ramas puestas, la carencia salta a la vista: la de medición está mucho más floja que las demás. El equipo vuelve ahí antes de escribir una sola diapositiva. Para eso sirve un mapa mental: para enseñarte qué lado está vacío.'
+    },
+    faq: [
+      {
+        q: '¿Qué es un mapa mental?',
+        a:
+          'Una forma de reunir ideas colocando un tema en el centro y ramificando hacia fuera. La diferencia con una lista es que la lista te obliga a pensar en orden, mientras que el mapa te deja soltar cada idea en la rama a la que pertenece. Por eso funciona mejor para ordenar un pensamiento disperso.'
+      },
+      {
+        q: '¿Qué diferencia hay entre un mapa mental y una EDT?',
+        a:
+          'El mapa mental recoge ideas; no hay responsables, fechas ni secuencia. La estructura de desglose del trabajo gestiona trabajo: cada caja tiene estado, fecha límite y duración. El orden habitual es mapa mental primero y EDT cuando el alcance ya está claro.'
+      },
+      {
+        q: '¿Puedo mover las cajas a mano?',
+        a:
+          'No, la disposición es automática. Para mover una rama, bórrala y créala en el sitio correcto. Es deliberado: el tiempo que se va en alinear cajas se le quita a pensar.'
+      },
+      {
+        q: '¿Cuántas ramas debe tener un mapa mental?',
+        a:
+          'No hay límite, pero más de siete u ocho en el mismo nivel deja de leerse. Cuando llegues ahí, agrupa las ramas parecidas bajo una nueva y el mapa vuelve a ser legible.'
+      },
+      {
+        q: '¿Es gratis?',
+        a:
+          'Sí. Klarsti es gratuito y sin publicidad ahora mismo. Ni siquiera necesitas cuenta para probar el mapa mental.'
+      },
+    ]
   },
 
   wbs: {
@@ -81,7 +153,70 @@ const guides: ToolGuideBundle = {
       description:
         'Divide el proyecto en fases y paquetes de trabajo, con estado, fecha y duración en cada uno. Con ejemplo resuelto, gratis.',
       keywords: 'estructura de desglose del trabajo, edt proyecto, wbs, edt ejemplo, desglose de tareas'
-    }
+    },
+    example: {
+      title: 'Ejemplo: abrir una cafetería',
+      intro:
+        'Seis meses hasta la apertura. El trabajo parece enorme y no hay un sitio evidente por donde agarrarlo. Partido en tres fases, cada fase da paquetes concretos que una persona puede asumir.',
+      blocks: [
+        {
+          heading: '1. Local y permisos',
+          items: [
+            'Buscar alquileres en tres barrios',
+            'Firmar el contrato',
+            'Licencia de actividad',
+            'Permiso sanitario',
+          ]
+        },
+        {
+          heading: '2. Acondicionamiento',
+          items: [
+            'Proyecto de reforma',
+            'Obra',
+            'Máquina de café y molino',
+            'Mesas, sillas, barra',
+          ]
+        },
+        {
+          heading: '3. Apertura',
+          items: [
+            'Contratar dos baristas',
+            'Carta y precios',
+            'Acuerdos con proveedores',
+            'Anuncio de apertura',
+          ]
+        },
+      ],
+      outcome:
+        'Doce paquetes de trabajo. El alcance queda fijado: lo que no está en este árbol no está en el proyecto. También se ve la secuencia — la obra no puede empezar sin la licencia, y eso convierte la primera fase en la arriesgada.'
+    },
+    faq: [
+      {
+        q: '¿Qué es una estructura de desglose del trabajo (EDT)?',
+        a:
+          'Un árbol que divide el proyecto hasta que cada pieza es lo bastante pequeña para dársela a una persona. Arriba el proyecto, debajo las fases y debajo los paquetes de trabajo. Su fin no es reducir el trabajo sino hacer visible el alcance: lo que no está en el árbol no está en el proyecto.'
+      },
+      {
+        q: '¿Cuántos niveles debe tener una EDT?',
+        a:
+          'Tres bastan para casi todo: proyecto, fase, paquete de trabajo. La regla práctica es sencilla: si mirando una caja puedes responder «quién lo hace y cuánto tarda», deja de dividir. Si no puedes, baja un nivel.'
+      },
+      {
+        q: '¿En qué se diferencia de un diagrama de Gantt?',
+        a:
+          'La EDT responde a «qué hay que hacer»; el Gantt responde a «cuándo». El orden correcto es desglose primero, calendario después. Un Gantt dibujado sin desglose es una lista de tareas a medias puesta sobre una línea de tiempo.'
+      },
+      {
+        q: '¿Qué tamaño debe tener un paquete de trabajo?',
+        a:
+          'Una medida habitual es lo que una persona termina en una o dos semanas. Más grande y no puedes seguir el avance; más pequeño y el árbol se llena de ruido.'
+      },
+      {
+        q: '¿Es gratis?',
+        a:
+          'Sí. Klarsti es gratuito y sin publicidad ahora mismo, y no necesitas cuenta para montar una EDT.'
+      },
+    ]
   },
 
   '5whys': {
@@ -121,7 +256,73 @@ const guides: ToolGuideBundle = {
       description:
         'Pregunta por qué cinco veces y pasa del síntoma a la causa real. Explicado paso a paso, con un ejemplo real y gratis.',
       keywords: '5 porqués, análisis causa raíz, 5 whys, 5 porques ejemplo, método de los cinco porqués'
-    }
+    },
+    example: {
+      title: 'Ejemplo: los correos de confirmación no llegan',
+      intro:
+        'Soporte lleva tres días con la misma queja. El primer impulso es «cambiemos de proveedor de correo». Preguntar por qué cinco veces enseña que el problema está en otro sitio.',
+      blocks: [
+        {
+          heading: 'Problema',
+          items: [
+            'Los clientes no reciben el correo de confirmación del pedido.',
+          ]
+        },
+        {
+          heading: 'La cadena',
+          items: [
+            '¿Por qué? Los correos caen en spam.',
+            '¿Por qué? Nuestro dominio de envío aparece sin verificar.',
+            '¿Por qué? Falta un registro de verificación en el DNS.',
+            '¿Por qué? No se copió al migrar el servidor.',
+            '¿Por qué? La lista de comprobación de migración no lo incluye.',
+          ]
+        },
+        {
+          heading: 'Causa raíz',
+          items: [
+            'La lista de comprobación de migración está incompleta.',
+          ]
+        },
+        {
+          heading: 'Contramedidas',
+          items: [
+            'Añadido el registro que faltaba (el problema de hoy está resuelto).',
+            'Añadida la verificación de dominio a la lista.',
+            'La lista ya no depende de quién haga la migración.',
+          ]
+        },
+      ],
+      outcome:
+        'El primer impulso era cambiar de proveedor: dinero gastado y el problema seguiría ahí. La causa real era una línea que faltaba en una lista. Hacer visible esa diferencia es todo el trabajo de los cinco porqués.'
+    },
+    faq: [
+      {
+        q: '¿Qué es el análisis de los 5 porqués?',
+        a:
+          'Una técnica para pasar del síntoma visible a la causa real preguntando «por qué» de forma repetida. Salió de Toyota. La idea es arreglar lo que produce el síntoma en vez del síntoma, para que el problema no vuelva.'
+      },
+      {
+        q: '¿Por qué exactamente cinco?',
+        a:
+          'Cinco es una costumbre, no una regla. En la práctica la mayoría de los problemas se agotan entre la cuarta y la sexta pregunta. Si lo encuentras a la tercera, para. Si a la séptima sigues sin nada, probablemente has definido mal el problema.'
+      },
+      {
+        q: '¿Cómo sé que he llegado a la causa raíz?',
+        a:
+          'Dos señales. El siguiente «por qué» empieza a apuntar a algo fuera de tu control, y estás convencido de que eliminar lo que has encontrado impediría que el problema se repita.'
+      },
+      {
+        q: '¿5 porqués o diagrama de Ishikawa?',
+        a:
+          'Los 5 porqués siguen una sola cadena hacia abajo. El Ishikawa reparte el mismo problema por categorías: persona, método, máquina, material, medición, medio. Si la causa parece estar en un sitio, usa los 5 porqués; si está dispersa, dibuja antes la espina.'
+      },
+      {
+        q: '¿Es gratis?',
+        a:
+          'Sí. Klarsti es gratuito y sin publicidad ahora mismo, y no necesitas cuenta para hacer un análisis de los 5 porqués.'
+      },
+    ]
   },
 
   flowchart: {
@@ -157,7 +358,63 @@ const guides: ToolGuideBundle = {
       description:
         'Dibuja los pasos del proceso, los puntos de decisión y las bifurcaciones. Con los símbolos explicados y un ejemplo.',
       keywords: 'diagrama de flujo, crear diagrama de flujo, símbolos diagrama de flujo, diagrama de flujo online, flujograma'
-    }
+    },
+    example: {
+      title: 'Ejemplo: cómo se tramita una solicitud de vacaciones',
+      intro:
+        'Cada persona de la empresa tiene una versión distinta de este proceso en la cabeza. Quién aprueba, cuándo se rechaza, cuándo entra RR. HH.: nada está escrito. Dibujarlo reduce la discusión a una sola caja.',
+      blocks: [
+        {
+          heading: 'Pasos',
+          items: [
+            'Inicio: la persona solicita vacaciones',
+            'Proceso: el sistema calcula los días restantes',
+            'Decisión: ¿quedan días suficientes?',
+            'No → se rechaza y se escribe el motivo',
+            'Sí → Proceso: la solicitud pasa al responsable',
+          ]
+        },
+        {
+          heading: 'Continuación',
+          items: [
+            'Decisión: ¿el responsable aprueba?',
+            'No → vuelve el motivo a la persona y termina',
+            'Sí → Proceso: RR. HH. lo registra en el calendario',
+            'Proceso: se refleja en el calendario del equipo',
+            'Fin: se envía la confirmación',
+          ]
+        },
+      ],
+      outcome:
+        'Una vez dibujado, saltó una cosa: no había ningún paso que devolviera el motivo en las solicitudes rechazadas. Nadie lo notaba mientras el proceso vivía en la cabeza de la gente. Puesto en cajas, el hueco se enseñó solo.'
+    },
+    faq: [
+      {
+        q: '¿Qué es un diagrama de flujo?',
+        a:
+          'Un esquema que muestra los pasos por los que pasa un proceso de principio a fin, dónde se decide y dónde se bifurca el camino. Un proceso que cuesta cinco minutos explicar de palabra suele leerse en cinco segundos dibujado.'
+      },
+      {
+        q: '¿Qué significan los símbolos?',
+        a:
+          'La caja redondeada es inicio o fin, el rectángulo es un paso del proceso y el rombo es una decisión. De una decisión siempre salen al menos dos flechas, normalmente sí y no. Esa bifurcación es lo que deja al lector con una sola interpretación.'
+      },
+      {
+        q: '¿Es lo mismo que un mapa de procesos?',
+        a:
+          'Parecido, pero no igual. El diagrama de flujo muestra el orden de los pasos. El mapa de procesos suele ser más amplio: también indica quién es responsable de cada paso y dónde el trabajo pasa de un equipo a otro.'
+      },
+      {
+        q: '¿Por dónde empiezo a dibujar?',
+        a:
+          'Por el final. Escribe cómo termina el proceso y ve hacia atrás preguntando «qué tiene que pasar antes de esto». Empezar por el principio suele producir el proceso ideal en lugar del real.'
+      },
+      {
+        q: '¿Es gratis?',
+        a:
+          'Sí. Klarsti es gratuito y sin publicidad ahora mismo, y no necesitas cuenta para dibujar un diagrama de flujo.'
+      },
+    ]
   },
 
   orgchart: {
@@ -193,7 +450,75 @@ const guides: ToolGuideBundle = {
       description:
         'Muestra en una página quién reporta a quién y detecta los puestos sin cubrir. Con un ejemplo real de 20 personas.',
       keywords: 'organigrama, crear organigrama, organigrama empresa, organigrama online, organigrama ejemplo'
-    }
+    },
+    example: {
+      title: 'Ejemplo: una empresa de software de 20 personas',
+      intro:
+        'La empresa pasó de 6 a 20 personas en dos años. Quién reporta a quién se sabe de boca en boca, pero no está escrito en ningún sitio, así que cada persona nueva hace las mismas preguntas.',
+      blocks: [
+        {
+          heading: 'Dirección general',
+          items: [
+            'Responsable de producto',
+            'Responsable de ingeniería',
+            'Responsable comercial',
+            'Responsable de RR. HH. y finanzas',
+          ]
+        },
+        {
+          heading: 'Bajo ingeniería',
+          items: [
+            'Equipo de front-end (3)',
+            'Equipo de back-end (4)',
+            'Responsable de calidad',
+            'Administrador de sistemas',
+          ]
+        },
+        {
+          heading: 'Bajo producto',
+          items: [
+            'Diseño (2)',
+            'Analista de producto',
+          ]
+        },
+        {
+          heading: 'Bajo comercial',
+          items: [
+            'Venta en campo (2)',
+            'Soporte al cliente (2)',
+          ]
+        },
+      ],
+      outcome:
+        'Al dibujarlo saltó una cosa: calidad es una sola persona que reporta directamente a ingeniería, así que nadie cubre ese puesto en vacaciones. Ahí es donde un organigrama se gana el sueldo: enseña los huecos con nombre y apellido.'
+    },
+    faq: [
+      {
+        q: '¿Qué es un organigrama?',
+        a:
+          'Un esquema de cómo se conectan las personas y los equipos de una organización. Muestra las líneas de reporte y dónde encaja cada unidad. Para quien acaba de entrar es el mapa más rápido del sitio.'
+      },
+      {
+        q: '¿Nombres o cargos?',
+        a:
+          'Lo mejor es ambos: el cargo explica la estructura y el nombre te dice a quién acudir. Solo con nombres el organigrama pierde sentido en cuanto alguien se va; solo con cargos no sabes a quién preguntar.'
+      },
+      {
+        q: '¿Cuánta gente cabe en un organigrama?',
+        a:
+          'Hasta unas cincuenta personas sigue leyéndose en una sola página. Por encima, conviene mostrar el nivel superior aparte y dar a cada unidad su propio esquema. Meter una organización grande en una página produce un organigrama que nadie lee.'
+      },
+      {
+        q: '¿Cada cuánto hay que actualizarlo?',
+        a:
+          'Con cada incorporación y cada salida. Un organigrama desactualizado es peor que ninguno, porque manda a la gente a la persona equivocada con toda confianza.'
+      },
+      {
+        q: '¿Es gratis?',
+        a:
+          'Sí. Klarsti es gratuito y sin publicidad ahora mismo, y no necesitas cuenta para hacer un organigrama.'
+      },
+    ]
   },
 
   swot: {
@@ -230,7 +555,79 @@ const guides: ToolGuideBundle = {
       description:
         'Compara fortalezas y debilidades con oportunidades y amenazas, y cruza los cuatro cuadrantes. Con ejemplo resuelto.',
       keywords: 'análisis dafo, análisis foda, matriz dafo, cómo hacer un dafo, dafo ejemplo'
-    }
+    },
+    example: {
+      title: 'Ejemplo: una asesoría contable pequeña',
+      intro:
+        'Una asesoría de cinco personas quiere crecer pero no sabe hacia dónde empujar. Rellenar los cuatro cuadrantes saca la conversación del instinto y la lleva a líneas concretas.',
+      blocks: [
+        {
+          heading: 'Fortalezas',
+          items: [
+            'Clientes de quince años',
+            'Prácticamente no se pierde ninguno',
+            'Los dos socios son economistas colegiados',
+            'Sin deuda',
+          ]
+        },
+        {
+          heading: 'Debilidades',
+          items: [
+            'Todo depende de los dos socios',
+            'Ningún proceso digital, todo en papel',
+            'No se hace nada de marketing',
+            'Los clientes nuevos llegan solo por recomendación',
+          ]
+        },
+        {
+          heading: 'Oportunidades',
+          items: [
+            'La factura electrónica empuja a las pymes a buscar',
+            'Muchos negocios pequeños abriendo en la zona',
+            'El servicio en remoto ya se acepta',
+            'El software contable se ha abaratado',
+          ]
+        },
+        {
+          heading: 'Amenazas',
+          items: [
+            'Servicios de contabilidad online baratos',
+            'Uno de los socios está cerca de jubilarse',
+            'La normativa cambia a menudo',
+            'Cuesta contratar gente joven',
+          ]
+        },
+      ],
+      outcome:
+        'La tabla dice algo concreto: la mayor oportunidad (la factura electrónica) cae justo encima de la mayor debilidad (no hay proceso digital). La decisión se escribe sola — no crecer, sino digitalizar primero su propio trabajo.'
+    },
+    faq: [
+      {
+        q: '¿Qué es un análisis DAFO?',
+        a:
+          'Un método que recoge la situación de una organización o una decisión en cuatro cuadrantes: debilidades, amenazas, fortalezas y oportunidades. Fortalezas y debilidades son internas; amenazas y oportunidades, externas. Esa separación da nombre al método y es la parte que más se confunde.'
+      },
+      {
+        q: '¿Cómo se hace un análisis DAFO?',
+        a:
+          'Primero escribe en una frase qué estás analizando: «nuestra empresa» es demasiado amplio, «¿abrimos la segunda sucursal?» no lo es. Luego rellena los cuatro cuadrantes. El último paso es el que más importa: cruzarlos. Qué fortaleza aprovecha qué oportunidad, qué debilidad te deja expuesto a qué amenaza.'
+      },
+      {
+        q: '¿Cómo distingo una fortaleza de una oportunidad?',
+        a:
+          'Una prueba sencilla: si tu propia decisión puede cambiarlo, es interno; si no puede, es externo. Un equipo con experiencia es una fortaleza; un mercado que crece es una oportunidad. Mezclar los cuadrantes deja el análisis inservible.'
+      },
+      {
+        q: '¿Cuántos puntos por cuadrante?',
+        a:
+          'De tres a seis funciona bien. Quince puntos en un cuadrante son un inventario, no un análisis. Elegir los pocos que de verdad deciden es lo que hace que la conclusión salga sola de la tabla.'
+      },
+      {
+        q: '¿Es gratis?',
+        a:
+          'Sí. Klarsti es gratuito y sin publicidad ahora mismo, y no necesitas cuenta para hacer un análisis DAFO.'
+      },
+    ]
   },
 
   ishikawa: {
@@ -264,7 +661,72 @@ const guides: ToolGuideBundle = {
       description:
         'Agrupa las causas posibles por persona, método, máquina y material, y descubre por dónde empezar. Con ejemplo, gratis.',
       keywords: 'diagrama de ishikawa, espina de pescado, diagrama causa efecto, ishikawa ejemplo, método 6m'
-    }
+    },
+    example: {
+      title: 'Ejemplo: ha subido la tasa de piezas defectuosas',
+      intro:
+        'En un taller de muebles el porcentaje de defectos pasó del 3 % al 9 % en dos meses. En vez de buscar una única causa, se ponen todos los candidatos uno al lado del otro bajo seis encabezados.',
+      blocks: [
+        {
+          heading: 'Personas',
+          items: [
+            'Se fueron dos carpinteros con experiencia',
+            'A los nuevos no se les formó',
+            'No hay relevo entre turnos',
+          ]
+        },
+        {
+          heading: 'Método',
+          items: [
+            'Las medidas de corte no están escritas',
+            'La calidad solo se revisa al final de la línea',
+          ]
+        },
+        {
+          heading: 'Máquina',
+          items: [
+            'La sierra lleva seis meses sin revisión',
+            'La lijadora se desajusta',
+          ]
+        },
+        {
+          heading: 'Material',
+          items: [
+            'Cambió el proveedor',
+            'No se mide la humedad de los tableros nuevos',
+          ]
+        },
+      ],
+      outcome:
+        'Con las espinas rellenas, dos encabezados están visiblemente más cargados que el resto: personas y material. El equipo empieza por ahí. La espina no encuentra la causa: te dice dónde empezar a buscar.'
+    },
+    faq: [
+      {
+        q: '¿Qué es un diagrama de Ishikawa?',
+        a:
+          'Un esquema que ordena las causas posibles de un problema en categorías y las coloca una al lado de otra. Se llama de espina de pescado por la forma que recuerda a un esqueleto, y también se conoce como diagrama causa-efecto.'
+      },
+      {
+        q: '¿Qué son las 6M?',
+        a:
+          'Las seis categorías clásicas: personas (mano de obra), método, máquina, material, medición y medio ambiente. El objetivo no es rellenarlas todas, sino obligar a mirar en seis direcciones en vez de en la única que ya tenías en mente. En servicios estos encabezados se pueden y se deben cambiar.'
+      },
+      {
+        q: '¿Se puede combinar con los 5 porqués?',
+        a:
+          'Sí, y es la forma más eficaz de usar cualquiera de los dos. Reparte los candidatos con la espina, elige la rama más sólida y profundiza en ella con los 5 porqués. Uno da amplitud, el otro profundidad.'
+      },
+      {
+        q: '¿La espina encuentra la causa?',
+        a:
+          'No directamente: produce candidatos. Cuando el diagrama está listo tienes una lista para comprobar, no una causa demostrada. El paso siguiente es contrastarla con datos, y ahí encaja bien el análisis de Pareto.'
+      },
+      {
+        q: '¿Es gratis?',
+        a:
+          'Sí. Klarsti es gratuito y sin publicidad ahora mismo, y no necesitas cuenta para dibujar un diagrama de Ishikawa.'
+      },
+    ]
   },
 
   pdca: {
@@ -298,7 +760,77 @@ const guides: ToolGuideBundle = {
       description:
         'Planificar, Hacer, Verificar y Actuar: haz pruebas pequeñas y mide el resultado. Con un ciclo completo de ejemplo.',
       keywords: 'ciclo pdca, ciclo phva, mejora continua, círculo de deming, pdca ejemplo'
-    }
+    },
+    example: {
+      title: 'Ejemplo: reducir el tiempo de primera respuesta en soporte',
+      intro:
+        'El equipo de soporte responde de media en 14 horas. El objetivo son 4. Antes de contratar a nadie, hacen un solo ciclo.',
+      blocks: [
+        {
+          heading: 'Planificar',
+          items: [
+            'Objetivo: primera respuesta media por debajo de 4 horas',
+            'Supuesto: los tickets se acumulan por la mañana y nadie los asume',
+            'Prueba: una persona de guardia de 09:00 a 11:00',
+            'Duración: dos semanas',
+          ]
+        },
+        {
+          heading: 'Hacer',
+          items: [
+            'Turnos repartidos con el equipo',
+            'Quien está de guardia no recibe otro trabajo en esas dos horas',
+            'Se registra la hora de primera respuesta de cada ticket',
+          ]
+        },
+        {
+          heading: 'Verificar',
+          items: [
+            'La media bajó de 14 horas a 5',
+            'Los tickets de mañana bajaron a 2 horas',
+            'Los de la tarde no cambiaron nada',
+            'Quien estaba de guardia se retrasó en su propio trabajo',
+          ]
+        },
+        {
+          heading: 'Actuar',
+          items: [
+            'La guardia de mañana se hace fija',
+            'Se reduce la carga los días de guardia',
+            'Se abre un ciclo nuevo para las tardes',
+          ]
+        },
+      ],
+      outcome:
+        'Un solo ciclo redujo el tiempo a un tercio y produjo por sí mismo la siguiente pregunta: los tickets de la tarde. Así se supone que funciona el PDCA — cada ciclo te entrega el tema del siguiente.'
+    },
+    faq: [
+      {
+        q: '¿Qué es el ciclo PDCA?',
+        a:
+          'Un bucle de cuatro pasos para la mejora continua: planificar, hacer, verificar y actuar. También se conoce como ciclo de Deming y en América Latina como PHVA. La idea es dejar de hacer un gran cambio y hacer en su lugar experimentos pequeños cuyo resultado se mide de verdad.'
+      },
+      {
+        q: '¿Cuánto debe durar un ciclo?',
+        a:
+          'El menor tiempo en el que puedas medir el resultado. De una a cuatro semanas encaja en casi todo el trabajo de oficina. Un ciclo de seis meses no es un ciclo: las condiciones habrán cambiado cuando mires y no sabrás qué causó qué.'
+      },
+      {
+        q: '¿Qué se mide en la fase de verificar?',
+        a:
+          'Lo que escribiste al planificar. Por eso el objetivo tiene que ser un número: «responder más rápido» no se puede verificar, «primera respuesta media por debajo de 4 horas» sí. Sin un número escrito antes, verificar se convierte en opinión.'
+      },
+      {
+        q: '¿Y si el experimento falla?',
+        a:
+          'Un ciclo fallido también es un resultado y no se tira. En la fase de actuar escribes por qué no se sostuvo el supuesto, y el ciclo siguiente parte de ahí. El único desperdicio real en PDCA es probar algo nuevo sin registrar lo que pasó.'
+      },
+      {
+        q: '¿Es gratis?',
+        a:
+          'Sí. Klarsti es gratuito y sin publicidad ahora mismo, y no necesitas cuenta para llevar un ciclo PDCA.'
+      },
+    ]
   },
 
   waterfall: {
@@ -333,7 +865,76 @@ const guides: ToolGuideBundle = {
       description:
         'Requisitos, diseño, desarrollo, pruebas y entrega en orden. Con ejemplo y la diferencia frente a los métodos ágiles.',
       keywords: 'modelo en cascada, metodología cascada, cascada vs ágil, fases modelo en cascada, waterfall proyecto'
-    }
+    },
+    example: {
+      title: 'Ejemplo: entregar un módulo de informes a un banco',
+      intro:
+        'Alcance fijado por contrato, fecha de entrega fijada y aprobación por escrito del cliente al final de cada fase. Un trabajo así avanza por las fases en orden.',
+      blocks: [
+        {
+          heading: 'Requisitos',
+          items: [
+            'Tipos de informe listados',
+            'Reglas de permisos escritas',
+            'Aprobación del cliente',
+          ]
+        },
+        {
+          heading: 'Diseño',
+          items: [
+            'Modelo de datos',
+            'Bocetos de pantallas',
+            'Límites de rendimiento acordados',
+          ]
+        },
+        {
+          heading: 'Desarrollo',
+          items: [
+            'Motor de informes',
+            'Permisos',
+            'Exportación',
+          ]
+        },
+        {
+          heading: 'Pruebas y entrega',
+          items: [
+            'Pruebas internas',
+            'Pruebas de aceptación del cliente',
+            'Puesta en producción',
+            'Formación de usuarios',
+          ]
+        },
+      ],
+      outcome:
+        'Aquí se ven a la vez la fuerza y la debilidad de la cascada: como el alcance está fijado desde el principio, el avance se mide fácil, pero un requisito que cambia durante el desarrollo manda todo el plan hacia atrás.'
+    },
+    faq: [
+      {
+        q: '¿Qué es el modelo en cascada?',
+        a:
+          'Un método que divide el proyecto en fases sucesivas y no empieza una sin haber terminado la anterior: requisitos, diseño, desarrollo, pruebas y entrega. El nombre viene del agua cayendo por una escalera.'
+      },
+      {
+        q: '¿Cascada o ágil?',
+        a:
+          'Si el alcance se conoce de antemano y no es probable que se mueva, la cascada trae menos carga de gestión: construcción, trabajos regulados y entregas a precio cerrado encajan. Si el alcance solo se aclarará sobre la marcha, la cascada sale cara y encajan mejor los métodos ágiles.'
+      },
+      {
+        q: '¿Se puede volver a una fase anterior?',
+        a:
+          'Se puede, pero cuesta, y el modelo no está pensado para eso. Si vuelves atrás a menudo, es señal de que el alcance nunca estuvo lo bastante claro; y entonces la pregunta real es si la cascada era la elección correcta.'
+      },
+      {
+        q: '¿Qué ocurre entre fases?',
+        a:
+          'Cada fase termina con un entregable y una aprobación, y la aprobación debe ser por escrito. Toda la garantía que ofrece la cascada se apoya en que ambas partes acuerden, en el mismo momento, que una fase queda cerrada.'
+      },
+      {
+        q: '¿Es gratis?',
+        a:
+          'Sí. Klarsti es gratuito y sin publicidad ahora mismo, y no necesitas cuenta para llevar un proyecto en cascada.'
+      },
+    ]
   },
 
   fta: {
@@ -370,7 +971,73 @@ const guides: ToolGuideBundle = {
       description:
         'Coloca el suceso no deseado arriba y resuelve con puertas Y/O qué fallos deben coincidir. Con ejemplo, gratis.',
       keywords: 'árbol de fallos, análisis de árbol de fallos, fta, puerta y o, árbol de fallos ejemplo'
-    }
+    },
+    example: {
+      title: 'Ejemplo: la cámara frigorífica superó la temperatura límite',
+      intro:
+        'En un almacén de alimentación la temperatura estuvo dos horas por encima del límite y hubo que destruir la mercancía. Se escribe el suceso principal arriba y el árbol baja por puertas lógicas mostrando qué fallos tuvieron que coincidir.',
+      blocks: [
+        {
+          heading: 'Suceso principal',
+          items: [
+            'Cámara por encima del límite durante dos horas',
+          ]
+        },
+        {
+          heading: 'Puerta O — basta con uno',
+          items: [
+            'El frío se paró',
+            'Entró calor',
+            'La alarma no saltó y nadie se dio cuenta',
+          ]
+        },
+        {
+          heading: 'Bajo «el frío se paró» (O)',
+          items: [
+            'Avería del compresor',
+            'Corte de luz',
+            'Termostato mal ajustado',
+          ]
+        },
+        {
+          heading: 'Bajo «la alarma no saltó» (Y)',
+          items: [
+            'Sensor averiado',
+            'Sensor de respaldo nunca instalado',
+            'Avisos remotos desactivados',
+          ]
+        },
+      ],
+      outcome:
+        'El árbol enseña que el frío parándose no basta por sí solo: también tenía que fallar la alarma. Así que la contramedida más barata no es un compresor nuevo, es instalar el sensor de respaldo. Ahí es donde el árbol de fallos manda el dinero al sitio correcto.'
+    },
+    faq: [
+      {
+        q: '¿Qué es el análisis de árbol de fallos (FTA)?',
+        a:
+          'Un método que coloca un suceso no deseado arriba y baja por puertas lógicas para mostrar qué combinaciones de fallos lo producirían. Viene de la aeronáutica y la industria nuclear, y hoy se usa en análisis de seguridad y de procesos en general.'
+      },
+      {
+        q: '¿Qué diferencia hay entre una puerta Y y una puerta O?',
+        a:
+          'Bajo una puerta O basta con que ocurra cualquiera de los sucesos de abajo. Bajo una puerta Y tienen que ocurrir todos a la vez. Esa distinción es el corazón del método: las puertas Y te enseñan dónde el sistema se está protegiendo solo.'
+      },
+      {
+        q: '¿Árbol de fallos o 5 porqués?',
+        a:
+          'Los 5 porqués recorren hacia atrás una sola cadena de algo que ya ha pasado. El árbol de fallos mapea todas las rutas hacia un suceso que aún no ha pasado. Uno mira al pasado y el otro al futuro.'
+      },
+      {
+        q: '¿Hasta dónde hay que bajar?',
+        a:
+          'Hasta sucesos que ya no puedes dividir y sobre los que puedes actuar directamente. «Sensor averiado» está lo bastante abajo, porque puedes escribir una contramedida contra eso. «El sistema no funciona» no lo está.'
+      },
+      {
+        q: '¿Es gratis?',
+        a:
+          'Sí. Klarsti es gratuito y sin publicidad ahora mismo, y no necesitas cuenta para construir un árbol de fallos.'
+      },
+    ]
   },
 
   vsm: {
@@ -407,7 +1074,64 @@ const guides: ToolGuideBundle = {
       description:
         'Compara el tiempo de proceso con la espera de cada paso y ve dónde se pierde el tiempo. Con ejemplo numérico, gratis.',
       keywords: 'mapa de flujo de valor, vsm, value stream mapping, lean manufacturing, vsm ejemplo'
-    }
+    },
+    example: {
+      title: 'Ejemplo: del pedido recibido a la mercancía expedida',
+      intro:
+        'Un fabricante mide el tiempo entre que entra un pedido y la mercancía sube al camión. El tiempo real de proceso de cada paso se anota aparte de la espera entre pasos. La diferencia cambia el cuadro por completo.',
+      blocks: [
+        {
+          heading: 'Pasos y tiempo de proceso',
+          items: [
+            'Entrada del pedido — 10 minutos',
+            'Comprobación de crédito — 15 minutos',
+            'Alta en el plan de producción — 30 minutos',
+            'Producción — 4 horas',
+            'Control de calidad — 20 minutos',
+            'Embalaje y expedición — 40 minutos',
+          ]
+        },
+        {
+          heading: 'Espera entre pasos',
+          items: [
+            'Tras la entrada — 1 día',
+            'Tras el crédito — 2 días',
+            'Tras entrar en el plan — 3 días',
+            'Tras producción — 1 día',
+            'Tras calidad — 2 días',
+          ]
+        },
+      ],
+      outcome:
+        'El tiempo de proceso suma unas 6 horas; el tiempo total son 9 días. Es decir, el 99 % del tiempo es espera. La espera más larga son los tres días tras entrar en el plan. La respuesta no admite discusión: acelerar la producción no sirve de nada, el problema es la cola.'
+    },
+    faq: [
+      {
+        q: '¿Qué es un mapa de flujo de valor (VSM)?',
+        a:
+          'Un mapa de todos los pasos por los que pasa un producto o una petición, con la duración de cada paso y la espera entre ellos. Viene de la producción lean. Su fin no es ir más rápido, sino enseñar dónde se va realmente el tiempo.'
+      },
+      {
+        q: '¿Qué añade valor y qué no?',
+        a:
+          'Todo aquello por lo que el cliente pagaría de buena gana añade valor: los pasos que de verdad cambian el producto. Esperar, mover cosas y repetir controles no. En la mayoría de los procesos más del 90 % del tiempo total no añade valor.'
+      },
+      {
+        q: '¿En qué se diferencia de un diagrama de flujo?',
+        a:
+          'El diagrama de flujo muestra el orden de los pasos y los puntos de decisión, sin duraciones. En el mapa de flujo de valor la duración lo es todo: el tiempo de proceso y el de espera se anotan por separado en cada paso y luego se comparan.'
+      },
+      {
+        q: '¿Por dónde empiezo?',
+        a:
+          'Mapeando el estado actual exactamente como es. El error más común es dibujar el proceso como se supone que funciona. Si el mapa no muestra la realidad, las mejoras se aplican a un proceso que no existe. Hay que medir los tiempos reales sobre el terreno.'
+      },
+      {
+        q: '¿Es gratis?',
+        a:
+          'Sí. Klarsti es gratuito y sin publicidad ahora mismo, y no necesitas cuenta para dibujar un mapa de flujo de valor.'
+      },
+    ]
   },
 
   pareto: {
@@ -440,7 +1164,64 @@ const guides: ToolGuideBundle = {
       description:
         'Ordena las causas por frecuencia y encuentra las pocas que generan la mayor parte del problema. Con ejemplo, gratis.',
       keywords: 'análisis de pareto, diagrama de pareto, regla 80 20, principio de pareto, pareto ejemplo'
-    }
+    },
+    example: {
+      title: 'Ejemplo: de dónde vienen las quejas de los clientes',
+      intro:
+        'Una tienda online recibió 480 quejas en tres meses. El equipo llevaba tiempo discutiendo una solución distinta para cada tipo. Contarlas y ordenarlas de mayor a menor cambia la conversación.',
+      blocks: [
+        {
+          heading: 'Tipo de queja y número',
+          items: [
+            'Entrega tardía — 196',
+            'El artículo no coincidía con la descripción — 121',
+            'Devolución demasiado lenta — 62',
+            'Artículo dañado — 48',
+            'Artículo equivocado — 29',
+            'Otras — 24',
+          ]
+        },
+        {
+          heading: 'Porcentaje acumulado',
+          items: [
+            'Entrega tardía — 41 %',
+            '+ Descripción — 66 %',
+            '+ Devoluciones — 79 %',
+            '+ Daños — 89 %',
+            'Las tres restantes — 100 %',
+          ]
+        },
+      ],
+      outcome:
+        'Las dos primeras suman dos tercios de todo. En lugar de perseguir seis problemas a la vez, arreglar los plazos de entrega y las descripciones elimina el 66 % del descontento. Hacer visible ese orden es todo el trabajo del análisis de Pareto.'
+    },
+    faq: [
+      {
+        q: '¿Qué es el análisis de Pareto?',
+        a:
+          'Un método que ordena los problemas por frecuencia, de mayor a menor, y muestra cuáles pocos suman la mayor parte del total. Se apoya en una observación sencilla: alrededor del 80 % de los efectos viene de alrededor del 20 % de las causas.'
+      },
+      {
+        q: '¿La regla del 80/20 se cumple siempre?',
+        a:
+          'No exactamente, y no hace falta. A veces sale 70/30 y a veces 90/10. Lo que importa no es la proporción sino que el reparto sea desigual: si unos pocos elementos cargan con la mayor parte, el análisis de Pareto sirve.'
+      },
+      {
+        q: '¿Ordeno por número o por coste?',
+        a:
+          'Por aquello de lo que dependa tu decisión. El número enseña qué problema ocurre más; el coste, cuál duele más. A menudo no coinciden: un problema raro pero caro queda al final de una lista ordenada por número.'
+      },
+      {
+        q: '¿Cuántas categorías debe tener?',
+        a:
+          'De cinco a diez se lee mejor. Un análisis con treinta categorías sigue siendo una lista y no da foco. Elegir pocas categorías realmente distintas es la mitad del trabajo.'
+      },
+      {
+        q: '¿Es gratis?',
+        a:
+          'Sí. Klarsti es gratuito y sin publicidad ahora mismo, y no necesitas cuenta para hacer un análisis de Pareto.'
+      },
+    ]
   },
 
   histogram: {
@@ -475,7 +1256,63 @@ const guides: ToolGuideBundle = {
       description:
         'Agrupa tus mediciones en intervalos y descubre lo que la media esconde. Explica qué significan dos picos. Gratis.',
       keywords: 'histograma, crear histograma, histograma online, distribución de frecuencias, histograma ejemplo'
-    }
+    },
+    example: {
+      title: 'Ejemplo: plazos de entrega',
+      intro:
+        'El plazo medio de entrega se informa como 3 días y parece razonable. Aun así las quejas siguen llegando. Agrupar los plazos uno a uno revela lo que la media escondía.',
+      blocks: [
+        {
+          heading: 'Distribución del plazo (500 pedidos)',
+          items: [
+            '1 día — 140 pedidos',
+            '2 días — 165 pedidos',
+            '3 días — 95 pedidos',
+            '4 días — 30 pedidos',
+            '5 días — 12 pedidos',
+            '6 días o más — 58 pedidos',
+          ]
+        },
+        {
+          heading: 'Cómo se lee',
+          items: [
+            'El 60 % llega en dos días',
+            'Hay un grupo pequeño pero claro en seis días o más',
+            'La forma tiene dos picos, no uno',
+            'Tres días —la media— es de los resultados menos frecuentes',
+          ]
+        },
+      ],
+      outcome:
+        'La media dice tres días, pero en realidad hay dos experiencias de cliente distintas: la mayoría recibe en dos días y una parte espera una semana. Una distribución de dos picos significa siempre lo mismo: esto no es un proceso, son dos. La pregunta siguiente es de qué zona o de qué almacén salieron esos 58 pedidos.'
+    },
+    faq: [
+      {
+        q: '¿Qué es un histograma?',
+        a:
+          'Un gráfico que divide las mediciones en intervalos y muestra cuántas caen en cada uno. Hace visible lo que la media esconde: cómo se reparten los valores.'
+      },
+      {
+        q: '¿En qué se diferencia de un gráfico de barras?',
+        a:
+          'El gráfico de barras muestra categorías y puedes reordenarlas: ciudades, productos. El histograma tiene un eje numérico, el orden es fijo y las barras se tocan. Lo que decide cuál necesitas es el tipo de dato.'
+      },
+      {
+        q: '¿Cuántos intervalos uso?',
+        a:
+          'Un punto de partida habitual es aproximadamente la raíz cuadrada del número de mediciones: unos diez para 100 datos. Muy pocos borran la forma; demasiados convierten el ruido en estructura aparente. Prueba un par de valores y quédate con el que mantiene la forma estable.'
+      },
+      {
+        q: '¿Qué significa un histograma con dos picos?',
+        a:
+          'Casi siempre que los datos no vienen de un solo proceso: dos turnos, dos máquinas, dos zonas. Cuando veas esa forma, lo primero es separar los datos y mirar cada parte por su cuenta.'
+      },
+      {
+        q: '¿Es gratis?',
+        a:
+          'Sí. Klarsti es gratuito y sin publicidad ahora mismo, y no necesitas cuenta para hacer un histograma.'
+      },
+    ]
   },
 
   decision: {
@@ -509,7 +1346,69 @@ const guides: ToolGuideBundle = {
       description:
         'Puntúa las opciones con los mismos criterios y sus pesos, y deja a la vista en qué se apoya la decisión. Con ejemplo, gratis.',
       keywords: 'matriz de decisión, matriz ponderada, toma de decisiones, matriz de decisión ejemplo, comparar opciones'
-    }
+    },
+    example: {
+      title: 'Ejemplo: ¿qué nave alquilamos?',
+      intro:
+        'Tres candidatas, y cada persona tiene su favorita. La discusión funciona a base de «yo creo». Ponderar los criterios y puntuar cada opción sobre diez la lleva a números.',
+      blocks: [
+        {
+          heading: 'Criterios y peso',
+          items: [
+            'Coste mensual — peso 5',
+            'Distancia a los clientes — peso 4',
+            'Margen para crecer — peso 3',
+            'Acceso a carretera y puerto — peso 3',
+            'Dificultad de la mudanza — peso 1',
+          ]
+        },
+        {
+          heading: 'Puntuaciones (1-10)',
+          items: [
+            'Nave A: 8 / 4 / 6 / 5 / 7',
+            'Nave B: 5 / 9 / 4 / 8 / 5',
+            'Nave C: 6 / 7 / 9 / 6 / 3',
+          ]
+        },
+        {
+          heading: 'Total ponderado',
+          items: [
+            'Nave A — 100',
+            'Nave B — 114',
+            'Nave C — 114',
+          ]
+        },
+      ],
+      outcome:
+        'A queda fuera. B y C empatan, así que la matriz no ha decidido, pero ha reducido la discusión de cinco criterios a uno. La única pregunta que queda es si la cercanía pesa más que el margen para crecer. Ese suele ser el beneficio real de una matriz de decisión: no elige, estrecha.'
+    },
+    faq: [
+      {
+        q: '¿Qué es una matriz de decisión?',
+        a:
+          'Una tabla que puntúa varias opciones con los mismos criterios y multiplica cada puntuación por la importancia de ese criterio. Su fin no es automatizar la decisión sino dejar a la vista los supuestos en los que se apoya.'
+      },
+      {
+        q: '¿Cómo pongo los pesos?',
+        a:
+          'Antes de puntuar y sin mirar las opciones. Al revés, la gente ajusta discretamente los pesos hasta que gana su opción preferida. Escribir los pesos primero y bloquearlos es lo único que hace que la matriz valga algo.'
+      },
+      {
+        q: '¿Y si el resultado no es la opción que quería?',
+        a:
+          'Ese es el momento más valioso de la matriz. Hay dos posibilidades: o ponderaste mal un criterio, o falta un criterio en la tabla. Ambas se arreglan escribiendo lo que falta, no retocando los números.'
+      },
+      {
+        q: '¿Cuántos criterios uso?',
+        a:
+          'De cuatro a siete funciona bien. Por debajo de tres podrías haber decidido por instinto; por encima de siete los pesos se acercan entre sí y los totales acaban pegados sin significado.'
+      },
+      {
+        q: '¿Es gratis?',
+        a:
+          'Sí. Klarsti es gratuito y sin publicidad ahora mismo, y no necesitas cuenta para montar una matriz de decisión.'
+      },
+    ]
   },
 
   notepad: {
@@ -540,7 +1439,68 @@ const guides: ToolGuideBundle = {
       description:
         'Escribe el día por la mañana y repásalo por la noche. Tu agenda es privada y no se comparte al compartir un proyecto.',
       keywords: 'agenda diaria, planificador diario, revisión del día, lista de tareas, agenda online'
-    }
+    },
+    example: {
+      title: 'Ejemplo: un martes cargado',
+      intro:
+        'Tres reuniones, una entrega y todo lo demás encajado entre medias. Cinco minutos por la mañana escribiendo el día evitan pasar la tarde discutiendo contigo mismo sobre qué se hizo.',
+      blocks: [
+        {
+          heading: 'Hoy sin falta',
+          items: [
+            'Terminar la presentación del cliente (antes de la reunión de las 14:00)',
+            'Enviar las aprobaciones de facturas',
+            'Dar de alta los accesos de la persona nueva',
+          ]
+        },
+        {
+          heading: 'Si da tiempo',
+          items: [
+            'Leer el informe de la semana pasada',
+            'Llamar al proveedor',
+            'Ordenar el escritorio',
+          ]
+        },
+        {
+          heading: 'Revisión del día',
+          items: [
+            'La presentación se terminó, pero a las 13:50, demasiado justo',
+            'Las aprobaciones de facturas se olvidaron — mañana lo primero',
+            'Conseguí dos horas seguidas sin interrupciones por la tarde',
+            'Mañana agrupo las reuniones después de comer',
+          ]
+        },
+      ],
+      outcome:
+        'El valor no está en la lista sino en la revisión. Después de una semana escribiéndola aparece la misma línea una y otra vez: el trabajo se está metiendo entre reuniones. Eso no se puede arreglar hasta que se ve.'
+    },
+    faq: [
+      {
+        q: '¿Para qué sirve la agenda diaria?',
+        a:
+          'Para escribir el día al empezar y repasarlo al terminar. Tiene dos mitades: el plan y la revisión del día. Sin la segunda se convierte en una lista de tareas; el valor está en darte cuenta de que el mismo error se repite.'
+      },
+      {
+        q: '¿Puede verla alguien más?',
+        a:
+          'No. La agenda y la revisión del día son personales. No se guardan dentro de tus proyectos sino en tu propio registro, así que compartir un proyecto con tu equipo no comparte tu agenda.'
+      },
+      {
+        q: '¿Cuántas cosas debo apuntar?',
+        a:
+          'No más de tres en la lista de lo imprescindible. Las listas más largas terminan cada día sin acabar y al cabo de un tiempo dejas de mirarlas. Lo demás va al segundo grupo: bien si sale, y el día no es un fracaso si no sale.'
+      },
+      {
+        q: '¿Qué escribo en la revisión del día?',
+        a:
+          'No lo que hiciste, sino lo que notaste. «Terminé la presentación» no aporta información; «la presentación se fue al límite porque la reunión de la mañana se alargó» te sirve la semana que viene.'
+      },
+      {
+        q: '¿Es gratis?',
+        a:
+          'Sí. Klarsti es gratuito y sin publicidad ahora mismo.'
+      },
+    ]
   },
   gantt: {
     title: "Diagrama de Gantt",
@@ -569,7 +1529,63 @@ const guides: ToolGuideBundle = {
       description:
         'Coloca las tareas en el calendario y ve qué corre en paralelo y dónde falta margen. Con ejemplo de ocho semanas, gratis.',
       keywords: 'diagrama de gantt, crear diagrama de gantt, gantt online, cronograma de proyecto, gantt ejemplo'
-    }
+    },
+    example: {
+      title: 'Ejemplo: rehacer un sitio web',
+      intro:
+        'El trabajo tiene que caber en ocho semanas. Quién empieza cuándo, y qué tarea espera a cuál, no está claro. Poner las tareas sobre un calendario hace visibles los choques.',
+      blocks: [
+        {
+          heading: 'Tareas y semanas',
+          items: [
+            'Inventario de contenidos — semana 1',
+            'Diseño — semanas 2 y 3',
+            'Redacción — semanas 2 a 5',
+            'Desarrollo — semanas 4 a 7',
+            'Carga de contenidos — semanas 6 y 7',
+            'Pruebas y lanzamiento — semana 8',
+          ]
+        },
+        {
+          heading: 'Preguntas que salieron',
+          items: [
+            'Desarrollo empieza en la semana 4 pero diseño acaba en la 3: cero margen',
+            'La carga espera a la redacción, que acaba en la semana 5: muy justo',
+            'Solo una semana para pruebas, así que cualquier fallo mueve el lanzamiento',
+            '¿Redacción y diseño son la misma persona?',
+          ]
+        },
+      ],
+      outcome:
+        'Lo que produjo el diagrama no fue un plan sino los riesgos del plan. Ocho semanas funcionan sobre el papel, pero no hay margen en ningún sitio. Un Gantt no sirve para inventar duraciones: sirve para enseñarte dónde falta el colchón.'
+    },
+    faq: [
+      {
+        q: '¿Qué es un diagrama de Gantt?',
+        a:
+          'Un gráfico que coloca las tareas como barras horizontales sobre un calendario. La longitud de la barra es la duración y su posición, cuándo ocurre el trabajo. De un vistazo se ve qué tareas corren a la vez.'
+      },
+      {
+        q: '¿Cómo se hace un diagrama de Gantt?',
+        a:
+          'Primero saca las tareas y luego llévalas al calendario. El orden correcto es: monta una EDT, estima cada elemento, anota las dependencias y después dibuja. Un Gantt sin desglose previo solo hace que una lista incompleta parezca ordenada.'
+      },
+      {
+        q: '¿Qué es una dependencia?',
+        a:
+          'Si una tarea no puede empezar hasta que otra termine, hay una dependencia entre ellas. En el Gantt forman cadenas, y la cadena más larga marca la duración real del proyecto: cada retraso en esa cadena mueve la entrega directamente.'
+      },
+      {
+        q: '¿En qué se diferencia de una hoja de ruta?',
+        a:
+          'El Gantt ata las tareas a días y semanas y es para el equipo que ejecuta. La hoja de ruta es más gruesa —trimestres o meses— y comunica intención; suele ir a dirección o a clientes, no al equipo de entrega.'
+      },
+      {
+        q: '¿Es gratis?',
+        a:
+          'Sí. Klarsti es gratuito y sin publicidad ahora mismo, y no necesitas cuenta para hacer un diagrama de Gantt.'
+      },
+    ]
   },
 
   roadmap: {
@@ -614,7 +1630,75 @@ const guides: ToolGuideBundle = {
       description:
         'Divide el próximo periodo en etapas y escribe también lo que no vais a hacer. Con ejemplo de seis meses, gratis.',
       keywords: 'hoja de ruta, roadmap producto, hoja de ruta proyecto, roadmap ejemplo, plantilla hoja de ruta'
-    }
+    },
+    example: {
+      title: 'Ejemplo: hoja de ruta a seis meses de una app móvil',
+      intro:
+        'El equipo cambia de dirección con cada idea nueva y dirección no sabe qué llega ni cuándo. Seis meses se parten en tres etapas gruesas. El objetivo no es prometer fechas sino fijar el orden.',
+      blocks: [
+        {
+          heading: 'Etapa 1 — Asentar la base',
+          items: [
+            'Reducir a la mitad el tiempo de arranque',
+            'Arreglar las pantallas que se cierran solas',
+            'Simplificar el registro',
+          ]
+        },
+        {
+          heading: 'Etapa 2 — Retener',
+          items: [
+            'Ajustes de notificaciones',
+            'Modo sin conexión',
+            'Buzón de sugerencias',
+          ]
+        },
+        {
+          heading: 'Etapa 3 — Crecer',
+          items: [
+            'Invitar a un amigo',
+            'Segundo idioma',
+            'Base para el plan de pago',
+          ]
+        },
+        {
+          heading: 'Lo que no vamos a hacer',
+          items: [
+            'Diseño para tableta',
+            'Versión de escritorio',
+            'Funciones de IA',
+          ]
+        },
+      ],
+      outcome:
+        'El cuadro más útil de la hoja de ruta es el último. Escribir lo que vas a hacer no termina la discusión; escribir lo que no vas a hacer este periodo, sí.'
+    },
+    faq: [
+      {
+        q: '¿Qué es una hoja de ruta de producto?',
+        a:
+          'Un plan de alto nivel que muestra hacia dónde va un producto o un trabajo en el periodo que viene, y en qué orden. No es una lista de tareas: comunica intención y secuencia.'
+      },
+      {
+        q: '¿Debe llevar fechas?',
+        a:
+          'Las fechas exactas suelen hacer daño: fallas una y se va con ella la credibilidad de toda la hoja de ruta. Los trimestres, o una estructura de «ahora / siguiente / más adelante», aguantan mucho mejor. Si de verdad necesitas una fecha exacta, ese elemento pertenece a un Gantt, no a una hoja de ruta.'
+      },
+      {
+        q: '¿Cada cuánto se actualiza?',
+        a:
+          'Revisarla una vez al mes le sirve a casi cualquier equipo. Una hoja de ruta que cambia cada semana no es una hoja de ruta; una que no cambia nunca ha perdido el contacto con la realidad. Lo importante no es el cambio, sino escribir por qué cambió.'
+      },
+      {
+        q: '¿Por qué hace falta una lista de lo que no se hará?',
+        a:
+          'Porque casi todas las preguntas que atrae una hoja de ruta tienen la forma «¿y qué pasa con X?». Enumerar lo que has dejado fuera a propósito las responde de antemano y evita que el equipo repita la misma discusión cada semana.'
+      },
+      {
+        q: '¿Es gratis?',
+        a:
+          'Sí. Klarsti es gratuito y sin publicidad ahora mismo, y no necesitas cuenta para montar una hoja de ruta.'
+      },
+    ]
   }
 };
 

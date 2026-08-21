@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { auth } from '../firebaseCore';
+import { auth, yonlendirmeyiIsaretle } from '../firebaseCore';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithRedirect, sendPasswordResetEmail, sendEmailVerification } from 'firebase/auth';
 import { Eye, EyeOff, Loader2, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
@@ -113,6 +113,9 @@ export default function AuthPage({ mode }: { mode: 'login' | 'register' }) {
       // seçebileceği bir ekran hiç görmüyordu. Çıkış yapmak da çözmüyor,
       // çünkü seçim Google tarafında ve orada oturum açık kalıyor.
       provider.setCustomParameters({ prompt: 'select_account' });
+      // Donuste getRedirectResult'in calismasi icin sart: o cagri artik
+      // yalnizca bu isareti gorunce yapiliyor (bkz. firebaseCore).
+      yonlendirmeyiIsaretle();
       await signInWithRedirect(auth, provider);
       // Sayfa Google'a yönlenecek; dönüşte firebaseCore.ts'teki
       // getRedirectResult + onAuthStateChanged süreci tamamlayacak.

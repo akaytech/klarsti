@@ -38,6 +38,37 @@ postaDiliniAyarla();
 // Kullanıcı dili sonradan değiştirirse bir sonraki mail yeni dilde gitmeli.
 i18n.on('languageChanged', postaDiliniAyarla);
 
+const YONLENDIRME_ANAHTARI = 'klarsti-google-yonlendirme';
+
+/**
+ * "Bu sekmeden Google'la giris baslatildi" isareti.
+ *
+ * signInWithRedirect sayfayi Google'a gonderiyor; donuste sonucu okuyabilmek
+ * icin getRedirectResult cagrilmali. Ama o cagri 128 KB'lik bir yuk getiriyor
+ * (bkz. initAuthListener), o yuzden yalnizca gercekten yola cikmis sekmede
+ * yapiliyor. Isareti AuthPage yola cikmadan hemen once biraikiyor.
+ */
+export function yonlendirmeyiIsaretle() {
+  try {
+    sessionStorage.setItem(YONLENDIRME_ANAHTARI, '1');
+  } catch {
+    // Depolama kapaliysa isaret birakilamiyor. Sorun degil: okuma tarafi da
+    // ayni durumda "belki vardir" deyip eski davranisa donuyor.
+  }
+}
+
+/** Isaret varsa true doner ve isareti siler. Depolama kapaliysa true. */
+function yonlendirmeBekleniyorMu(): boolean {
+  try {
+    if (sessionStorage.getItem(YONLENDIRME_ANAHTARI) === null) return false;
+    sessionStorage.removeItem(YONLENDIRME_ANAHTARI);
+    return true;
+  } catch {
+    // Emin olamiyoruz. Girisi bozmaktansa fazladan dosya indirmek yeglenir.
+    return true;
+  }
+}
+
 // Firebase Auth'u tek gerçek kaynak (source of truth) yapar.
 // localStorage'daki 'user' yalnızca ilk paint için optimistik önbellektir;
 // otorite her zaman Firebase oturumudur. Token yenileme veya sunucu tarafı
@@ -47,10 +78,30 @@ export const initAuthListener = () => {
   if (authListenerStarted) return;
   authListenerStarted = true;
 
-  getRedirectResult(auth).catch((err) => {
-    console.error('Redirect sign-in error:', err);
-    toast.error(i18n.t('auth_error_generic', { defaultValue: 'An error occurred during authentication' }), { id: 'redirect-auth-error' });
-  });
+  // getRedirectResult YALNIZCA Google'la giris baslatilmis bir sekmede
+  // cagriliyor.
+  //
+  // Neden: bu cagri Firebase Auth'un yonlendirme cozucusunu ayaga kaldiriyor
+  // ve o da sayfaya /__/auth/iframe.js (93 KB) ile Google'in gapi betigini
+  // (35 KB) indiriyor. PageSpeed /dene sayfasinda bu dosyayi UC ayri bulguda
+  // birden gosteriyordu: kodunun %62'si hic calismiyor, onbellek suresi sifir
+  // (her ziyarette yeniden iniyor) ve en uzun bagimlilik zincirinin basi o.
+  // Hesap acmadan denemek icin gelen ziyaretcide bir kere bile
+  // kullanilmiyordu.
+  //
+  // Yonlendirme baslatan tek yer AuthPage; orasi yola cikmadan once
+  // sessionStorage'a isaret birakiyor (bkz. yonlendirmeyiIsaretle).
+  // sessionStorage sekmeye ozel ve gidip donerken duruyor, yani donuste
+  // isaret yerinde oluyor.
+  //
+  // Zaten giris yapmis kullanici etkilenmiyor: oturumu okuyan
+  // onAuthStateChanged asagida ve o bu dosyalara ihtiyac duymuyor.
+  if (yonlendirmeBekleniyorMu()) {
+    getRedirectResult(auth).catch((err) => {
+      console.error('Redirect sign-in error:', err);
+      toast.error(i18n.t('auth_error_generic', { defaultValue: 'An error occurred during authentication' }), { id: 'redirect-auth-error' });
+    });
+  }
 
   onAuthStateChanged(auth, (firebaseUser) => {
     const { login, logout, user: cachedUser, setAuthLoading } = useAuthStore.getState();

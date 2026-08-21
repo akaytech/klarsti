@@ -72,6 +72,14 @@ i18n.on('languageChanged', postaDiliniAyarla);
 const YONLENDIRME_ANAHTARI = 'klarsti-google-yonlendirme';
 
 /**
+ * Google'dan donen sonuc okunuyor mu?
+ *
+ * Yalnizca yonlendirmeden donen sekmede true oluyor; baska hicbir sayfada
+ * calismiyor, yani olcumlere dokunmuyor.
+ */
+let yonlendirmeIsleniyor = false;
+
+/**
  * "Bu sekmeden Google'la giris baslatildi" isareti.
  *
  * signInWithRedirect sayfayi Google'a gonderiyor; donuste sonucu okuyabilmek
@@ -128,6 +136,7 @@ export const initAuthListener = () => {
   // Zaten giris yapmis kullanici etkilenmiyor: oturumu okuyan
   // onAuthStateChanged asagida ve o bu dosyalara ihtiyac duymuyor.
   if (yonlendirmeBekleniyorMu()) {
+    yonlendirmeIsleniyor = true;
     // Cozucu burada elden veriliyor (bkz. yukaridaki initializeAuth notu) ve
     // gecikmeli import ediliyor: boylece cerceve kodu firebaseCore parcasina
     // girmiyor, yalnizca gercekten yonlendirmeden donen sekmede iniyor.
@@ -137,6 +146,13 @@ export const initAuthListener = () => {
       .catch((err) => {
         console.error('Redirect sign-in error:', err);
         toast.error(i18n.t('auth_error_generic', { defaultValue: 'An error occurred during authentication' }), { id: 'redirect-auth-error' });
+      })
+      .finally(() => {
+        yonlendirmeIsleniyor = false;
+        // Giris gerceklesmediyse (kullanici Google ekraninda vazgectiyse ya da
+        // hata olduysa) ekran yukleme gostergesinde asili kalmasin: logout
+        // hem kullaniciyi bosaltiyor hem yuklemeyi kapatiyor.
+        if (!auth.currentUser) useAuthStore.getState().logout();
       });
   }
 
@@ -150,6 +166,18 @@ export const initAuthListener = () => {
         firebaseUser.emailVerified,
         firebaseUser.photoURL || undefined
       );
+    } else if (yonlendirmeIsleniyor) {
+      // Google'dan yeni donduk ve sonuc henuz okunmadi. Firebase bu arada bir
+      // kez "kullanici yok" diyor; bu bilgi GECICI.
+      //
+      // Eskiden burada logout() calisiyordu ve o hem kullaniciyi bosaltip hem
+      // yuklemeyi kapattigi icin ekran bir anligina GIRIS FORMUNA donuyordu;
+      // hemen ardindan oturum aciliyordu. Kullanici, girisi yeni yapmisken
+      // giris ekranini tekrar goruyordu.
+      //
+      // Sonuc okununca ya onAuthStateChanged kullaniciyla tekrar cagriliyor ya
+      // da yukaridaki finally bu durumu kapatiyor.
+      return;
     } else {
       logout();
     }

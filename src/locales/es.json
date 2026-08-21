@@ -541,6 +541,8 @@
   "guide_steps": "Paso a paso",
   "guide_shortcuts": "Atajos de teclado (escritorio)",
   "guide_tips": "Consejos",
+  "guide_example": "Ejemplo",
+  "guide_faq": "Preguntas frecuentes",
   "guide_missing": "La guía de esta herramienta aún no está lista.",
   "project_unavailable": "No se pudo abrir este proyecto. Puede que se haya eliminado o que no tengas acceso.",
   "vsm_default_map_name": "Estado actual",

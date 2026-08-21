@@ -541,6 +541,8 @@
   "guide_steps": "手順",
   "guide_shortcuts": "キーボードショートカット（デスクトップ）",
   "guide_tips": "ヒント",
+  "guide_example": "記入例",
+  "guide_faq": "よくある質問",
   "guide_missing": "このツールのガイドはまだ準備できていません。",
   "project_unavailable": "このプロジェクトを開けませんでした。削除されたか、アクセス権がない可能性があります。",
   "vsm_default_map_name": "現状",

@@ -541,6 +541,8 @@
   "guide_steps": "操作步骤",
   "guide_shortcuts": "键盘快捷键（桌面端）",
   "guide_tips": "小提示",
+  "guide_example": "示例",
+  "guide_faq": "常见问题",
   "guide_missing": "该工具的指南尚未准备好。",
   "project_unavailable": "无法打开该项目。它可能已被删除，或者你没有访问权限。",
   "vsm_default_map_name": "当前状态",

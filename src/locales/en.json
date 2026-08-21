@@ -541,6 +541,8 @@
   "guide_steps": "Step by step",
   "guide_shortcuts": "Keyboard shortcuts (desktop)",
   "guide_tips": "Tips",
+  "guide_example": "Worked example",
+  "guide_faq": "Frequently asked questions",
   "guide_missing": "The guide for this tool is not ready yet.",
   "project_unavailable": "This project could not be opened. It may have been deleted, or you do not have access.",
   "vsm_default_map_name": "Current state",

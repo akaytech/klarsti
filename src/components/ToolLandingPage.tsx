@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowRight, ChevronRight, Compass, ListOrdered, Keyboard, Lightbulb } from 'lucide-react';
+import { ArrowRight, ChevronRight, Compass, ListOrdered, Keyboard, Lightbulb, ClipboardList, HelpCircle } from 'lucide-react';
 import { TOOLS } from '../config/tools';
 import { toolTheme } from '../config/toolTheme';
 import { toolPageAdresi, type ToolPage } from '../config/toolPages';
@@ -266,6 +266,53 @@ export default function ToolLandingPage({ sayfa }: { sayfa: ToolPage }) {
                         </li>
                       ))}
                     </ul>
+                  </Bolum>
+                )}
+
+                {/* Doldurulmuş örnek. Anlatımın altında duruyor: önce aracın ne
+                    olduğunu okuyup sonra çalışan bir örnek görmek, tersinden
+                    daha anlaşılır. */}
+                {kilavuz.example && (
+                  <Bolum baslik={t('guide_example')} ikon={<ClipboardList size={18} />}>
+                    <div className="rounded-3xl border border-slate-200 bg-slate-50/70 p-6 dark:border-slate-800 dark:bg-slate-900/50">
+                      <h3 className="text-lg font-black text-slate-900 dark:text-white">{kilavuz.example.title}</h3>
+                      <p className="mt-2 leading-relaxed text-slate-600 dark:text-slate-400">{kilavuz.example.intro}</p>
+                      <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                        {kilavuz.example.blocks.map((blok, i) => (
+                          <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-950">
+                            <h4 className="mb-3 font-bold text-slate-900 dark:text-white">{blok.heading}</h4>
+                            <ul className="space-y-2 text-sm leading-relaxed">
+                              {blok.items.map((madde, j) => (
+                                <li key={j} className="flex gap-2.5">
+                                  <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-slate-400" />
+                                  <span>{madde}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="mt-6 border-t border-slate-200 pt-5 leading-relaxed font-medium text-slate-800 dark:border-slate-800 dark:text-slate-200">
+                        {kilavuz.example.outcome}
+                      </p>
+                    </div>
+                  </Bolum>
+                )}
+
+                {/* Soru-cevap. Sayfanın en sonunda: buraya kadar okuyup hâlâ
+                    aklında soru kalan kişi için. Aynı metin hazır HTML'e de
+                    yazılıyor ve orada Google'ın anlayacağı işaretle
+                    işaretleniyor (bkz. scripts/staticPages.mjs). */}
+                {kilavuz.faq && kilavuz.faq.length > 0 && (
+                  <Bolum baslik={t('guide_faq')} ikon={<HelpCircle size={18} />}>
+                    <div className="divide-y divide-slate-200 overflow-hidden rounded-2xl border border-slate-200 dark:divide-slate-800 dark:border-slate-800">
+                      {kilavuz.faq.map((satir, i) => (
+                        <div key={i} className="bg-white p-5 dark:bg-slate-950">
+                          <h3 className="font-bold text-slate-900 dark:text-white">{satir.q}</h3>
+                          <p className="mt-2 leading-relaxed text-slate-600 dark:text-slate-400">{satir.a}</p>
+                        </div>
+                      ))}
+                    </div>
                   </Bolum>
                 )}
               </>

@@ -541,6 +541,8 @@
   "guide_steps": "Adım adım",
   "guide_shortcuts": "Klavye kısayolları (masaüstü)",
   "guide_tips": "İpuçları",
+  "guide_example": "Örnek",
+  "guide_faq": "Sık sorulan sorular",
   "guide_missing": "Bu araç için kılavuz henüz hazır değil.",
   "project_unavailable": "Bu proje açılamadı. Silinmiş olabilir ya da erişim iznin yok.",
   "vsm_default_map_name": "Mevcut durum",

@@ -541,6 +541,8 @@
   "guide_steps": "Passo a passo",
   "guide_shortcuts": "Atalhos de teclado (desktop)",
   "guide_tips": "Dicas",
+  "guide_example": "Exemplo",
+  "guide_faq": "Perguntas frequentes",
   "guide_missing": "O guia desta ferramenta ainda não está pronto.",
   "project_unavailable": "Não foi possível abrir este projeto. Ele pode ter sido excluído ou você não tem acesso.",
   "vsm_default_map_name": "Estado atual",

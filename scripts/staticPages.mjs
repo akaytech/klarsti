@@ -172,7 +172,7 @@ function icerikDegistir(metin, anahtar, ad, deger) {
 // olur, düz sayfa olarak işaretleniyorlar.
 const aracMi = (sayfa) => sayfa.tur === TUR.ARAC;
 
-function yapilandirilmisVeri(sayfa, adres) {
+function yapilandirilmisVeri(sayfa, adres, kilavuz) {
   const anaVarlik = !aracMi(sayfa)
     ? {
         '@type': 'WebPage',
@@ -191,19 +191,32 @@ function yapilandirilmisVeri(sayfa, adres) {
         publisher: { '@type': 'Organization', name: 'Klarsti', url: `${SITE}/` }
       };
 
-  const veri = {
-    '@context': 'https://schema.org',
-    '@graph': [
-      anaVarlik,
-      {
-        '@type': 'BreadcrumbList',
-        itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Klarsti', item: `${SITE}/` },
-          { '@type': 'ListItem', position: 2, name: sayfa.name, item: adres }
-        ]
-      }
-    ]
-  };
+  const graf = [
+    anaVarlik,
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Klarsti', item: `${SITE}/` },
+        { '@type': 'ListItem', position: 2, name: sayfa.name, item: adres }
+      ]
+    }
+  ];
+
+  // Sayfadaki soru-cevabin Google'in anladigi hali. Ekranda gorunen metinle
+  // BIREBIR ayni olmali: Google gostermedigi bir metni isaretlemeyi kural
+  // ihlali sayiyor. O yuzden ikisi de ayni kaynaktan (kilavuz.faq) uretiliyor.
+  if (kilavuz?.faq?.length) {
+    graf.push({
+      '@type': 'FAQPage',
+      mainEntity: kilavuz.faq.map((x) => ({
+        '@type': 'Question',
+        name: x.q,
+        acceptedAnswer: { '@type': 'Answer', text: x.a }
+      }))
+    });
+  }
+
+  const veri = { '@context': 'https://schema.org', '@graph': graf };
   // `</script>` dizisi JSON içinde geçerse script erken kapanır; kaynak
   // metinlerimizde yok ama kural olarak kaçırıyoruz.
   const json = JSON.stringify(veri, null, 2).replace(/<\//g, '<\\/');
@@ -239,7 +252,9 @@ const baslikSeti = (dil) => ({
   tips: yerel[dil].guide_tips,
   other: yerel[dil].tool_page_other_tools,
   kayit: yerel[dil].register_now,
-  dil: yerel[dil].language_selector
+  dil: yerel[dil].language_selector,
+  ornek: yerel[dil].guide_example,
+  sss: yerel[dil].guide_faq
 });
 
 // `Mod` arayüzde macOS'ta ⌘, başka yerde Ctrl çiziliyor. Statik dosya tek bir
@@ -295,6 +310,47 @@ function dilLinkleri(slug, aktifDil, BASLIK) {
     </nav>`;
 }
 
+/** Doldurulmus ornegin hazir HTML'i. Ekrandakiyle ayni yapi. */
+function ornekBolumu(ornek) {
+  const kutular = ornek.blocks
+    .map((b) => {
+      const maddeler = b.items
+        .map((m) => `<li class="flex gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-slate-400"></span><span>${kacir(m)}</span></li>`)
+        .join('');
+      return `<div class="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-950">
+            <h4 class="mb-3 font-bold text-slate-900 dark:text-white">${kacir(b.heading)}</h4>
+            <ul class="space-y-2 text-sm leading-relaxed">
+              ${maddeler}
+            </ul>
+          </div>`;
+    })
+    .join('');
+
+  return `<div class="rounded-3xl border border-slate-200 bg-slate-50/70 p-6 dark:border-slate-800 dark:bg-slate-900/50">
+        <h3 class="text-lg font-black text-slate-900 dark:text-white">${kacir(ornek.title)}</h3>
+        <p class="mt-2 leading-relaxed text-slate-600 dark:text-slate-400">${kacir(ornek.intro)}</p>
+        <div class="mt-6 grid gap-4 sm:grid-cols-2">
+          ${kutular}
+        </div>
+        <p class="mt-6 border-t border-slate-200 pt-5 leading-relaxed font-medium text-slate-800 dark:border-slate-800 dark:text-slate-200">${kacir(ornek.outcome)}</p>
+      </div>`;
+}
+
+/** Soru-cevabin hazir HTML'i. */
+function sssBolumu(faq) {
+  const satirlar = faq
+    .map(
+      (x) => `<div class="bg-white p-5 dark:bg-slate-950">
+            <h3 class="font-bold text-slate-900 dark:text-white">${kacir(x.q)}</h3>
+            <p class="mt-2 leading-relaxed text-slate-600 dark:text-slate-400">${kacir(x.a)}</p>
+          </div>`
+    )
+    .join('');
+  return `<div class="divide-y divide-slate-200 overflow-hidden rounded-2xl border border-slate-200 dark:divide-slate-800 dark:border-slate-800">
+          ${satirlar}
+        </div>`;
+}
+
 function govde(sayfa, kilavuz, digerleri, dil, BASLIK) {
   const bolumler = [];
 
@@ -329,6 +385,14 @@ function govde(sayfa, kilavuz, digerleri, dil, BASLIK) {
       .map((s) => `<li class="flex gap-3 leading-relaxed"><span class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400"></span><span>${kacir(s)}</span></li>`)
       .join('\n          ');
     bolumler.push(bolum(BASLIK.tips, `<ul class="space-y-3">\n          ${satirlar}\n        </ul>`));
+  }
+
+  if (kilavuz?.example) {
+    bolumler.push(bolum(BASLIK.ornek, ornekBolumu(kilavuz.example)));
+  }
+
+  if (kilavuz?.faq?.length) {
+    bolumler.push(bolum(BASLIK.sss, sssBolumu(kilavuz.faq)));
   }
 
   // Diğer araçların linkleri gerçek <a> etiketi: arama motorunun sayfalarımız
@@ -593,7 +657,7 @@ for (const dil of DILLER) {
   html = degistir(
     html,
     /<\/head>/i,
-    `${hreflangEtiketleri(sayfa.slug)}${yapilandirilmisVeri(sayfa, adres)}</head>`,
+    `${hreflangEtiketleri(sayfa.slug)}${yapilandirilmisVeri(sayfa, adres, aracMi(sayfa) ? kilavuzlar[dil]?.[sayfa.toolId] : null)}</head>`,
     '</head>'
   );
 

@@ -188,18 +188,7 @@ export default defineConfig({
     // 'hidden': harita üretilir ama JS dosyalarının sonuna "haritam şurada"
     // notu düşülmez. Tarayıcı onları aramaz, yalnızca Sentry kullanır.
     // Anahtar yoksa hiç üretilmiyor, boşuna derleme süresi harcanmasın.
-    sourcemap: sentryAnahtari ? 'hidden' : false,
-    // Hangi kaynak dosyanın hangi parçaya derlendiğini ve o parçanın nelere
-    // bağlı olduğunu yazan liste (dist/.vite/manifest.json).
-    //
-    // scripts/staticPages.mjs bunu okuyup her sayfanın HTML'ine "şu parçaları
-    // da indir" satırları ekliyor. Onlarsız sayfa iki turda iniyordu: önce
-    // ana kod, o çalışınca da sayfanın kendi kodu ve dil dosyası. İkinci tur
-    // birincisi bitmeden başlamıyordu ve mobilde asıl gecikme oydu.
-    //
-    // Dosya yayına çıkmıyor: adı nokta ile başlayan klasörde duruyor,
-    // firebase.json onları zaten dışarıda bırakıyor.
-    manifest: true
+    sourcemap: sentryAnahtari ? 'hidden' : false
   },
   base: process.env.VITE_DEPLOY_TARGET === 'firebase' ? '/' : '/klarsti/'
 })

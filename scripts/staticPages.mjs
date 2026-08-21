@@ -129,120 +129,6 @@ if (!kokEslesme) {
 }
 const KOKADRES = kokEslesme[1];
 
-/**
- * Sayfanin ikinci turda indirdigi parcalari birinci tura tasiyan
- * <link rel="modulepreload"> satirlari.
- *
- * Sorun: uygulama tek giris dosyasindan aciliyor ve sayfanin kendi kodu
- * (LandingPage, ToolLandingPage ...) ile dil dosyasi gecikmeli import ile
- * geliyor. Tarayici o dosyalarin varligini ancak ana kodu indirip
- * CALISTIRINCA ogreniyor; yani ikinci bir gidis-gelis. Mobilde olculen
- * gecikmenin buyuk kismi buydu: ilk tur 70-130 ms'de bitiyor, ikinci tur
- * 176 ms'den once baslamiyordu.
- *
- * modulepreload satirlari HTML'in icinde durdugu icin tarayici hepsini ilk
- * okumada goruyor ve ana kodla ayni anda indirmeye basliyor. Indirilen bayt
- * ayni, degisen yalnizca ne zaman ogrenildigi.
- *
- * Liste elle yazilmiyor: Vite'in urettigi dist/.vite/manifest.json hangi
- * kaynak dosyanin hangi parcaya derlendigini ve o parcanin nelere bagli
- * oldugunu yaziyor (bkz. vite.config.ts'teki `manifest: true`). Parca adlari
- * her derlemede degistigi icin baska turlu takip edilemezdi.
- */
-const manifestYolu = path.join(DIST, '.vite/manifest.json');
-if (!fs.existsSync(manifestYolu)) {
-  console.error('staticPages: dist/.vite/manifest.json yok. vite.config.ts icinde build.manifest acik mi?');
-  process.exit(1);
-}
-const manifest = JSON.parse(fs.readFileSync(manifestYolu, 'utf8'));
-
-/** Bir manifest anahtari ve bagli oldugu her sey. */
-function bagimliliklar(anahtar, toplanan = new Set()) {
-  const kayit = manifest[anahtar];
-  if (!kayit || toplanan.has(anahtar)) return toplanan;
-  toplanan.add(anahtar);
-  for (const alt of kayit.imports || []) bagimliliklar(alt, toplanan);
-  return toplanan;
-}
-
-// index.html'in zaten tasidiklari: giris parcasi ve onun dogrudan
-// bagimliliklari. Vite onlar icin etiketleri kendisi yaziyor, tekrar
-// yazarsak tarayici ayni dosyayi iki kez listelenmis gorur.
-const kabuktakiParcalar = bagimliliklar('index.html');
-
-// Sayfa turu -> o sayfayi cizen bilesenin kaynak dosyasi. Anahtarlar
-// App.tsx'teki gecikmeli import'larla ayni dosyalari gosteriyor; oradaki bir
-// yol degisirse burasi da degismeli, o yuzden bulunamayan anahtar derlemeyi
-// durduruyor.
-const TUR_BILESEN = {
-  ana: 'src/components/LandingPage.tsx',
-  blogyazi: 'src/components/BlogPostPage.tsx',
-  [TUR.ARAC]: 'src/components/ToolLandingPage.tsx',
-  [TUR.YASAL]: 'src/components/LegalPage.tsx',
-  [TUR.GIRIS]: 'src/components/AuthPage.tsx',
-  [TUR.ILETISIM]: 'src/components/ContactPage.tsx',
-  [TUR.HAKKIMIZDA]: 'src/components/AboutPage.tsx',
-  [TUR.BLOG]: 'src/components/BlogPage.tsx'
-};
-
-/**
- * Dil dosyalarinin adresleri: { tr: '/assets/tr-xxxx.js', ... }
- *
- * Iki dosya birden gerekiyor: sayfanin dili ve ingilizce. Ingilizce her
- * zaman iniyor cunku i18n'de yedek dil o (fallbackLng); ceviri eksik kalirsa
- * oradan okunuyor.
- */
-const dilParcasi = (d) => {
-  const anahtar = `src/locales/${d}.json`;
-  if (!manifest[anahtar]) {
-    console.error(`staticPages: manifest icinde "${anahtar}" yok.`);
-    process.exit(1);
-  }
-  return KOKADRES + manifest[anahtar].file;
-};
-const dilParcalari = Object.fromEntries(DILLER.map((d) => [d, dilParcasi(d)]));
-
-/**
- * Oneksiz adreslerde (/ ve /wbs ingilizce surumler) dili HTML bilmiyor:
- * i18n'in algilayicisi once localStorage'a, sonra tarayicinin diline bakiyor
- * (bkz. i18n.ts). Yani klarsti.com adresini Turkce bir tarayiciyla acan kisi
- * Turkce goruyor ve Turkce dosyasina ihtiyaci var.
- *
- * Bu betik o dosyayi HTML okunurken indirmeye basliyor. Onekli adreslerde
- * (/tr/wbs) dil zaten belli, orada betik hic yazilmiyor; dosya dogrudan
- * <link> ile isteniyor.
- *
- * Secim sirasi i18n.ts'teki algilayiciyla AYNI olmali. Tutmazsa yanlis dosya
- * inip bosa gider; sayfa yine dogru calisir, sadece bir dosya israf olur.
- */
-const DIL_BETIGI =
-  `    <script>(function(){var p=${JSON.stringify(dilParcalari)};try{` +
-  `var a=(localStorage.getItem('i18nextLng')||navigator.language||'').toLowerCase();` +
-  `var d=p[a]?a:(p[a.split('-')[0]]?a.split('-')[0]:'${VARSAYILAN_DIL}');` +
-  `if(d==='${VARSAYILAN_DIL}')return;` +
-  `var l=document.createElement('link');l.rel='modulepreload';l.crossOrigin='';l.href=p[d];` +
-  `document.head.appendChild(l);}catch(e){}})();</script>\n`;
-
-function onYukleme(tur, dil) {
-  const anahtar = TUR_BILESEN[tur];
-  if (!manifest[anahtar]) {
-    console.error(`staticPages: manifest icinde "${anahtar}" yok. Dosya tasindi mi?`);
-    process.exit(1);
-  }
-  const dosyalar = [...bagimliliklar(anahtar)]
-    .filter((a) => !kabuktakiParcalar.has(a))
-    .map((a) => KOKADRES + manifest[a].file);
-  // Yedek dil her sayfada; sayfanin kendi dili yalnizca farkliysa.
-  dosyalar.push(dilParcalari[VARSAYILAN_DIL]);
-  if (dil !== VARSAYILAN_DIL) dosyalar.push(dilParcalari[dil]);
-
-  const linkler = dosyalar
-    .map((adres) => `    <link rel="modulepreload" crossorigin href="${adres}" />\n`)
-    .join('');
-  // Dili adresten okunamayan sayfalarda tarayicinin secimi de onden isteniyor.
-  return linkler + (dil === VARSAYILAN_DIL ? DIL_BETIGI : '');
-}
-
 function kacir(deger) {
   return deger
     .replace(/&/g, '&amp;')
@@ -670,7 +556,7 @@ for (const dil of DILLER) {
   html = degistir(
     html,
     /<\/head>/i,
-    `${onYukleme(sayfa.tur, dil)}${hreflangEtiketleri(sayfa.slug)}${yapilandirilmisVeri(sayfa, adres)}</head>`,
+    `${hreflangEtiketleri(sayfa.slug)}${yapilandirilmisVeri(sayfa, adres)}</head>`,
     '</head>'
   );
 
@@ -746,7 +632,7 @@ for (const dil of DILLER) {
     `<link rel="canonical" href="${adres}" />`,
     'canonical'
   );
-  html = degistir(html, /<\/head>/i, `${onYukleme('ana', dil)}${hreflangEtiketleri('')}</head>`, '</head>');
+  html = degistir(html, /<\/head>/i, `${hreflangEtiketleri('')}</head>`, '</head>');
 
   fs.writeFileSync(
     path.join(DIST, dil === VARSAYILAN_DIL ? 'index.html' : `${dil}.html`),
@@ -822,7 +708,7 @@ for (const yazi of blogYazilari) {
     ]
   };
   const json = JSON.stringify(yapilandirilmis, null, 2).replace(/<\//g, '<\\/');
-  html = degistir(html, /<\/head>/i, `${onYukleme('blogyazi', yazi.dil || VARSAYILAN_DIL)}<script type="application/ld+json">\n${json}\n</script>\n</head>`, '</head>');
+  html = degistir(html, /<\/head>/i, `<script type="application/ld+json">\n${json}\n</script>\n</head>`, '</head>');
 
   html = degistirDuz(
     html,
@@ -956,11 +842,6 @@ const llms = [
 ].join('\n');
 
 fs.writeFileSync(path.join(DIST, 'llms.txt'), llms, 'utf8');
-
-// Parca haritasi yalnizca bu script icin uretiliyordu; isi bitti, yayina
-// cikmasin. Icinde sir yok ama kaynak dosya yollarimizi (src/components/...)
-// listeliyor ve sitede bir karsiligi yok.
-fs.rmSync(path.join(DIST, '.vite'), { recursive: true, force: true });
 
 console.log(
   `staticPages: ${uretilen} sayfa (${sayfalar.length} sayfa x ${DILLER.length} dil + ${blogYazilari.length} blog yazisi) + sitemap + llms.txt uretildi`

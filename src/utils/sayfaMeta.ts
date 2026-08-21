@@ -37,12 +37,20 @@ function metaYaz(ad: string, deger: string, ozellikMi = false) {
   etiket.setAttribute('content', deger);
 }
 
-// index.html'deki değerler; sayfadan çıkıldığında buraya dönülüyor. Modül
-// yüklendiği anda okunuyor: o an henüz hiçbir sayfa etiketleri değiştirmemiş.
+// Tanıtım sayfasının etiketleri; bir sayfadan çıkıldığında buraya dönülüyor.
+//
+// Eskiden bu değerler modül yüklenirken document.title'dan okunuyordu ve o
+// yüzden yanlıştı: sunucudan hangi hazır sayfa geldiyse onun başlığı
+// "varsayılan" sayılıyordu. Giriş sayfasından girip uygulamaya geçen kullanıcı
+// sekmesinde "Sign In | Klarsti" yazılı kalıyordu.
+//
+// Değerler index.html'deki title ve description ile aynı kalmalı; tanıtım
+// sayfası için hazır HTML üretilmiyor, sunucudan gelen dosya bu ikisini
+// taşıyor (bkz. scripts/staticPages.mjs).
 const VARSAYILAN: SayfaMeta = {
-  title: document.title,
+  title: 'Klarsti — Problem solving and decision making that follows the method',
   description:
-    document.head.querySelector('meta[name="description"]')?.getAttribute('content') ?? '',
+    'Problem solving, root cause analysis and planning tools that follow the actual method: SWOT, Fishbone, 5 Whys, Pareto, WBS, Gantt and more. Free while in early access.',
   canonical: `${SITE}/`
 };
 

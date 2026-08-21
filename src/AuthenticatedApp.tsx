@@ -24,6 +24,7 @@ import { useAuthStore } from './store/useAuthStore';
 import { useShallow } from 'zustand/react/shallow';
 import { gecikmeliEkran } from './utils/surumTazeleme';
 import { denemeyiHesabaTasi } from './store/denemeDevri';
+import { useSekmeBasligi } from './utils/sekmeBasligi';
 
 const Workspace = gecikmeliEkran(() => import('./components/Workspace'));
 
@@ -97,6 +98,10 @@ export default function AuthenticatedApp() {
     const alan = state.activeTool ? aracAktifAlan(state.activeTool) : undefined;
     return alan ? (state[alan] as string | null) : null;
   });
+
+  // Sekme başlığı açık araca göre yazılıyor; yoksa giriş sayfasından kalan
+  // başlık uygulamada asılı kalıyor (bkz. sekmeBasligi.ts).
+  useSekmeBasligi(activeTool);
 
   const navigate = useNavigate();
   const location = useLocation();

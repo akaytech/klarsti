@@ -3,6 +3,7 @@
   "act_desc": "成功なら標準化",
   "add_desc": "説明を追加",
   "app_start": "開始",
+  "app_tab_title": "計画",
   "auth_error_generic": "エラーが発生しました。",
   "auth_feature_1_desc": "問題を数秒で視覚化します。",
   "auth_feature_1_title": "迅速な分析",

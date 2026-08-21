@@ -86,6 +86,18 @@ export default defineConfig({
             }
           },
           {
+            // Yazi tipleri kendi sitemizden geliyor (bkz. index.html). Adlarinda
+            // surum var, yani ayni ad her zaman ayni dosya: CacheFirst guvenli.
+            // Bu kural olmadan ikinci ziyarette de aglardan iniyorlardi.
+            urlPattern: /\.woff2$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'klarsti-yazitipi',
+              expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
+              cacheableResponse: { statuses: [0, 200] }
+            }
+          },
+          {
             urlPattern: /\.(?:png|webp|svg|ico)$/,
             handler: 'CacheFirst',
             options: {

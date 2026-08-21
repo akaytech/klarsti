@@ -1,9 +1,11 @@
 @import "tailwindcss";
 
-/* Yazı tipi burada @import ile İNDİRİLMİYOR, index.html'deki <link> ile
-   iniyor. CSS içinden @import etmek tarayıcıyı sıraya sokuyor: önce bu dosyayı
-   indirip okuyor, ancak ondan sonra yazı tipini istemeye başlıyor. Geomini tam
-   olarak öyle duruyordu ve sayfadaki ilk yazının görünmesini geciktiriyordu. */
+/* Yazı tipi burada TANIMLANMIYOR: @font-face satırları ve preload etiketi
+   index.html'in içinde duruyor (dosyalar public/fonts altında, kendi
+   sitemizden iniyor). Sebep: bu dosya ayrı bir istek olarak indiriliyor ve
+   tarayıcı yazı tipini ancak onu okuduktan sonra fark ederdi. HTML'in içinde
+   olduklarında istek ilk satırlarda başlıyor. CSS içinden @import etmek ise
+   zinciri bir kat daha uzatıyordu. */
 @theme {
   --font-sans: 'Inter', system-ui, sans-serif;
 }

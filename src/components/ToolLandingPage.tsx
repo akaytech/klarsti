@@ -62,6 +62,14 @@ export default function ToolLandingPage({ sayfa }: { sayfa: ToolPage }) {
   // metin inemediğinde de sonuçlanmış sayılıyor (bkz. hazır sayfayı kaldıran
   // effect); yoksa indirme başarısız olunca katman ekranda asılı kalıyordu.
   const [kilavuzSonuclandi, setKilavuzSonuclandi] = useState(false);
+  /**
+   * Sunucudan gelen hazır sayfa ekranda mı? (bkz. scripts/staticPages.mjs)
+   *
+   * Mount anında bir kez okunuyor; aşağıdaki effect onu kaldırdıktan sonra
+   * değeri değişmesin diye useState başlangıcında. Uygulama içinden gelindiğinde
+   * (tanıtım sayfasındaki linke tıklamak gibi) böyle bir katman yok.
+   */
+  const [hazirSayfaVar] = useState(() => typeof document !== 'undefined' && !!document.getElementById('statik-onizleme'));
 
   const arac = TOOLS.find((x) => x.id === sayfa.toolId);
   const tema = toolTheme[sayfa.toolId] || toolTheme.wbs;
@@ -134,6 +142,25 @@ export default function ToolLandingPage({ sayfa }: { sayfa: ToolPage }) {
       {user ? t('tool_page_open_app') : t('register')} <ArrowRight size={20} />
     </button>
   );
+
+  /**
+   * Kılavuz sonuçlanana kadar HİÇBİR ŞEY çizilmiyor.
+   *
+   * Neden: aşağıdaki kılavuz bölümü (`section.pb-24`) önce neredeyse boş
+   * çiziliyor, metin inince bir anda ~1400 piksele çıkıyordu. Altındaki her şey
+   * o anda aşağı zıplıyordu. PageSpeed bunu "Büyük düzen kaymalarından kaçının"
+   * denetiminde tam olarak bu öğeyi göstererek raporluyor: /wbs masaüstünde
+   * 0,441, /5-whys'de 0,399 (sınır 0,1). Üçte ikisi bu yüzden gidiyordu; o iki
+   * sayfa masaüstünde 80-81 puan alıyordu, hız ölçümlerinin hepsi tamken.
+   *
+   * Ekranda görünen bir şey kaybolmuyor: hazır sayfa zaten üstte duruyor ve
+   * aynı anda kaldırılıyor (aşağıdaki effect). React önce tam halini çiziyor,
+   * effect ondan sonra katmanı kaldırıyor, yani arada boş ekran olmuyor.
+   *
+   * Koşul hazır sayfaya bağlı: uygulama içinden gelindiğinde katman yok, orada
+   * eskisi gibi hemen çiziliyor (yoksa ekran boş kalırdı).
+   */
+  if (hazirSayfaVar && !kilavuzSonuclandi) return null;
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 overflow-y-auto overflow-x-hidden selection:bg-indigo-500/30">

@@ -3,10 +3,34 @@ import Navbar from './Navbar';
 import { denemeKipiniAc, denemeKipiKapat } from '../utils/denemeKipi';
 import { denemeyiKaydetmeyeBasla, denemeyiYukle } from '../store/denemeDeposu';
 import { gecikmeliEkran } from '../utils/surumTazeleme';
-import { logAppEvent } from '../firebase';
 import { PROJECT_TOOLS } from '../config/tools';
 
 const Workspace = gecikmeliEkran(() => import('./Workspace'));
+
+/**
+ * "Deneme acildi" olcum olayi.
+ *
+ * Neden bu kadar dolambacli: olayi gonderen fonksiyon src/firebase.ts icinde
+ * ve o dosya ayni zamanda Firestore baglantisini kuruyor. Bu dosyanin en
+ * ustunde durgun (statik) bir import olarak dururken, tek bir istatistik
+ * satiri yuzunden hesapsiz deneme sayfasina 114 KB'lik veritabani
+ * kutuphanesi iniyordu -- hem de sayfanin cizilecegi anin tam ortasinda
+ * (olcumde 183-510 ms arasi, sayfadaki en uzun indirme).
+ *
+ * Denemede cizilen her sey tarayicida duruyor (bkz. denemeDeposu);
+ * Firestore'a hic dokunulmuyor. Yani o dosyanin sayfa acilirken inmesi icin
+ * hicbir sebep yok.
+ *
+ * Simdi hem import hem olay `load`dan sonraya birakiliyor: sayfa cizilip
+ * ilk kaynaklar bittikten sonra. Olay kaybolmuyor, yalnizca geciyor.
+ */
+const olcumuGonder = () => {
+  const gonder = () => {
+    import('../firebase').then((m) => m.logAppEvent('trial_opened')).catch(() => {});
+  };
+  if (document.readyState === 'complete') gonder();
+  else window.addEventListener('load', gonder, { once: true });
+};
 
 /**
  * Hesapsız deneme: klarsti.com/dene
@@ -38,7 +62,7 @@ export default function DenemeApp({ arac }: { arac?: string | null }) {
     // önce karşılama ekranını çizip sonra araca atlardı.
     denemeyiYukle(PROJECT_TOOLS.some((x) => x.id === arac) ? arac : null);
     setHazir(true);
-    logAppEvent('trial_opened');
+    olcumuGonder();
     const kaydetmeyiBirak = denemeyiKaydetmeyeBasla();
     return () => {
       kaydetmeyiBirak();

@@ -43,11 +43,34 @@ if (oturumIziVar || authRotasi) {
   useAuthStore.getState().setAuthLoading(false);
   // Yine de arkadan yükleniyor: localStorage'ı temizlemiş ama oturumu duran
   // bir kullanıcı bir an "girmemiş" görünür, sonra kendiliğinden düzelir.
-  const bosaDusunce = () => authBaslat();
-  if ('requestIdleCallback' in window) {
-    (window as Window & typeof globalThis).requestIdleCallback(bosaDusunce, { timeout: 4000 });
+  //
+  // Once `load` bekleniyor, SONRA bosa dusuluyor. Tek basina
+  // requestIdleCallback yetmiyordu: tarayici boslugu cok erken buluyor ve
+  // Google'in giris cercevesi (gapi + auth/iframe.js, toplam 128 KB) sayfa
+  // daha cizilmeden inmeye basliyordu. Olcumde /dene sayfasinda 238. ms'de
+  // basliyordu; sayfanin ilk boyasi 503. ms'de. Yani hesabi olmayan bir
+  // ziyaretci, kullanmayacagi 128 KB'in hatti bosaltmasini bekliyordu.
+  //
+  // Gecikmenin bedeli degismedi: bu yol zaten "oturum izi YOK" durumu, yani
+  // beklenen sonuc "giris yapilmamis". Geciken tek sey, localStorage'ini
+  // temizlemis kullanicinin kendiliginden geri taninmasi.
+  let baslatildi = false;
+  const bosaDusunce = () => {
+    if (baslatildi) return;
+    baslatildi = true;
+    if ('requestIdleCallback' in window) {
+      (window as Window & typeof globalThis).requestIdleCallback(() => authBaslat(), { timeout: 4000 });
+    } else {
+      setTimeout(authBaslat, 2000);
+    }
+  };
+  if (document.readyState === 'complete') {
+    bosaDusunce();
   } else {
-    setTimeout(bosaDusunce, 2000);
+    window.addEventListener('load', bosaDusunce, { once: true });
+    // Emniyet kemeri: bir kaynak asili kalirsa `load` hic gelmeyebilir.
+    // O durumda da oturum sonsuza kadar kontrolsuz kalmasin.
+    setTimeout(bosaDusunce, 8000);
   }
 }
 

@@ -1,5 +1,11 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, onAuthStateChanged, getRedirectResult } from 'firebase/auth';
+import {
+  initializeAuth,
+  indexedDBLocalPersistence,
+  browserLocalPersistence,
+  browserSessionPersistence,
+  onAuthStateChanged
+} from 'firebase/auth';
 import { useAuthStore } from './store/useAuthStore';
 import { toast } from 'sonner';
 import i18n from './i18n';
@@ -18,7 +24,32 @@ const firebaseConfig = {
 };
 
 export const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
+/**
+ * Auth, getAuth() yerine initializeAuth() ile kuruluyor.
+ *
+ * Tek fark: getAuth, "popupRedirectResolver" adinda bir bileseni de
+ * kendiliginden takiyor. O bilesen, Google ile giris olaylarini dinlemek icin
+ * sayfaya gizli bir cerceve aciyor ve /__/auth/iframe.js (93 KB) ile Google'in
+ * gapi betigini (35 KB) indiriyor. Bunu giris yapilsin yapilmasin, HER
+ * sayfada yapiyordu.
+ *
+ * PageSpeed /dene sayfasinda o tek dosyayi uc ayri bulguda gosteriyordu:
+ * kodunun %62'si hic calismiyor, onbellek suresi sifir (her ziyarette bastan
+ * iniyor) ve en uzun bagimlilik zincirinin basi o. Hesap acmadan denemeye
+ * gelen ziyaretci icin tamamen bosunaydi.
+ *
+ * Artik bilesen ihtiyac duyan uc cagriya ELDEN veriliyor:
+ * signInWithRedirect (AuthPage), getRedirectResult (asagida) ve
+ * reauthenticateWithPopup (hesapSilme). Yani cerceve yalnizca gercekten
+ * Google ile giris/dogrulama yapilirken aciliyor.
+ *
+ * persistence listesi getAuth'un kendi varsayilaninin AYNISI. Buradaki sira
+ * degistirilirse veya biri cikarilirsa acik oturumlar kaybolur; liste bilerek
+ * birebir kopyalandi.
+ */
+export const auth = initializeAuth(app, {
+  persistence: [indexedDBLocalPersistence, browserLocalPersistence, browserSessionPersistence]
+});
 
 // Firebase'in gönderdiği e-postaların dili (doğrulama, şifre sıfırlama,
 // e-posta değişikliği).
@@ -97,10 +128,16 @@ export const initAuthListener = () => {
   // Zaten giris yapmis kullanici etkilenmiyor: oturumu okuyan
   // onAuthStateChanged asagida ve o bu dosyalara ihtiyac duymuyor.
   if (yonlendirmeBekleniyorMu()) {
-    getRedirectResult(auth).catch((err) => {
-      console.error('Redirect sign-in error:', err);
-      toast.error(i18n.t('auth_error_generic', { defaultValue: 'An error occurred during authentication' }), { id: 'redirect-auth-error' });
-    });
+    // Cozucu burada elden veriliyor (bkz. yukaridaki initializeAuth notu) ve
+    // gecikmeli import ediliyor: boylece cerceve kodu firebaseCore parcasina
+    // girmiyor, yalnizca gercekten yonlendirmeden donen sekmede iniyor.
+    import('firebase/auth')
+      .then(({ getRedirectResult, browserPopupRedirectResolver }) =>
+        getRedirectResult(auth, browserPopupRedirectResolver))
+      .catch((err) => {
+        console.error('Redirect sign-in error:', err);
+        toast.error(i18n.t('auth_error_generic', { defaultValue: 'An error occurred during authentication' }), { id: 'redirect-auth-error' });
+      });
   }
 
   onAuthStateChanged(auth, (firebaseUser) => {

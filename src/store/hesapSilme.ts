@@ -23,7 +23,7 @@ import {
 } from 'firebase/firestore';
 import {
   deleteUser, reauthenticateWithPopup, reauthenticateWithCredential,
-  GoogleAuthProvider, EmailAuthProvider,
+  GoogleAuthProvider, EmailAuthProvider, browserPopupRedirectResolver,
 } from 'firebase/auth';
 import { auth } from '../firebaseCore';
 import { db } from '../firebase';
@@ -77,7 +77,8 @@ export async function kimligiTazele(sifre?: string): Promise<void> {
     });
     // Yönlendirme değil açılır pencere: yönlendirme sayfayı baştan yükler ve
     // kullanıcının içinde olduğu silme akışı kaybolur.
-    await reauthenticateWithPopup(kullanici, saglayici);
+    // Ucuncu argüman şart (bkz. firebaseCore'daki initializeAuth notu).
+    await reauthenticateWithPopup(kullanici, saglayici, browserPopupRedirectResolver);
     return;
   }
   if (yol === 'password') {

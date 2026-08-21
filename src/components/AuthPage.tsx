@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, yonlendirmeyiIsaretle } from '../firebaseCore';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithRedirect, sendPasswordResetEmail, sendEmailVerification } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithRedirect, browserPopupRedirectResolver, sendPasswordResetEmail, sendEmailVerification } from 'firebase/auth';
 import { Eye, EyeOff, Loader2, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslation, Trans } from 'react-i18next';
@@ -116,7 +116,9 @@ export default function AuthPage({ mode }: { mode: 'login' | 'register' }) {
       // Donuste getRedirectResult'in calismasi icin sart: o cagri artik
       // yalnizca bu isareti gorunce yapiliyor (bkz. firebaseCore).
       yonlendirmeyiIsaretle();
-      await signInWithRedirect(auth, provider);
+      // Ucuncu argüman şart: auth artık bu çözücüyü kendiliğinden taşımıyor
+      // (bkz. firebaseCore'daki initializeAuth notu).
+      await signInWithRedirect(auth, provider, browserPopupRedirectResolver);
       // Sayfa Google'a yönlenecek; dönüşte firebaseCore.ts'teki
       // getRedirectResult + onAuthStateChanged süreci tamamlayacak.
     } catch (err) {

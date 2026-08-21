@@ -105,7 +105,14 @@ const kilavuzlar: ToolGuideBundle = {
         a:
           'Evet. Klarsti şu an ücretsiz ve reklamsız. Zihin haritasını denemek için hesap açman da gerekmiyor; doğrudan deneme ekranından çizmeye başlayabilirsin.'
       },
-    ]
+    ],
+    seo: {
+      name: 'Zihin haritası',
+      title: 'Zihin haritası oluşturma — ücretsiz mind map | Klarsti',
+      description:
+        'Bir konuyu merkeze koy, dallandır ve dizilimi programa bırak. Fikir toplamak için ücretsiz zihin haritası aracı, örnekli anlatımla.',
+      keywords: 'zihin haritası, zihin haritası oluşturma, mind map, akıl haritası, zihin haritası örneği'
+    }
   },
 
   wbs: {
@@ -202,7 +209,14 @@ const kilavuzlar: ToolGuideBundle = {
         a:
           'Evet. Klarsti şu an ücretsiz ve reklamsız. İş kırılım ağacı çizmek için hesap açman gerekmiyor, deneme ekranından hemen başlayabilirsin.'
       },
-    ]
+    ],
+    seo: {
+      name: 'İş kırılım yapısı (WBS)',
+      title: 'İş kırılım yapısı (WBS) oluşturma aracı | Klarsti',
+      description:
+        'Projeni fazlara ve iş paketlerine böl, her kutuya durum, tarih ve süre ver. Örnekli anlatım ve ücretsiz WBS aracı.',
+      keywords: 'iş kırılım yapısı, wbs, iş kırılım yapısı örneği, iş kırılım yapısı nasıl yapılır, proje kırılım ağacı'
+    }
   },
 
   '5whys': {
@@ -301,7 +315,14 @@ const kilavuzlar: ToolGuideBundle = {
         a:
           'Evet. Klarsti şu an ücretsiz ve reklamsız. 5 Neden analizini denemek için hesap açman gerekmiyor.'
       },
-    ]
+    ],
+    seo: {
+      name: '5 Neden analizi',
+      title: '5 Neden analizi — kök nedeni bul | Klarsti',
+      description:
+        'Beş kez neden diye sorarak problemin görünen yüzünden asıl sebebine in. Adım adım anlatım, gerçek bir örnek ve ücretsiz araç.',
+      keywords: '5 neden analizi, 5 neden analizi örneği, kök neden analizi, 5 whys, neden neden analizi'
+    }
   },
 
   flowchart: {
@@ -386,7 +407,14 @@ const kilavuzlar: ToolGuideBundle = {
         a:
           'Evet. Klarsti şu an ücretsiz ve reklamsız. Akış diyagramı çizmek için hesap açman gerekmiyor.'
       },
-    ]
+    ],
+    seo: {
+      name: 'Akış diyagramı',
+      title: 'Akış diyagramı oluşturma aracı | Klarsti',
+      description:
+        'Sürecin adımlarını, karar noktalarını ve yol ayrımlarını çiz. Şekillerin anlamını anlatan örnekle birlikte ücretsiz araç.',
+      keywords: 'akış diyagramı, akış şeması, akış diyagramı oluşturma, flowchart, akış diyagramı sembolleri'
+    }
   },
 
   orgchart: {
@@ -483,7 +511,14 @@ const kilavuzlar: ToolGuideBundle = {
         a:
           'Evet. Klarsti şu an ücretsiz ve reklamsız. Organizasyon şeması çizmek için hesap açman gerekmiyor.'
       },
-    ]
+    ],
+    seo: {
+      name: 'Organizasyon şeması',
+      title: 'Organizasyon şeması oluşturma | Klarsti',
+      description:
+        'Kimin kime bağlı olduğunu tek sayfada göster, boş kalan rolleri gör. Yirmi kişilik gerçek bir örnekle, ücretsiz araç.',
+      keywords: 'organizasyon şeması, organizasyon şeması oluşturma, org şeması, şirket organizasyon şeması, hiyerarşi şeması'
+    }
   },
 
   swot: {
@@ -585,7 +620,14 @@ const kilavuzlar: ToolGuideBundle = {
         a:
           'Evet. Klarsti şu an ücretsiz ve reklamsız. SWOT analizi yapmak için hesap açman gerekmiyor.'
       },
-    ]
+    ],
+    seo: {
+      name: 'SWOT analizi',
+      title: 'SWOT analizi nasıl yapılır — ücretsiz SWOT aracı | Klarsti',
+      description:
+        'Güçlü ve zayıf yanlarını fırsat ve tehditlerle karşılaştır, dört kutuyu eşleştirip kararı netleştir. Doldurulmuş örnekle birlikte.',
+      keywords: 'swot analizi, swot analizi nasıl yapılır, swot analizi örneği, güçlü zayıf yönler, fırsat tehdit analizi'
+    }
   },
 
   ishikawa: {
@@ -677,7 +719,14 @@ const kilavuzlar: ToolGuideBundle = {
         a:
           'Evet. Klarsti şu an ücretsiz ve reklamsız. Balık kılçığı diyagramı çizmek için hesap açman gerekmiyor.'
       },
-    ]
+    ],
+    seo: {
+      name: 'Balık kılçığı (Ishikawa) diyagramı',
+      title: 'Balık kılçığı diyagramı oluşturma — Ishikawa | Klarsti',
+      description:
+        'Problemin olası sebeplerini insan, yöntem, makine, malzeme başlıklarına ayır ve nereden başlayacağını gör. Örnekli ücretsiz araç.',
+      keywords: 'balık kılçığı diyagramı, ishikawa diyagramı, sebep sonuç diyagramı, balık kılçığı örneği, 6m analizi'
+    }
   },
 
   pdca: {
@@ -774,7 +823,14 @@ const kilavuzlar: ToolGuideBundle = {
         a:
           'Evet. Klarsti şu an ücretsiz ve reklamsız. PUKÖ döngüsü kurmak için hesap açman gerekmiyor.'
       },
-    ]
+    ],
+    seo: {
+      name: 'PUKÖ (PDCA) döngüsü',
+      title: 'PUKÖ döngüsü (PDCA) — sürekli iyileştirme | Klarsti',
+      description:
+        'Planla, Uygula, Kontrol Et, Önlem Al adımlarıyla küçük denemeler yap ve sonucunu ölç. Gerçek bir döngü örneğiyle, ücretsiz.',
+      keywords: 'pukö döngüsü, pdca, planla uygula kontrol et önlem al, sürekli iyileştirme, deming döngüsü'
+    }
   },
 
   waterfall: {
@@ -871,7 +927,14 @@ const kilavuzlar: ToolGuideBundle = {
         a:
           'Evet. Klarsti şu an ücretsiz ve reklamsız. Şelale modeliyle proje yönetmek için hesap açman gerekmiyor.'
       },
-    ]
+    ],
+    seo: {
+      name: 'Şelale modeli',
+      title: 'Şelale modeli ile proje yönetimi | Klarsti',
+      description:
+        'Gereksinim, tasarım, geliştirme, test ve teslim aşamalarını sırayla yürüt. Şelale ile çevik arasındaki farkı anlatan örnekle.',
+      keywords: 'şelale modeli, waterfall model, şelale modeli aşamaları, proje yönetimi modelleri, şelale mi çevik mi'
+    }
   },
 
   fta: {
@@ -967,7 +1030,14 @@ const kilavuzlar: ToolGuideBundle = {
         a:
           'Evet. Klarsti şu an ücretsiz ve reklamsız. Hata ağacı analizi yapmak için hesap açman gerekmiyor.'
       },
-    ]
+    ],
+    seo: {
+      name: 'Hata ağacı analizi (FTA)',
+      title: 'Hata ağacı analizi (FTA) aracı | Klarsti',
+      description:
+        'İstenmeyen olayı en üste koy, VE/VEYA kapılarıyla hangi arızaların birlikte gerektiğini çöz. Örnekli, ücretsiz hata ağacı aracı.',
+      keywords: 'hata ağacı analizi, fta analizi, hata ağacı örneği, ve veya kapısı, arıza ağacı analizi'
+    }
   },
 
   vsm: {
@@ -1054,7 +1124,14 @@ const kilavuzlar: ToolGuideBundle = {
         a:
           'Evet. Klarsti şu an ücretsiz ve reklamsız. Değer akışı haritası çıkarmak için hesap açman gerekmiyor.'
       },
-    ]
+    ],
+    seo: {
+      name: 'Değer akışı haritası (VSM)',
+      title: 'Değer akışı haritası (VSM) aracı | Klarsti',
+      description:
+        'Her adımın işlem süresini aradaki beklemeyle karşılaştır, zamanın nerede kaybolduğunu gör. Sayılı bir örnekle, ücretsiz.',
+      keywords: 'değer akışı haritası, vsm, değer akışı haritalama, yalın üretim, değer akışı örneği'
+    }
   },
 
   pareto: {
@@ -1137,7 +1214,14 @@ const kilavuzlar: ToolGuideBundle = {
         a:
           'Evet. Klarsti şu an ücretsiz ve reklamsız. Pareto analizi yapmak için hesap açman gerekmiyor.'
       },
-    ]
+    ],
+    seo: {
+      name: 'Pareto analizi',
+      title: 'Pareto analizi ve 80/20 grafiği | Klarsti',
+      description:
+        'Sorunları sıklığa göre sırala, birikimli eğriyi gör ve problemin büyük kısmını üreten birkaç sebebi bul. Örnekli ücretsiz araç.',
+      keywords: 'pareto analizi, pareto grafiği, 80 20 kuralı, pareto analizi örneği, pareto diyagramı'
+    }
   },
 
   histogram: {
@@ -1221,7 +1305,14 @@ const kilavuzlar: ToolGuideBundle = {
         a:
           'Evet. Klarsti şu an ücretsiz ve reklamsız. Histogram çıkarmak için hesap açman gerekmiyor.'
       },
-    ]
+    ],
+    seo: {
+      name: 'Histogram',
+      title: 'Histogram oluşturma — verinin dağılımını gör | Klarsti',
+      description:
+        'Ölçümlerini aralıklara böl, ortalamanın sakladığı dağılımı gör. İki tepeli dağılımı okumayı anlatan örnekle birlikte, ücretsiz.',
+      keywords: 'histogram, histogram oluşturma, histogram nedir, dağılım grafiği, histogram örneği'
+    }
   },
 
   decision: {
@@ -1310,7 +1401,14 @@ const kilavuzlar: ToolGuideBundle = {
         a:
           'Evet. Klarsti şu an ücretsiz ve reklamsız. Karar matrisi kurmak için hesap açman gerekmiyor.'
       },
-    ]
+    ],
+    seo: {
+      name: 'Karar matrisi',
+      title: 'Karar matrisi — ağırlıklı puanlama ile seçim | Klarsti',
+      description:
+        'Seçenekleri aynı kriterlerle puanla, kriterlere ağırlık ver ve kararın hangi varsayıma dayandığını gör. Örnekli ücretsiz araç.',
+      keywords: 'karar matrisi, ağırlıklı puanlama, karar verme matrisi, karar matrisi örneği, seçenek karşılaştırma'
+    }
   },
 
   notepad: {
@@ -1395,7 +1493,14 @@ const kilavuzlar: ToolGuideBundle = {
         a:
           'Evet. Klarsti şu an ücretsiz ve reklamsız.'
       },
-    ]
+    ],
+    seo: {
+      name: 'Ajanda',
+      title: 'Günlük ajanda ve gün sonu değerlendirmesi | Klarsti',
+      description:
+        'Günü sabah yaz, akşam üstünden geç. Ajandan tamamen kişiseldir, proje paylaşımına dahil olmaz. Ücretsiz.',
+      keywords: 'günlük ajanda, gün sonu değerlendirmesi, günlük plan, yapılacaklar listesi, günlük planlayıcı'
+    }
   },
   gantt: {
     title: "Gantt Şeması",
@@ -1473,7 +1578,14 @@ const kilavuzlar: ToolGuideBundle = {
         a:
           'Evet. Klarsti şu an ücretsiz ve reklamsız. Gantt şeması çizmek için hesap açman gerekmiyor.'
       },
-    ]
+    ],
+    seo: {
+      name: 'Gantt şeması',
+      title: 'Gantt şeması oluşturma — proje takvimi | Klarsti',
+      description:
+        'İşleri takvime diz, hangilerinin aynı anda yürüdüğünü ve payın nerede olmadığını gör. Sekiz haftalık örnekle, ücretsiz.',
+      keywords: 'gantt şeması, gantt chart, gantt şeması oluşturma, proje takvimi, gantt şeması örneği'
+    }
   },
 
   roadmap: {
@@ -1579,7 +1691,14 @@ const kilavuzlar: ToolGuideBundle = {
         a:
           'Evet. Klarsti şu an ücretsiz ve reklamsız. Yol haritası çıkarmak için hesap açman gerekmiyor.'
       },
-    ]
+    ],
+    seo: {
+      name: 'Yol haritası',
+      title: 'Yol haritası oluşturma — ürün yol haritası | Klarsti',
+      description:
+        'Önümüzdeki dönemin sırasını duraklara böl ve bu dönem yapılmayacakları da yaz. Altı aylık bir örnekle, ücretsiz araç.',
+      keywords: 'yol haritası, ürün yol haritası, roadmap, yol haritası örneği, yol haritası nasıl hazırlanır'
+    }
   }
 };
 

@@ -85,15 +85,21 @@ export default function ToolLandingPage({ sayfa }: { sayfa: ToolPage }) {
     // JSON'dan değil aktif dilden alınıyor. İngilizcede JSON'daki elle yazılmış
     // metin daha iyi, orada o kalıyor.
     const ingilizce = i18n.language.startsWith('en');
+    // Kılavuzun içindeki elle yazılmış SEO metni öncelikli. Hazır HTML'i üreten
+    // script de aynı alanı okuyor (bkz. scripts/staticPages.mjs), yani
+    // sunucudan gelen başlık ile buranın yazdığı başlık ayrışmıyor. Kılavuz
+    // henüz inmemişken araç adına düşülüyor; metin gelince düzeliyor.
     sayfaMetaAyarla({
-      title: ingilizce ? sayfa.title : `${baslik} | Klarsti`,
-      description: ingilizce ? sayfa.description : kisaAciklama || sayfa.description,
+      title: kilavuz?.seo?.title || (ingilizce ? sayfa.title : `${baslik} | Klarsti`),
+      description:
+        kilavuz?.seo?.description ||
+        (ingilizce ? sayfa.description : kisaAciklama || sayfa.description),
       canonical: `https://klarsti.com${dilliYol(i18n.language, sayfa.slug)}`
     });
     // Kullanıcı buradan tanıtım sayfasına ya da uygulamaya geçtiğinde sekme
     // başlığı bu araçta takılı kalmasın.
     return () => sayfaMetaSifirla();
-  }, [sayfa, i18n.language, baslik, kisaAciklama]);
+  }, [sayfa, i18n.language, baslik, kisaAciklama, kilavuz]);
 
   useEffect(() => {
     let iptal = false;

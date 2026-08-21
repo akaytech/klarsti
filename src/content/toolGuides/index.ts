@@ -1,6 +1,6 @@
 import type { ToolGuideBundle } from './types';
 
-export type { GuideShortcut, ToolGuide, ToolGuideBundle, ToolGuideExample, ToolGuideFaq } from './types';
+export type { GuideShortcut, ToolGuide, ToolGuideBundle, ToolGuideExample, ToolGuideFaq, ToolGuideSeo } from './types';
 
 // Kılavuz metinleri i18n dosyalarına konmuyor: on dil × araç başına kırk satır,
 // ilk açılışta hiç okunmayacak bir yükü ana pakete bindiriyor. Bunun yerine dil

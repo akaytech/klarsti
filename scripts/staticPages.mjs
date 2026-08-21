@@ -103,6 +103,15 @@ const blogListesi = oku('blogPage.json');
 // yazilmiyor: onlar locale dosyalarindaki titleKey'den geliyor.
 const metaCeviri = oku('sayfaMetaCevirileri.json');
 
+// Arayuzdeki arac adi: menude ve sayfa basliginda gorunen. Uretilen HTML de
+// ayni adi kullanmali, yoksa sunucudan gelen baslik ile React'in yazdigi
+// baslik birbirinden ayriliyor ("Karar Matrisi" / "Karar matrisi").
+const ARAC_ETIKETI = Object.fromEntries(
+  [...fs
+    .readFileSync(path.join(KOK, 'src/config/tools.ts'), 'utf8')
+    .matchAll(/id: '([a-z0-9]+)',[^}]*?labelKey: '([a-z0-9_]+)'/g)].map((m) => [m[1], m[2]])
+);
+
 const TUR = { ARAC: 'arac', YASAL: 'yasal', GIRIS: 'giris', ILETISIM: 'iletisim', HAKKIMIZDA: 'hakkimizda', BLOG: 'blog' };
 const ONCELIK = { [TUR.ARAC]: '0.8', [TUR.BLOG]: '0.7', [TUR.ILETISIM]: '0.6', [TUR.HAKKIMIZDA]: '0.6', [TUR.GIRIS]: '0.5', [TUR.YASAL]: '0.3' };
 const sayfalar = [
@@ -578,7 +587,23 @@ function sayfaMetni(sayfa, dil) {
   const marka = ' | Klarsti';
   if (aracMi(sayfa)) {
     const k = kilavuzlar[dil]?.[sayfa.toolId];
-    const ad = k?.title || sayfa.name;
+    // Elle yazilmis SEO metni varsa o kullaniliyor: aranan kelimeleri tasiyan
+    // baslik, aracin sade adindan cok daha iyi siraliyor. Metin kilavuzun
+    // icinde duruyor (bkz. toolGuides/types.ts), yani uygulamanin cizdigi
+    // baslikla bu dosyanin yazdigi baslik ayni kaynaktan geliyor.
+    if (k?.seo) {
+      return {
+        ...sayfa,
+        name: k.seo.name,
+        title: k.seo.title,
+        description: kirp(k.seo.description),
+        keywords: k.seo.keywords
+      };
+    }
+    // Kilavuz basligi degil arayuzdeki etiket: React sayfa acilinca basligi
+    // ondan yaziyor, ikisi ayrilmasin.
+    const etiket = ARAC_ETIKETI[sayfa.toolId] && yerel[dil][ARAC_ETIKETI[sayfa.toolId]];
+    const ad = etiket || k?.title || sayfa.name;
     return {
       ...sayfa,
       name: ad,

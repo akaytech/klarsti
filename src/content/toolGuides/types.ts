@@ -32,6 +32,28 @@ export interface ToolGuideExample {
   outcome: string;
 }
 
+/**
+ * Aracın herkese açık sayfasının arama motoru metni.
+ *
+ * Neden burada: bu metinler dile göre değişiyor ve kılavuzun kendisi zaten dil
+ * başına ayrı dosyada, gecikmeli yükleniyor. Ayrı bir dosyada tutulsaydı ya
+ * on bir dili birden tanıtım paketine sokardı ya da ikinci bir yükleme
+ * gerekirdi. Ayrıca hazır HTML'i üreten script de bu dosyaları zaten okuyor
+ * (bkz. scripts/staticPages.mjs), yani başlığın tek bir kaynağı oluyor:
+ * sunucudan gelen sayfa ile React'in yazdığı başlık ayrışmıyor.
+ *
+ * Yazılmayan dilde eski davranış sürüyor: arayüzdeki araç adı + ' | Klarsti'.
+ */
+export interface ToolGuideSeo {
+  /** Arama sonucunda görünen tam başlık; sonundaki ' | Klarsti' dahil. */
+  title: string;
+  /** Arama sonucunun iki satırlık açıklaması. */
+  description: string;
+  keywords: string;
+  /** Kırıntı yolunda ve yapılandırılmış veride görünen sade ad. */
+  name: string;
+}
+
 /** Sayfanın sonundaki soru-cevap. Google bunu arama sonucunda da gösterebiliyor. */
 export interface ToolGuideFaq {
   q: string;
@@ -50,6 +72,8 @@ export interface ToolGuide {
   /** Henüz yazılmamış dillerde yok; bölüm hiç çizilmez. */
   example?: ToolGuideExample;
   faq?: ToolGuideFaq[];
+  /** Yazılmamışsa araç adına düşülür. */
+  seo?: ToolGuideSeo;
 }
 
 /** Anahtar, `activeTool` değeriyle birebir aynı (wbs, 5whys, mindmap...). */

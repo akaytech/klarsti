@@ -33,7 +33,14 @@ const guides: ToolGuideBundle = {
       'Kästchen lassen sich nicht ziehen, die Anordnung ist automatisch. Willst du einen Zweig verschieben, lösche ihn und lege ihn an der richtigen Stelle neu an.',
       'Die Zweigfarben richten sich nach dem Hauptzweig an der Wurzel: gleiche Farbe heißt gleiche Oberkategorie.',
       'In einem Textfeld greifen Delete und F2 nicht; beende die Eingabe erst mit Enter oder Esc.'
-    ]
+    ],
+    seo: {
+      name: 'Mindmap',
+      title: 'Mindmap erstellen — kostenloses Mindmap-Tool | Klarsti',
+      description:
+        'Setze ein Thema in die Mitte und verzweige es; die Anordnung übernimmt das Programm. Zum Sammeln von Ideen, kostenlos.',
+      keywords: 'mindmap erstellen, mindmap online, mind map kostenlos, gedankenkarte, mindmap beispiel'
+    }
   },
 
   wbs: {
@@ -67,7 +74,14 @@ const guides: ToolGuideBundle = {
       'Ziehst du ohne Shift, bewegt sich nur das angefasste Kästchen; alles darunter bleibt liegen.',
       'Zerlege so lange, bis jedes Arbeitspaket klein genug ist, dass eine Person es allein abschließen kann.',
       'Ein Datum löschst du über das kleine Kreuz neben dem Datumsfeld im Rechtsklickmenü; die Uhrzeiten verschwinden mit.'
-    ]
+    ],
+    seo: {
+      name: 'Projektstrukturplan (PSP)',
+      title: 'Projektstrukturplan erstellen — PSP-Tool | Klarsti',
+      description:
+        'Zerlege dein Projekt in Phasen und Arbeitspakete, mit Status, Termin und Aufwand je Paket. Mit ausgefülltem Beispiel, kostenlos.',
+      keywords: 'projektstrukturplan, psp erstellen, work breakdown structure, projektstrukturplan beispiel, arbeitspakete'
+    }
   },
 
   '5whys': {
@@ -100,7 +114,14 @@ const guides: ToolGuideBundle = {
       'Eine Ursache kann mehrere Antworten haben; mehrfaches Strg-Klicken auf dasselbe Kästchen verzweigt sie.',
       'Stütze jede Antwort auf etwas Überprüfbares. "Unachtsamkeit" ist keine Ursache, sondern eine offene Frage.',
       'Eine im PSP als fehlgeschlagen markierte Aufgabe lässt sich direkt aus deren Rechtsklickmenü hierher schicken.'
-    ]
+    ],
+    seo: {
+      name: '5-Why-Methode',
+      title: '5-Why-Methode — die Ursache finden | Klarsti',
+      description:
+        'Frage fünfmal warum und komme vom Symptom zur eigentlichen Ursache. Schritt für Schritt erklärt, mit echtem Beispiel, kostenlos.',
+      keywords: '5 why methode, 5 warum, ursachenanalyse, root cause analyse, 5 why beispiel'
+    }
   },
 
   flowchart: {
@@ -129,7 +150,14 @@ const guides: ToolGuideBundle = {
       'Beschrifte jeden Pfad, der aus einer Entscheidung herausführt; der Leser muss sehen, welche Bedingung wohin führt.',
       'Passt ein Diagramm nicht mehr auf eine Seite, teile es: Verschiebe einen überladenen Abschnitt in ein Teilprozess-Kästchen und zeichne ihn separat.',
       'Das Rollen-Kästchen im Arbeitsablauf zeigt, wer einen Schritt ausführt; lass es weg, wenn du den Ablauf unabhängig von Personen beschreiben willst.'
-    ]
+    ],
+    seo: {
+      name: 'Flussdiagramm',
+      title: 'Flussdiagramm erstellen — kostenloses Tool | Klarsti',
+      description:
+        'Zeichne Prozessschritte, Entscheidungspunkte und Verzweigungen. Mit Erklärung der Symbole und einem Beispiel, kostenlos.',
+      keywords: 'flussdiagramm erstellen, flussdiagramm symbole, ablaufdiagramm, prozessdiagramm, flussdiagramm beispiel'
+    }
   },
 
   orgchart: {
@@ -158,7 +186,14 @@ const guides: ToolGuideBundle = {
       'Das Kästchen für offene Stellen hält unbesetzte Positionen sichtbar; damit liest sich das Diagramm zugleich als Einstellungsplan.',
       'Nutze die zweite Zeile für die Bezeichnung: oben Person oder Einheit, darunter die Rolle.',
       'Verwechsle die beiden Linienarten nicht: Die durchgezogene sagt, wem du berichtest, die gestrichelte, mit wem du arbeitest.'
-    ]
+    ],
+    seo: {
+      name: 'Organigramm',
+      title: 'Organigramm erstellen — kostenlos | Klarsti',
+      description:
+        'Zeige auf einer Seite, wer an wen berichtet, und finde unbesetzte Rollen. Mit einem echten Beispiel aus 20 Personen.',
+      keywords: 'organigramm erstellen, organigramm kostenlos, organisationsstruktur, firmen organigramm, organigramm vorlage'
+    }
   },
 
   swot: {
@@ -188,7 +223,14 @@ const guides: ToolGuideBundle = {
       'Stärken und Schwächen sind intern und in deiner Hand, Chancen und Risiken extern. Eine SWOT, die das vermischt, ist wertlos.',
       'Die eigentliche Arbeit ist das Verknüpfen: Welche Stärke greift welche Chance auf, welche Schwäche öffnet welchem Risiko die Tür?',
       'Ein Feld mit zehn Punkten zu füllen und ein anderes leer zu lassen, ist keine Analyse, sondern Parteinahme.'
-    ]
+    ],
+    seo: {
+      name: 'SWOT-Analyse',
+      title: 'SWOT-Analyse erstellen — kostenlose Vorlage | Klarsti',
+      description:
+        'Stelle Stärken und Schwächen den Chancen und Risiken gegenüber und lies die vier Felder zusammen. Mit ausgefülltem Beispiel.',
+      keywords: 'swot analyse, swot analyse erstellen, swot analyse beispiel, stärken schwächen analyse, swot vorlage'
+    }
   },
 
   ishikawa: {
@@ -215,7 +257,14 @@ const guides: ToolGuideBundle = {
       'Du musst nicht jede Kategorie füllen; eine leere Kategorie ist ebenfalls eine Information.',
       'Schreib auf, was geschehen ist, nicht das Symptom: nicht "war zu spät", sondern "die Freigabe lag drei Tage".',
       'Nimm die stärksten Kandidaten mit in die 5-Warum-Analyse. Ishikawa gibt Breite, 5 Warum gibt Tiefe.'
-    ]
+    ],
+    seo: {
+      name: 'Ishikawa-Diagramm',
+      title: 'Ishikawa-Diagramm erstellen — Fischgrätendiagramm | Klarsti',
+      description:
+        'Sortiere mögliche Ursachen nach Mensch, Methode, Maschine und Material und sieh, wo du anfangen solltest. Mit Beispiel, kostenlos.',
+      keywords: 'ishikawa diagramm, fischgrätendiagramm, ursache wirkungs diagramm, 6m methode, ishikawa beispiel'
+    }
   },
 
   pdca: {
@@ -242,7 +291,14 @@ const guides: ToolGuideBundle = {
       'Schreib in die Check-Phase etwas Messbares. Ohne Zahl hinter "ist es besser geworden?" schließt sich der Zyklus nie.',
       'Was aus der Act-Phase herauskommt, ist die Eingabe für die Plan-Phase der nächsten Runde.',
       'Versuch nicht, alle vier Felder gleichzeitig zu füllen; die Reihenfolge ist die Methode.'
-    ]
+    ],
+    seo: {
+      name: 'PDCA-Zyklus',
+      title: 'PDCA-Zyklus — kontinuierliche Verbesserung | Klarsti',
+      description:
+        'Plan, Do, Check, Act: kleine Versuche durchführen und das Ergebnis messen. Mit einem vollständigen Zyklus als Beispiel.',
+      keywords: 'pdca zyklus, demingkreis, kontinuierliche verbesserung, kvp, pdca beispiel'
+    }
   },
 
   waterfall: {
@@ -270,7 +326,14 @@ const guides: ToolGuideBundle = {
       'Es gibt keine Schaltfläche, um eine Phase wieder zu öffnen; hast du versehentlich abgeschlossen, hilft nur Rückgängig.',
       'Vergewissere dich vor dem Abschluss, dass die Phase wirklich vollständig ist — mit dem Abschluss werden auch die Texte gesperrt.',
       'Ändern sich Anforderungen unterwegs, engt dich der Wasserfall ein; dann arbeiten PSP oder PDCA angenehmer.'
-    ]
+    ],
+    seo: {
+      name: 'Wasserfallmodell',
+      title: 'Wasserfallmodell im Projektmanagement | Klarsti',
+      description:
+        'Anforderung, Design, Umsetzung, Test und Übergabe der Reihe nach. Mit Beispiel und dem Unterschied zu agilen Methoden.',
+      keywords: 'wasserfallmodell, wasserfallmodell phasen, wasserfall vs agil, projektmanagement methoden, wasserfallmodell beispiel'
+    }
   },
 
   fta: {
@@ -300,7 +363,14 @@ const guides: ToolGuideBundle = {
       'Ein UND-Gatter multipliziert die Wahrscheinlichkeiten darunter — alles muss eintreten, das Ergebnis wird kleiner. Ein ODER-Gatter braucht nur eines, das Ergebnis wächst.',
       'Zweige ohne Wahrscheinlichkeit zählen nicht mit; die Zahl oben deckt nur ab, was du eingetragen hast.',
       'Basisereignisse sind Kreise, unentwickelte Ereignisse Rauten: Markierst du die nicht weiter verfolgten Zweige, bleibt der Baum ehrlich.'
-    ]
+    ],
+    seo: {
+      name: 'Fehlerbaumanalyse (FTA)',
+      title: 'Fehlerbaumanalyse (FTA) erstellen | Klarsti',
+      description:
+        'Setze das unerwünschte Ereignis nach oben und löse mit UND/ODER-Gattern auf, welche Ausfälle zusammentreffen müssen. Kostenlos.',
+      keywords: 'fehlerbaumanalyse, fta analyse, fehlerbaum erstellen, und oder gatter, fehlerbaumanalyse beispiel'
+    }
   },
 
   vsm: {
@@ -330,7 +400,14 @@ const guides: ToolGuideBundle = {
       'Lässt du Bestände weg, sieht die Gesamtzeit besser aus als sie ist — dort steckt die eigentliche Information.',
       'Nicht mit der Kette verbundene Kästen zählen nicht zu den Summen und werden unten als Warnung gezählt. Verbinde den Fluss als eine Linie.',
       'Setze den Kaizen-Blitz dorthin, wo du verbessern willst; so liest man eine Soll-Zustand-Karte.',
-    ]
+    ],
+    seo: {
+      name: 'Wertstromanalyse (VSM)',
+      title: 'Wertstromanalyse (VSM) erstellen | Klarsti',
+      description:
+        'Stelle Bearbeitungszeit und Wartezeit je Schritt gegenüber und sieh, wo die Zeit verloren geht. Mit Zahlenbeispiel, kostenlos.',
+      keywords: 'wertstromanalyse, value stream mapping, wertstromdesign, lean management, wertstromanalyse beispiel'
+    }
   },
 
   pareto: {
@@ -356,7 +433,14 @@ const guides: ToolGuideBundle = {
       'Statt Häufigkeit kannst du Kosten oder verlorene Zeit eintragen — solange alle Zeilen dieselbe Einheit verwenden.',
       'Hör dort auf, wo die Kurve flach wird: Der lange Schwanz rechts lohnt die Mühe nicht.',
       'Zerlegst du die Kategorien zu fein, sticht nichts mehr hervor und das Diagramm verflacht. Fass Ähnliches zusammen.'
-    ]
+    ],
+    seo: {
+      name: 'Pareto-Analyse',
+      title: 'Pareto-Analyse und 80/20-Diagramm | Klarsti',
+      description:
+        'Sortiere Ursachen nach Häufigkeit und finde die wenigen, die den Großteil des Problems ausmachen. Mit Beispiel, kostenlos.',
+      keywords: 'pareto analyse, pareto diagramm, 80 20 regel, pareto prinzip, pareto analyse beispiel'
+    }
   },
 
   histogram: {
@@ -384,7 +468,14 @@ const guides: ToolGuideBundle = {
       'Eine zweigipflige Verteilung heißt meist, dass zwei Prozesse (zwei Schichten, zwei Maschinen) vermischt wurden.',
       'Cpk ab 1,33 gilt allgemein als fähig; unter 1 hält der Prozess die Grenzen nicht ein.',
       'Gutes Cp bei schlechtem Cpk heißt: die Streuung ist eng, aber der Mittelwert ist verschoben — eine Justage genügt.',
-    ]
+    ],
+    seo: {
+      name: 'Histogramm',
+      title: 'Histogramm erstellen — Verteilung sichtbar machen | Klarsti',
+      description:
+        'Teile Messwerte in Klassen und sieh, was der Mittelwert verbirgt. Erklärt, was zwei Gipfel bedeuten. Kostenlos.',
+      keywords: 'histogramm erstellen, histogramm, häufigkeitsverteilung, histogramm beispiel, verteilung darstellen'
+    }
   },
 
   decision: {
@@ -411,7 +502,14 @@ const guides: ToolGuideBundle = {
       'Lege die Gewichtungen fest, bevor du zu bewerten beginnst. Sie nachträglich zu verschieben heißt nicht entscheiden, sondern das gewünschte Ergebnis herstellen.',
       'Die Matrix entscheidet nicht für dich; sie macht sichtbar, wonach du entschieden hast.',
       'Liegen zwei Summen sehr nah beieinander, lautet die Antwort nicht "gleichwertig", sondern "diese Kriterien trennen nicht" — such ein fehlendes Kriterium.'
-    ]
+    ],
+    seo: {
+      name: 'Entscheidungsmatrix',
+      title: 'Entscheidungsmatrix — gewichtete Bewertung | Klarsti',
+      description:
+        'Bewerte Optionen nach gewichteten Kriterien und mache sichtbar, worauf die Entscheidung wirklich beruht. Mit Beispiel, kostenlos.',
+      keywords: 'entscheidungsmatrix, nutzwertanalyse, entscheidungsmatrix beispiel, gewichtete bewertung, entscheidungshilfe'
+    }
   },
 
   notepad: {
@@ -435,7 +533,14 @@ const guides: ToolGuideBundle = {
       'Rechtsklick auf eine PSP-Aufgabe und "Zur Agenda hinzufügen" — sie landet mit ihrem eigenen Datum hier.',
       'Rückgängig und Wiederholen wirken in der Agenda nicht; sie führt keine Historie.',
       'Die Liste unter dem Kalender zeigt deine anstehenden Einträge; fang dort an, wenn du nicht weißt, welchen Tag du öffnen sollst.'
-    ]
+    ],
+    seo: {
+      name: 'Tagesplaner',
+      title: 'Tagesplaner mit Tagesrückblick | Klarsti',
+      description:
+        'Schreib den Tag morgens auf und geh ihn abends durch. Dein Planer bleibt privat und wird beim Teilen eines Projekts nicht mitgeteilt.',
+      keywords: 'tagesplaner, tagesrückblick, tagesplanung, to do liste, tagesplaner online'
+    }
   },
   gantt: {
     title: "Gantt-Diagramm",
@@ -457,7 +562,14 @@ const guides: ToolGuideBundle = {
       "Für Marken ohne Dauer wähle Meilenstein: statt eines Balkens erscheint eine Raute.",
       "Die rote Linie zeigt heute. Unfertige Aufgaben mit abgelaufenem Enddatum bekommen einen roten Rahmen.",
       "Tag / Woche / Monat stauchen oder dehnen den Kalender. Die Monatsansicht zeigt lange Pläne komplett."
-    ]
+    ],
+    seo: {
+      name: 'Gantt-Diagramm',
+      title: 'Gantt-Diagramm erstellen — Projektplan | Klarsti',
+      description:
+        'Lege Aufgaben auf den Kalender und sieh, was gleichzeitig läuft und wo der Puffer fehlt. Mit Achtwochenbeispiel, kostenlos.',
+      keywords: 'gantt diagramm erstellen, gantt chart, projektplan, balkendiagramm projekt, gantt diagramm beispiel'
+    }
   },
 
   roadmap: {
@@ -495,7 +607,14 @@ const guides: ToolGuideBundle = {
       "Übersprungene Kästchen zählen als erledigt: ein bewusst ausgelassenes Thema soll den Prozentwert nicht dauerhaft drücken.",
       "Die eingetragenen Stunden werden summiert; die Leiste oben zeigt den Rest der offenen Kästchen.",
       "Ein Link muss mit http oder https beginnen, sonst wird er nicht angenommen."
-    ]
+    ],
+    seo: {
+      name: 'Roadmap',
+      title: 'Roadmap erstellen — Produkt-Roadmap | Klarsti',
+      description:
+        'Teile die kommende Zeit in Etappen und schreib auch auf, was ihr bewusst nicht macht. Mit Sechsmonatsbeispiel, kostenlos.',
+      keywords: 'roadmap erstellen, produkt roadmap, projekt roadmap, roadmap vorlage, roadmap beispiel'
+    }
   }
 };
 

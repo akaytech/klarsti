@@ -33,7 +33,14 @@ const guides: ToolGuideBundle = {
       'Las cajas no se arrastran, la disposición es automática. Si quieres mover una rama, bórrala y créala en el sitio correcto.',
       'El color de cada rama viene de la rama principal que sale de la raíz: mismo color significa mismo encabezado.',
       'Dentro de un campo de texto, Delete y F2 no actúan; termina antes con Enter o Esc.'
-    ]
+    ],
+    seo: {
+      name: 'Mapa mental',
+      title: 'Crear un mapa mental — gratis y sin registro | Klarsti',
+      description:
+        'Pon un tema en el centro y ramifícalo; del orden se encarga el programa. Para reunir ideas rápido, gratis.',
+      keywords: 'mapa mental, crear mapa mental, mapa mental online, mind map gratis, mapa mental ejemplo'
+    }
   },
 
   wbs: {
@@ -67,7 +74,14 @@ const guides: ToolGuideBundle = {
       'Si arrastras sin Shift, solo se mueve el cuadro que agarras; lo de abajo se queda.',
       'Sigue desglosando hasta que cada paquete lo pueda terminar una sola persona.',
       'Para borrar una fecha, usa la crucecita junto al campo de fecha en el menú del clic derecho; las horas se borran con ella.'
-    ]
+    ],
+    seo: {
+      name: 'Estructura de desglose del trabajo (EDT)',
+      title: 'Estructura de desglose del trabajo (EDT/WBS) | Klarsti',
+      description:
+        'Divide el proyecto en fases y paquetes de trabajo, con estado, fecha y duración en cada uno. Con ejemplo resuelto, gratis.',
+      keywords: 'estructura de desglose del trabajo, edt proyecto, wbs, edt ejemplo, desglose de tareas'
+    }
   },
 
   '5whys': {
@@ -100,7 +114,14 @@ const guides: ToolGuideBundle = {
       'Una causa puede tener más de una respuesta; repite el Ctrl+clic sobre la misma caja para ramificarla.',
       'Apoya cada respuesta en algo verificable. "Descuido" no es una causa raíz, es una pregunta sin responder.',
       'Una tarea de la EDT marcada como fallida se puede enviar aquí como problema desde su propio menú contextual.'
-    ]
+    ],
+    seo: {
+      name: 'Análisis de los 5 porqués',
+      title: 'Análisis de los 5 porqués — encuentra la causa raíz | Klarsti',
+      description:
+        'Pregunta por qué cinco veces y pasa del síntoma a la causa real. Explicado paso a paso, con un ejemplo real y gratis.',
+      keywords: '5 porqués, análisis causa raíz, 5 whys, 5 porques ejemplo, método de los cinco porqués'
+    }
   },
 
   flowchart: {
@@ -129,7 +150,14 @@ const guides: ToolGuideBundle = {
       'Etiqueta todos los caminos que salen de una decisión; quien lo lea debe ver qué condición lleva a dónde.',
       'Si un diagrama ya no cabe en una pantalla, divídelo: pasa la parte cargada a una caja de subproceso y dibújala aparte.',
       'La caja de Rol en el flujo de trabajo sirve para indicar quién ejecuta un paso; déjala fuera si quieres describir el proceso al margen de las personas.'
-    ]
+    ],
+    seo: {
+      name: 'Diagrama de flujo',
+      title: 'Crear un diagrama de flujo — gratis | Klarsti',
+      description:
+        'Dibuja los pasos del proceso, los puntos de decisión y las bifurcaciones. Con los símbolos explicados y un ejemplo.',
+      keywords: 'diagrama de flujo, crear diagrama de flujo, símbolos diagrama de flujo, diagrama de flujo online, flujograma'
+    }
   },
 
   orgchart: {
@@ -158,7 +186,14 @@ const guides: ToolGuideBundle = {
       'La caja de vacante mantiene visibles los puestos sin cubrir, así el organigrama sirve también como plan de contratación.',
       'Usa la segunda línea de la caja para el cargo: arriba la persona o unidad, debajo el rol.',
       'No mezcles los dos estilos de línea: la continua dice a quién reportas, la discontinua con quién trabajas.'
-    ]
+    ],
+    seo: {
+      name: 'Organigrama',
+      title: 'Crear un organigrama — gratis | Klarsti',
+      description:
+        'Muestra en una página quién reporta a quién y detecta los puestos sin cubrir. Con un ejemplo real de 20 personas.',
+      keywords: 'organigrama, crear organigrama, organigrama empresa, organigrama online, organigrama ejemplo'
+    }
   },
 
   swot: {
@@ -188,7 +223,14 @@ const guides: ToolGuideBundle = {
       'Fortalezas y debilidades son internas, están en tu mano; oportunidades y amenazas son externas. Un SWOT que confunde ambas no sirve.',
       'El trabajo de verdad está en cruzar los cuadros: qué fortaleza aprovecha qué oportunidad, qué debilidad te expone a qué amenaza.',
       'Llenar un cuadro con diez puntos y dejar otro vacío no es analizar, es tomar partido.'
-    ]
+    ],
+    seo: {
+      name: 'Análisis DAFO / FODA',
+      title: 'Análisis DAFO (FODA) — cómo hacerlo, gratis | Klarsti',
+      description:
+        'Compara fortalezas y debilidades con oportunidades y amenazas, y cruza los cuatro cuadrantes. Con ejemplo resuelto.',
+      keywords: 'análisis dafo, análisis foda, matriz dafo, cómo hacer un dafo, dafo ejemplo'
+    }
   },
 
   ishikawa: {
@@ -215,7 +257,14 @@ const guides: ToolGuideBundle = {
       'No hace falta llenar todas las categorías; una categoría vacía también es información.',
       'Escribe lo que ocurrió, no el síntoma: no "llegó tarde", sino "la aprobación estuvo tres días parada".',
       'Lleva los candidatos más fuertes a los 5 Porqués. Ishikawa da amplitud, los 5 Porqués dan profundidad.'
-    ]
+    ],
+    seo: {
+      name: 'Diagrama de Ishikawa',
+      title: 'Diagrama de Ishikawa — espina de pescado | Klarsti',
+      description:
+        'Agrupa las causas posibles por persona, método, máquina y material, y descubre por dónde empezar. Con ejemplo, gratis.',
+      keywords: 'diagrama de ishikawa, espina de pescado, diagrama causa efecto, ishikawa ejemplo, método 6m'
+    }
   },
 
   pdca: {
@@ -242,7 +291,14 @@ const guides: ToolGuideBundle = {
       'Pon algo medible en la fase de Verificar. Si "¿ha mejorado?" no tiene un número detrás, el ciclo no cierra.',
       'Lo que sale de la fase Actuar es la entrada del Planificar de la vuelta siguiente.',
       'No intentes llenar los cuatro cuadros a la vez; ir en orden es el método.'
-    ]
+    ],
+    seo: {
+      name: 'Ciclo PDCA (PHVA)',
+      title: 'Ciclo PDCA (PHVA) — mejora continua | Klarsti',
+      description:
+        'Planificar, Hacer, Verificar y Actuar: haz pruebas pequeñas y mide el resultado. Con un ciclo completo de ejemplo.',
+      keywords: 'ciclo pdca, ciclo phva, mejora continua, círculo de deming, pdca ejemplo'
+    }
   },
 
   waterfall: {
@@ -270,7 +326,14 @@ const guides: ToolGuideBundle = {
       'No hay botón para reabrir una fase; si la completaste por error, deshacer es la única vuelta atrás.',
       'Asegúrate de que la fase está realmente terminada antes de cerrarla: al cerrarse también se bloquea el texto.',
       'Si los requisitos van a cambiar sobre la marcha, la cascada te aprieta; ahí funcionan mejor la EDT o el PDCA.'
-    ]
+    ],
+    seo: {
+      name: 'Modelo en cascada',
+      title: 'Modelo en cascada en gestión de proyectos | Klarsti',
+      description:
+        'Requisitos, diseño, desarrollo, pruebas y entrega en orden. Con ejemplo y la diferencia frente a los métodos ágiles.',
+      keywords: 'modelo en cascada, metodología cascada, cascada vs ágil, fases modelo en cascada, waterfall proyecto'
+    }
   },
 
   fta: {
@@ -300,7 +363,14 @@ const guides: ToolGuideBundle = {
       'Una puerta Y multiplica las probabilidades de abajo: todo debe ocurrir y el resultado se reduce. Una puerta O necesita solo una, y el resultado crece.',
       'Las ramas sin probabilidad no cuentan; el número de arriba solo cubre los datos que introdujiste.',
       'Los sucesos básicos son círculos y los no desarrollados, rombos: marcar las ramas que no profundizaste mantiene honesto el árbol.'
-    ]
+    ],
+    seo: {
+      name: 'Análisis de árbol de fallos (FTA)',
+      title: 'Análisis de árbol de fallos (FTA) | Klarsti',
+      description:
+        'Coloca el suceso no deseado arriba y resuelve con puertas Y/O qué fallos deben coincidir. Con ejemplo, gratis.',
+      keywords: 'árbol de fallos, análisis de árbol de fallos, fta, puerta y o, árbol de fallos ejemplo'
+    }
   },
 
   vsm: {
@@ -330,7 +400,14 @@ const guides: ToolGuideBundle = {
       'Si dejas el inventario fuera del mapa, el tiempo total se ve mejor de lo que es: ahí se esconde la información real.',
       'Las cajas no conectadas a la cadena quedan fuera de los totales y se cuentan como aviso abajo. Conecta el flujo en una sola línea.',
       'Pon la ráfaga kaizen donde vas a mejorar; así se lee un mapa de estado futuro.',
-    ]
+    ],
+    seo: {
+      name: 'Mapa de flujo de valor (VSM)',
+      title: 'Mapa de flujo de valor (VSM) | Klarsti',
+      description:
+        'Compara el tiempo de proceso con la espera de cada paso y ve dónde se pierde el tiempo. Con ejemplo numérico, gratis.',
+      keywords: 'mapa de flujo de valor, vsm, value stream mapping, lean manufacturing, vsm ejemplo'
+    }
   },
 
   pareto: {
@@ -356,7 +433,14 @@ const guides: ToolGuideBundle = {
       'En vez de frecuencia puedes meter coste o tiempo perdido, siempre que todas las filas usen la misma unidad.',
       'Párate donde la curva se aplana: la cola larga de la derecha no compensa el esfuerzo.',
       'Si troceas demasiado las categorías, nada destaca y el gráfico se aplana. Junta lo parecido.'
-    ]
+    ],
+    seo: {
+      name: 'Análisis de Pareto',
+      title: 'Análisis de Pareto y gráfico 80/20 | Klarsti',
+      description:
+        'Ordena las causas por frecuencia y encuentra las pocas que generan la mayor parte del problema. Con ejemplo, gratis.',
+      keywords: 'análisis de pareto, diagrama de pareto, regla 80 20, principio de pareto, pareto ejemplo'
+    }
   },
 
   histogram: {
@@ -384,7 +468,14 @@ const guides: ToolGuideBundle = {
       'Una distribución de dos picos suele indicar que se mezclaron dos procesos (dos turnos, dos máquinas).',
       'Cpk de 1,33 o más suele considerarse capaz; por debajo de 1 el proceso no sostiene los límites.',
       'Buen Cp con mal Cpk significa dispersión estrecha pero media desplazada: se corrige ajustando, no hay que estrechar la distribución.',
-    ]
+    ],
+    seo: {
+      name: 'Histograma',
+      title: 'Crear un histograma — ver la distribución | Klarsti',
+      description:
+        'Agrupa tus mediciones en intervalos y descubre lo que la media esconde. Explica qué significan dos picos. Gratis.',
+      keywords: 'histograma, crear histograma, histograma online, distribución de frecuencias, histograma ejemplo'
+    }
   },
 
   decision: {
@@ -411,7 +502,14 @@ const guides: ToolGuideBundle = {
       'Fija los pesos antes de empezar a puntuar. Retocarlos después no es decidir, es fabricar la respuesta que querías.',
       'La matriz no decide por ti; hace visible en función de qué decidiste.',
       'Si dos totales quedan muy cerca, la respuesta no es "empate" sino "estos criterios no los separan": busca el criterio que falta.'
-    ]
+    ],
+    seo: {
+      name: 'Matriz de decisión',
+      title: 'Matriz de decisión — puntuación ponderada | Klarsti',
+      description:
+        'Puntúa las opciones con los mismos criterios y sus pesos, y deja a la vista en qué se apoya la decisión. Con ejemplo, gratis.',
+      keywords: 'matriz de decisión, matriz ponderada, toma de decisiones, matriz de decisión ejemplo, comparar opciones'
+    }
   },
 
   notepad: {
@@ -435,7 +533,14 @@ const guides: ToolGuideBundle = {
       'Haz clic derecho en una tarea de la EDT y elige "Añadir a la agenda": aterriza aquí con su propia fecha.',
       'Deshacer y rehacer no funcionan en la agenda; no guarda historial.',
       'La lista bajo el calendario muestra tus próximas entradas; empieza por ahí si no sabes qué día abrir.'
-    ]
+    ],
+    seo: {
+      name: 'Agenda diaria',
+      title: 'Agenda diaria con revisión del día | Klarsti',
+      description:
+        'Escribe el día por la mañana y repásalo por la noche. Tu agenda es privada y no se comparte al compartir un proyecto.',
+      keywords: 'agenda diaria, planificador diario, revisión del día, lista de tareas, agenda online'
+    }
   },
   gantt: {
     title: "Diagrama de Gantt",
@@ -457,7 +562,14 @@ const guides: ToolGuideBundle = {
       "Para marcas sin duración usa hito: en lugar de barra aparece un rombo.",
       "La línea roja marca hoy. Lo que no está terminado y ya pasó su fecha sale con borde rojo.",
       "Día / semana / mes comprimen o abren el calendario. La vista de mes cabe un plan largo en una pantalla."
-    ]
+    ],
+    seo: {
+      name: 'Diagrama de Gantt',
+      title: 'Crear un diagrama de Gantt — calendario del proyecto | Klarsti',
+      description:
+        'Coloca las tareas en el calendario y ve qué corre en paralelo y dónde falta margen. Con ejemplo de ocho semanas, gratis.',
+      keywords: 'diagrama de gantt, crear diagrama de gantt, gantt online, cronograma de proyecto, gantt ejemplo'
+    }
   },
 
   roadmap: {
@@ -495,7 +607,14 @@ const guides: ToolGuideBundle = {
       "Las casillas omitidas cuentan como terminadas: un tema que decides no hacer no debe frenar el porcentaje para siempre.",
       "Las horas que anotas se suman; la franja muestra el total que queda en las casillas sin terminar.",
       "La dirección debe empezar por http o https; en otro caso no se acepta."
-    ]
+    ],
+    seo: {
+      name: 'Hoja de ruta',
+      title: 'Crear una hoja de ruta de producto | Klarsti',
+      description:
+        'Divide el próximo periodo en etapas y escribe también lo que no vais a hacer. Con ejemplo de seis meses, gratis.',
+      keywords: 'hoja de ruta, roadmap producto, hoja de ruta proyecto, roadmap ejemplo, plantilla hoja de ruta'
+    }
   }
 };
 

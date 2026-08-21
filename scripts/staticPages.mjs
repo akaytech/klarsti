@@ -773,6 +773,76 @@ fs.writeFileSync(
   'utf8'
 );
 
+/**
+ * llms.txt: sitenin yapay zeka asistanlarina kendini tanittigi dosya.
+ *
+ * Neden gerekli: uygulama tek sayfa ve sunucu bilinmeyen HER adrese
+ * index.html donduruyor (bkz. firebase.json'daki `**` rewrite). Bu yuzden
+ * /llms.txt istegi bos donmuyordu, 200 ile bir WEB SAYFASI donuyordu.
+ * PageSpeed'in "Ajan Tabanli Tarama" denetimi dosyayi alip Markdown bekliyor,
+ * eline HTML geciyor ve "H1 basligi yok, baglanti yok" diye dusuyordu.
+ * Gercek dosya konunca Firebase onu rewrite kuralindan ONCE servis ediyor.
+ *
+ * Neden elle yazilmiyor da uretiliyor: icerik sitemap ile ayni listelerden
+ * geliyor. Yeni bir arac ya da blog yazisi eklendiginde kendiliginden
+ * giriyor; elle tutulsa ilk degisiklikte bayatlardi.
+ *
+ * Neden yalnizca Ingilizce: llms.txt tek dosya, sitenin ana dili icin
+ * yaziliyor (bkz. llmstxt.org). 11 dilin hepsini listelemek dosyayi
+ * onbes katina cikarir ve okuyanin isine yaramaz; dil onekinin nasil
+ * calistigi asagida bir cumleyle anlatiliyor, gerisini asistan cozuyor.
+ */
+// Markdown'da baglanti metni koseli parantez gorurse baglanti kirilir.
+const mdKacir = (metin) => (metin || '').replace(/\s+/g, ' ').trim().replace(/([\[\]])/g, '\$1');
+const mdSatir = (ad, adres, aciklama) =>
+  `- [${mdKacir(ad)}](${adres})${aciklama ? ': ' + mdKacir(aciklama) : ''}`;
+// Ingilizce adreslerde dil oneki yok (bkz. dilliAdres).
+const mdSayfa = (s) => mdSatir(s.name, dilliAdres(VARSAYILAN_DIL, s.slug), s.description);
+
+const llms = [
+  // H1 sart: denetimin acikca aradigi tek bicimsel kural bu.
+  '# Klarsti',
+  '',
+  `> ${mdKacir(yerel[VARSAYILAN_DIL].hero_subtitle)}`,
+  '',
+  'Klarsti is a browser-based workspace for problem solving, root cause analysis and',
+  'planning. Every technique below is a separate interactive canvas that follows the',
+  'standard method of its own discipline. Work can be kept private or shared with a team.',
+  '',
+  `- The interface is available in ${DILLER.length} languages. English addresses carry no prefix`,
+  `  (${dilliAdres(VARSAYILAN_DIL, 'wbs')}); every other language uses a prefix`,
+  `  (${dilliAdres(DILLER.find((d) => d !== VARSAYILAN_DIL) || 'tr', 'wbs')}). The links below are the English versions.`,
+  '- Personal workspaces and shared-work links (/project/..., /work/..., /agenda) are behind',
+  '  sign-in and deliberately left out; they are also blocked in robots.txt.',
+  '',
+  '## Tools',
+  '',
+  ...araclar.map(mdSayfa),
+  '',
+  '## Blog',
+  '',
+  ...blogListesi.map(mdSayfa),
+  ...blogYazilari.map((y) =>
+    mdSatir(y.baslik, `${SITE}/blog/${y.slug}`, y.ozet || blogDuzMetin(y.govde).slice(0, 155))
+  ),
+  '',
+  '## About',
+  '',
+  ...hakkimizda.map(mdSayfa),
+  ...iletisim.map(mdSayfa),
+  '',
+  // "Optional" llms.txt'te ozel bir baslik: okuyan asistan baglami darsa bu
+  // bolumu atlayabilir. Giris ekranlari ve yasal metinler tam olarak bu
+  // tarife uyuyor; sorunun cevabi neredeyse hicbir zaman burada olmuyor.
+  '## Optional',
+  '',
+  ...girisler.map(mdSayfa),
+  ...yasal.map(mdSayfa),
+  ''
+].join('\n');
+
+fs.writeFileSync(path.join(DIST, 'llms.txt'), llms, 'utf8');
+
 console.log(
-  `staticPages: ${uretilen} sayfa (${sayfalar.length} sayfa x ${DILLER.length} dil + ${blogYazilari.length} blog yazisi) + sitemap uretildi`
+  `staticPages: ${uretilen} sayfa (${sayfalar.length} sayfa x ${DILLER.length} dil + ${blogYazilari.length} blog yazisi) + sitemap + llms.txt uretildi`
 );

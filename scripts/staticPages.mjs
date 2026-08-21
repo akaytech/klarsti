@@ -40,6 +40,13 @@ if (DILLER.length < 2) {
   console.error('staticPages: languages.ts icinden dil listesi okunamadi.');
   process.exit(1);
 }
+// Dilin kendi dilindeki adi ("Turkce", "Deutsch"): sayfa altindaki dil
+// satirinda yaziyor. Ayni dosyadan okunuyor ki iki liste birbirinden sapmasin.
+const DIL_ADLARI = Object.fromEntries(
+  [...fs
+    .readFileSync(path.join(KOK, 'src/config/languages.ts'), 'utf8')
+    .matchAll(/code:\s*'([a-z-]+)',\s*nativeName:\s*'([^']+)'/g)].map((m) => [m[1], m[2]])
+);
 // Ingilizce adres oneki ALMIYOR: /wbs ingilizce, /tr/wbs turkce. Boylece
 // bugune kadar paylasilmis adresler kirilmiyor (bkz. src/utils/dilYolu.ts).
 const VARSAYILAN_DIL = 'en';
@@ -231,7 +238,8 @@ const baslikSeti = (dil) => ({
   shortcuts: yerel[dil].guide_shortcuts,
   tips: yerel[dil].guide_tips,
   other: yerel[dil].tool_page_other_tools,
-  kayit: yerel[dil].register_now
+  kayit: yerel[dil].register_now,
+  dil: yerel[dil].language_selector
 });
 
 // `Mod` arayüzde macOS'ta ⌘, başka yerde Ctrl çiziliyor. Statik dosya tek bir
@@ -259,6 +267,34 @@ const bolum = (baslik, icerik) => `
  * aynı metin ve aynı stiller olduğu için değişim göze çarpmıyor; yan fayda,
  * sayfanın boş ekranla değil dolu açılması.
  */
+/**
+ * Sayfanin dil surumlerine giden gercek linkler; hazir HTML'in icinde.
+ *
+ * Bastaki <head> hreflang etiketleri "bu sayfanin karsiliklari sunlar" diyor
+ * ama Google adresleri asil linkleri takip ederek buluyor. Uygulamanin alt
+ * bilgisinde de bu satir var (bkz. PublicFooter.tsx); orasi React ile
+ * ciziliyor, yani Google'in once sayfayi calistirmasi gerekiyor. Burada
+ * dosyanin icinde durunca ilk taramada goruluyor.
+ *
+ * DILLER sirasi kullaniciya gorunen sirayla ayni degil, onemli de degil:
+ * bu satirin isi gezinmek degil, adresleri kesfedilebilir kilmak.
+ */
+function dilLinkleri(slug, aktifDil, BASLIK) {
+  const satirlar = DILLER.map((d) => {
+    const secili = d === aktifDil;
+    const sinif = secili
+      ? 'font-bold text-slate-700 dark:text-slate-200'
+      : 'hover:text-slate-700 dark:hover:text-slate-300';
+    return `<a href="${dilliAdres(d, slug)}" hreflang="${d}" lang="${d}" class="${sinif}">${kacir(DIL_ADLARI[d] || d)}</a>`;
+  }).join('\n          ');
+
+  return `<nav aria-label="${kacir(BASLIK.dil)}" class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950">
+      <div class="container mx-auto flex flex-wrap items-center justify-center gap-x-3 gap-y-2 px-6 py-6 text-xs text-slate-500 dark:text-slate-400">
+          ${satirlar}
+      </div>
+    </nav>`;
+}
+
 function govde(sayfa, kilavuz, digerleri, dil, BASLIK) {
   const bolumler = [];
 
@@ -332,6 +368,7 @@ function govde(sayfa, kilavuz, digerleri, dil, BASLIK) {
       </div>
     </section>
   </main>
+  ${dilLinkleri(sayfa.slug, dil, BASLIK)}
 </div>`;
 }
 

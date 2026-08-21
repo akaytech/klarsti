@@ -44,6 +44,11 @@ export default function PublicHeader() {
     return () => document.removeEventListener('mousedown', handleClickOutside, { capture: true });
   }, []);
 
+  // Üst çubuktaki linkler de bulunulan dilde kalmalı: /tr/wbs sayfasındaki
+  // logo öneksiz '/' adresine gidince kullanıcı İngilizce ana sayfaya
+  // düşüyordu ve arama motoru için Türkçe sürüm kopuk bir ada dönüyordu.
+  const dilliAdres = (hedef: string) => dilliYol(i18n.language, hedef);
+
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
     setShowLanguagePicker(false);
@@ -63,7 +68,7 @@ export default function PublicHeader() {
             "klarsti" yazısı 40 piksellik bir karede okunmuyordu. Marka adı
             logonun içinde yazdığı için yanındaki ayrı "Klarsti" yazısı da
             kaldırıldı, aynı şeyi iki kere söylüyordu. */}
-        <Link to="/" className="flex shrink-0 items-center gap-3 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
+        <Link to={dilliAdres('/')} className="flex shrink-0 items-center gap-3 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
           <img
             src={`${import.meta.env.BASE_URL}klarsti-yazi-logo.png`}
             alt="Klarsti"
@@ -152,7 +157,7 @@ export default function PublicHeader() {
             <div className="h-10 w-28" aria-hidden />
           ) : user ? (
             <button
-              onClick={() => navigate('/')}
+              onClick={() => navigate(dilliAdres('/'))}
               className="rounded-full bg-indigo-600 px-5 sm:px-6 py-2 sm:py-2.5 text-sm font-bold text-white shadow-lg shadow-indigo-600/30 transition-all hover:bg-indigo-700 hover:shadow-indigo-600/40 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0 active:translate-y-0"
             >
               {t('tool_page_open_app')}
@@ -163,13 +168,13 @@ export default function PublicHeader() {
                siteyi bunlara bağlayan tek iç linke bakıyor. */
             <>
               <Link
-                to="/login"
+                to={dilliAdres('/login')}
                 className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-800 px-4 sm:px-6 py-2.5 text-sm font-bold text-slate-700 dark:text-slate-200 transition-all hover:bg-slate-200 dark:hover:bg-slate-700"
               >
                 {t('login')}
               </Link>
               <Link
-                to="/register"
+                to={dilliAdres('/register')}
                 className="inline-flex items-center rounded-full bg-indigo-600 px-5 sm:px-6 py-2 sm:py-2.5 text-sm font-bold text-white shadow-lg shadow-indigo-600/30 transition-all hover:bg-indigo-700 hover:shadow-indigo-600/40 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0 active:translate-y-0"
               >
                 {t('register')}

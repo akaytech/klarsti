@@ -10,6 +10,9 @@
 // her zaman statik HTML'deki etiketleri okur. Yani burası önizlemeleri
 // etkilemiyor, statik üretim onun için var.
 
+import i18n from '../i18n';
+import { dilliYol } from './dilYolu';
+
 export interface SayfaMeta {
   title: string;
   description: string;
@@ -44,15 +47,17 @@ function metaYaz(ad: string, deger: string, ozellikMi = false) {
 // "varsayılan" sayılıyordu. Giriş sayfasından girip uygulamaya geçen kullanıcı
 // sekmesinde "Sign In | Klarsti" yazılı kalıyordu.
 //
-// Değerler index.html'deki title ve description ile aynı kalmalı; tanıtım
-// sayfası için hazır HTML üretilmiyor, sunucudan gelen dosya bu ikisini
-// taşıyor (bkz. scripts/staticPages.mjs).
-const VARSAYILAN: SayfaMeta = {
-  title: 'Klarsti — Problem solving and decision making that follows the method',
-  description:
-    'Problem solving, root cause analysis and planning tools that follow the actual method: SWOT, Fishbone, 5 Whys, Pareto, WBS, Gantt and more. Free while in early access.',
-  canonical: `${SITE}/`
-};
+// Metin sabit yazılmıyor, hazır ana sayfayı üreten yerle aynı yerden okunuyor
+// (bkz. scripts/staticPages.mjs): başlık hero_title, açıklama hero_subtitle.
+// Sabit yazılsaydı tek dile çakılırdı ve tanıtım sayfasındaki cümle
+// değiştiğinde burası sessizce eskirdi.
+function varsayilanMeta(): SayfaMeta {
+  return {
+    title: `Klarsti — ${i18n.t('hero_title')}`,
+    description: i18n.t('hero_subtitle'),
+    canonical: `${SITE}${dilliYol(i18n.language, '/')}`
+  };
+}
 
 export function sayfaMetaAyarla(meta: SayfaMeta) {
   document.title = meta.title;
@@ -73,5 +78,5 @@ export function sayfaMetaAyarla(meta: SayfaMeta) {
 }
 
 export function sayfaMetaSifirla() {
-  sayfaMetaAyarla(VARSAYILAN);
+  sayfaMetaAyarla(varsayilanMeta());
 }

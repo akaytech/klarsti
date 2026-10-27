@@ -7,6 +7,7 @@ import { toolTheme } from '../config/toolTheme';
 import { toolPageAdresi, type ToolPage } from '../config/toolPages';
 import { loadToolGuides, type ToolGuide } from '../content/toolGuides';
 import { sayfaMetaAyarla, sayfaMetaSifirla } from '../utils/sayfaMeta';
+import { DENEME_ONEK } from '../utils/aracAdresi';
 import { dilliYol } from '../utils/dilYolu';
 import { useAuthStore } from '../store/useAuthStore';
 import PublicHeader from './PublicHeader';
@@ -139,14 +140,28 @@ export default function ToolLandingPage({ sayfa }: { sayfa: ToolPage }) {
   }, [kilavuzSonuclandi]);
 
   const digerAraclar = TOOLS.filter((x) => x.id !== sayfa.toolId);
+  // Ajanda kişisel olduğu için hesapsız denemede yer almaz; diğer 16 proje
+  // aracında ziyaretçi kayıt duvarına çarpmadan doğrudan o aracın tuvalini
+  // açıp deneyebilir.
+  const denemeAdresi = !user && !arac?.personal ? `${DENEME_ONEK}${sayfa.toolId}` : null;
 
   const kayitCagrisi = (
-    <button
-      onClick={() => navigate(user ? '/' : '/register')}
-      className="flex items-center gap-2 rounded-full bg-slate-900 dark:bg-white px-8 py-4 text-lg font-bold text-white dark:text-slate-900 shadow-xl shadow-slate-900/20 dark:shadow-white/10 transition-all hover:-translate-y-1 motion-reduce:hover:translate-y-0 hover:shadow-2xl active:translate-y-0"
-    >
-      {user ? t('tool_page_open_app') : t('register')} <ArrowRight size={20} />
-    </button>
+    <>
+      <button
+        onClick={() => navigate(user ? '/' : '/register')}
+        className="flex items-center gap-2 rounded-full bg-slate-900 dark:bg-white px-8 py-4 text-lg font-bold text-white dark:text-slate-900 shadow-xl shadow-slate-900/20 dark:shadow-white/10 transition-all hover:-translate-y-1 motion-reduce:hover:translate-y-0 hover:shadow-2xl active:translate-y-0"
+      >
+        {user ? t('tool_page_open_app') : t('register')} <ArrowRight size={20} />
+      </button>
+      {denemeAdresi && (
+        <button
+          onClick={() => navigate(denemeAdresi)}
+          className="flex items-center gap-2 rounded-full border-2 border-indigo-500 bg-indigo-50/60 px-8 py-4 text-lg font-bold text-indigo-700 backdrop-blur-md transition-all hover:bg-indigo-100 dark:border-indigo-500/70 dark:bg-indigo-900/30 dark:text-indigo-300 dark:hover:bg-indigo-900/50"
+        >
+          {t('landing_try_free')}
+        </button>
+      )}
+    </>
   );
 
   /**
@@ -374,12 +389,22 @@ export default function ToolLandingPage({ sayfa }: { sayfa: ToolPage }) {
           <div className="container mx-auto px-6 relative z-10 text-center">
             <h2 className="text-3xl md:text-5xl font-black text-white mb-6 tracking-tight">{t('landing_cta_heading')}</h2>
             <p className="text-lg text-indigo-100 max-w-2xl mx-auto mb-10">{t('landing_cta_subtitle')}</p>
-            <button
-              onClick={() => navigate(user ? '/' : '/register')}
-              className="rounded-full bg-white px-10 py-5 text-xl font-black text-indigo-600 shadow-2xl transition-transform hover:scale-105 motion-reduce:hover:scale-100 active:scale-95 motion-reduce:active:scale-100"
-            >
-              {user ? t('tool_page_open_app') : t('landing_cta_button')}
-            </button>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <button
+                onClick={() => navigate(user ? '/' : '/register')}
+                className="rounded-full bg-white px-10 py-5 text-xl font-black text-indigo-600 shadow-2xl transition-transform hover:scale-105 motion-reduce:hover:scale-100 active:scale-95 motion-reduce:active:scale-100"
+              >
+                {user ? t('tool_page_open_app') : t('landing_cta_button')}
+              </button>
+              {denemeAdresi && (
+                <button
+                  onClick={() => navigate(denemeAdresi)}
+                  className="rounded-full border-2 border-white/80 bg-white/10 px-10 py-5 text-xl font-bold text-white backdrop-blur-md transition-all hover:bg-white/20"
+                >
+                  {t('landing_try_free')}
+                </button>
+              )}
+            </div>
           </div>
         </section>
       </main>

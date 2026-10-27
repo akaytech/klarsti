@@ -76,7 +76,10 @@ export default function LandingPage() {
     tools: TOOLS.filter(tool => tool.category === cat).map(kartVerisi)
   }));
 
-  const FEATURED_TOOL_IDS: ToolId[] = ['wbs', '5whys', 'notepad'];
+  // Vitrin üçlüsü: işi parçalama (WBS), kök neden (5 Neden) ve süreç/üretim
+  // akışı (VSM). Kişisel ajanda vitrinde ürünün mühendislik ve analiz odağını
+  // bulandırdığı için buradan çıkarıldı.
+  const FEATURED_TOOL_IDS: ToolId[] = ['wbs', '5whys', 'vsm'];
   const featuredTools = FEATURED_TOOL_IDS.map(id => kartVerisi(TOOLS.find(t => t.id === id)!));
 
   // "Verilerin güvende" bölümünün üç maddesi. Metinler uydurulmuyor: üçü de

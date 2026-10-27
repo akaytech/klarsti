@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { useUIStore } from '../store/useUIStore';
@@ -23,11 +24,18 @@ const CizimDisaAktar = gecikmeliEkran(() => import('./CizimDisaAktar'));
 
 const GlobalExportButton: React.FC = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const temaRenkleri = useTheme();
   const [calisiyor, setCalisiyor] = useState(false);
   const activeTool = useRoadmapStore((s) => s.activeTool);
   const setTriggerExport = useUIStore((s) => s.setTriggerExport);
   const cizim = cizimAraciMi(activeTool);
+  const denemede = denemeKipindeMi();
+
+  const denemedenKaydaYonlendir = useCallback(() => {
+    toast.info(t('trial_bar_text'), { id: 'trial-export-prompt' });
+    navigate('/register');
+  }, [navigate, t]);
 
   const aktar = useCallback(async () => {
     if (calisiyor) return;
@@ -60,18 +68,26 @@ const GlobalExportButton: React.FC = () => {
   }, [activeTool, calisiyor, t, temaRenkleri.exportBg]);
 
   useEffect(() => {
+    if (denemede) {
+      setTriggerExport(denemedenKaydaYonlendir);
+      return () => setTriggerExport(() => {});
+    }
     // Çizim araçlarında tetikleyiciyi CizimDisaAktar kuruyor; iki taraf
     // birbirinin üstüne yazmasın.
     if (cizim) return;
     setTriggerExport(aktar);
     return () => setTriggerExport(() => {});
-  }, [aktar, cizim, setTriggerExport]);
+  }, [aktar, cizim, denemede, denemedenKaydaYonlendir, setTriggerExport]);
 
   // Ajanda görsel olarak dışa aktarılmıyor: kişisel bir günlük, kanvas değil.
   if (!activeTool || activeTool === 'notepad') return null;
-  // Hesapsız denemede dışa aktarma yok. Ziyaretçi tuvali görsün diye deneme
-  // açık; işini bitirip çıktısını alıp gitmesi için değil. Çıktı hesaba bağlı.
-  if (denemeKipindeMi()) return null;
+  // Hesapsız denemede doğrudan çıktı indirilmez, ancak düğme gizlenmez:
+  // gizlendiğinde kullanıcı özelliğin hiç olmadığını sanıp ekran görüntüsü
+  // alarak çıkıyordu. Tıklandığında çalışmasının kaybolmayacağı söylenip
+  // hesap açma ekranına yönlendirilir.
+  if (denemede) {
+    return <DisaAktarDugmesi calisiyor={false} onTikla={denemedenKaydaYonlendir} />;
+  }
 
   if (cizim) return <CizimDisaAktar />;
 

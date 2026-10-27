@@ -261,6 +261,7 @@ const baslikSeti = (dil) => ({
   tips: yerel[dil].guide_tips,
   other: yerel[dil].tool_page_other_tools,
   kayit: yerel[dil].register_now,
+  dene: yerel[dil].landing_try_free,
   dil: yerel[dil].language_selector,
   ornek: yerel[dil].guide_example,
   sss: yerel[dil].guide_faq
@@ -425,7 +426,9 @@ function govde(sayfa, kilavuz, digerleri, dil, BASLIK) {
         </nav>
         <h1 class="mb-6 text-4xl md:text-6xl font-black tracking-tight text-slate-900 dark:text-white">${kacir(ad)}</h1>
         <p class="mb-10 max-w-2xl text-lg md:text-xl leading-relaxed text-slate-600 dark:text-slate-400">${kacir(ozet)}</p>
-        <a href="${KOKADRES}${dil === VARSAYILAN_DIL ? '' : dil + '/'}register" class="inline-flex items-center gap-2 rounded-full bg-slate-900 dark:bg-white px-8 py-4 text-lg font-bold text-white dark:text-slate-900">${kacir(BASLIK.kayit)}</a>
+        <div class="flex flex-col sm:flex-row items-start gap-4">
+          <a href="${KOKADRES}${dil === VARSAYILAN_DIL ? '' : dil + '/'}register" class="inline-flex items-center gap-2 rounded-full bg-slate-900 dark:bg-white px-8 py-4 text-lg font-bold text-white dark:text-slate-900">${kacir(BASLIK.kayit)}</a>${sayfa.toolId !== 'notepad' ? `\n          <a href="${KOKADRES}${dil === VARSAYILAN_DIL ? '' : dil + '/'}dene/${sayfa.toolId}" class="inline-flex items-center gap-2 rounded-full border-2 border-indigo-500 bg-indigo-50/60 px-8 py-4 text-lg font-bold text-indigo-700 dark:border-indigo-500/70 dark:bg-indigo-900/30 dark:text-indigo-300">${kacir(BASLIK.dene)}</a>` : ''}
+        </div>
       </div></div>
     </section>
     <section class="pb-24 bg-white dark:bg-slate-950 border-t border-slate-100 dark:border-slate-900 pt-16">
